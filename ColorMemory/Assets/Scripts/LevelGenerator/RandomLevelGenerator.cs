@@ -17,16 +17,16 @@ public class RandomLevelGenerator : LevelGenerator
         _pickCount = pickCount;
         _levelSize = levelSize;
 
-        _closePoints = new Vector2Int[8]
+        _closePoints = new Vector2Int[4]
         {
             new Vector2Int(-1, 0), // ¡è
             new Vector2Int(0, 1), // ¡æ
             new Vector2Int(1, 0), // ¡é
             new Vector2Int(0, -1), // ¡ç
-            new Vector2Int(-1, 1), // ¢Ö
-            new Vector2Int(1, 1), // ¢Ù
-            new Vector2Int(1, -1), // ¢×
-            new Vector2Int(-1, -1), // ¢Ø
+            //new Vector2Int(-1, 1), // ¢Ö
+            //new Vector2Int(1, 1), // ¢Ù
+            //new Vector2Int(1, -1), // ¢×
+            //new Vector2Int(-1, -1), // ¢Ø
         };
     }
 

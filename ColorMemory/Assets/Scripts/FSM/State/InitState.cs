@@ -2,6 +2,7 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using DG.Tweening;
 
 public class InitState : BaseState<ChallengeStageController.State>
 {
@@ -58,7 +59,7 @@ public class InitState : BaseState<ChallengeStageController.State>
 
     public override void OnStateEnter()
     {
-        _challengeStageUIController.ChangeTitle($"STAGE {++_level}");
+        _challengeStageUIController.ChangeTitle($"LEVEL {++_level}");
         CreateLevel();
         _fsm.SetState(ChallengeStageController.State.Memorize);
     }

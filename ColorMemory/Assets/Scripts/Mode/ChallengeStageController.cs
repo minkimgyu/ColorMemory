@@ -1,7 +1,8 @@
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class ChallengeStageController : StageController
@@ -17,6 +18,19 @@ public class ChallengeStageController : StageController
     [SerializeField] Vector2 _spacing;
     [SerializeField] int _pickCount;
     [SerializeField] Vector2Int _levelSize = new Vector2Int(5, 5); // row, col
+
+
+    [SerializeField] Button _randomHintBtn;
+    [SerializeField] Button _revealSameColorHintBtn;
+
+    [SerializeField] Image _timerSlider;
+    [SerializeField] TMP_Text _timeText;
+    [SerializeField] TMP_Text _titleText;
+    [SerializeField] GameObject _hintPanel;
+
+    [SerializeField] GameObject _endPanel;
+    [SerializeField] Button _tryAgainBtn;
+    [SerializeField] Button _exitBtn;
 
     MapData _mapData;
     Dot[,] _dots;
@@ -74,29 +88,39 @@ public class ChallengeStageController : StageController
     public override void Initialize()
     {
         _challengeStageUIController  = GetComponent<ChallengeStageUIController>();
-        _challengeStageUIController.Initialize();
+        _challengeStageUIController.Initialize(_timerSlider, _timeText, _titleText, _hintPanel, _endPanel);
+
+        _randomHintBtn.onClick.AddListener(() => { _fsm.OnClickRandomFillHint(); });
+        _revealSameColorHintBtn.onClick.AddListener(() => { _fsm.OnClickRevealSameColorHint(); });
+
+        _tryAgainBtn.onClick.AddListener(() => { SceneManager.LoadScene("ChallengeScene"); });
+        _exitBtn.onClick.AddListener(() => { SceneManager.LoadScene("StartScene"); });
 
         _fsm = new FSM<State>();
         Dictionary<State, BaseState<State>> states = new Dictionary<State, BaseState<State>>()
         {
             { 
-                State.Init, new InitState(
-                _fsm, 
-                _pickColors, 
-                _pickCount,
-                _levelSize, 
-                new EffectFactory(_effectPrefab), 
-                new DotFactory(_dotPrefab), 
-                _dotGridContent, 
-                _penContent,
-                _penToggleGroup,
-                _challengeStageUIController,
-                SetLevelData) 
+                State.Init, 
+                new InitState
+                (
+                    _fsm, 
+                    _pickColors, 
+                    _pickCount,
+                    _levelSize, 
+                    new EffectFactory(_effectPrefab), 
+                    new DotFactory(_dotPrefab), 
+                    _dotGridContent, 
+                    _penContent,
+                    _penToggleGroup,
+                    _challengeStageUIController,
+                    SetLevelData
+                ) 
             },
 
-            { State.Memorize, new MemorizeState(_fsm, _pickColors, 5f, _challengeStageUIController, GetLevelData) },
-            { State.Paint, new PaintState(_fsm, _pickColors, 5f, _challengeStageUIController, GetLevelData) },
-            { State.Clear, new ClearState(_fsm, DestroyDots) }
+            { State.Memorize, new MemorizeState(_fsm, _pickColors, 7f, _challengeStageUIController, GetLevelData) },
+            { State.Paint, new PaintState(_fsm, _pickColors, 10f, _challengeStageUIController, GetLevelData) },
+            { State.Clear, new ClearState(_fsm, _challengeStageUIController, GetLevelData, DestroyDots) },
+            { State.End, new EndState(_fsm, _challengeStageUIController) }
         };
 
         _fsm.Initialize(states, State.Init);

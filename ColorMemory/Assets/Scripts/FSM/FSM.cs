@@ -27,4 +27,7 @@ public class FSM<State>
 
     public void OnClickDot(Vector2Int index) => _states[_currentState].OnClickDot(index);
     public void OnClickDot(int index) => _states[_currentState].OnClickDot(index);
+
+    public void OnClickRandomFillHint() => _states[_currentState].OnClickRandomFillHint();
+    public void OnClickRevealSameColorHint() => _states[_currentState].OnClickRevealSameColorHint();
 }

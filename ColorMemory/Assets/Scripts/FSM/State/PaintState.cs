@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 using System;
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEditor.U2D.Aseprite;
 using DG.Tweening;
+using Random = UnityEngine.Random;
 
 public class PaintState : BaseState<ChallengeStageController.State>
 {
@@ -19,7 +18,6 @@ public class PaintState : BaseState<ChallengeStageController.State>
     float _paintDuration;
 
     Func<Tuple<Dot[,], Dot[], MapData>> GetLevelData;
-
     ChallengeStageUIController _challengeStageUIController;
 
     public PaintState(
@@ -78,7 +76,7 @@ public class PaintState : BaseState<ChallengeStageController.State>
         if (_timer.CurrentState == Timer.State.Finish)
         {
             _timer.Reset(); // 타이머 리셋
-            _fsm.SetState(ChallengeStageController.State.Clear);
+            _fsm.SetState(ChallengeStageController.State.End);
             return;
         }
     }
@@ -109,7 +107,10 @@ public class PaintState : BaseState<ChallengeStageController.State>
             }
         }
 
-        _timer.Start(_paintDuration);
+        DOVirtual.DelayedCall(0.5f, () =>
+        {
+            _timer.Start(_paintDuration);
+        });
     }
 
     bool OutOfRange(Vector2Int point)
@@ -140,23 +141,91 @@ public class PaintState : BaseState<ChallengeStageController.State>
     public override void OnClickDot(Vector2Int index)
     {
         Debug.Log(index);
-        SpreadColor(index);
-    }
 
-    public override void OnClickDot(int index)
-    {
-        Debug.Log(index);
-        ChangeSelectedColor(index);
+        if (_selectedColorIndex != _mapData.DotColor[index.x, index.y]) return;
+        SpreadColor(index);
     }
 
     int _selectedColorIndex = 0;
     void ChangeSelectedColor(int index) => _selectedColorIndex = index;
 
+    // color pen dot의 경우
+    public override void OnClickDot(int index)
+    {
+        Debug.Log(index);
+
+        switch (_state)
+        {
+            case RevealSameColorHintState.Idle:
+                ChangeSelectedColor(index);
+                break;
+            case RevealSameColorHintState.SelectColor:
+
+                for (int x = 0; x < _levelSize.x; x++)
+                {
+                    for (int y = 0; y < _levelSize.y; y++)
+                    {
+                        int colorIndex = _mapData.DotColor[x, y];
+                        if(colorIndex == index && _visit[x, y] < 0) // 같은 색상이고 방문하지 않은 경우
+                        {
+                            Color nearDotColor = GetDotColor(new Vector2Int(x, y));
+                            _dots[x, y].Pop(nearDotColor); // 색 바꿔주는 코드 추가
+                            _visit[x, y] = colorIndex;
+                        }
+                    }
+                }
+
+                _state = RevealSameColorHintState.Idle;
+                _challengeStageUIController.ActivateHintPanel(false);
+
+                bool canClear = CanClearStage();
+                if (canClear == false) return;
+
+                _timer.Reset(); // 타이머 리셋
+                _fsm.SetState(ChallengeStageController.State.Clear);
+
+                break;
+            default:
+                break;
+        }
+    }
+
+    public enum RevealSameColorHintState
+    {
+        Idle,
+        SelectColor,
+    }
+
+    RevealSameColorHintState _state = RevealSameColorHintState.Idle;
+
+    public override void OnClickRevealSameColorHint()
+    {
+        _state = RevealSameColorHintState.SelectColor;
+        _challengeStageUIController.ActivateHintPanel(true); // active panel 적용해주기
+    }
+
+    public override void OnClickRandomFillHint()
+    {
+        RandomFindHint();
+    }
+
+    void RandomFindHint()
+    {
+        while(true)
+        {
+            int randomRow = Random.Range(0, _levelSize.x);
+            int randomCol = Random.Range(0, _levelSize.y);
+
+            if (_visit[randomRow, randomCol] >= 0) continue; // 이미 방문한 지점이라면 다시 뽑음
+
+            SpreadColor(new Vector2Int(randomRow, randomCol));
+            break;
+        }
+    }
+
     // 색 같은 거끼리 bfs 돌려서 확인해줌
     void SpreadColor(Vector2Int index)
     {
-        if (_selectedColorIndex != _mapData.DotColor[index.x, index.y]) return;
-
         Queue<Tuple<Vector2Int, int>> queue = new Queue<Tuple<Vector2Int, int>>();
 
         Color dotColor = GetDotColor(index);
