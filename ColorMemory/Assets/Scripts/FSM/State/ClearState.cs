@@ -1,7 +1,6 @@
 using UnityEngine;
 using System;
 using DG.Tweening;
-using NUnit.Framework;
 using UnityEditor.Timeline.Actions;
 
 public class ClearState : BaseState<ChallengeStageController.State>
