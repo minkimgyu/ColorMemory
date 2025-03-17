@@ -3,21 +3,21 @@ using System.Collections.Generic;
 
 abstract public class EffectCreater
 {
-    public virtual BaseEffect Create() { return null; }
+    public virtual Effect Create() { return null; }
 }
 
 public class DotEffectCreater : EffectCreater
 {
-    BaseEffect _effectPrefab;
+    Effect _effectPrefab;
 
-    public DotEffectCreater(BaseEffect effectPrefab)
+    public DotEffectCreater(Effect effectPrefab)
     {
         _effectPrefab = effectPrefab;
     }
 
-    public override BaseEffect Create()
+    public override Effect Create()
     {
-        BaseEffect effect = Object.Instantiate(_effectPrefab);
+        Effect effect = Object.Instantiate(_effectPrefab);
         effect.Initialize();
 
         return effect;
@@ -26,19 +26,19 @@ public class DotEffectCreater : EffectCreater
 
 public class EffectFactory : BaseFactory
 {
-    [SerializeField] BaseEffect _circleEffectPrefab;
-    [SerializeField] BaseEffect _rectEffectPrefab;
+    [SerializeField] Effect _circleEffectPrefab;
+    [SerializeField] Effect _rectEffectPrefab;
 
-    Dictionary<BaseEffect.Name, EffectCreater> _effectCreater;
+    Dictionary<Effect.Name, EffectCreater> _effectCreater;
 
-    public EffectFactory(Dictionary<BaseEffect.Name, BaseEffect> effectPrefab)
+    public EffectFactory(Dictionary<Effect.Name, Effect> effectPrefab)
     {
-        _effectCreater = new Dictionary<BaseEffect.Name, EffectCreater>();
-        _effectCreater.Add(BaseEffect.Name.CircleEffect, new DotEffectCreater(effectPrefab[BaseEffect.Name.CircleEffect]));
-        _effectCreater.Add(BaseEffect.Name.RectEffect, new DotEffectCreater(effectPrefab[BaseEffect.Name.RectEffect]));
+        _effectCreater = new Dictionary<Effect.Name, EffectCreater>();
+        _effectCreater.Add(Effect.Name.CircleEffect, new DotEffectCreater(effectPrefab[Effect.Name.CircleEffect]));
+        _effectCreater.Add(Effect.Name.RectEffect, new DotEffectCreater(effectPrefab[Effect.Name.RectEffect]));
     }
 
-    public override BaseEffect Create(BaseEffect.Name name)
+    public override Effect Create(Effect.Name name)
     {
         return _effectCreater[name].Create();
     }

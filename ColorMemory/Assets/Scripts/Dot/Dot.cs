@@ -8,7 +8,7 @@ abstract public class Dot : MonoBehaviour, IPointerDownHandler
     public enum Name
     {
         Basic,
-        ColorPen
+        ColorPen,
     }
 
     protected bool _clickable = true;

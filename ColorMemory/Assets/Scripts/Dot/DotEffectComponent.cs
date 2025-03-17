@@ -21,7 +21,7 @@ public class DotEffectComponent : MonoBehaviour
 
     public void Fade(Color endColor, Image.FillMethod method, float duration)
     {
-        BaseEffect fadeEffect = _effectFactory.Create(BaseEffect.Name.CircleEffect);
+        Effect fadeEffect = _effectFactory.Create(Effect.Name.CircleEffect);
 
         fadeEffect.transform.SetParent(transform);
         fadeEffect.transform.SetAsLastSibling();
@@ -33,7 +33,7 @@ public class DotEffectComponent : MonoBehaviour
 
         ChangeColor(endColor); // 본인 색 바꾸기
 
-        fadeEffect.Fade(duration, method,
+        fadeEffect.Fade(transform.localScale, duration, method,
             () =>
             {
                 Destroy(fadeEffect.gameObject);
@@ -45,7 +45,7 @@ public class DotEffectComponent : MonoBehaviour
     {
         ChangeColor(endColor);
 
-        BaseEffect diffuseEffect = _effectFactory.Create(BaseEffect.Name.CircleEffect);
+        Effect diffuseEffect = _effectFactory.Create(Effect.Name.CircleEffect);
 
         diffuseEffect.transform.SetParent(_dotTransform);
         diffuseEffect.transform.SetAsFirstSibling();
@@ -62,7 +62,7 @@ public class DotEffectComponent : MonoBehaviour
             }
         );
 
-        BaseEffect fadeEffect = _effectFactory.Create(BaseEffect.Name.CircleEffect);
+        Effect fadeEffect = _effectFactory.Create(Effect.Name.CircleEffect);
 
         fadeEffect.transform.SetParent(transform);
         fadeEffect.transform.SetAsLastSibling();
@@ -71,7 +71,7 @@ public class DotEffectComponent : MonoBehaviour
 
         fadeEffect.ChangeSize(_dotTransform.sizeDelta);
 
-        fadeEffect.Fade(duration, Image.FillMethod.Horizontal,
+        fadeEffect.Fade(transform.localScale, duration, Image.FillMethod.Horizontal,
             () =>
             {
                 Destroy(fadeEffect.gameObject);
@@ -83,7 +83,7 @@ public class DotEffectComponent : MonoBehaviour
     {
         ChangeColor(endColor);
 
-        BaseEffect rectEffect = _effectFactory.Create(BaseEffect.Name.RectEffect);
+        Effect rectEffect = _effectFactory.Create(Effect.Name.RectEffect);
 
         rectEffect.transform.SetParent(transform);
         rectEffect.transform.SetAsLastSibling();
