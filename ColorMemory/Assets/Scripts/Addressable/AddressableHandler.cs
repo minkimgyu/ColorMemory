@@ -12,9 +12,15 @@ public class AddressableHandler : MonoBehaviour
 {
     public enum Label
     {
-        Dots,
-        Effects,
-        ModeTitles,
+        Dot,
+        Effect,
+        ModeTitle,
+
+        ArtData,
+        ArtSprite,
+
+        Artwork,
+        ArtworkFrame,
     }
 
     HashSet<BaseLoader> _assetLoaders;
@@ -38,16 +44,28 @@ public class AddressableHandler : MonoBehaviour
         _assetLoaders = new HashSet<BaseLoader>();
     }
 
+    public Dictionary<ArtData.Name, ArtData> ArtDataAsserts { get; private set; }
+    public Dictionary<ArtData.Name, Sprite> ArtSpriteAsserts { get; private set; }
+    public Dictionary<Artwork.Type, Sprite> ArtworkFrameAsserts { get; private set; }
+
+    public Artwork ArtworkAsset { get; private set; }
+
     public Dictionary<Dot.Name, Dot> DotAssets { get; private set; }
     public Dictionary<Effect.Name, Effect> EffectAssets { get; private set; }
     public Dictionary<GameMode.Type, Sprite> ModeTitleIconAssets { get; private set; }
 
     public void Load(Action OnCompleted)
     {
-        _assetLoaders.Add(new DotAssetLoader(Label.Dots, (value, label) => { DotAssets = value; OnSuccess(label); }));
-        _assetLoaders.Add(new EffectAssetLoader(Label.Effects, (value, label) => { EffectAssets = value; OnSuccess(label); }));
-        _assetLoaders.Add(new ModeTitleIconAssetLoader(Label.ModeTitles, (value, label) => { ModeTitleIconAssets = value; OnSuccess(label); }));
+        _assetLoaders.Add(new DotAssetLoader(Label.Dot, (value, label) => { DotAssets = value; OnSuccess(label); }));
+        _assetLoaders.Add(new EffectAssetLoader(Label.Effect, (value, label) => { EffectAssets = value; OnSuccess(label); }));
+        _assetLoaders.Add(new ModeTitleIconAssetLoader(Label.ModeTitle, (value, label) => { ModeTitleIconAssets = value; OnSuccess(label); }));
+        
+        _assetLoaders.Add(new ArtJsonAssetLoader(Label.ArtData, (value, label) => { ArtDataAsserts = value; OnSuccess(label); }));
+        _assetLoaders.Add(new ArtSpriteAssetLoader(Label.ArtSprite, (value, label) => { ArtSpriteAsserts = value; OnSuccess(label); }));
 
+        _assetLoaders.Add(new ArtworkAssetLoader(Label.Artwork, (value, label) => { ArtworkAsset = value; OnSuccess(label); }));
+        _assetLoaders.Add(new ArtworkFrameAssetLoader(Label.ArtworkFrame, (value, label) => { ArtworkFrameAsserts = value; OnSuccess(label); }));
+        
         this.OnCompleted = OnCompleted;
         _totalCount = _assetLoaders.Count;
         foreach (var loader in _assetLoaders)

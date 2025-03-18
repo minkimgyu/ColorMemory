@@ -3,8 +3,24 @@ using System.Collections.Generic;
 using UnityEngine;
 using Newtonsoft.Json;
 
+
+
 public struct ArtData
 {
+    public enum Name
+    {
+        ABlossomingBush,
+        AChristmasRepast,
+        ACoastalLandscapeintheSouthofFrance,
+        ACottageGardenWithChickens,
+        ADoewithFawn,
+        AFavoriteSummerPastime,
+        AForestPathwithHunteratSunset,
+        AFreshBreeze,
+        AGardenIdyll,
+        AGardeninSeptember
+    }
+
     public struct ArtSize
     {
         [JsonProperty("height")] private int _height;

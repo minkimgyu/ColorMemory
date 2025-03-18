@@ -2,11 +2,11 @@ using UnityEngine;
 
 public class EndState : BaseState<ChallengeStageController.State>
 {
-    ChallengeStageUIController _challengeStageUIController;
+    ChallengeStageUIPresenter _challengeStageUIController;
 
     public EndState(
         FSM<ChallengeStageController.State> fsm,
-        ChallengeStageUIController challengeStageUIController) : base(fsm)
+        ChallengeStageUIPresenter challengeStageUIController) : base(fsm)
     {
         _challengeStageUIController = challengeStageUIController;
     }

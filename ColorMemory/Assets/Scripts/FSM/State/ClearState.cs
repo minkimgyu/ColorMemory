@@ -7,11 +7,11 @@ public class ClearState : BaseState<ChallengeStageController.State>
     Action DestroyDots;
     Func<Tuple<Dot[,], Dot[], MapData>> GetLevelData;
 
-    ChallengeStageUIController _challengeStageUIController;
+    ChallengeStageUIPresenter _challengeStageUIController;
 
     public ClearState(
         FSM<ChallengeStageController.State> fsm,
-        ChallengeStageUIController challengeStageUIController,
+        ChallengeStageUIPresenter challengeStageUIController,
 
         Func<Tuple<Dot[,], Dot[], MapData>> GetLevelData,
         Action DestroyDots

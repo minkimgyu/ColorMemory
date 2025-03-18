@@ -1,0 +1,85 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: ArtDatas
+  m_EditorClassIdentifier: 
+  m_GroupName: ArtDatas
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 6ba7b1551850d8b4caf20e00024c87de
+  m_SerializeEntries:
+  - m_GUID: 134c2e4dfde3ac24584dd404803069bf
+    m_Address: ACoastalLandscapeintheSouthofFrance
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - ArtData
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 331b9010c29c43249b75d82e8d251d51
+    m_Address: AGardeninSeptember
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - ArtData
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6d253f3bb57f588409ef457bb22872cb
+    m_Address: ABlossomingBush
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - ArtData
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 78b9738b09b6ef4409239a53ade5487d
+    m_Address: ADoewithFawn
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - ArtData
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a05ff576a5dbf5b49b5e19f8c2bcc6c1
+    m_Address: AFavoriteSummerPastime
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - ArtData
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b3e2e387dadc47040b9358cff84cc29e
+    m_Address: AGardenIdyll
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - ArtData
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b52fbf6f4ae24e946ad68051f8aef5f5
+    m_Address: AForestPathwithHunteratSunset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - ArtData
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b557a18e59deebf49a051174ab2c8d8a
+    m_Address: AFreshBreeze
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - ArtData
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dc74eda96611ae54a8650c9bca17a4a5
+    m_Address: ACottageGardenWithChickens
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - ArtData
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f20a2bd82c48a6f4f8f98a45e7738408
+    m_Address: AChristmasRepast
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - ArtData
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 5736eef86fbab2943992749ebee4f1e0, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 2eee98bc90625f44e9286e86a560ace4, type: 2}
+    - {fileID: 11400000, guid: 874a1cbddb165db4d96cac85bc82c090, type: 2}

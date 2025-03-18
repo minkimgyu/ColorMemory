@@ -3,6 +3,7 @@ using System.Reflection;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using TMPro;
 
 public class ColorPenDot : Dot
 {
@@ -10,11 +11,17 @@ public class ColorPenDot : Dot
     protected Action<int> OnClick;
 
     Toggle _toggle;
+    [SerializeField] TextMeshPro _colorCountTxt;
 
     public override void Initialize()
     {
         base.Initialize();
         _toggle = GetComponent<Toggle>();
+    }
+
+    public override void ChangeColorCount(int colorCount) 
+    {
+        _colorCountTxt.text = colorCount.ToString();
     }
 
     public override void Inject(EffectFactory effectFactory, ToggleGroup toggleGroup, int index, Action<int> OnClick)

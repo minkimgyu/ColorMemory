@@ -25,6 +25,9 @@ abstract public class Dot : MonoBehaviour, IPointerDownHandler
     public virtual void Inject(EffectFactory effectFactory, Vector2Int index, Action<Vector2Int> OnClick) { }
     public virtual void Inject(EffectFactory effectFactory, ToggleGroup toggleGroup, int index, Action<int> OnClick) { }
 
+
+    public virtual void ChangeColorCount(int colorCount) { }
+
     public void ChangeColor(Color color)
     {
         _dotEffectComponent.ChangeColor(color);

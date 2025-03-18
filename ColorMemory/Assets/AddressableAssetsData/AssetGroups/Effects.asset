@@ -21,13 +21,13 @@ MonoBehaviour:
     m_Address: CircleEffect
     m_ReadOnly: 0
     m_SerializedLabels:
-    - Effects
+    - Effect
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8c4db24dbdb7ddb40a239bb160df9ed1
     m_Address: RectEffect
     m_ReadOnly: 0
     m_SerializedLabels:
-    - Effects
+    - Effect
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 5736eef86fbab2943992749ebee4f1e0, type: 2}

@@ -20,6 +20,14 @@ public class DotAssetLoader : MultiplePrafabAssetLoader<Dot.Name, Dot>
     }
 }
 
+public class ArtworkAssetLoader : SinglePrafabAssetLoader<Artwork>
+{
+    public ArtworkAssetLoader(AddressableHandler.Label label, Action<Artwork, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
+    {
+    }
+}
+
+
 
 abstract public class MultiplePrafabAssetLoader<Key, Value> : MultipleAssetLoader<Key, Value, GameObject>
 {

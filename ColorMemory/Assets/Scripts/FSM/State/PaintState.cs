@@ -18,13 +18,13 @@ public class PaintState : BaseState<ChallengeStageController.State>
     float _paintDuration;
 
     Func<Tuple<Dot[,], Dot[], MapData>> GetLevelData;
-    ChallengeStageUIController _challengeStageUIController;
+    ChallengeStageUIPresenter _challengeStageUIPresenter;
 
     public PaintState(
         FSM<ChallengeStageController.State> fsm,
         Color[] pickColors,
         float paintDuration,
-        ChallengeStageUIController challengeStageUIController,
+        ChallengeStageUIPresenter challengeStageUIPresenter,
         Func<Tuple<Dot[,], Dot[], MapData>> GetLevelData
     ) : base(fsm)
     {
@@ -44,7 +44,7 @@ public class PaintState : BaseState<ChallengeStageController.State>
         _paintDuration = paintDuration;
         _timer = new Timer();
 
-        _challengeStageUIController = challengeStageUIController;
+        _challengeStageUIPresenter = challengeStageUIPresenter;
         this.GetLevelData = GetLevelData;
     }
 
@@ -71,7 +71,7 @@ public class PaintState : BaseState<ChallengeStageController.State>
 
     public override void OnStateUpdate()
     {
-        _challengeStageUIController.ChangeTime(_timer.LeftTime, 1 - _timer.Ratio);
+        _challengeStageUIPresenter.ChangeLeftTime(_timer.LeftTime, 1 - _timer.Ratio);
 
         if (_timer.CurrentState == Timer.State.Finish)
         {
@@ -106,6 +106,8 @@ public class PaintState : BaseState<ChallengeStageController.State>
                 _visit[x, y] = -1;
             }
         }
+
+        _challengeStageUIPresenter.ChangeTotalTime(_paintDuration);
 
         DOVirtual.DelayedCall(0.5f, () =>
         {
@@ -176,7 +178,7 @@ public class PaintState : BaseState<ChallengeStageController.State>
                 }
 
                 _state = RevealSameColorHintState.Idle;
-                _challengeStageUIController.ActivateHintPanel(false);
+                _challengeStageUIPresenter.ActivateHintPanel(false);
 
                 bool canClear = CanClearStage();
                 if (canClear == false) return;
@@ -201,7 +203,7 @@ public class PaintState : BaseState<ChallengeStageController.State>
     public override void OnClickRevealSameColorHint()
     {
         _state = RevealSameColorHintState.SelectColor;
-        _challengeStageUIController.ActivateHintPanel(true); // active panel 적용해주기
+        _challengeStageUIPresenter.ActivateHintPanel(true); // active panel 적용해주기
     }
 
     public override void OnClickRandomFillHint()

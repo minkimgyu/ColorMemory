@@ -21,13 +21,13 @@ MonoBehaviour:
     m_Address: ColorPen
     m_ReadOnly: 0
     m_SerializedLabels:
-    - Dots
+    - Dot
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7bbf575dac0e3024eb5d0b0f2fb2064e
     m_Address: Basic
     m_ReadOnly: 0
     m_SerializedLabels:
-    - Dots
+    - Dot
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 5736eef86fbab2943992749ebee4f1e0, type: 2}

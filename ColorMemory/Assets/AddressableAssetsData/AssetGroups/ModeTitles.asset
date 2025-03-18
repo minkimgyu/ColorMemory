@@ -21,13 +21,13 @@ MonoBehaviour:
     m_Address: Challenge
     m_ReadOnly: 0
     m_SerializedLabels:
-    - ModeTitles
+    - ModeTitle
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: edb8b2c542e75f743a690d1c3a3a51e5
     m_Address: Collect
     m_ReadOnly: 0
     m_SerializedLabels:
-    - ModeTitles
+    - ModeTitle
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 5736eef86fbab2943992749ebee4f1e0, type: 2}

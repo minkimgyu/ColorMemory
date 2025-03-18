@@ -7,9 +7,6 @@ using UnityEngine.UI;
 
 public class ChallengeStageController : StageController
 {
-    [SerializeField] EffectPrefabDictionary _effectPrefab;
-    [SerializeField] DotPrefabDictionary _dotPrefab;
-
     [SerializeField] ToggleGroup _penToggleGroup;
     [SerializeField] RectTransform _penContent;
     [SerializeField] GridLayoutGroup _dotGridContent;
@@ -24,9 +21,13 @@ public class ChallengeStageController : StageController
     [SerializeField] Button _revealSameColorHintBtn;
 
     [SerializeField] Image _timerSlider;
-    [SerializeField] TMP_Text _timeText;
-    [SerializeField] TMP_Text _titleText;
+
+    [SerializeField] TMP_Text _leftTimeText;
+    [SerializeField] TMP_Text _totalTimeText;
+
+    //[SerializeField] TMP_Text _titleText;
     [SerializeField] GameObject _hintPanel;
+    [SerializeField] GameObject _rememberPanel;
 
     [SerializeField] GameObject _endPanel;
     [SerializeField] Button _tryAgainBtn;
@@ -35,8 +36,6 @@ public class ChallengeStageController : StageController
     MapData _mapData;
     Dot[,] _dots;
     Dot[] _colorPenDots;
-
-    ChallengeStageUIController _challengeStageUIController;
 
     void DestroyDots()
     {
@@ -87,8 +86,12 @@ public class ChallengeStageController : StageController
 
     public override void Initialize()
     {
-        _challengeStageUIController  = GetComponent<ChallengeStageUIController>();
-        _challengeStageUIController.Initialize(_timerSlider, _timeText, _titleText, _hintPanel, _endPanel);
+        AddressableHandler addressableHandler = FindObjectOfType<AddressableHandler>();
+        if (addressableHandler == null) return;
+
+        ChallengeStageUIModel model = new ChallengeStageUIModel();
+        ChallengeStageUIViewer viewer = new ChallengeStageUIViewer(_timerSlider, _leftTimeText, _totalTimeText, _hintPanel, _rememberPanel, _endPanel);
+        ChallengeStageUIPresenter presenter = new ChallengeStageUIPresenter(model, viewer);
 
         _randomHintBtn.onClick.AddListener(() => { _fsm.OnClickRandomFillHint(); });
         _revealSameColorHintBtn.onClick.AddListener(() => { _fsm.OnClickRevealSameColorHint(); });
@@ -107,20 +110,20 @@ public class ChallengeStageController : StageController
                     _pickColors, 
                     _pickCount,
                     _levelSize, 
-                    new EffectFactory(_effectPrefab), 
-                    new DotFactory(_dotPrefab), 
+                    new EffectFactory(addressableHandler.EffectAssets), 
+                    new DotFactory(addressableHandler.DotAssets), 
                     _dotGridContent, 
                     _penContent,
                     _penToggleGroup,
-                    _challengeStageUIController,
+                    presenter,
                     SetLevelData
                 ) 
             },
 
-            { State.Memorize, new MemorizeState(_fsm, _pickColors, 7f, _challengeStageUIController, GetLevelData) },
-            { State.Paint, new PaintState(_fsm, _pickColors, 10f, _challengeStageUIController, GetLevelData) },
-            { State.Clear, new ClearState(_fsm, _challengeStageUIController, GetLevelData, DestroyDots) },
-            { State.End, new EndState(_fsm, _challengeStageUIController) }
+            { State.Memorize, new MemorizeState(_fsm, _pickColors, 7f, presenter, GetLevelData) },
+            { State.Paint, new PaintState(_fsm, _pickColors, 10f, presenter, GetLevelData) },
+            { State.Clear, new ClearState(_fsm, presenter, GetLevelData, DestroyDots) },
+            { State.End, new EndState(_fsm, presenter) }
         };
 
         _fsm.Initialize(states, State.Init);
