@@ -12,19 +12,21 @@ public class MemorizeState : BaseState<ChallengeStageController.State>
 
     Color[] _pickColors;
 
+    readonly Color _fadeColor = new Color(236f / 255f, 232f / 255f, 232f / 255f);
+
     Timer _timer;
     float _memorizeDuration;
 
     Func<Tuple<Dot[,], Dot[], MapData>> GetLevelData;
 
-    ChallengeStageUIController _challengeStageUIController;
+    ChallengeStageUIPresenter _challengeStageUIPresenter;
 
     public MemorizeState(
         FSM<ChallengeStageController.State> fsm,
         Color[] pickColors,
         float memorizeDuration,
 
-        ChallengeStageUIController challengeStageUIController,
+        ChallengeStageUIPresenter challengeStageUIPresenter,
         Func<Tuple<Dot[,], Dot[], MapData>> GetLevelData
     ) : base(fsm)
     {
@@ -32,7 +34,7 @@ public class MemorizeState : BaseState<ChallengeStageController.State>
         _memorizeDuration = memorizeDuration;
         _timer = new Timer();
 
-        _challengeStageUIController = challengeStageUIController;
+        _challengeStageUIPresenter = challengeStageUIPresenter;
         this.GetLevelData = GetLevelData;
     }
 
@@ -69,15 +71,19 @@ public class MemorizeState : BaseState<ChallengeStageController.State>
             }
         }
 
+        _challengeStageUIPresenter.ActivateRememberPanel(true);
+        _challengeStageUIPresenter.ChangeTotalTime(_memorizeDuration);
         _timer.Start(_memorizeDuration);
     }
 
     public override void OnStateUpdate()
     {
-        _challengeStageUIController.ChangeTime(_timer.LeftTime, 1 - _timer.Ratio);
+        _challengeStageUIPresenter.ChangeLeftTime(_timer.LeftTime, 1 - _timer.Ratio);
 
         if (_timer.CurrentState == Timer.State.Finish)
         {
+            _challengeStageUIPresenter.ActivateRememberPanel(false);
+
             // dot 뒤집는 코드 추가
             for (int i = 0; i < _levelSize.x; i++)
             {
@@ -86,9 +92,10 @@ public class MemorizeState : BaseState<ChallengeStageController.State>
                     Image.FillMethod fillMethod = (Image.FillMethod)Random.Range(0, 5);
                     float duration = Random.Range(0, 1.5f);
 
-                    _dots[i, j].Fade(Color.white, fillMethod, duration);
+                    _dots[i, j].Fade(_fadeColor, fillMethod, duration);
                 }
             }
+
 
             _timer.Reset(); // 타이머 리셋
 

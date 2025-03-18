@@ -4,7 +4,7 @@ using System;
 using UnityEngine;
 
 [Serializable]
-public class EffectPrefabDictionary : SerializableDictionary<BaseEffect.Name, BaseEffect> { }
+public class EffectPrefabDictionary : SerializableDictionary<Effect.Name, Effect> { }
 
 [Serializable]
 public class DotPrefabDictionary : SerializableDictionary<Dot.Name, Dot> {}

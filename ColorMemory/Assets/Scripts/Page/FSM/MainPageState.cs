@@ -1,0 +1,170 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class MainPageState : BaseState<HomePage.InnerPageState>
+{
+    GameMode.Type _type = GameMode.Type.Collect;
+    EffectFactory _effectFactory;
+    DotFactory _dotFactory;
+
+    const int _dotSize = 6;
+    const float _contentSize = 0.8f;
+
+    Image _modeTitleImg;
+    ToggleBtn _toggleBtn;
+    Transform _dotParent;
+
+    Image _playBtnImg;
+    Button _playBtn;
+
+    GameObject _mainContent;
+
+    // 236f/255f, 232f/255f, 232f/255f // gray
+    // 208f/255f, 162f/255f, 117f/255f // brown
+    // 113f/255f, 191f/255f, 255f/255f // blue
+    // 255f/255f, 154f/255f, 145f/255f // red
+
+    Dictionary<GameMode.Type, Color[,]> _dotColors = new Dictionary<GameMode.Type, Color[,]>()
+    {
+        {
+            GameMode.Type.Challenge,
+            new Color[6 , 6]
+            {
+                { new Color(236f/255f, 232f/255f, 232f/255f), new Color(208f/255f, 162f/255f, 117f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(255f/255f, 154f/255f, 145f/255f), new Color(236f/255f, 232f/255f, 232f/255f)},
+                { new Color(208f/255f, 162f/255f, 117f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(208f/255f, 162f/255f, 117f/255f), new Color(255f/255f, 154f/255f, 145f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(255f/255f, 154f/255f, 145f/255f)},
+                { new Color(208f/255f, 162f/255f, 117f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(255f/255f, 154f/255f, 145f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(255f/255f, 154f/255f, 145f/255f)},
+                { new Color(208f/255f, 162f/255f, 117f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(255f/255f, 154f/255f, 145f/255f), new Color(255f/255f, 154f/255f, 145f/255f), new Color(255f/255f, 154f/255f, 145f/255f)},
+                { new Color(208f/255f, 162f/255f, 117f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(208f/255f, 162f/255f, 117f/255f), new Color(255f/255f, 154f/255f, 145f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(255f/255f, 154f/255f, 145f/255f)},
+                { new Color(236f/255f, 232f/255f, 232f/255f), new Color(208f/255f, 162f/255f, 117f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(255f/255f, 154f/255f, 145f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(255f/255f, 154f/255f, 145f/255f)}
+            }
+        },
+        {
+            GameMode.Type.Collect,
+            new Color[6 , 6]
+            {
+                { new Color(236f/255f, 232f/255f, 232f/255f), new Color(208f/255f, 162f/255f, 117f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(113f/255f, 191f/255f, 255f/255f), new Color(236f/255f, 232f/255f, 232f/255f)},
+                { new Color(208f/255f, 162f/255f, 117f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(208f/255f, 162f/255f, 117f/255f), new Color(113f/255f, 191f/255f, 255f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(113f/255f, 191f/255f, 255f/255f)},
+                { new Color(208f/255f, 162f/255f, 117f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(113f/255f, 191f/255f, 255f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(113f/255f, 191f/255f, 255f/255f)},
+                { new Color(208f/255f, 162f/255f, 117f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(113f/255f, 191f/255f, 255f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(113f/255f, 191f/255f, 255f/255f)},
+                { new Color(208f/255f, 162f/255f, 117f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(208f/255f, 162f/255f, 117f/255f), new Color(113f/255f, 191f/255f, 255f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(113f/255f, 191f/255f, 255f/255f)},
+                { new Color(236f/255f, 232f/255f, 232f/255f), new Color(208f/255f, 162f/255f, 117f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(113f/255f, 191f/255f, 255f/255f), new Color(236f/255f, 232f/255f, 232f/255f)}
+            }
+        }
+    };
+
+    Dictionary<GameMode.Type, Color> _playBtnColors = new Dictionary<GameMode.Type, Color>()
+    {
+        { GameMode.Type.Challenge, new Color(255f/255f, 154f/255f, 145f/255f) },
+        { GameMode.Type.Collect, new Color(113f/255f, 191f/255f, 255f/255f) }
+    };
+
+    MainPagePresenter _homePagePresenter;
+
+    public MainPageState(
+        GameMode.Type type,
+        EffectFactory effectFactory,
+        DotFactory dotFactory,
+        Image modeTitleImg,
+        ToggleBtn toggleBtn,
+        Transform dotParent,
+        Button playBtn,
+
+        GameObject mainContent,
+        Dictionary<GameMode.Type, Sprite> modeTitleIconAssets,
+
+        FSM<HomePage.InnerPageState> fsm) : base(fsm)
+    {
+        _type = type;
+
+        _modeTitleImg = modeTitleImg;
+        _toggleBtn = toggleBtn;
+        _dotParent = dotParent;
+        _playBtn = playBtn;
+
+        _effectFactory = effectFactory;
+        _dotFactory = dotFactory;
+
+        _mainContent = mainContent;
+
+        _playBtn.onClick.AddListener(PlayGame);
+        _playBtnImg = _playBtn.gameObject.GetComponent<Image>();
+
+        _toggleBtn.Initialize();
+        _toggleBtn.OnClick += ChangeMode;
+
+        Dot[,] dots;
+        dots = new Dot[_dotSize, _dotSize];
+
+        for (int i = 0; i < _dotSize; i++)
+        {
+            for (int j = 0; j < _dotSize; j++)
+            {
+                Dot dot = _dotFactory.Create(Dot.Name.Basic);
+                dot.Initialize();
+                dot.Inject(_effectFactory, new Vector2Int(i, j), (v2) => { dot.Pop(Color.white); });
+
+                dot.transform.SetParent(_dotParent);
+                dots[i, j] = dot;
+            }
+        }
+
+        _dotParent.localScale = Vector3.one * _contentSize;
+
+        MainPageModel homePageModel = new MainPageModel(_type, modeTitleIconAssets, _dotColors, _playBtnColors);
+        _homePagePresenter = new MainPagePresenter(homePageModel);
+        MainPageViewer homePageViewer = new MainPageViewer(_mainContent, _modeTitleImg, _playBtnImg, _toggleBtn, dots, _homePagePresenter);
+        _homePagePresenter.InjectViewer(homePageViewer);
+
+        switch (_type)
+        {
+            case GameMode.Type.Collect:
+                _toggleBtn.ChangeState(false);
+                break;
+            case GameMode.Type.Challenge:
+                _toggleBtn.ChangeState(true);
+                break;
+            default:
+                break;
+        }
+    }
+
+    // 이건 HomePagePresenter 통해서 작동시켜주자
+    public override void OnStateEnter()
+    {
+        _homePagePresenter.ActiveContent(true); // home 닫아주기
+    }
+
+    public override void OnStateExit()
+    {
+        _homePagePresenter.ActiveContent(false); // home 닫아주기
+    }
+
+    void PlayGame()
+    {
+        switch (_type)
+        {
+            case GameMode.Type.Collect:
+                _fsm.SetState(HomePage.InnerPageState.Collection);
+                break;
+            case GameMode.Type.Challenge:
+                ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.ChallengeScene);
+                break;
+            default:
+                break;
+        }
+    }
+
+    void ChangeMode(bool isOn)
+    {
+        if (isOn)
+        {
+            _type = GameMode.Type.Challenge;
+        }
+        else
+        {
+            _type = GameMode.Type.Collect;
+        }
+    }
+}

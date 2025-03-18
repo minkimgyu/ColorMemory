@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using DG.Tweening;
 using System;
 
-public class DotEffect : BaseEffect
+public class DotEffect : Effect
 {
     Image _image;
     RectTransform _rectTransform;
@@ -12,6 +12,11 @@ public class DotEffect : BaseEffect
     {
         _image = GetComponentInChildren<Image>();
         _rectTransform = GetComponent<RectTransform>();
+    }
+
+    public override void ChangeScale(Vector3 scale)
+    {
+        _rectTransform.localScale = scale;
     }
 
     public override void ChangeSize(Vector2 size)
@@ -24,8 +29,9 @@ public class DotEffect : BaseEffect
         _image.color = color;
     }
 
-    public override void Fade(float duration, Image.FillMethod fillMethod, Action OnComplete = null)
+    public override void Fade(Vector3 scale, float duration, Image.FillMethod fillMethod, Action OnComplete = null)
     {
+        _rectTransform.localScale = scale;
         _image.type = Image.Type.Filled;
         _image.fillMethod = fillMethod;
         _image.fillAmount = 1;

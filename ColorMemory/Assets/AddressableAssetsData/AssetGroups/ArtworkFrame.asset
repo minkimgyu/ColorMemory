@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: ArtworkFrame
+  m_EditorClassIdentifier: 
+  m_GroupName: ArtworkFrame
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 2b57536b8fac4214198b348499a0012f
+  m_SerializeEntries:
+  - m_GUID: 48c127411a0310e419878646f75abfe7
+    m_Address: Gold
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - ArtworkFrame
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 95d8278459c0b1744808f07e19d1a660
+    m_Address: Silver
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - ArtworkFrame
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c9e2dcb4692175e4ca0e562bd65a908e
+    m_Address: Bronze
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - ArtworkFrame
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 5736eef86fbab2943992749ebee4f1e0, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 082a5783ccd08404d84514d495b342e4, type: 2}
+    - {fileID: 11400000, guid: d4f1f426bb1dc4440adf607e28926fe2, type: 2}

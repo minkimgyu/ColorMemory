@@ -20,7 +20,7 @@ public class InitState : BaseState<ChallengeStageController.State>
 
     Action<Dot[,], Dot[], MapData> SetLevelData;
 
-    ChallengeStageUIController _challengeStageUIController;
+    ChallengeStageUIPresenter _challengeStageUIPresenter;
     int _level = 0;
 
     public InitState(
@@ -36,7 +36,7 @@ public class InitState : BaseState<ChallengeStageController.State>
         GridLayoutGroup grid,
         RectTransform penContent,
         ToggleGroup penToggleGroup,
-        ChallengeStageUIController challengeStageUIController,
+        ChallengeStageUIPresenter challengeStageUIPresenter,
 
         Action<Dot[,], Dot[], MapData> SetLevelData
     ) : base(fsm)
@@ -52,13 +52,13 @@ public class InitState : BaseState<ChallengeStageController.State>
         _penContent = penContent;
         _penToggleGroup = penToggleGroup;
 
-        _challengeStageUIController = challengeStageUIController;
+        _challengeStageUIPresenter = challengeStageUIPresenter;
         this.SetLevelData = SetLevelData;
     }
 
     public override void OnStateEnter()
     {
-        _challengeStageUIController.ChangeTitle($"LEVEL {++_level}");
+        //_challengeStageUIPresenter.ChangeTitle($"LEVEL {++_level}");
         CreateLevel();
         _fsm.SetState(ChallengeStageController.State.Memorize);
     }

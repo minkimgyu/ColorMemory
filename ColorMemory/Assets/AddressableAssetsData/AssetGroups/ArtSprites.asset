@@ -1,0 +1,85 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: ArtSprites
+  m_EditorClassIdentifier: 
+  m_GroupName: ArtSprites
+  m_Data:
+    m_SerializedData: []
+  m_GUID: a076046226e52dd4cbcf9d988fb340e8
+  m_SerializeEntries:
+  - m_GUID: 0d29fbdeb77b5824ca3f13c632c71f8a
+    m_Address: AGardeninSeptember
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - ArtSprite
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 27ca9f11146b8ef41a348b4ca06ab8e8
+    m_Address: AFreshBreeze
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - ArtSprite
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 44ba39bb27040b54589fb0e4ae42d987
+    m_Address: ACottageGardenWithChickens
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - ArtSprite
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 53553606950416344a871c3b99fe4155
+    m_Address: AFavoriteSummerPastime
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - ArtSprite
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6478625dc013b874eb0037bec77c5c6e
+    m_Address: ABlossomingBush
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - ArtSprite
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6fb0fe58ea52d7c43bda9ca3b8420450
+    m_Address: AGardenIdyll
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - ArtSprite
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7cf72822a8a76d64a9b1e382b5449699
+    m_Address: AChristmasRepast
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - ArtSprite
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 81294a6ab3699c1468912b116293be41
+    m_Address: AForestPathwithHunteratSunset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - ArtSprite
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 99ab27e85c4386840a48789a05908c60
+    m_Address: ADoewithFawn
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - ArtSprite
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9e0dbca995ee0b0499b2e5bcd80b9542
+    m_Address: ACoastalLandscapeintheSouthofFrance
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - ArtSprite
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 5736eef86fbab2943992749ebee4f1e0, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: ec536d4308f916a4197933688b16dfb2, type: 2}
+    - {fileID: 11400000, guid: ed5e2b5deb07bbd47a20cff9166f5c0a, type: 2}
