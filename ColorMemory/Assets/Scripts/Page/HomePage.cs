@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class HomePage : MonoBehaviour
 {
@@ -27,12 +28,19 @@ public class HomePage : MonoBehaviour
 
     [SerializeField] Button _playBtn;
 
+    [SerializeField] Button _homeBtn;
 
     [SerializeField] GameObject _collectionContent;
-    [SerializeField] Transform _artworkParent;
+    [SerializeField] TMP_Text _titleTxt;
+    [SerializeField] TMP_Text _descriptionTxt;
+
+    [SerializeField] ScrollUI _artworkScroll;
     [SerializeField] Button _selectBtn;
 
+    [SerializeField] Button _rankingBtn;
 
+    [SerializeField] GameObject _rankingContent;
+    [SerializeField] Transform _rankingScrollContent;
 
 
     FSM<InnerPageState> _pageFsm;
@@ -48,6 +56,11 @@ public class HomePage : MonoBehaviour
             addressableHandler.ArtworkAsset,
             addressableHandler.ArtSpriteAsserts,
             addressableHandler.ArtworkFrameAsserts);
+
+        RankingFactory rankingFactory = new RankingFactory(addressableHandler.RankingAsset, addressableHandler.RankingIconAssets);
+
+        _homeBtn.onClick.AddListener(() => { _pageFsm.OnClickHomeBtn(); });
+        _rankingBtn.onClick.AddListener(() => { _pageFsm.OnClickRankingBtn(); });
 
         _pageFsm = new FSM<InnerPageState>();
         _pageFsm.Initialize(new Dictionary<InnerPageState, BaseState<InnerPageState>>
@@ -67,15 +80,22 @@ public class HomePage : MonoBehaviour
             },
             { 
                 InnerPageState.Collection, new CollectionPageState(
+                _homeBtn,
                 _collectionContent,
-                _artworkParent,
+                _titleTxt,
+                _descriptionTxt,
+                _artworkScroll,
                 _selectBtn,
                 artworkFactory,
-                null,
+                addressableHandler.ArtworkJsonAsset.Data,
+                addressableHandler.CollectiveArtJsonAsserts,
                 _pageFsm)
             },
             { 
                 InnerPageState.Ranking, new RankingPageState(
+                _rankingContent,
+                _rankingScrollContent,
+                rankingFactory,
                 _pageFsm)
             },
         }, InnerPageState.Main);

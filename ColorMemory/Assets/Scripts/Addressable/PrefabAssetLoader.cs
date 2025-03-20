@@ -20,9 +20,16 @@ public class DotAssetLoader : MultiplePrafabAssetLoader<Dot.Name, Dot>
     }
 }
 
-public class ArtworkAssetLoader : SinglePrafabAssetLoader<Artwork>
+public class ArtworkAssetLoader : SinglePrafabAssetLoader<ArtworkUI>
 {
-    public ArtworkAssetLoader(AddressableHandler.Label label, Action<Artwork, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
+    public ArtworkAssetLoader(AddressableHandler.Label label, Action<ArtworkUI, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
+    {
+    }
+}
+
+public class RankingAssetLoader : SinglePrafabAssetLoader<RankingUI>
+{
+    public RankingAssetLoader(AddressableHandler.Label label, Action<RankingUI, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
     {
     }
 }

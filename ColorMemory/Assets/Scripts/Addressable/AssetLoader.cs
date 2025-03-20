@@ -13,16 +13,23 @@ public class ModeTitleIconAssetLoader : AssetLoader<GameMode.Type, Sprite, Sprit
     }
 }
 
-public class ArtSpriteAssetLoader : AssetLoader<ArtData.Name, Sprite, Sprite>
+public class ArtSpriteAssetLoader : AssetLoader<ArtName, Sprite, Sprite>
 {
-    public ArtSpriteAssetLoader(AddressableHandler.Label label, Action<Dictionary<ArtData.Name, Sprite>, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
+    public ArtSpriteAssetLoader(AddressableHandler.Label label, Action<Dictionary<ArtName, Sprite>, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
     {
     }
 }
 
-public class ArtworkFrameAssetLoader : AssetLoader<Artwork.Type, Sprite, Sprite>
+public class ArtworkFrameAssetLoader : AssetLoader<ArtworkUI.Type, Sprite, Sprite>
 {
-    public ArtworkFrameAssetLoader(AddressableHandler.Label label, Action<Dictionary<Artwork.Type, Sprite>, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
+    public ArtworkFrameAssetLoader(AddressableHandler.Label label, Action<Dictionary<ArtworkUI.Type, Sprite>, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
+    {
+    }
+}
+
+public class RankingIconAssetLoader : AssetLoader<RankingIconName, Sprite, Sprite>
+{
+    public RankingIconAssetLoader(AddressableHandler.Label label, Action<Dictionary<RankingIconName, Sprite>, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
     {
     }
 }

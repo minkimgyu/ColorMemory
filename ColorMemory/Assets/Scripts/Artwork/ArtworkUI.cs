@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Artwork : MonoBehaviour
+public class ArtworkUI : MonoBehaviour
 {
     public enum Type
     {
@@ -69,5 +69,10 @@ public class Artwork : MonoBehaviour
 
         _artFrameImage = _artFrame.gameObject.GetComponent<Image>();
         _artFrameImage.sprite = artFrameSprite;
+    }
+
+    public void DestroyObject()
+    {
+        Destroy(gameObject);
     }
 }

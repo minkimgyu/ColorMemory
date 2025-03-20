@@ -9,9 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 79693385148420943}
-  - component: {fileID: 474230563685910937}
+  - component: {fileID: 4507447527971296539}
   m_Layer: 5
-  m_Name: ArtWork
+  m_Name: ArtWorkUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -35,9 +35,9 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 620, y: -569.6}
-  m_SizeDelta: {x: 1000, y: 1139.2}
+  m_SizeDelta: {x: 800, y: 800}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &474230563685910937
+--- !u!114 &4507447527971296539
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -46,7 +46,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 736802463721120919}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 621231812d8741647818015c5d6c8605, type: 3}
+  m_Script: {fileID: 11500000, guid: 9d46501487372b848bb5c99c5865bde3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _artImg: {fileID: 4671193971674782833}
