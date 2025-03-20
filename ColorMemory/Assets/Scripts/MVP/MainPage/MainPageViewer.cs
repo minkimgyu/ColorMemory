@@ -7,6 +7,8 @@ public class MainPageViewer
 {
     GameObject _content;
     Image _titleImg;
+
+    Button _playBtn;
     Image _playBtnImg;
     ToggleBtn _toggleBtn;
     Dot[,] _dots;
@@ -16,6 +18,7 @@ public class MainPageViewer
     public MainPageViewer(
         GameObject content,
         Image titleImg,
+        Button playBtn,
         Image playBtnImg,
         ToggleBtn toggleBtn,
         Dot[,] dots,
@@ -23,12 +26,23 @@ public class MainPageViewer
     {
         _content = content;
         _titleImg = titleImg;
+        _playBtn = playBtn;
+        _playBtn.onClick.AddListener(() => { homePagePresenter.OnClickPlayBtn(); });
+
+
         _playBtnImg = playBtnImg;
         _dots = dots;
         _mainPagePresenter = homePagePresenter;
 
         _toggleBtn = toggleBtn;
         _toggleBtn.OnClick += _mainPagePresenter.OnModeTypeChanged;
+
+        ActiveContent(false);
+    }
+
+    public void ChangeToggleState(bool isOn)
+    {
+        _toggleBtn.ChangeState(isOn);
     }
 
     public void ActiveContent(bool active)

@@ -30,7 +30,19 @@ public class CollectPageViewer
         _artworkScroll = artworkScroll;
         _collectPagePresenter = collectPagePresenter;
 
-        artworkScroll.OnDragEnd += collectPagePresenter.OnArtworkScrollDragEnd;
+        artworkScroll.OnDragEnd += collectPagePresenter.ChangeArtworkDescription;
+        ActiveContent(false);
+    }
+
+    public void ChangeArtDescription(string title, string description)
+    {
+        _titleTxt.text = title;
+        _descriptionTxt.text = description;
+    }
+
+    public void AddArtwork(ArtworkUI artwork)
+    {
+        _artworkScroll.AddItem(artwork.transform);
     }
 
     public void ActiveContent(bool active)

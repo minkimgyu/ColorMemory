@@ -1,38 +1,81 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class CollectionPageState : BaseState<HomePage.InnerPageState>
 {
-    [SerializeField] GameObject _collectionContent;
-    [SerializeField] Transform _artworkParent;
-    [SerializeField] Button _selectBtn;
-
     ArtworkFactory _artworkFactory;
-    Dictionary<ArtData.Name, ArtData> _artDatas;
+
+    CollectPagePresenter _collectPagePresenter;
 
     public CollectionPageState(
+        Button homeBtn,
         GameObject collectionContent,
-        Transform artworkParent,
+        TMP_Text titleTxt,
+        TMP_Text descriptionTxt,
+        ScrollUI artworkScroll,
         Button selectBtn,
 
-
         ArtworkFactory artworkFactory,
-        Dictionary<ArtData.Name, ArtData> artDatas,
+
+        Dictionary<ArtName, ArtData> artworkDatas,
+        Dictionary<ArtName, CollectiveArtData> artDatas,
         FSM<HomePage.InnerPageState> fsm) : base(fsm)
     {
-        _collectionContent = collectionContent;
-        _artworkParent = artworkParent;
-        _selectBtn = selectBtn;
-
         _artworkFactory = artworkFactory;
-        _artDatas = artDatas;
 
-        foreach (ArtData.Name name in System.Enum.GetValues(typeof(ArtData.Name)))
+        int artDataCount = Enum.GetValues(typeof(ArtName)).Length;
+        artworkScroll.SetUp(artDataCount);
+
+        CollectPageModel collectPageModel = new CollectPageModel(artworkDatas, artDatas);
+        _collectPagePresenter = new CollectPagePresenter(collectPageModel);
+        CollectPageViewer collectPageViewer = new CollectPageViewer(
+            collectionContent,
+            titleTxt,
+            descriptionTxt,
+            selectBtn,
+            artworkScroll,
+            _collectPagePresenter);
+
+        _collectPagePresenter.InjectViewer(collectPageViewer);
+    }
+
+    public override void OnClickRankingBtn()
+    {
+        _fsm.SetState(HomePage.InnerPageState.Ranking);
+    }
+
+    public override void OnClickHomeBtn()
+    {
+        _fsm.SetState(HomePage.InnerPageState.Main);
+    }
+
+    List<ArtworkUI> artworkUIs = new List<ArtworkUI>();
+
+    public override void OnStateEnter()
+    {
+        foreach (ArtName name in System.Enum.GetValues(typeof(ArtName)))
         {
-            Artwork artwork = _artworkFactory.Create(name, Artwork.Type.Bronze);
-            artwork.transform.SetParent(_artworkParent);
+            ArtworkUI artwork = _artworkFactory.Create(name, ArtworkUI.Type.Bronze);
+            artworkUIs.Add(artwork);
+
+            _collectPagePresenter.AddArtwork(artwork);
         }
+
+        _collectPagePresenter.ActiveContent(true); // home ╢щ╬фаж╠Б
+    }
+
+    public override void OnStateExit()
+    {
+        for (int i = 0; i < artworkUIs.Count; i++)
+        {
+            artworkUIs[i].DestroyObject();
+            artworkUIs.RemoveAt(i);
+            i--;
+        }
+        _collectPagePresenter.ActiveContent(false); // home ╢щ╬фаж╠Б
     }
 }

@@ -3,16 +3,16 @@ using UnityEngine;
 
 public class ArtworkCreater
 {
-    Artwork _artworkPrefab;
+    ArtworkUI _artworkPrefab;
 
-    public ArtworkCreater(Artwork artwork)
+    public ArtworkCreater(ArtworkUI artwork)
     {
         _artworkPrefab = artwork;
     }
 
-    public Artwork Create(Sprite artSprite, Sprite frameSprite)
+    public ArtworkUI Create(Sprite artSprite, Sprite frameSprite)
     {
-        Artwork artwork = Object.Instantiate(_artworkPrefab);
+        ArtworkUI artwork = Object.Instantiate(_artworkPrefab);
         artwork.Initialize(artSprite, frameSprite);
         return artwork;
     }
@@ -20,28 +20,28 @@ public class ArtworkCreater
 
 public class ArtworkFactory : BaseFactory
 {
-    Dictionary<ArtData.Name, ArtworkCreater> _artCreater;
+    Dictionary<ArtName, ArtworkCreater> _artCreater;
 
-    Dictionary<ArtData.Name, Sprite> _artSprites;
-    Dictionary<Artwork.Type, Sprite> _artworkFrameSprites;
+    Dictionary<ArtName, Sprite> _artSprites;
+    Dictionary<ArtworkUI.Type, Sprite> _artworkFrameSprites;
 
     public ArtworkFactory(
-        Artwork artworkPrefab,
-        Dictionary<ArtData.Name, Sprite> artSprites,
-        Dictionary<Artwork.Type, Sprite> artworkFrameSprites)
+        ArtworkUI artworkPrefab,
+        Dictionary<ArtName, Sprite> artSprites,
+        Dictionary<ArtworkUI.Type, Sprite> artworkFrameSprites)
     {
         _artSprites = artSprites;
         _artworkFrameSprites = artworkFrameSprites;
-        _artCreater = new Dictionary<ArtData.Name, ArtworkCreater>();
+        _artCreater = new Dictionary<ArtName, ArtworkCreater>();
 
         // Enum의 모든 요소를 foreach로 순회
-        foreach (ArtData.Name name in System.Enum.GetValues(typeof(ArtData.Name)))
+        foreach (ArtName name in System.Enum.GetValues(typeof(ArtName)))
         {
             _artCreater.Add(name, new ArtworkCreater(artworkPrefab));
         }
     }
 
-    public override Artwork Create(ArtData.Name name, Artwork.Type frameType)
+    public override ArtworkUI Create(ArtName name, ArtworkUI.Type frameType)
     {
         return _artCreater[name].Create(_artSprites[name], _artworkFrameSprites[frameType]);
     }

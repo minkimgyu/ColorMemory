@@ -81,18 +81,17 @@ public class MainPageState : BaseState<HomePage.InnerPageState>
         _modeTitleImg = modeTitleImg;
         _toggleBtn = toggleBtn;
         _dotParent = dotParent;
-        _playBtn = playBtn;
 
         _effectFactory = effectFactory;
         _dotFactory = dotFactory;
 
         _mainContent = mainContent;
 
-        _playBtn.onClick.AddListener(PlayGame);
+        _playBtn = playBtn;
         _playBtnImg = _playBtn.gameObject.GetComponent<Image>();
 
         _toggleBtn.Initialize();
-        _toggleBtn.OnClick += ChangeMode;
+        //_toggleBtn.OnClick += ChangeMode;
 
         Dot[,] dots;
         dots = new Dot[_dotSize, _dotSize];
@@ -112,22 +111,33 @@ public class MainPageState : BaseState<HomePage.InnerPageState>
 
         _dotParent.localScale = Vector3.one * _contentSize;
 
-        MainPageModel homePageModel = new MainPageModel(_type, modeTitleIconAssets, _dotColors, _playBtnColors);
-        _homePagePresenter = new MainPagePresenter(homePageModel);
-        MainPageViewer homePageViewer = new MainPageViewer(_mainContent, _modeTitleImg, _playBtnImg, _toggleBtn, dots, _homePagePresenter);
-        _homePagePresenter.InjectViewer(homePageViewer);
+        // _toggleBtn 이거 넣기
+        // _playBtn 이거 넣기
 
-        switch (_type)
+        MainPageModel homePageModel = new MainPageModel(_type, modeTitleIconAssets, _dotColors, _playBtnColors);
+        _homePagePresenter = new MainPagePresenter(homePageModel, OnClickPlayBtn);
+        MainPageViewer homePageViewer = new MainPageViewer(_mainContent, _modeTitleImg, _playBtn, _playBtnImg, _toggleBtn, dots, _homePagePresenter);
+        _homePagePresenter.InjectViewer(homePageViewer);
+    }
+
+    public void OnClickPlayBtn(GameMode.Type type)
+    {
+        switch (type)
         {
-            case GameMode.Type.Collect:
-                _toggleBtn.ChangeState(false);
-                break;
             case GameMode.Type.Challenge:
-                _toggleBtn.ChangeState(true);
+                ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.ChallengeScene);
+                break;
+            case GameMode.Type.Collect:
+                _fsm.SetState(HomePage.InnerPageState.Collection);
                 break;
             default:
                 break;
         }
+    }
+
+    public override void OnClickRankingBtn()
+    {
+        _fsm.SetState(HomePage.InnerPageState.Ranking);
     }
 
     // 이건 HomePagePresenter 통해서 작동시켜주자
@@ -139,32 +149,5 @@ public class MainPageState : BaseState<HomePage.InnerPageState>
     public override void OnStateExit()
     {
         _homePagePresenter.ActiveContent(false); // home 닫아주기
-    }
-
-    void PlayGame()
-    {
-        switch (_type)
-        {
-            case GameMode.Type.Collect:
-                _fsm.SetState(HomePage.InnerPageState.Collection);
-                break;
-            case GameMode.Type.Challenge:
-                ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.ChallengeScene);
-                break;
-            default:
-                break;
-        }
-    }
-
-    void ChangeMode(bool isOn)
-    {
-        if (isOn)
-        {
-            _type = GameMode.Type.Challenge;
-        }
-        else
-        {
-            _type = GameMode.Type.Collect;
-        }
     }
 }

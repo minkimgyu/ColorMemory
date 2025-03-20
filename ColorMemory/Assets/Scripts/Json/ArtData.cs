@@ -2,25 +2,54 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Newtonsoft.Json;
+using TMPro;
 
-
-
-public struct ArtData
+public enum ArtName
 {
-    public enum Name
+    ABlossomingBush,
+    AChristmasRepast,
+    ACoastalLandscapeintheSouthofFrance,
+    ACottageGardenWithChickens,
+    ADoewithFawn,
+    AFavoriteSummerPastime,
+    AForestPathwithHunteratSunset,
+    AFreshBreeze,
+    AGardenIdyll,
+    AGardeninSeptember
+}
+
+[System.Serializable]
+public struct ArtworkDataObject
+{
+    [JsonProperty] Dictionary<ArtName, ArtData> _data;
+
+    public ArtworkDataObject(Dictionary<ArtName, ArtData> data)
     {
-        ABlossomingBush,
-        AChristmasRepast,
-        ACoastalLandscapeintheSouthofFrance,
-        ACottageGardenWithChickens,
-        ADoewithFawn,
-        AFavoriteSummerPastime,
-        AForestPathwithHunteratSunset,
-        AFreshBreeze,
-        AGardenIdyll,
-        AGardeninSeptember
+        _data = data;
     }
 
+    [JsonIgnore] public Dictionary<ArtName, ArtData> Data { get => _data; }
+}
+
+[System.Serializable]
+public struct ArtData
+{
+    [JsonProperty] string _title;
+    [JsonProperty] string _description;
+
+    public ArtData(string title, string description)
+    {
+        _title = title;
+        _description = description;
+    }
+
+    [JsonIgnore] public string Title { get => _title; }
+    [JsonIgnore] public string Description { get => _description; }
+}
+
+[System.Serializable]
+public struct CollectiveArtData
+{
     public struct ArtSize
     {
         [JsonProperty("height")] private int _height;

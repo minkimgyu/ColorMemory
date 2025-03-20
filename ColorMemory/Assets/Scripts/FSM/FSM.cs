@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 public class FSM<State>
 {
@@ -24,6 +25,12 @@ public class FSM<State>
         _currentState = state;
         _states[_currentState].OnStateEnter();
     }
+
+    public void OnClickHomeBtn() => _states[_currentState].OnClickHomeBtn();
+    public void OnClickShopBtn() => _states[_currentState].OnClickShopBtn();
+    public void OnClickRankingBtn() => _states[_currentState].OnClickRankingBtn();
+    public void OnClickSettingBtn() => _states[_currentState].OnClickSettingBtn();
+
 
     public void OnClickDot(Vector2Int index) => _states[_currentState].OnClickDot(index);
     public void OnClickDot(int index) => _states[_currentState].OnClickDot(index);

@@ -7,7 +7,6 @@ public class CollectPagePresenter
     CollectPageViewer _collectPageViewer;
     CollectPageModel _collectPageModel;
 
-    public int ArtworkIndex { get { return _collectPageModel.ArtworkIndex; } }
 
     public CollectPagePresenter(CollectPageModel collectPageModel)
     {
@@ -17,6 +16,7 @@ public class CollectPagePresenter
     public void InjectViewer(CollectPageViewer collectPageViewer)
     {
         _collectPageViewer = collectPageViewer;
+        ChangeArtworkDescription(_collectPageModel.ArtworkIndex);
     }
 
     public void ActiveContent(bool active)
@@ -25,12 +25,15 @@ public class CollectPagePresenter
         _collectPageViewer.ActiveContent(_collectPageModel.ActiveContent);
     }
 
+    public void AddArtwork(ArtworkUI artwork)
+    {
+        _collectPageViewer.AddArtwork(artwork);
+    }
 
-
-    public void OnArtworkScrollDragEnd(int index)
+    public void ChangeArtworkDescription(int index)
     {
         _collectPageModel.ArtworkIndex = index;
-        // 설명 텍스트 바꿔주기
-        // 
+        ArtData artData = _collectPageModel.ArtworkDatas[(ArtName)_collectPageModel.ArtworkIndex];
+        _collectPageViewer.ChangeArtDescription(artData.Title, artData.Description);
     }
 }

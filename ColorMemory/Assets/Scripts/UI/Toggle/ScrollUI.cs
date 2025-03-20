@@ -7,21 +7,39 @@ using UnityEngine.UI;
 public class ScrollUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     [SerializeField] Scrollbar _scrollbar;
-    [SerializeField] protected Transform _content;
+    [SerializeField] Transform _content;
 
-    protected int _menuSize;
+    List<Transform> _items;
 
-    protected float[] _points;
-    protected float _distance, _currentPos, _targetPos;
-    protected bool _isDrag;
+    int _menuSize;
+    float[] _points;
+    float _distance, _currentPos, _targetPos;
+    bool _isDrag;
 
-    protected int _targetIndex;
+    const int _layoutGroupSpacing = 200;
+    HorizontalLayoutGroup _horizontalLayoutGroup;
+    int _targetIndex;
+
+    Timer _scaleChangeTimer;
 
     public System.Action<int> OnDragEnd { get; set; }
 
-    protected void SetUp(int menuCount, int startIndex = 0)
+    public void SetUp(int menuCount, int startIndex = 0)
     {
+        Canvas parentCanvas = GetComponentInParent<Canvas>();
+        RectTransform rectTransform = parentCanvas.GetComponent<RectTransform>();
+
+        _scaleChangeTimer = new Timer();
+
+        int rectHalfSize = (int)(800 * 1/2);
+        int offset = ((int)rectTransform.rect.width / 2) - rectHalfSize;
+
+        _horizontalLayoutGroup = _content.GetComponent<HorizontalLayoutGroup>();
+        _horizontalLayoutGroup.padding.left = offset;
+        _horizontalLayoutGroup.padding.right = offset;
+
         _menuSize = menuCount;
+        _items = new List<Transform>();
         _points = new float[_menuSize];
 
         // 거리에 따라 0~1인 pos대입
@@ -32,6 +50,11 @@ public class ScrollUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
         }
 
         _targetPos = _points[startIndex];
+    }
+
+    public void AddItem(Transform item)
+    {
+        item.SetParent(_content);
     }
 
     protected virtual void Update()
@@ -76,6 +99,9 @@ public class ScrollUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
         }
 
         OnDragEnd?.Invoke(_targetIndex);
+
+        _scaleChangeTimer.Reset();
+        _scaleChangeTimer.Start(1f);
     }
 
     protected float GetPos()

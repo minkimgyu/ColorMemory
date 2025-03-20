@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 abstract public class BaseState<T>
@@ -17,4 +18,9 @@ abstract public class BaseState<T>
 
     public virtual void OnClickDot(Vector2Int index) { }
     public virtual void OnClickDot(int index) { }
+
+    public virtual void OnClickHomeBtn() { }
+    public virtual void OnClickShopBtn() { }
+    public virtual void OnClickRankingBtn() { }
+    public virtual void OnClickSettingBtn() { }
 }

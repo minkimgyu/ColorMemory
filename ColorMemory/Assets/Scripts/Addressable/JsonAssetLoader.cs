@@ -53,9 +53,16 @@ public class MultipleJsonAssetLoader<Key, Value> : MultipleAssetLoader<Key, Valu
     }
 }
 
-public class ArtJsonAssetLoader : MultipleJsonAssetLoader<ArtData.Name, ArtData>
+public class CollectiveArtJsonAssetLoader : MultipleJsonAssetLoader<ArtName, CollectiveArtData>
 {
-    public ArtJsonAssetLoader(AddressableHandler.Label label, Action<Dictionary<ArtData.Name, ArtData>, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
+    public CollectiveArtJsonAssetLoader(AddressableHandler.Label label, Action<Dictionary<ArtName, CollectiveArtData>, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
+    {
+    }
+}
+
+public class ArtworkJsonAssetLoader : SingleJsonAssetLoader<ArtworkDataObject>
+{
+    public ArtworkJsonAssetLoader(AddressableHandler.Label label, Action<ArtworkDataObject, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
     {
     }
 }
