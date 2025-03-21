@@ -7,41 +7,73 @@ using UnityEngine.UI;
 
 public class ChallengeStageUIViewer
 {
+    TMP_Text _bestScoreText;
+    TMP_Text _nowScoreText;
+
     Image _timerSlider;
 
     TMP_Text _leftTimeText;
     TMP_Text _totalTimeText;
 
-
-    //TMP_Text titleText;
     GameObject _hintPanel;
     GameObject _rememberPanel;
-    GameObject _endPanel;
+
+    GameObject _gameOverPanel;
+    TMP_Text _clearStageCount;
+    GameObject _clearStageContent;
+
+    GameObject _gameResultPanel;
+    TMP_Text _resultScore;
+    TMP_Text _goldCount;
+    GameObject _rankingContent;
+    Button _tryAgainBtn;
+    Button _exitBtn;
 
     public ChallengeStageUIViewer(
+        TMP_Text bestScoreText,
+        TMP_Text nowScoreText,
         Image timerSlider,
         TMP_Text leftTimeText,
         TMP_Text totalTimeText,
-
-
         GameObject hintPanel,
         GameObject rememberPanel,
-        GameObject endPanel)
+        GameObject gameOverPanel,
+        TMP_Text clearStageCount,
+        GameObject clearStageContent,
+        GameObject gameResultPanel,
+        TMP_Text resultScore,
+        TMP_Text goldCount,
+        GameObject rankingContent,
+        Button tryAgainBtn,
+        Button exitBtn)
     {
+        _bestScoreText = bestScoreText;
+        _nowScoreText = nowScoreText;
         _timerSlider = timerSlider;
-
         _leftTimeText = leftTimeText;
         _totalTimeText = totalTimeText;
-
         _hintPanel = hintPanel;
         _rememberPanel = rememberPanel;
-        _endPanel = endPanel;
+        _gameOverPanel = gameOverPanel;
+        _clearStageCount = clearStageCount;
+        _clearStageContent = clearStageContent;
+        _gameResultPanel = gameResultPanel;
+        _resultScore = resultScore;
+        _goldCount = goldCount;
+        _rankingContent = rankingContent;
+        _tryAgainBtn = tryAgainBtn;
+        _exitBtn = exitBtn;
     }
 
-    //public void ChangeTitle(string title)
-    //{
-    //    _model.Title = title;
-    //}
+    public void ChangeNowScore(int score)
+    {
+        _nowScoreText.text = score.ToString();
+    }
+
+    public void ChangeBestScore(int score)
+    {
+        _bestScoreText.text = score.ToString();
+    }
 
     public void FillTimeSlider(float ratio)
     {
@@ -81,8 +113,28 @@ public class ChallengeStageUIViewer
         _hintPanel.SetActive(active);
     }
 
-    public void ActivateEndPanel(bool active)
+    public void ActivateGameOverPanel(bool active)
     {
-        _endPanel.SetActive(active);
+        _gameOverPanel.SetActive(active);
+    }
+
+    public void ChangeClearStageCount(int stageCount)
+    {
+        _clearStageCount.text = stageCount.ToString();
+    }
+
+    public void ActivateGameResultPanel(bool active)
+    {
+        _gameResultPanel.SetActive(active);
+    }
+
+    public void ChangeResultScore(int resultScore)
+    {
+        _resultScore.text = resultScore.ToString();
+    }
+
+    public void ChangeGoldCount(int goldCount)
+    {
+        _goldCount.text = goldCount.ToString();
     }
 }

@@ -41,7 +41,7 @@ public class HomePage : MonoBehaviour
 
     [SerializeField] GameObject _rankingContent;
     [SerializeField] Transform _rankingScrollContent;
-
+    [SerializeField] Transform _myRankingContent;
 
     FSM<InnerPageState> _pageFsm;
 
@@ -95,6 +95,7 @@ public class HomePage : MonoBehaviour
                 InnerPageState.Ranking, new RankingPageState(
                 _rankingContent,
                 _rankingScrollContent,
+                _myRankingContent,
                 rankingFactory,
                 _pageFsm)
             },

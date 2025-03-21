@@ -26,6 +26,13 @@ public class FSM<State>
         _states[_currentState].OnStateEnter();
     }
 
+    public void SetState(State state, PaintState.Data data)
+    {
+        _states[_currentState].OnStateExit();
+        _currentState = state;
+        _states[_currentState].OnStateEnter(data);
+    }
+
     public void OnClickHomeBtn() => _states[_currentState].OnClickHomeBtn();
     public void OnClickShopBtn() => _states[_currentState].OnClickShopBtn();
     public void OnClickRankingBtn() => _states[_currentState].OnClickRankingBtn();

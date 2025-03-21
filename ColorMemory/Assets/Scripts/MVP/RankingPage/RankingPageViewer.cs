@@ -6,11 +6,13 @@ public class RankingPageViewer
 {
     GameObject _content;
     Transform _scrollContent;
+    Transform _myRankingContent;
 
-    public RankingPageViewer(GameObject content, Transform scrollContent)
+    public RankingPageViewer(GameObject content, Transform scrollContent, Transform myRankingContent)
     {
         _content = content;
         _scrollContent = scrollContent;
+        _myRankingContent = myRankingContent;
     }
 
     public void ActiveContent(bool active)
@@ -18,8 +20,14 @@ public class RankingPageViewer
         _content.SetActive(active);
     }
 
-    public void AddItem(RankingUI rankingUI)
+    public void AddRankingItemToScroll(RankingUI rankingUI)
     {
         rankingUI.transform.SetParent(_scrollContent);
+    }
+
+    public void AddMyRankingItem(RankingUI rankingUI)
+    {
+        rankingUI.transform.SetParent(_myRankingContent);
+        rankingUI.ResetPosition();
     }
 }

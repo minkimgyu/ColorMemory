@@ -32,6 +32,18 @@ public class ChallengeStageUIPresenter
         ));
     }
 
+    public void ChangeBestScore(int bestScore)
+    {
+        _model.BestScore = bestScore;
+        _viewer.ChangeBestScore(_model.BestScore);
+    }
+
+    public void ChangeNowScore(int nowScore)
+    {
+        _model.NowScore = nowScore;
+        _viewer.ChangeNowScore(_model.NowScore);
+    }
+
     public void ChangeTotalTime(float totalTime)
     {
         _model.TotalTime = totalTime;
@@ -58,9 +70,27 @@ public class ChallengeStageUIPresenter
         _viewer.ActivateHintPanel(_model.ActiveHintPanel);
     }
 
-    public void ActivateEndPanel(bool active)
+    public void ActivateGameOverPanel(bool active)
     {
-        _model.ActiveEndPanel = active;
-        _viewer.ActivateEndPanel(_model.ActiveEndPanel);
+        _model.ActiveGameOverPanel = active;
+        _viewer.ActivateGameOverPanel(_model.ActiveGameOverPanel);
+    }
+
+    public void ChangeClearStageCount(int clearStageCount)
+    {
+        _model.ClearStageCount = clearStageCount;
+        _viewer.ChangeClearStageCount(_model.ClearStageCount);
+    }
+
+    public void ActivateGameResultPanel(bool active)
+    {
+        _model.ActiveGameResultPanel = active;
+        _viewer.ActivateGameResultPanel(_model.ActiveGameResultPanel);
+    }
+
+    public void ChangeResultScore(int resultScore)
+    {
+        _model.ResultScore = resultScore;
+        _viewer.ChangeResultScore(_model.ResultScore);
     }
 }

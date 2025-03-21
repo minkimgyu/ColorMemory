@@ -118,6 +118,8 @@ public class MainPageState : BaseState<HomePage.InnerPageState>
         _homePagePresenter = new MainPagePresenter(homePageModel, OnClickPlayBtn);
         MainPageViewer homePageViewer = new MainPageViewer(_mainContent, _modeTitleImg, _playBtn, _playBtnImg, _toggleBtn, dots, _homePagePresenter);
         _homePagePresenter.InjectViewer(homePageViewer);
+
+        _homePagePresenter.ActiveContent(false);
     }
 
     public void OnClickPlayBtn(GameMode.Type type)

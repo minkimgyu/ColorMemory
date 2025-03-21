@@ -6,6 +6,18 @@ using Random = UnityEngine.Random;
 
 public class PaintState : BaseState<ChallengeStageController.State>
 {
+    public struct Data
+    {
+        float _leftDurationRatio;
+
+        public Data(float leftDurationRatio)
+        {
+            _leftDurationRatio = leftDurationRatio;
+        }
+
+        public float LeftDurationRatio { get => _leftDurationRatio; }
+    }
+
     MapData _mapData;
 
     Dot[,] _dots;
@@ -76,7 +88,7 @@ public class PaintState : BaseState<ChallengeStageController.State>
         if (_timer.CurrentState == Timer.State.Finish)
         {
             _timer.Reset(); // 타이머 리셋
-            _fsm.SetState(ChallengeStageController.State.End);
+            _fsm.SetState(ChallengeStageController.State.GameOver);
             return;
         }
     }
@@ -262,6 +274,6 @@ public class PaintState : BaseState<ChallengeStageController.State>
         if (canClear == false) return;
 
         _timer.Reset(); // 타이머 리셋
-        _fsm.SetState(ChallengeStageController.State.Clear);
+        _fsm.SetState(ChallengeStageController.State.Clear, new PaintState.Data(_timer.Ratio));
     }
 }

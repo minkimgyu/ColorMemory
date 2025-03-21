@@ -4,26 +4,36 @@ using DG.Tweening;
 
 public class ClearState : BaseState<ChallengeStageController.State>
 {
+    
+
     Action DestroyDots;
+    Action<PaintState.Data> OnStageClear;
+
     Func<Tuple<Dot[,], Dot[], MapData>> GetLevelData;
 
     ChallengeStageUIPresenter _challengeStageUIController;
 
     public ClearState(
         FSM<ChallengeStageController.State> fsm,
-        ChallengeStageUIPresenter challengeStageUIController,
+        ChallengeStageUIPresenter challengeStageUIPresenter,
 
         Func<Tuple<Dot[,], Dot[], MapData>> GetLevelData,
-        Action DestroyDots
+        Action DestroyDots,
+        Action<PaintState.Data> OnStageClear
     ) : base(fsm)
     {
-        _challengeStageUIController = challengeStageUIController;
+        _challengeStageUIController = challengeStageUIPresenter;
         this.GetLevelData = GetLevelData;
         this.DestroyDots = DestroyDots;
+        this.OnStageClear = OnStageClear;
     }
 
-    public override void OnStateEnter()
+    PaintState.Data _data;
+
+    public override void OnStateEnter(PaintState.Data data)
     {
+        _data = data;
+
         DOVirtual.DelayedCall(0.5f, () =>
         {
             Tuple<Dot[,], Dot[], MapData> levelData = GetLevelData();
@@ -49,6 +59,7 @@ public class ClearState : BaseState<ChallengeStageController.State>
 
     public override void OnStateExit()
     {
+        OnStageClear?.Invoke(_data);
     }
 
     public override void OnStateUpdate()

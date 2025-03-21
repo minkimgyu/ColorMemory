@@ -25,6 +25,11 @@ public class RankingPagePresenter
 
     public void AddRakingItems(RankingUI rankingUI)
     {
-        _rankingPageViewer.AddItem(rankingUI);
+        _rankingPageViewer.AddRankingItemToScroll(rankingUI);
+    }
+
+    public void AddMyRaking(RankingUI rankingUI)
+    {
+        _rankingPageViewer.AddMyRankingItem(rankingUI);
     }
 }

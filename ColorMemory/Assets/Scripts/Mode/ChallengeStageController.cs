@@ -20,6 +20,9 @@ public class ChallengeStageController : StageController
     [SerializeField] Button _randomHintBtn;
     [SerializeField] Button _revealSameColorHintBtn;
 
+    [SerializeField] TMP_Text _bestScoreText;
+    [SerializeField] TMP_Text _nowScoreText;
+
     [SerializeField] Image _timerSlider;
 
     [SerializeField] TMP_Text _leftTimeText;
@@ -29,13 +32,40 @@ public class ChallengeStageController : StageController
     [SerializeField] GameObject _hintPanel;
     [SerializeField] GameObject _rememberPanel;
 
-    [SerializeField] GameObject _endPanel;
+    [SerializeField] GameObject _gameOverPanel;
+    [SerializeField] TMP_Text _clearStageCount;
+    [SerializeField] GameObject _clearStageContent;
+
+    [SerializeField] GameObject _gameResultPanel;
+    [SerializeField] TMP_Text _resultScore;
+    [SerializeField] TMP_Text _goldCount;
+    [SerializeField] GameObject _rankingContent;
     [SerializeField] Button _tryAgainBtn;
     [SerializeField] Button _exitBtn;
 
     MapData _mapData;
     Dot[,] _dots;
     Dot[] _colorPenDots;
+
+    public struct Data
+    {
+        int _myScore;
+        int _clearStageCount;
+        List<MapData> _clearStageData;
+
+        public Data(int myScore, int clearStageCount, List<MapData> clearStageData)
+        {
+            _myScore = myScore;
+            _clearStageCount = clearStageCount;
+            _clearStageData = clearStageData;
+        }
+
+        public int MyScore { get => _myScore; set => _myScore = value; }
+        public int ClearStageCount { get => _clearStageCount; set => _clearStageCount = value; }
+        public List<MapData> ClearStageData { get => _clearStageData; }
+    }
+
+    ChallengeStageController.Data _stageControllerData;
 
     void DestroyDots()
     {
@@ -60,11 +90,26 @@ public class ChallengeStageController : StageController
         _dots = dots;
         _colorPenDots = colorPenDots;
         _mapData = mapData;
+        _stageControllerData.ClearStageData.Add(mapData);
     }
 
     Tuple<Dot[,], Dot[], MapData> GetLevelData() 
     {
         return new Tuple<Dot[,], Dot[], MapData>(_dots, _colorPenDots, _mapData); 
+    }
+
+    ChallengeStageController.Data GetChallengeModeData()
+    {
+        return _stageControllerData;
+    }
+
+    const int clearPoint = 100;
+    const int pointWeight = 1;
+
+    void OnStageClear(PaintState.Data data)
+    {
+        _stageControllerData.MyScore += (int)(clearPoint * (pointWeight + data.LeftDurationRatio));
+        _stageControllerData.ClearStageCount += 1;
     }
 
     // state는 여기에 추가
@@ -74,7 +119,9 @@ public class ChallengeStageController : StageController
         Memorize,
         Paint,
         Clear,
-        End,
+        //End,
+        GameOver,
+        GameResult,
     }
 
     FSM<State> _fsm;
@@ -90,7 +137,24 @@ public class ChallengeStageController : StageController
         if (addressableHandler == null) return;
 
         ChallengeStageUIModel model = new ChallengeStageUIModel();
-        ChallengeStageUIViewer viewer = new ChallengeStageUIViewer(_timerSlider, _leftTimeText, _totalTimeText, _hintPanel, _rememberPanel, _endPanel);
+        ChallengeStageUIViewer viewer = new ChallengeStageUIViewer(
+            _bestScoreText,
+            _nowScoreText,
+            _timerSlider,
+            _leftTimeText,
+            _totalTimeText,
+            _hintPanel,
+            _rememberPanel,
+            _gameOverPanel,
+            _clearStageCount,
+            _clearStageContent,
+            _gameResultPanel,
+            _goldCount,
+            _resultScore,
+            _rankingContent,
+            _tryAgainBtn,
+            _exitBtn);
+
         ChallengeStageUIPresenter presenter = new ChallengeStageUIPresenter(model, viewer);
 
         _randomHintBtn.onClick.AddListener(() => { _fsm.OnClickRandomFillHint(); });
@@ -122,8 +186,9 @@ public class ChallengeStageController : StageController
 
             { State.Memorize, new MemorizeState(_fsm, _pickColors, 7f, presenter, GetLevelData) },
             { State.Paint, new PaintState(_fsm, _pickColors, 10f, presenter, GetLevelData) },
-            { State.Clear, new ClearState(_fsm, presenter, GetLevelData, DestroyDots) },
-            { State.End, new EndState(_fsm, presenter) }
+            { State.Clear, new ClearState(_fsm, presenter, GetLevelData, DestroyDots, OnStageClear) },
+            { State.GameOver, new GameOverState(_fsm, presenter, _pickColors, GetChallengeModeData) },
+            { State.GameResult, new GameResultState(_fsm, presenter, GetChallengeModeData) }
         };
 
         _fsm.Initialize(states, State.Init);
