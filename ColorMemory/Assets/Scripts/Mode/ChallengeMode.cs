@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class ChallengeMode : GameMode
 {
+    
+
     ChallengeStageController _stageController;
 
     public override void OnGameClear()

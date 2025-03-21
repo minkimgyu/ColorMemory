@@ -4,24 +4,35 @@ using UnityEngine;
 
 public class ChallengeStageUIModel
 {
-    //string _title;
-    //public string Title
-    //{
-    //    get => _title;
-    //    set
-    //    {
-    //        _title = value;
-    //        _titleText.text = _title;
-    //    }
-    //}
-
     public ChallengeStageUIModel()
     {
+        _bestScore = 0;
+        _nowScore = 0;
         _leftTime = 0;
+        _totalTime = 0;
         _timeRatio = 0;
+        _activeRememberPanel = false;
         _activeHintPanel = false;
-        _activeEndPanel = false;
+        _activeGameOverPanel = false;
+        _clearStageCount = 0;
+        _activeGameResultPanel = false;
+        _goldCount = 0;
     }
+
+    int _bestScore;
+    public int BestScore
+    {
+        get => _bestScore;
+        set => _bestScore = value;
+    }
+
+    int _nowScore;
+    public int NowScore
+    {
+        get => _nowScore;
+        set => _nowScore = value;
+    }
+
 
     float _leftTime;
     public float LeftTime
@@ -58,11 +69,40 @@ public class ChallengeStageUIModel
         set => _activeHintPanel = value;
     }
 
-    bool _activeEndPanel;
+    bool _activeGameOverPanel;
 
-    public bool ActiveEndPanel
+    public bool ActiveGameOverPanel
     {
-        get => _activeEndPanel;
-        set => _activeHintPanel = value;
+        get => _activeGameOverPanel;
+        set => _activeGameOverPanel = value;
+    }
+
+    int _clearStageCount;
+    public int ClearStageCount
+    {
+        get => _clearStageCount;
+        set => _clearStageCount = value;
+    }
+
+    bool _activeGameResultPanel;
+
+    public bool ActiveGameResultPanel
+    {
+        get => _activeGameResultPanel;
+        set => _activeGameResultPanel = value;
+    }
+
+    int _resultScore;
+    public int ResultScore
+    {
+        get => _resultScore;
+        set => _resultScore = value;
+    }
+
+    int _goldCount;
+    public int GoldCount
+    {
+        get => _goldCount;
+        set => _goldCount = value;
     }
 }

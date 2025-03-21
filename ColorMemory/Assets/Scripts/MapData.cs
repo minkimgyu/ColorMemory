@@ -3,15 +3,15 @@ using UnityEngine;
 
 public struct MapData
 {
-    List<int> _pickColors;
-    int[,] _dotColors;
+    List<int> _pickColorIndexes;
+    int[,] _dotColorIndexes;
 
-    public MapData(List<int> pickColors, int[,] dotColors)
+    public MapData(List<int> pickColorIndexes, int[,] dotColorIndexes)
     {
-        _pickColors = pickColors;
-        _dotColors = dotColors;
+        _pickColorIndexes = pickColorIndexes;
+        _dotColorIndexes = dotColorIndexes;
     }
 
-    public List<int> PickColors { get => _pickColors; }
-    public int[,] DotColor { get => _dotColors; }
+    public List<int> PickColors { get => _pickColorIndexes; }
+    public int[,] DotColor { get => _dotColorIndexes; }
 }

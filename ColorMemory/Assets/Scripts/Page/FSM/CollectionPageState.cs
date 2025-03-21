@@ -41,6 +41,8 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
             _collectPagePresenter);
 
         _collectPagePresenter.InjectViewer(collectPageViewer);
+
+        _collectPagePresenter.ActiveContent(false);
     }
 
     public override void OnClickRankingBtn()

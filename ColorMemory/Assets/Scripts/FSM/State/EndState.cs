@@ -2,17 +2,17 @@ using UnityEngine;
 
 public class EndState : BaseState<ChallengeStageController.State>
 {
-    ChallengeStageUIPresenter _challengeStageUIController;
+    ChallengeStageUIPresenter _challengeStageUIPresenter;
 
     public EndState(
         FSM<ChallengeStageController.State> fsm,
         ChallengeStageUIPresenter challengeStageUIController) : base(fsm)
     {
-        _challengeStageUIController = challengeStageUIController;
+        _challengeStageUIPresenter = challengeStageUIController;
     }
 
     public override void OnStateEnter()
     {
-        _challengeStageUIController.ActivateEndPanel(true);
+        _challengeStageUIPresenter.ActivateGameOverPanel(true);
     }
 }

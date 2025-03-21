@@ -9,6 +9,7 @@ abstract public class BaseState<T>
         _fsm = fsm; 
     }
 
+    public virtual void OnStateEnter(PaintState.Data data) { }
     public virtual void OnStateEnter() { }
     public virtual void OnStateUpdate() { }
     public virtual void OnStateExit() { }

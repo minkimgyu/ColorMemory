@@ -32,7 +32,7 @@ public class RankingFactory : BaseFactory
         _rankingIconSprites = rankingIconSprites;
     }
 
-    public override RankingUI Create(RankingData data)
+    public override RankingUI Create(PersonalRankingData data)
     {
         return _rankingCreater.Create(
             _rankingIconSprites[data.IconName],
