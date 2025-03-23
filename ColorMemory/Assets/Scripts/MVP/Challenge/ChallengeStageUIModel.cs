@@ -105,4 +105,18 @@ public class ChallengeStageUIModel
         get => _goldCount;
         set => _goldCount = value;
     }
+
+    int _menuCount;
+    public int MenuCount
+    {
+        get => _menuCount;
+        set => _menuCount = value;
+    }
+
+    int _scrollIndex;
+    public int ScrollIndex
+    {
+        get => _scrollIndex;
+        set => _scrollIndex = value;
+    }
 }

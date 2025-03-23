@@ -16,7 +16,7 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
         GameObject collectionContent,
         TMP_Text titleTxt,
         TMP_Text descriptionTxt,
-        ScrollUI artworkScroll,
+        ArtworkScrollUI artworkScroll,
         Button selectBtn,
 
         ArtworkFactory artworkFactory,

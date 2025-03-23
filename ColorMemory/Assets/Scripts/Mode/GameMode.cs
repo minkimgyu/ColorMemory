@@ -8,6 +8,12 @@ abstract public class GameMode : MonoBehaviour
         Collect
     }
 
-    public abstract void OnGameClear();
-    public abstract void OnGameFail();
+    protected virtual void Start()
+    {
+        Initialize();
+    }
+
+    public abstract void Initialize();
+    //public abstract void OnGameClear();
+    //public abstract void OnGameFail();
 }

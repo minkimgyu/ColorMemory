@@ -20,6 +20,19 @@ public class RankingPageViewer
         _content.SetActive(active);
     }
 
+    public void DestoryRankingItems()
+    {
+        for (int i = 0; i < _scrollContent.childCount; i++)
+        {
+            _scrollContent.GetChild(i--).GetComponent<RankingUI>().DestroyObject();
+        }
+
+        for (int i = 0; i < _myRankingContent.childCount; i++)
+        {
+            _myRankingContent.GetChild(i--).GetComponent<RankingUI>().DestroyObject();
+        }
+    }
+
     public void AddRankingItemToScroll(RankingUI rankingUI)
     {
         rankingUI.transform.SetParent(_scrollContent);

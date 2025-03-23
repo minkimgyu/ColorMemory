@@ -3,11 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CorrectPatternUI : MonoBehaviour
+public class ClearPatternUI : MonoBehaviour
 {
     const int maxSize = 5;
     [SerializeField] Transform _content;
     GameObject[,] _dots;
+
+    public void DestroyObject()
+    {
+        Destroy(gameObject);
+    }
 
     public void Initialize(MapData data, Color[] pickColors)
     {
@@ -31,7 +36,7 @@ public class CorrectPatternUI : MonoBehaviour
                 int colorIndex = data.DotColor[i, j];
 
                 _dots[i, j].gameObject.SetActive(true);
-                _dots[i, j].GetComponent<Image>().color = pickColors[data.PickColors[colorIndex]];
+                _dots[i, j].GetComponent<Image>().color = pickColors[colorIndex];
             }
         }
     }

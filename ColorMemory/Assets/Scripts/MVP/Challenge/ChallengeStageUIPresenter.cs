@@ -2,17 +2,27 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
+using System;
 
 public class ChallengeStageUIPresenter
 {
     ChallengeStageUIModel _model;
     ChallengeStageUIViewer _viewer;
 
-    public ChallengeStageUIPresenter(
-        ChallengeStageUIModel model,
-        ChallengeStageUIViewer viewer)
+    Action OnClickNextBtn;
+    Action OnClickRetryBtn;
+    Action OnClickExitBtn;
+
+    public ChallengeStageUIPresenter(ChallengeStageUIModel model, Action OnClickNextBtn, Action OnClickRetryBtn, Action OnClickExitBtn)
     {
         _model = model;
+        this.OnClickNextBtn = OnClickNextBtn;
+        this.OnClickRetryBtn = OnClickRetryBtn;
+        this.OnClickExitBtn = OnClickExitBtn;
+    }
+
+    public void InjectViewer(ChallengeStageUIViewer viewer)
+    {
         _viewer = viewer;
     }
 
@@ -82,6 +92,26 @@ public class ChallengeStageUIPresenter
         _viewer.ChangeClearStageCount(_model.ClearStageCount);
     }
 
+    public void AddClearPattern(ClearPatternUI clearPattern)
+    {
+        _viewer.AddClearPattern(clearPattern);
+    }
+
+    public void OnNextBtnClicked()
+    {
+        OnClickNextBtn?.Invoke();
+    }
+
+    public void OnExitBtnClicked()
+    {
+        OnClickExitBtn?.Invoke();
+    }
+
+    public void OnRetryBtnClicked()
+    {
+        OnClickRetryBtn?.Invoke();
+    }
+
     public void ActivateGameResultPanel(bool active)
     {
         _model.ActiveGameResultPanel = active;
@@ -92,5 +122,23 @@ public class ChallengeStageUIPresenter
     {
         _model.ResultScore = resultScore;
         _viewer.ChangeResultScore(_model.ResultScore);
+    }
+
+    public void ChangeGoldCount(int goldCount)
+    {
+        _model.GoldCount = goldCount;
+        _viewer.ChangeGoldCount(_model.GoldCount);
+    }
+
+    public void AddRanking(RankingUI ranking, bool setToMiddle = false)
+    {
+        _viewer.AddRanking(ranking, setToMiddle);
+    }
+
+    public void SetUpRankingScroll(int menuCount, int index)
+    {
+        _model.MenuCount = menuCount;
+        _model.ScrollIndex = index;
+        _viewer.ChangeRankingScrollValue(_model.MenuCount, _model.ScrollIndex);
     }
 }

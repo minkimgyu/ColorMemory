@@ -25,6 +25,8 @@ public class AddressableHandler : MonoBehaviour
 
         Ranking,
         RankingIcon,
+
+        ClearPattern,
     }
 
     HashSet<BaseLoader> _assetLoaders;
@@ -63,6 +65,9 @@ public class AddressableHandler : MonoBehaviour
     public RankingUI RankingAsset { get; private set; }
     public Dictionary<RankingIconName, Sprite> RankingIconAssets { get; private set; }
 
+    public ClearPatternUI ClearPatternAsset { get; private set; }
+
+
     public void Load(Action OnCompleted)
     {
         _assetLoaders.Add(new DotAssetLoader(Label.Dot, (value, label) => { DotAssets = value; OnSuccess(label); }));
@@ -80,7 +85,8 @@ public class AddressableHandler : MonoBehaviour
         _assetLoaders.Add(new RankingAssetLoader(Label.Ranking, (value, label) => { RankingAsset = value; OnSuccess(label); }));
         _assetLoaders.Add(new RankingIconAssetLoader(Label.RankingIcon, (value, label) => { RankingIconAssets = value; OnSuccess(label); }));
 
-        
+        _assetLoaders.Add(new ClearPatternAssetLoader(Label.ClearPattern, (value, label) => { ClearPatternAsset = value; OnSuccess(label); }));
+
         this.OnCompleted = OnCompleted;
         _totalCount = _assetLoaders.Count;
         foreach (var loader in _assetLoaders)

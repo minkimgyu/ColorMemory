@@ -4,39 +4,30 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class ScrollUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+abstract public class ScrollUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     [SerializeField] Scrollbar _scrollbar;
-    [SerializeField] Transform _content;
+    [SerializeField] protected Transform _content;
 
     List<Transform> _items;
 
-    int _menuSize;
-    float[] _points;
-    float _distance, _currentPos, _targetPos;
+    protected int _menuSize;
+    protected float[] _points;
+    protected float _distance, _currentPos, _targetPos;
     bool _isDrag;
 
     const int _layoutGroupSpacing = 200;
-    HorizontalLayoutGroup _horizontalLayoutGroup;
-    int _targetIndex;
+    [SerializeField] protected int _targetIndex;
 
     Timer _scaleChangeTimer;
 
     public System.Action<int> OnDragEnd { get; set; }
 
-    public void SetUp(int menuCount, int startIndex = 0)
+    protected bool _isHorizontal = true;
+
+    public virtual void SetUp(int menuCount, int startIndex = 0)
     {
-        Canvas parentCanvas = GetComponentInParent<Canvas>();
-        RectTransform rectTransform = parentCanvas.GetComponent<RectTransform>();
-
         _scaleChangeTimer = new Timer();
-
-        int rectHalfSize = (int)(800 * 1/2);
-        int offset = ((int)rectTransform.rect.width / 2) - rectHalfSize;
-
-        _horizontalLayoutGroup = _content.GetComponent<HorizontalLayoutGroup>();
-        _horizontalLayoutGroup.padding.left = offset;
-        _horizontalLayoutGroup.padding.right = offset;
 
         _menuSize = menuCount;
         _items = new List<Transform>();
@@ -55,6 +46,14 @@ public class ScrollUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
     public void AddItem(Transform item)
     {
         item.SetParent(_content);
+    }
+
+    public void DestroyItems()
+    {
+        for (int i = 0; i < _content.childCount; i++)
+        {
+            Destroy(_content.GetChild(i--));
+        }
     }
 
     protected virtual void Update()
@@ -80,21 +79,41 @@ public class ScrollUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
         _isDrag = false;
         _targetPos = GetPos();
 
+        Debug.Log(eventData.delta);
+
         // 절반거리를 넘지 않아도 마우스를 빠르게 이동하면
         if (_currentPos == _targetPos)
         {
-            // ← 으로 가려면 목표가 하나 감소
-            if (eventData.delta.x > 18 && _currentPos - _distance >= 0)
+            if(_isHorizontal)
             {
-                --_targetIndex;
-                _targetPos = _currentPos - _distance;
-            }
+                // ← 으로 가려면 목표가 하나 감소
+                if (eventData.delta.x > 18 && _currentPos - _distance >= 0)
+                {
+                    --_targetIndex;
+                    _targetPos = _currentPos - _distance;
+                }
 
-            // → 으로 가려면 목표가 하나 증가
-            else if (eventData.delta.x < -18 && _currentPos + _distance <= 1.01f)
+                // → 으로 가려면 목표가 하나 증가
+                else if (eventData.delta.x < -18 && _currentPos + _distance <= 1.01f)
+                {
+                    ++_targetIndex;
+                    _targetPos = _currentPos + _distance;
+                }
+            }
+            else
             {
-                ++_targetIndex;
-                _targetPos = _currentPos + _distance;
+                // ↑ 으로 가려면 목표가 하나 감소
+                if (eventData.delta.y > 18 && _currentPos - _distance >= 0)
+                {
+                    ++_targetIndex;
+                    _targetPos = _currentPos + _distance;
+                }
+                // ↓ 으로 가려면 목표가 하나 증가
+                else if (eventData.delta.y < -18 && _currentPos + _distance <= 1.01f)
+                {
+                    --_targetIndex;
+                    _targetPos = _currentPos - _distance;
+                }
             }
         }
 
@@ -109,10 +128,21 @@ public class ScrollUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
         // 절반거리를 기준으로 가까운 위치를 반환
         for (int i = 0; i < _menuSize; i++)
         {
-            if (_scrollbar.value < _points[i] + _distance * 0.5f && _scrollbar.value > _points[i] - _distance * 0.5f)
+            if (_isHorizontal)
             {
-                _targetIndex = i;
-                return _points[i];
+                if (_scrollbar.value < _points[i] + _distance * 0.5f && _scrollbar.value > _points[i] - _distance * 0.5f)
+                {
+                    _targetIndex = i;
+                    return _points[i];
+                }
+            }
+            else
+            {
+                if (_scrollbar.value < _points[i] + _distance * 0.5f && _scrollbar.value > _points[i] - _distance * 0.5f)
+                {
+                    _targetIndex = (_menuSize - 1 - i);
+                    return _points[i];
+                }
             }
         }
 

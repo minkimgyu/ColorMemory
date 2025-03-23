@@ -34,7 +34,7 @@ public class HomePage : MonoBehaviour
     [SerializeField] TMP_Text _titleTxt;
     [SerializeField] TMP_Text _descriptionTxt;
 
-    [SerializeField] ScrollUI _artworkScroll;
+    [SerializeField] ArtworkScrollUI _artworkScroll;
     [SerializeField] Button _selectBtn;
 
     [SerializeField] Button _rankingBtn;
