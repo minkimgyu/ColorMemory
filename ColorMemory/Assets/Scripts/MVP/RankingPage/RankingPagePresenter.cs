@@ -23,6 +23,11 @@ public class RankingPagePresenter
         _rankingPageViewer.ActiveContent(_rankingPageModel.ActiveContent);
     }
 
+    public void DestroyRankingItems()
+    {
+        _rankingPageViewer.DestoryRankingItems();
+    }
+
     public void AddRakingItems(RankingUI rankingUI)
     {
         _rankingPageViewer.AddRankingItemToScroll(rankingUI);

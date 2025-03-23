@@ -20,12 +20,14 @@ public class ChallengeStageUIViewer
 
     GameObject _gameOverPanel;
     TMP_Text _clearStageCount;
-    GameObject _clearStageContent;
+    Transform _clearStageContent;
+    Button _nextBtn;
 
     GameObject _gameResultPanel;
     TMP_Text _resultScore;
     TMP_Text _goldCount;
-    GameObject _rankingContent;
+    RankingScrollUI _rankingScrollRect;
+    Transform _rankingContent;
     Button _tryAgainBtn;
     Button _exitBtn;
 
@@ -37,15 +39,21 @@ public class ChallengeStageUIViewer
         TMP_Text totalTimeText,
         GameObject hintPanel,
         GameObject rememberPanel,
+
         GameObject gameOverPanel,
         TMP_Text clearStageCount,
-        GameObject clearStageContent,
+        Transform clearStageContent,
+        Button nextBtn,
+
         GameObject gameResultPanel,
         TMP_Text resultScore,
         TMP_Text goldCount,
-        GameObject rankingContent,
-        Button tryAgainBtn,
-        Button exitBtn)
+        RankingScrollUI rankingScrollRect,
+        Transform rankingContent,
+        Button tryAgainBtn, // -> Reload Scene
+        Button exitBtn, // -> Go to home Scene
+
+        ChallengeStageUIPresenter presenter)
     {
         _bestScoreText = bestScoreText;
         _nowScoreText = nowScoreText;
@@ -54,15 +62,28 @@ public class ChallengeStageUIViewer
         _totalTimeText = totalTimeText;
         _hintPanel = hintPanel;
         _rememberPanel = rememberPanel;
+
         _gameOverPanel = gameOverPanel;
         _clearStageCount = clearStageCount;
         _clearStageContent = clearStageContent;
+        _nextBtn = nextBtn;
+
         _gameResultPanel = gameResultPanel;
         _resultScore = resultScore;
         _goldCount = goldCount;
+        _rankingScrollRect = rankingScrollRect;
         _rankingContent = rankingContent;
         _tryAgainBtn = tryAgainBtn;
         _exitBtn = exitBtn;
+
+        _nextBtn.onClick.AddListener(() => presenter.OnNextBtnClicked());
+        _tryAgainBtn.onClick.AddListener(() => presenter.OnRetryBtnClicked());
+        _exitBtn.onClick.AddListener(() => presenter.OnExitBtnClicked());
+    }
+
+    public void ChangeRankingScrollValue(int menuCount, int index)
+    {
+        _rankingScrollRect.SetUp(menuCount, index);
     }
 
     public void ChangeNowScore(int score)
@@ -123,6 +144,11 @@ public class ChallengeStageUIViewer
         _clearStageCount.text = stageCount.ToString();
     }
 
+    public void AddClearPattern(ClearPatternUI patternUI)
+    {
+        patternUI.transform.SetParent(_clearStageContent);
+    }
+
     public void ActivateGameResultPanel(bool active)
     {
         _gameResultPanel.SetActive(active);
@@ -136,5 +162,19 @@ public class ChallengeStageUIViewer
     public void ChangeGoldCount(int goldCount)
     {
         _goldCount.text = goldCount.ToString();
+    }
+
+    public void AddRanking(RankingUI ranking, bool setToMiddle = false)
+    {
+        ranking.transform.SetParent(_rankingContent);
+        if(setToMiddle) ranking.transform.SetSiblingIndex(_rankingContent.childCount / 2);
+    }
+
+    public void DestoryRankingItems()
+    {
+        for (int i = 0; i < _rankingContent.childCount; i++)
+        {
+            _rankingContent.GetChild(i--).GetComponent<RankingUI>().DestroyObject();
+        }
     }
 }

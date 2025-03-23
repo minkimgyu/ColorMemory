@@ -34,6 +34,12 @@ public class RankingAssetLoader : SinglePrafabAssetLoader<RankingUI>
     }
 }
 
+public class ClearPatternAssetLoader : SinglePrafabAssetLoader<ClearPatternUI>
+{
+    public ClearPatternAssetLoader(AddressableHandler.Label label, Action<ClearPatternUI, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
+    {
+    }
+}
 
 
 abstract public class MultiplePrafabAssetLoader<Key, Value> : MultipleAssetLoader<Key, Value, GameObject>

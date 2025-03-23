@@ -52,6 +52,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 5eaccb87ba2affc48931a5d3cc9c8084, type: 2}
   - {fileID: 11400000, guid: b060bcc7c8302e34fa3b37a112baf449, type: 2}
   - {fileID: 11400000, guid: 6447756bad477244397f56ce3842659b, type: 2}
+  - {fileID: 11400000, guid: 9a15d09e5e43f8a42b74f397174ec606, type: 2}
   - {fileID: 11400000, guid: e74c98b032ee8ed48a17ef493313ac67, type: 2}
   - {fileID: 11400000, guid: 79544ee39efe8bb41bdc5e88842a743e, type: 2}
   m_BuildSettings:
@@ -105,6 +106,7 @@ MonoBehaviour:
     - ArtworkData
     - Ranking
     - RankingIcon
+    - ClearPattern
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: 03dca29f491627045ab1f15b73890c5c, type: 2}

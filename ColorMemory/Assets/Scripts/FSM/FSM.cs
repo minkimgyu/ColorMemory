@@ -26,7 +26,14 @@ public class FSM<State>
         _states[_currentState].OnStateEnter();
     }
 
-    public void SetState(State state, PaintState.Data data)
+    public void SetState(State state, Challenge.PaintState.Data data)
+    {
+        _states[_currentState].OnStateExit();
+        _currentState = state;
+        _states[_currentState].OnStateEnter(data);
+    }
+
+    public void SetState(State state, Collect.PaintState.Data data)
     {
         _states[_currentState].OnStateExit();
         _currentState = state;

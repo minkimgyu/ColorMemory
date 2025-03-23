@@ -26,9 +26,6 @@ public class RankingPageState : BaseState<HomePage.InnerPageState>
         _rankingPagePresenter.ActiveContent(false);
     }
 
-    List<RankingUI> _rankingUIs = new List<RankingUI>();
-    RankingUI _myRankingUI;
-
     public override void OnClickHomeBtn()
     {
         _fsm.SetState(HomePage.InnerPageState.Main);
@@ -62,31 +59,20 @@ public class RankingPageState : BaseState<HomePage.InnerPageState>
         // 생성시켜주기
         RankingData rankingData = GetRankingData();
 
-        for (int i = 0; i < rankingData.TopRankingDatas.Count; i++)
+        for (int i = 0; i < rankingData.OtherRankingDatas.Count; i++)
         {
-            RankingUI rankingUI = _factory.Create(rankingData.TopRankingDatas[i]);
-            _rankingUIs.Add(rankingUI);
+            RankingUI rankingUI = _factory.Create(rankingData.OtherRankingDatas[i]);
             _rankingPagePresenter.AddRakingItems(rankingUI);
         }
 
         RankingUI myRankingUI = _factory.Create(rankingData.MyRankingData);
-        _myRankingUI = myRankingUI;
         _rankingPagePresenter.AddMyRaking(myRankingUI);
-
         _rankingPagePresenter.ActiveContent(true); // home 닫아주기
     }
 
     public override void OnStateExit()
     {
-        _myRankingUI.DestroyObject();
-
-        // 파괴시켜주기
-        for (int i = 0; i < _rankingUIs.Count; i++)
-        {
-            _rankingUIs[i].DestroyObject();
-            _rankingUIs.RemoveAt(i);
-            i--;
-        }
+        _rankingPagePresenter.DestroyRankingItems();
         _rankingPagePresenter.ActiveContent(false); // home 닫아주기
     }
 }

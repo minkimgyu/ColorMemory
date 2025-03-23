@@ -11,7 +11,7 @@ public class CollectPageViewer
     TMP_Text _descriptionTxt;
     Button _selectBtn;
 
-    ScrollUI _artworkScroll;
+    ArtworkScrollUI _artworkScroll;
     CollectPagePresenter _collectPagePresenter;
 
     public CollectPageViewer(
@@ -20,7 +20,7 @@ public class CollectPageViewer
         TMP_Text descriptionTxt,
         Button selectBtn,
 
-        ScrollUI artworkScroll,
+        ArtworkScrollUI artworkScroll,
         CollectPagePresenter collectPagePresenter)
     {
         _content = content;

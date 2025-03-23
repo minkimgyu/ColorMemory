@@ -16,16 +16,16 @@ public enum RankingIconName
 
 public struct RankingData
 {
-    List<PersonalRankingData> _topRankingDatas;
+    List<PersonalRankingData> _otherRankingDatas;
     PersonalRankingData _myRankingData;
 
-    public RankingData(List<PersonalRankingData> topRankingDatas, PersonalRankingData myRankingData)
+    public RankingData(List<PersonalRankingData> otherRankingDatas, PersonalRankingData myRankingData)
     {
-        _topRankingDatas = topRankingDatas;
+        _otherRankingDatas = otherRankingDatas;
         _myRankingData = myRankingData;
     }
 
-    public List<PersonalRankingData> TopRankingDatas { get => _topRankingDatas; }
+    public List<PersonalRankingData> OtherRankingDatas { get => _otherRankingDatas; }
     public PersonalRankingData MyRankingData { get => _myRankingData; }
 }
 
