@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class CollectionPageState : BaseState<HomePage.InnerPageState>
 {
-    ArtworkFactory _artworkFactory;
+    ArtworkUIFactory _artworkFactory;
 
     CollectPagePresenter _collectPagePresenter;
 
@@ -16,32 +16,39 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
         GameObject collectionContent,
         TMP_Text titleTxt,
         TMP_Text descriptionTxt,
-        ArtworkScrollUI artworkScroll,
+
+        GameObject selectStageContent,
+        Transform stageUIContent,
+
+        ArtworkScrollUI artworkScrollUI,
         Button selectBtn,
 
-        ArtworkFactory artworkFactory,
+        ArtworkUIFactory artworkFactory,
+        StageUIFactory stageUIFactory,
 
         Dictionary<ArtName, ArtData> artworkDatas,
         Dictionary<ArtName, CollectiveArtData> artDatas,
         FSM<HomePage.InnerPageState> fsm) : base(fsm)
     {
-        _artworkFactory = artworkFactory;
-
         int artDataCount = Enum.GetValues(typeof(ArtName)).Length;
-        artworkScroll.SetUp(artDataCount);
+        artworkScrollUI.SetUp(artDataCount);
 
-        CollectPageModel collectPageModel = new CollectPageModel(artworkDatas, artDatas);
-        _collectPagePresenter = new CollectPagePresenter(collectPageModel);
+        List<ArtName> artNames = new List<ArtName>();
+        for (int i = 0; i < artworkDatas.Count; i++) artNames.Add((ArtName)i);
+
+        CollectPageModel collectPageModel = new CollectPageModel(artNames, artworkDatas, artDatas);
+        _collectPagePresenter = new CollectPagePresenter(collectPageModel, artworkFactory, stageUIFactory);
         CollectPageViewer collectPageViewer = new CollectPageViewer(
             collectionContent,
             titleTxt,
             descriptionTxt,
             selectBtn,
-            artworkScroll,
+            artworkScrollUI,
+            selectStageContent,
+            stageUIContent,
             _collectPagePresenter);
 
         _collectPagePresenter.InjectViewer(collectPageViewer);
-
         _collectPagePresenter.ActiveContent(false);
     }
 
@@ -55,29 +62,15 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
         _fsm.SetState(HomePage.InnerPageState.Main);
     }
 
-    List<ArtworkUI> artworkUIs = new List<ArtworkUI>();
-
     public override void OnStateEnter()
     {
-        foreach (ArtName name in System.Enum.GetValues(typeof(ArtName)))
-        {
-            ArtworkUI artwork = _artworkFactory.Create(name, ArtworkUI.Type.Bronze);
-            artworkUIs.Add(artwork);
-
-            _collectPagePresenter.AddArtwork(artwork);
-        }
-
+        _collectPagePresenter.FillArtwork();
         _collectPagePresenter.ActiveContent(true); // home ╢щ╬фаж╠Б
     }
 
     public override void OnStateExit()
     {
-        for (int i = 0; i < artworkUIs.Count; i++)
-        {
-            artworkUIs[i].DestroyObject();
-            artworkUIs.RemoveAt(i);
-            i--;
-        }
+        _collectPagePresenter.RemoveAllArtwork();
         _collectPagePresenter.ActiveContent(false); // home ╢щ╬фаж╠Б
     }
 }

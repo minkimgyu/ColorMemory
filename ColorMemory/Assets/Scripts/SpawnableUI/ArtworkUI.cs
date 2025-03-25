@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ArtworkUI : MonoBehaviour
+public class ArtworkUI : SpawnableUI
 {
     public enum Type
     {
@@ -15,6 +15,7 @@ public class ArtworkUI : MonoBehaviour
     [SerializeField] Image _artImg;
 
     Image _artFrameImage;
+    Button _artFrameBtn;
     [SerializeField] RectTransform _artFrame;
     // 크기는 500 ~ 700 사이로 맞춰야함
 
@@ -61,18 +62,22 @@ public class ArtworkUI : MonoBehaviour
         return new Vector2Int(targetWidth, targetHeight);
     }
 
-    public void Initialize(Sprite artSprite, Sprite artFrameSprite)
+    public override void Initialize(Sprite artSprite, Sprite artFrameSprite)
     {
         Vector2Int size = ResizeSprite(artSprite);
         _artFrame.sizeDelta = size;
         _artImg.sprite = artSprite;
 
         _artFrameImage = _artFrame.gameObject.GetComponent<Image>();
+        _artFrameBtn = _artFrame.gameObject.GetComponent<Button>();
         _artFrameImage.sprite = artFrameSprite;
     }
 
-    public void DestroyObject()
+    System.Action OnClickRequested;
+
+    public override void InjectClickEvent(System.Action OnClick)
     {
-        Destroy(gameObject);
+        OnClickRequested = OnClick;
+        _artFrameBtn.onClick.AddListener(() => { OnClickRequested?.Invoke(); });
     }
 }

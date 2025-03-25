@@ -28,12 +28,12 @@ public class RankingPagePresenter
         _rankingPageViewer.DestoryRankingItems();
     }
 
-    public void AddRakingItems(RankingUI rankingUI)
+    public void AddRakingItems(SpawnableUI rankingUI)
     {
         _rankingPageViewer.AddRankingItemToScroll(rankingUI);
     }
 
-    public void AddMyRaking(RankingUI rankingUI)
+    public void AddMyRaking(SpawnableUI rankingUI)
     {
         _rankingPageViewer.AddMyRankingItem(rankingUI);
     }

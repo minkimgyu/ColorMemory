@@ -11,7 +11,11 @@ public class CollectPageViewer
     TMP_Text _descriptionTxt;
     Button _selectBtn;
 
-    ArtworkScrollUI _artworkScroll;
+    ArtworkScrollUI _artworkScrollUI;
+
+    GameObject _selectStageContent;
+    Transform _stageUIContent;
+
     CollectPagePresenter _collectPagePresenter;
 
     public CollectPageViewer(
@@ -20,17 +24,25 @@ public class CollectPageViewer
         TMP_Text descriptionTxt,
         Button selectBtn,
 
-        ArtworkScrollUI artworkScroll,
+        ArtworkScrollUI artworkScrollUI,
+
+        GameObject selectStageContent,
+        Transform stageUIContent,
+
         CollectPagePresenter collectPagePresenter)
     {
         _content = content;
         _titleTxt = titleTxt;
         _descriptionTxt = descriptionTxt;
         _selectBtn = selectBtn;
-        _artworkScroll = artworkScroll;
+        _artworkScrollUI = artworkScrollUI;
+
+        _selectStageContent = selectStageContent;
+        _stageUIContent = stageUIContent;
+
         _collectPagePresenter = collectPagePresenter;
 
-        artworkScroll.OnDragEnd += collectPagePresenter.ChangeArtworkDescription;
+        artworkScrollUI.OnDragEnd += collectPagePresenter.ChangeArtworkDescription;
         ActiveContent(false);
     }
 
@@ -40,13 +52,36 @@ public class CollectPageViewer
         _descriptionTxt.text = description;
     }
 
-    public void AddArtwork(ArtworkUI artwork)
+    public void AddArtwork(SpawnableUI artwork)
     {
-        _artworkScroll.AddItem(artwork.transform);
+        _artworkScrollUI.AddItem(artwork.transform);
+    }
+
+    public void RemoveAllArtwork()
+    {
+        _artworkScrollUI.DestroyItems();
     }
 
     public void ActiveContent(bool active)
     {
         _content.SetActive(active);
+    }
+
+    public void AddStage(SpawnableUI spawnableUI)
+    {
+        spawnableUI.transform.SetParent(_stageUIContent);
+    }
+
+    public void RemoveAllStage()
+    {
+        for (int i = 0; i < _stageUIContent.childCount; i++)
+        {
+            _stageUIContent.GetChild(i--).GetComponent<StageUI>().DestroyObject();
+        }
+    }
+
+    public void ActiveSelectStageContent(bool active)
+    {
+        _selectStageContent.SetActive(active);
     }
 }

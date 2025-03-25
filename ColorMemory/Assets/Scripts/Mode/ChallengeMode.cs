@@ -155,8 +155,12 @@ namespace Challenge
             AddressableHandler addressableHandler = FindObjectOfType<AddressableHandler>();
             if (addressableHandler == null) return;
 
-            ClearPatternFactory clearPatternFactory = new ClearPatternFactory(addressableHandler.ClearPatternAsset);
-            RankingFactory rankingFactory = new RankingFactory(addressableHandler.RankingAsset, addressableHandler.RankingIconAssets);
+            ClearPatternUIFactory clearPatternUIFactory = new ClearPatternUIFactory(
+                addressableHandler.SpawnableUIAssets[SpawnableUI.Name.ClearPatternUI]);
+
+            RankingUIFactory rankingFactory = new RankingUIFactory(
+                addressableHandler.SpawnableUIAssets[SpawnableUI.Name.RankingUI],
+                addressableHandler.RankingIconAssets);
 
             _modeData = new Data(0);
 
@@ -214,7 +218,7 @@ namespace Challenge
             { State.Memorize, new MemorizeState(_fsm, _pickColors, 3f, presenter, GetLevelData) },
             { State.Paint, new PaintState(_fsm, _pickColors, 5f, presenter, GetLevelData) },
             { State.StageClear, new StageClearState(_fsm, presenter, GetLevelData, DestroyDots, OnStageClear, GetChallengeModeData) },
-            { State.GameOver, new GameOverState(_fsm, presenter, _pickColors, clearPatternFactory, GetChallengeModeData) },
+            { State.GameOver, new GameOverState(_fsm, presenter, _pickColors, clearPatternUIFactory, GetChallengeModeData) },
             { State.Result, new ResultState(_fsm, rankingFactory, presenter, GetChallengeModeData) }
         };
 

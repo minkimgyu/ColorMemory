@@ -3,18 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ClearPatternUI : MonoBehaviour
+public class ClearPatternUI : SpawnableUI
 {
     const int maxSize = 5;
     [SerializeField] Transform _content;
     GameObject[,] _dots;
 
-    public void DestroyObject()
-    {
-        Destroy(gameObject);
-    }
-
-    public void Initialize(MapData data, Color[] pickColors)
+    public override void Initialize(MapData data, Color[] pickColors)
     {
         _dots = new GameObject[maxSize, maxSize];
         for (int i = 0; i < maxSize * maxSize; i++)

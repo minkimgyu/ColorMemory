@@ -34,17 +34,20 @@ public struct ArtworkDataObject
 [System.Serializable]
 public struct ArtData
 {
+    [JsonProperty] ArtworkUI.Type _type;
     [JsonProperty] string _title;
     [JsonProperty] string _description;
 
-    public ArtData(string title, string description)
+    public ArtData(ArtworkUI.Type type, string title, string description)
     {
+        _type = type;
         _title = title;
         _description = description;
     }
 
     [JsonIgnore] public string Title { get => _title; }
     [JsonIgnore] public string Description { get => _description; }
+    public ArtworkUI.Type Type { get => _type; }
 }
 
 [System.Serializable]
@@ -77,6 +80,8 @@ public struct CollectiveArtData
         [JsonIgnore] public int R { get => _r; }
         [JsonIgnore] public int G { get => _g; }
         [JsonIgnore] public int B { get => _b; }
+
+        public UnityEngine.Color GetColor() => new UnityEngine.Color(_r/255f, _g/255f, _b/255f);
     }
 
     public struct Block

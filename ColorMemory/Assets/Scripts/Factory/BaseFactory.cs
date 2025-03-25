@@ -1,10 +1,16 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 abstract public class BaseFactory
 {
     public virtual Effect Create(Effect.Name name) { return null; }
     public virtual Dot Create(Dot.Name name) { return null; }
-    public virtual ArtworkUI Create(ArtName name, ArtworkUI.Type frameType) { return null; }
-    public virtual RankingUI Create(PersonalRankingData data) { return null; }
-    public virtual ClearPatternUI Create(MapData data, Color[] pickColors) { return null; }
+    public virtual SpawnableUI Create(ArtName name, ArtworkUI.Type frameType) { return null; }
+    public virtual SpawnableUI Create(PersonalRankingData data) { return null; }
+    public virtual SpawnableUI Create(MapData data, Color[] pickColors) { return null; }
+
+    public virtual SpawnableUI Create(
+        List<List<CollectiveArtData.Block>> blocks,
+        List<List<CollectiveArtData.Color>> usedColors)
+    { return default; }
 }

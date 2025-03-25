@@ -50,7 +50,7 @@ public struct PersonalRankingData
     public int Rank { get => _rank; }
 }
 
-public class RankingUI : MonoBehaviour
+public class RankingUI : SpawnableUI
 {
     [SerializeField] Image _profileImg;
 
@@ -60,17 +60,12 @@ public class RankingUI : MonoBehaviour
 
     RectTransform _rectTransform;
 
-    public void DestroyObject()
-    {
-        Destroy(gameObject);
-    }
-
-    public void ResetPosition()
+    public override void ResetPosition()
     {
         _rectTransform.anchoredPosition = Vector3.zero;
     }
 
-    public void Initialize(Sprite profileSprite, string title, int score, int rank)
+    public override void Initialize(Sprite profileSprite, string title, int score, int rank)
     {
         _rectTransform = GetComponent<RectTransform>();
 

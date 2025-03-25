@@ -20,27 +20,12 @@ public class DotAssetLoader : MultiplePrafabAssetLoader<Dot.Name, Dot>
     }
 }
 
-public class ArtworkAssetLoader : SinglePrafabAssetLoader<ArtworkUI>
+public class SpawnableUIAssetLoader : MultiplePrafabAssetLoader<SpawnableUI.Name, SpawnableUI>
 {
-    public ArtworkAssetLoader(AddressableHandler.Label label, Action<ArtworkUI, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
+    public SpawnableUIAssetLoader(AddressableHandler.Label label, Action<Dictionary<SpawnableUI.Name, SpawnableUI>, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
     {
     }
 }
-
-public class RankingAssetLoader : SinglePrafabAssetLoader<RankingUI>
-{
-    public RankingAssetLoader(AddressableHandler.Label label, Action<RankingUI, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
-    {
-    }
-}
-
-public class ClearPatternAssetLoader : SinglePrafabAssetLoader<ClearPatternUI>
-{
-    public ClearPatternAssetLoader(AddressableHandler.Label label, Action<ClearPatternUI, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
-    {
-    }
-}
-
 
 abstract public class MultiplePrafabAssetLoader<Key, Value> : MultipleAssetLoader<Key, Value, GameObject>
 {

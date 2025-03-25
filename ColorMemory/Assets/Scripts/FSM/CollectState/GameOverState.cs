@@ -9,24 +9,20 @@ namespace Collect
         ChallengeStageUIPresenter _challengeStageUIPresenter;
         Color[] _pickColors;
         System.Func<CollectMode.Data> GetStageControllerData;
-        ClearPatternFactory _clearPatternFactory;
+        ClearPatternUIFactory _clearPatternUIFactory;
 
         public GameOverState(
             FSM<CollectMode.State> fsm,
             ChallengeStageUIPresenter challengeStageUIPresenter,
             Color[] pickColors,
-            ClearPatternFactory clearPatternFactory,
+            ClearPatternUIFactory clearPatternUIFactory,
             System.Func<CollectMode.Data> GetStageControllerData) : base(fsm)
         {
             _challengeStageUIPresenter = challengeStageUIPresenter;
             _pickColors = pickColors;
-            _clearPatternFactory = clearPatternFactory;
+            _clearPatternUIFactory = clearPatternUIFactory;
             this.GetStageControllerData = GetStageControllerData;
-
-            _clearPatternUIs = new List<ClearPatternUI>();
         }
-
-        List<ClearPatternUI> _clearPatternUIs;
 
         public override void OnStateEnter()
         {
@@ -36,9 +32,7 @@ namespace Collect
 
             for (int i = 0; i < modeData.ClearStageCount; i++)
             {
-                ClearPatternUI patternUI = _clearPatternFactory.Create(modeData.StageData[i], _pickColors);
-                _clearPatternUIs.Add(patternUI);
-
+                SpawnableUI patternUI = _clearPatternUIFactory.Create(modeData.StageData[i], _pickColors);
                 _challengeStageUIPresenter.AddClearPattern(patternUI);
             }
 
@@ -47,10 +41,7 @@ namespace Collect
 
         public override void OnStateExit()
         {
-            for (int i = 0; i < _clearPatternUIs.Count; i++)
-            {
-                _clearPatternUIs[i].DestroyObject();
-            }
+            _challengeStageUIPresenter.RemoveClearPattern();
             _challengeStageUIPresenter.ActivateGameOverPanel(false);
         }
     }
