@@ -92,9 +92,14 @@ public class ChallengeStageUIPresenter
         _viewer.ChangeClearStageCount(_model.ClearStageCount);
     }
 
-    public void AddClearPattern(ClearPatternUI clearPattern)
+    public void AddClearPattern(SpawnableUI clearPattern)
     {
         _viewer.AddClearPattern(clearPattern);
+    }
+
+    public void RemoveClearPattern()
+    {
+        _viewer.RemoveClearPattern();
     }
 
     public void OnNextBtnClicked()
@@ -130,9 +135,14 @@ public class ChallengeStageUIPresenter
         _viewer.ChangeGoldCount(_model.GoldCount);
     }
 
-    public void AddRanking(RankingUI ranking, bool setToMiddle = false)
+    public void AddRanking(SpawnableUI ranking, bool setToMiddle = false)
     {
         _viewer.AddRanking(ranking, setToMiddle);
+    }
+
+    public void RemoveAllRanking()
+    {
+        _viewer.RemoveAllRanking();
     }
 
     public void SetUpRankingScroll(int menuCount, int index)

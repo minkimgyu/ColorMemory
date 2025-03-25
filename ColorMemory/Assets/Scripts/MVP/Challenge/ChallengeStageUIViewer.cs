@@ -144,9 +144,17 @@ public class ChallengeStageUIViewer
         _clearStageCount.text = stageCount.ToString();
     }
 
-    public void AddClearPattern(ClearPatternUI patternUI)
+    public void AddClearPattern(SpawnableUI patternUI)
     {
         patternUI.transform.SetParent(_clearStageContent);
+    }
+
+    public void RemoveClearPattern()
+    {
+        for (int i = 0; i < _clearStageContent.childCount; i++)
+        {
+            _clearStageContent.GetChild(i--).GetComponent<SpawnableUI>().DestroyObject();
+        }
     }
 
     public void ActivateGameResultPanel(bool active)
@@ -164,10 +172,18 @@ public class ChallengeStageUIViewer
         _goldCount.text = goldCount.ToString();
     }
 
-    public void AddRanking(RankingUI ranking, bool setToMiddle = false)
+    public void AddRanking(SpawnableUI ranking, bool setToMiddle = false)
     {
         ranking.transform.SetParent(_rankingContent);
         if(setToMiddle) ranking.transform.SetSiblingIndex(_rankingContent.childCount / 2);
+    }
+
+    public void RemoveAllRanking()
+    {
+        for (int i = 0; i < _rankingContent.childCount; i++)
+        {
+            _rankingContent.GetChild(i--).GetComponent<RankingUI>().DestroyObject();
+        }
     }
 
     public void DestoryRankingItems()

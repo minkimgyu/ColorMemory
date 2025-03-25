@@ -19,14 +19,12 @@ public class AddressableHandler : MonoBehaviour
         ArtData,
         ArtSprite,
 
-        Artwork,
         ArtworkFrame,
         ArtworkData,
 
-        Ranking,
         RankingIcon,
 
-        ClearPattern,
+        SpawnableUI,
     }
 
     HashSet<BaseLoader> _assetLoaders;
@@ -52,7 +50,6 @@ public class AddressableHandler : MonoBehaviour
 
     public Dictionary<ArtName, CollectiveArtData> CollectiveArtJsonAsserts { get; private set; }
 
-    public ArtworkUI ArtworkAsset { get; private set; }
     public ArtworkDataObject ArtworkJsonAsset { get; private set; }
     public Dictionary<ArtName, Sprite> ArtSpriteAsserts { get; private set; }
     public Dictionary<ArtworkUI.Type, Sprite> ArtworkFrameAsserts { get; private set; }
@@ -62,10 +59,9 @@ public class AddressableHandler : MonoBehaviour
     public Dictionary<Effect.Name, Effect> EffectAssets { get; private set; }
     public Dictionary<GameMode.Type, Sprite> ModeTitleIconAssets { get; private set; }
 
-    public RankingUI RankingAsset { get; private set; }
     public Dictionary<RankingIconName, Sprite> RankingIconAssets { get; private set; }
 
-    public ClearPatternUI ClearPatternAsset { get; private set; }
+    public Dictionary<SpawnableUI.Name, SpawnableUI> SpawnableUIAssets { get; private set; }
 
 
     public void Load(Action OnCompleted)
@@ -77,15 +73,13 @@ public class AddressableHandler : MonoBehaviour
         _assetLoaders.Add(new CollectiveArtJsonAssetLoader(Label.ArtData, (value, label) => { CollectiveArtJsonAsserts = value; OnSuccess(label); }));
         _assetLoaders.Add(new ArtSpriteAssetLoader(Label.ArtSprite, (value, label) => { ArtSpriteAsserts = value; OnSuccess(label); }));
 
-        _assetLoaders.Add(new ArtworkAssetLoader(Label.Artwork, (value, label) => { ArtworkAsset = value; OnSuccess(label); }));
         _assetLoaders.Add(new ArtworkFrameAssetLoader(Label.ArtworkFrame, (value, label) => { ArtworkFrameAsserts = value; OnSuccess(label); }));
         _assetLoaders.Add(new ArtworkJsonAssetLoader(Label.ArtworkData, (value, label) => { ArtworkJsonAsset = value; OnSuccess(label); }));
 
 
-        _assetLoaders.Add(new RankingAssetLoader(Label.Ranking, (value, label) => { RankingAsset = value; OnSuccess(label); }));
         _assetLoaders.Add(new RankingIconAssetLoader(Label.RankingIcon, (value, label) => { RankingIconAssets = value; OnSuccess(label); }));
 
-        _assetLoaders.Add(new ClearPatternAssetLoader(Label.ClearPattern, (value, label) => { ClearPatternAsset = value; OnSuccess(label); }));
+        _assetLoaders.Add(new SpawnableUIAssetLoader(Label.SpawnableUI, (value, label) => { SpawnableUIAssets = value; OnSuccess(label); }));
 
         this.OnCompleted = OnCompleted;
         _totalCount = _assetLoaders.Count;

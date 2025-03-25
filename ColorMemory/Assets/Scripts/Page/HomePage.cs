@@ -31,10 +31,14 @@ public class HomePage : MonoBehaviour
     [SerializeField] Button _homeBtn;
 
     [SerializeField] GameObject _collectionContent;
+
+    [SerializeField] GameObject _selectStageContent;
+    [SerializeField] Transform _stageUIContent;
+
     [SerializeField] TMP_Text _titleTxt;
     [SerializeField] TMP_Text _descriptionTxt;
 
-    [SerializeField] ArtworkScrollUI _artworkScroll;
+    [SerializeField] ArtworkScrollUI _artworkScrollUI;
     [SerializeField] Button _selectBtn;
 
     [SerializeField] Button _rankingBtn;
@@ -52,12 +56,21 @@ public class HomePage : MonoBehaviour
 
         _effectFactory = new EffectFactory(addressableHandler.EffectAssets);
         _dotFactory = new DotFactory(addressableHandler.DotAssets);
-        ArtworkFactory artworkFactory = new ArtworkFactory(
-            addressableHandler.ArtworkAsset,
-            addressableHandler.ArtSpriteAsserts,
-            addressableHandler.ArtworkFrameAsserts);
 
-        RankingFactory rankingFactory = new RankingFactory(addressableHandler.RankingAsset, addressableHandler.RankingIconAssets);
+        StageUIFactory stageUIFactory = new StageUIFactory(
+           addressableHandler.SpawnableUIAssets[SpawnableUI.Name.StageSelectBtnUI]
+       );
+
+        ArtworkUIFactory artWorkUIFactory = new ArtworkUIFactory(
+            addressableHandler.SpawnableUIAssets[SpawnableUI.Name.ArtworkUI],
+            addressableHandler.ArtSpriteAsserts,
+            addressableHandler.ArtworkFrameAsserts
+        );
+
+        RankingUIFactory rankingUIFactory = new RankingUIFactory(
+            addressableHandler.SpawnableUIAssets[SpawnableUI.Name.RankingUI],
+            addressableHandler.RankingIconAssets
+        );
 
         _homeBtn.onClick.AddListener(() => { _pageFsm.OnClickHomeBtn(); });
         _rankingBtn.onClick.AddListener(() => { _pageFsm.OnClickRankingBtn(); });
@@ -84,9 +97,12 @@ public class HomePage : MonoBehaviour
                 _collectionContent,
                 _titleTxt,
                 _descriptionTxt,
-                _artworkScroll,
+                _selectStageContent,
+                _stageUIContent,
+                _artworkScrollUI,
                 _selectBtn,
-                artworkFactory,
+                artWorkUIFactory,
+                stageUIFactory,
                 addressableHandler.ArtworkJsonAsset.Data,
                 addressableHandler.CollectiveArtJsonAsserts,
                 _pageFsm)
@@ -96,7 +112,7 @@ public class HomePage : MonoBehaviour
                 _rankingContent,
                 _rankingScrollContent,
                 _myRankingContent,
-                rankingFactory,
+                rankingUIFactory,
                 _pageFsm)
             },
         }, InnerPageState.Main);

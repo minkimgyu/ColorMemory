@@ -18,16 +18,16 @@ public class JsonTest : MonoBehaviour
     {
         Dictionary<ArtName, ArtData> artDatas = new Dictionary<ArtName, ArtData>
         {
-            { ArtName.ABlossomingBush , new ArtData("A Blossoming Bush", "A landscape painting by Hugo Darnaut depicting a vibrant bush in full bloom.") },
-            { ArtName.AChristmasRepast , new ArtData("A Christmas Repast", "A warm depiction of a family gathered for a festive meal, painted by Stanhope Alexander Forbes in 1913.") },
-            { ArtName.ACoastalLandscapeintheSouthofFrance , new ArtData("A Coastal Landscape in the South of France", "A serene painting by Eugène Robert capturing the natural beauty of the French coastline.") },
-            { ArtName.ACottageGardenWithChickens , new ArtData("A Cottage Garden With Chickens", "Peder Mørk Mønsted's 1919 masterpiece showcasing a peaceful rural garden with free-roaming chickens.") },
-            { ArtName.ADoewithFawn , new ArtData("A Doe with Fawn", "Carl Schweninger Jr. paints a tender moment between a doe and her fawn in a lush natural setting.") },
-            { ArtName.AFavoriteSummerPastime , new ArtData("A Favorite Summer Pastime", "An 1873 artwork by Henry Joseph Thouron illustrating leisurely summer activities of the time.") },
-            { ArtName.AForestPathwithHunteratSunset , new ArtData("A Forest Path with Hunter at Sunset", "Désiré Thomassin captures a hunter walking along a forest path bathed in golden sunset light.") },
-            { ArtName.AFreshBreeze , new ArtData("A Fresh Breeze", "George Wesley Bellows' 1913 painting vividly portraying the movement of wind over the sea.") },
-            { ArtName.AGardenIdyll , new ArtData("A Garden Idyll", "Hugo Charlemont’s enchanting scene of a beautiful and tranquil garden filled with colorful flowers.") },
-            { ArtName.AGardeninSeptember , new ArtData("A Garden in September", "Mary Hiester Reid’s late 19th-century artwork depicting the seasonal transition in a garden setting.") },
+            { ArtName.ABlossomingBush , new ArtData(ArtworkUI.Type.Bronze, "A Blossoming Bush", "A landscape painting by Hugo Darnaut depicting a vibrant bush in full bloom.") },
+            { ArtName.AChristmasRepast , new ArtData(ArtworkUI.Type.Bronze, "A Christmas Repast", "A warm depiction of a family gathered for a festive meal, painted by Stanhope Alexander Forbes in 1913.") },
+            { ArtName.ACoastalLandscapeintheSouthofFrance , new ArtData(ArtworkUI.Type.Bronze, "A Coastal Landscape in the South of France", "A serene painting by Eugène Robert capturing the natural beauty of the French coastline.") },
+            { ArtName.ACottageGardenWithChickens , new ArtData(ArtworkUI.Type.Bronze, "A Cottage Garden With Chickens", "Peder Mørk Mønsted's 1919 masterpiece showcasing a peaceful rural garden with free-roaming chickens.") },
+            { ArtName.ADoewithFawn , new ArtData(ArtworkUI.Type.Bronze, "A Doe with Fawn", "Carl Schweninger Jr. paints a tender moment between a doe and her fawn in a lush natural setting.") },
+            { ArtName.AFavoriteSummerPastime , new ArtData(ArtworkUI.Type.Bronze, "A Favorite Summer Pastime", "An 1873 artwork by Henry Joseph Thouron illustrating leisurely summer activities of the time.") },
+            { ArtName.AForestPathwithHunteratSunset , new ArtData(ArtworkUI.Type.Bronze, "A Forest Path with Hunter at Sunset", "Désiré Thomassin captures a hunter walking along a forest path bathed in golden sunset light.") },
+            { ArtName.AFreshBreeze , new ArtData(ArtworkUI.Type.Bronze, "A Fresh Breeze", "George Wesley Bellows' 1913 painting vividly portraying the movement of wind over the sea.") },
+            { ArtName.AGardenIdyll , new ArtData(ArtworkUI.Type.Bronze, "A Garden Idyll", "Hugo Charlemont’s enchanting scene of a beautiful and tranquil garden filled with colorful flowers.") },
+            { ArtName.AGardeninSeptember , new ArtData(ArtworkUI.Type.Bronze, "A Garden in September", "Mary Hiester Reid’s late 19th-century artwork depicting the seasonal transition in a garden setting.") },
         };
 
         return new ArtworkDataObject(artDatas);

@@ -7,16 +7,16 @@ using UnityEngine;
 public class RankingPageState : BaseState<HomePage.InnerPageState>
 {
     RankingPagePresenter _rankingPagePresenter;
-    RankingFactory _factory;
+    RankingUIFactory _rankingUIFactory;
 
     public RankingPageState(
         GameObject rankingContent,
         Transform scrollContent,
         Transform myRankingContent,
-        RankingFactory factory,
+        RankingUIFactory rankingUIFactory,
         FSM<HomePage.InnerPageState> fsm) : base(fsm)
     {
-        _factory = factory;
+        _rankingUIFactory = rankingUIFactory;
 
         RankingPageModel rankingPageModel = new RankingPageModel();
         _rankingPagePresenter = new RankingPagePresenter(rankingPageModel);
@@ -61,11 +61,11 @@ public class RankingPageState : BaseState<HomePage.InnerPageState>
 
         for (int i = 0; i < rankingData.OtherRankingDatas.Count; i++)
         {
-            RankingUI rankingUI = _factory.Create(rankingData.OtherRankingDatas[i]);
+            SpawnableUI rankingUI = _rankingUIFactory.Create(rankingData.OtherRankingDatas[i]);
             _rankingPagePresenter.AddRakingItems(rankingUI);
         }
 
-        RankingUI myRankingUI = _factory.Create(rankingData.MyRankingData);
+        SpawnableUI myRankingUI = _rankingUIFactory.Create(rankingData.MyRankingData);
         _rankingPagePresenter.AddMyRaking(myRankingUI);
         _rankingPagePresenter.ActiveContent(true); // home ╢щ╬фаж╠Б
     }

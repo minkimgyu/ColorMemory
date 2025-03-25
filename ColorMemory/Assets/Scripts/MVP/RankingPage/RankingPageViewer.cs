@@ -33,12 +33,12 @@ public class RankingPageViewer
         }
     }
 
-    public void AddRankingItemToScroll(RankingUI rankingUI)
+    public void AddRankingItemToScroll(SpawnableUI rankingUI)
     {
         rankingUI.transform.SetParent(_scrollContent);
     }
 
-    public void AddMyRankingItem(RankingUI rankingUI)
+    public void AddMyRankingItem(SpawnableUI rankingUI)
     {
         rankingUI.transform.SetParent(_myRankingContent);
         rankingUI.ResetPosition();

@@ -8,16 +8,16 @@ namespace Challenge
     public class ResultState : BaseState<ChallengeMode.State>
     {
         ChallengeStageUIPresenter _challengeStageUIPresenter;
-        RankingFactory _factory;
+        RankingUIFactory _rankingUIFactory;
         System.Func<ChallengeMode.Data> GetChallengeModeData;
 
         public ResultState(
             FSM<ChallengeMode.State> fsm,
-            RankingFactory factory,
+            RankingUIFactory rankingUIFactory,
             ChallengeStageUIPresenter challengeStageUIPresenter,
             System.Func<ChallengeMode.Data> GetChallengeModeData) : base(fsm)
         {
-            _factory = factory;
+            _rankingUIFactory = rankingUIFactory;
             _challengeStageUIPresenter = challengeStageUIPresenter;
             this.GetChallengeModeData = GetChallengeModeData;
         }
@@ -58,11 +58,11 @@ namespace Challenge
 
             for (int i = 0; i < rankingData.OtherRankingDatas.Count; i++)
             {
-                RankingUI rankingUI = _factory.Create(rankingData.OtherRankingDatas[i]);
+                SpawnableUI rankingUI = _rankingUIFactory.Create(rankingData.OtherRankingDatas[i]);
                 _challengeStageUIPresenter.AddRanking(rankingUI);
             }
 
-            RankingUI myRankingUI = _factory.Create(rankingData.MyRankingData);
+            SpawnableUI myRankingUI = _rankingUIFactory.Create(rankingData.MyRankingData);
             _challengeStageUIPresenter.AddRanking(myRankingUI, true);
 
             int totalCount = rankingData.OtherRankingDatas.Count + 1;
@@ -72,6 +72,7 @@ namespace Challenge
 
         public override void OnStateExit()
         {
+            _challengeStageUIPresenter.RemoveAllRanking();
             _challengeStageUIPresenter.ActivateGameResultPanel(false);
         }
     }
