@@ -55,6 +55,13 @@ public class ChallengeStageUIModel
         set => _timeRatio = value;
     }
 
+    int _stageCount;
+    public int StageCount
+    {
+        get => _stageCount;
+        set => _stageCount = value;
+    }
+
     bool _activeRememberPanel;
     public bool ActiveRememberPanel
     {

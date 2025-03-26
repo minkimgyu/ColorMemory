@@ -8,20 +8,21 @@ namespace Challenge
     {
         ChallengeStageUIPresenter _challengeStageUIPresenter;
         Color[] _pickColors;
-        System.Func<ChallengeMode.Data> GetStageControllerData;
         ClearPatternUIFactory _clearPatternUIFactory;
+
+        ChallengeMode.ModeData _modeData;
 
         public GameOverState(
             FSM<ChallengeMode.State> fsm,
             ChallengeStageUIPresenter challengeStageUIPresenter,
             Color[] pickColors,
             ClearPatternUIFactory clearPatternUIFactory,
-            System.Func<ChallengeMode.Data> GetStageControllerData) : base(fsm)
+            ChallengeMode.ModeData modeData) : base(fsm)
         {
             _challengeStageUIPresenter = challengeStageUIPresenter;
             _pickColors = pickColors;
             _clearPatternUIFactory = clearPatternUIFactory;
-            this.GetStageControllerData = GetStageControllerData;
+            _modeData = modeData;
         }
 
 
@@ -29,15 +30,13 @@ namespace Challenge
         {
             _challengeStageUIPresenter.ActivateGameOverPanel(true);
 
-            ChallengeMode.Data modeData = GetStageControllerData();
-
-            for (int i = 0; i < modeData.ClearStageCount; i++)
+            for (int i = 0; i < _modeData.ClearStageCount; i++)
             {
-                SpawnableUI patternUI = _clearPatternUIFactory.Create(modeData.StageData[i], _pickColors);
+                SpawnableUI patternUI = _clearPatternUIFactory.Create(_modeData.StageData[i], _pickColors);
                 _challengeStageUIPresenter.AddClearPattern(patternUI);
             }
 
-            _challengeStageUIPresenter.ChangeClearStageCount(modeData.ClearStageCount);
+            _challengeStageUIPresenter.ChangeClearStageCount(_modeData.ClearStageCount);
         }
 
         public override void OnStateExit()

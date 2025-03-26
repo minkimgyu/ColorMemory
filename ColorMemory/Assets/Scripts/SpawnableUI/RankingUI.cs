@@ -32,7 +32,7 @@ public struct RankingData
 public struct PersonalRankingData
 {
     RankingIconName _iconName;
-    string _name;
+    string _name; // key
     int _score;
     int _rank;
 

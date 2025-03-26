@@ -31,14 +31,22 @@ public struct ArtworkDataObject
     [JsonIgnore] public Dictionary<ArtName, ArtData> Data { get => _data; }
 }
 
+public enum Rank
+{
+    NONE,
+    COPPER,
+    SILVER,
+    GOLD
+}
+
 [System.Serializable]
 public struct ArtData
 {
-    [JsonProperty] ArtworkUI.Type _type;
+    [JsonProperty] Rank _type;
     [JsonProperty] string _title;
     [JsonProperty] string _description;
 
-    public ArtData(ArtworkUI.Type type, string title, string description)
+    public ArtData(Rank type, string title, string description)
     {
         _type = type;
         _title = title;
@@ -47,7 +55,7 @@ public struct ArtData
 
     [JsonIgnore] public string Title { get => _title; }
     [JsonIgnore] public string Description { get => _description; }
-    public ArtworkUI.Type Type { get => _type; }
+    public Rank Type { get => _type; }
 }
 
 [System.Serializable]

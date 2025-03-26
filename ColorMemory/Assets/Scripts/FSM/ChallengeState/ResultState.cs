@@ -9,17 +9,18 @@ namespace Challenge
     {
         ChallengeStageUIPresenter _challengeStageUIPresenter;
         RankingUIFactory _rankingUIFactory;
-        System.Func<ChallengeMode.Data> GetChallengeModeData;
+
+        ChallengeMode.ModeData _modeData;
 
         public ResultState(
             FSM<ChallengeMode.State> fsm,
             RankingUIFactory rankingUIFactory,
             ChallengeStageUIPresenter challengeStageUIPresenter,
-            System.Func<ChallengeMode.Data> GetChallengeModeData) : base(fsm)
+            ChallengeMode.ModeData modeData) : base(fsm)
         {
             _rankingUIFactory = rankingUIFactory;
             _challengeStageUIPresenter = challengeStageUIPresenter;
-            this.GetChallengeModeData = GetChallengeModeData;
+            _modeData = modeData;
         }
 
         RankingData GetRankingData()
@@ -49,9 +50,8 @@ namespace Challenge
         {
             _challengeStageUIPresenter.ActivateGameResultPanel(true);
 
-            ChallengeMode.Data modeData = GetChallengeModeData();
-            _challengeStageUIPresenter.ChangeResultScore(modeData.MyScore);
-            _challengeStageUIPresenter.ChangeGoldCount(modeData.MyScore);
+            _challengeStageUIPresenter.ChangeResultScore(_modeData.MyScore);
+            _challengeStageUIPresenter.ChangeGoldCount(_modeData.MyScore);
 
             // 积己矫难林扁
             RankingData rankingData = GetRankingData();

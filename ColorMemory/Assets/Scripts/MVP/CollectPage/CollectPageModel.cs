@@ -16,6 +16,8 @@ public class CollectPageModel
     int _artworkIndex;
     List<ArtName> _currentArtNames;
 
+    Vector2Int _selectedArtworkIndex;
+
     public CollectPageModel(List<ArtName> currentArtNames, Dictionary<ArtName, ArtData> artworkDatas, Dictionary<ArtName, CollectiveArtData> artData)
     {
         _activeContent = false;
@@ -23,6 +25,7 @@ public class CollectPageModel
         _title = "";
         _description = "";
         _artworkIndex = 0;
+        _selectedArtworkIndex = Vector2Int.zero;
 
         _currentArtNames = currentArtNames;
         _artworkDatas = artworkDatas;
@@ -38,4 +41,5 @@ public class CollectPageModel
     public Dictionary<ArtName, CollectiveArtData> ArtData { get => _artData; }
     public Dictionary<ArtName, ArtData> ArtworkDatas { get => _artworkDatas; }
     public List<ArtName> CurrentArtNames { get => _currentArtNames; set => _currentArtNames = value; }
+    public Vector2Int SelectedArtworkIndex { get => _selectedArtworkIndex; set => _selectedArtworkIndex = value; }
 }

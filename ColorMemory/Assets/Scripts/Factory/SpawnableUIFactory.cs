@@ -55,18 +55,18 @@ public class StageCreater : SpawnableUICreater
 public class ArtworkCreater : SpawnableUICreater
 {
     Dictionary<ArtName, Sprite> _artSprites;
-    Dictionary<ArtworkUI.Type, Sprite> _artworkFrameSprites;
+    Dictionary<Rank, Sprite> _artworkFrameSprites;
 
     public ArtworkCreater(
         SpawnableUI prefab,
         Dictionary<ArtName, Sprite> artSprites,
-        Dictionary<ArtworkUI.Type, Sprite> artworkFrameSprites) : base(prefab)
+        Dictionary<Rank, Sprite> artworkFrameSprites) : base(prefab)
     {
         _artSprites = artSprites;
         _artworkFrameSprites = artworkFrameSprites;
     }
 
-    public override SpawnableUI Create(ArtName name, ArtworkUI.Type frameType)
+    public override SpawnableUI Create(ArtName name, Rank frameType)
     {
         SpawnableUI artwork = Object.Instantiate(_prefab);
         artwork.Initialize(_artSprites[name], _artworkFrameSprites[frameType]);
@@ -84,7 +84,7 @@ abstract public class SpawnableUICreater
     }
     
 
-    public virtual SpawnableUI Create(ArtName name, ArtworkUI.Type frameType) { return default; }
+    public virtual SpawnableUI Create(ArtName name, Rank frameType) { return default; }
     public virtual SpawnableUI Create(MapData data, Color[] pickColors) { return default; }
     public virtual SpawnableUI Create(
         List<List<CollectiveArtData.Block>> blocks,
@@ -152,12 +152,12 @@ public class ArtworkUIFactory : BaseFactory
     public ArtworkUIFactory(
         SpawnableUI artworkUIPrefab,
         Dictionary<ArtName, Sprite> artSprites,
-        Dictionary<ArtworkUI.Type, Sprite> artworkFrameSprites)
+        Dictionary<Rank, Sprite> artworkFrameSprites)
     {
         _artworkUICreater = new ArtworkCreater(artworkUIPrefab, artSprites, artworkFrameSprites);
     }
 
-    public override SpawnableUI Create(ArtName artworkName, ArtworkUI.Type frameType)
+    public override SpawnableUI Create(ArtName artworkName, Rank frameType)
     {
         return _artworkUICreater.Create(artworkName, frameType);
     }

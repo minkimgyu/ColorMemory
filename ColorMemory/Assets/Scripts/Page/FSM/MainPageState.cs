@@ -91,7 +91,6 @@ public class MainPageState : BaseState<HomePage.InnerPageState>
         _playBtnImg = _playBtn.gameObject.GetComponent<Image>();
 
         _toggleBtn.Initialize();
-        //_toggleBtn.OnClick += ChangeMode;
 
         Dot[,] dots;
         dots = new Dot[_dotSize, _dotSize];

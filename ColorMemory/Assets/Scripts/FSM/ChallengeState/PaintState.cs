@@ -3,6 +3,7 @@ using System;
 using UnityEngine;
 using DG.Tweening;
 using Random = UnityEngine.Random;
+using static Challenge.ChallengeMode;
 
 namespace Challenge
 {
@@ -29,17 +30,17 @@ namespace Challenge
         Vector2Int _levelSize;
 
         Timer _timer;
-        float _paintDuration;
+        ChallengeMode.ModeData _modeData;
 
-        Func<Tuple<Dot[,], Dot[], MapData>> GetLevelData;
+        Func<Tuple<Dot[,], Dot[], MapData>> GetStage;
         ChallengeStageUIPresenter _challengeStageUIPresenter;
 
         public PaintState(
             FSM<ChallengeMode.State> fsm,
             Color[] pickColors,
-            float paintDuration,
+            ChallengeMode.ModeData modeData,
             ChallengeStageUIPresenter challengeStageUIPresenter,
-            Func<Tuple<Dot[,], Dot[], MapData>> GetLevelData
+            Func<Tuple<Dot[,], Dot[], MapData>> GetStage
         ) : base(fsm)
         {
             _pickColors = pickColors;
@@ -55,11 +56,11 @@ namespace Challenge
             new Vector2Int(-1, -1), // ↖
             };
 
-            _paintDuration = paintDuration;
+            _modeData = modeData;
             _timer = new Timer();
 
             _challengeStageUIPresenter = challengeStageUIPresenter;
-            this.GetLevelData = GetLevelData;
+            this.GetStage = GetStage;
         }
 
         int[,] _visit;
@@ -98,7 +99,7 @@ namespace Challenge
         public override void OnStateEnter()
         {
             // 초기화 진행
-            Tuple<Dot[,], Dot[], MapData> levelData = GetLevelData();
+            Tuple<Dot[,], Dot[], MapData> levelData = GetStage();
             _dots = levelData.Item1;
             _penDots = levelData.Item2;
             _mapData = levelData.Item3;
@@ -111,6 +112,9 @@ namespace Challenge
                 _penDots[i].Maximize(0.5f);
             }
 
+
+
+
             _visit = new int[_levelSize.x, _levelSize.y];
 
             for (int x = 0; x < _levelSize.x; x++)
@@ -121,11 +125,11 @@ namespace Challenge
                 }
             }
 
-            _challengeStageUIPresenter.ChangeTotalTime(_paintDuration);
+            _challengeStageUIPresenter.ChangeTotalTime(_modeData.PlayDuration);
 
             DOVirtual.DelayedCall(0.5f, () =>
             {
-                _timer.Start(_paintDuration);
+                _timer.Start(_modeData.PlayDuration);
             });
         }
 
@@ -158,7 +162,13 @@ namespace Challenge
         {
             Debug.Log(index);
 
-            if (_selectedColorIndex != _mapData.DotColor[index.x, index.y]) return;
+            if (_selectedColorIndex != _mapData.DotColor[index.x, index.y])
+            {
+                // 틀린 경우
+                // 시간 감소시키기
+                _timer.DecreaseDuration(_modeData.DecreaseDurationOnMiss);
+                return;
+            }
             SpreadColor(index);
         }
 
@@ -191,15 +201,14 @@ namespace Challenge
                         }
                     }
 
+                    Time.timeScale = 1;
                     _state = RevealSameColorHintState.Idle;
                     _challengeStageUIPresenter.ActivateHintPanel(false);
 
                     bool canClear = CanClearStage();
                     if (canClear == false) return;
 
-                    _timer.Reset(); // 타이머 리셋
-                    _fsm.SetState(ChallengeMode.State.StageClear);
-
+                    GoToClearStage();
                     break;
                 default:
                     break;
@@ -216,8 +225,16 @@ namespace Challenge
 
         public override void OnClickRevealSameColorHint()
         {
+            Time.timeScale = 0;
             _state = RevealSameColorHintState.SelectColor;
             _challengeStageUIPresenter.ActivateHintPanel(true); // active panel 적용해주기
+        }
+
+        void GoToClearStage()
+        {
+            float leftRatio = _timer.Ratio;
+            _timer.Reset(); // 타이머 리셋
+            _fsm.SetState(ChallengeMode.State.StageClear, new PaintState.Data(leftRatio));
         }
 
         public override void OnClickRandomFillHint()
@@ -275,9 +292,10 @@ namespace Challenge
             bool canClear = CanClearStage();
             if (canClear == false) return;
 
-            float leftRatio = _timer.Ratio;
-            _timer.Reset(); // 타이머 리셋
-            _fsm.SetState(ChallengeMode.State.StageClear, new PaintState.Data(leftRatio));
+            _modeData.PlayDuration -= _timer.PassedTime;
+            _modeData.PlayDuration += _modeData.IncreaseDurationOnClear;
+
+            GoToClearStage();
         }
     }
 }

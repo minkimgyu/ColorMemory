@@ -8,36 +8,43 @@ namespace Challenge
 {
     public class ChallengeMode : GameMode
     {
-        [SerializeField] ToggleGroup _penToggleGroup;
-        [SerializeField] RectTransform _penContent;
+        [Header("Top")]
+        [SerializeField] TMP_Text _bestScoreText;
+        [SerializeField] TMP_Text _nowScoreText;
+
+        [SerializeField] Image _timerSlider;
+        [SerializeField] TMP_Text _leftTimeText;
+        [SerializeField] TMP_Text _totalTimeText;
+
+        [SerializeField] GameObject _rememberPanel;
+
+        [SerializeField] TMP_Text _stageText;
+
+        [Header("Middle")]
         [SerializeField] GridLayoutGroup _dotGridContent;
 
+        [Header("Bottom")]
+        [SerializeField] ToggleGroup _penToggleGroup;
+        [SerializeField] RectTransform _penContent;
+
+        [Header("ModeData")]
         [SerializeField] Color[] _pickColors;
         [SerializeField] Vector2 _spacing;
         [SerializeField] int _pickCount;
         [SerializeField] Vector2Int _levelSize = new Vector2Int(5, 5); // row, col
 
-
+        [Header("Hint")]
         [SerializeField] Button _randomHintBtn;
         [SerializeField] Button _revealSameColorHintBtn;
-
-        [SerializeField] TMP_Text _bestScoreText;
-        [SerializeField] TMP_Text _nowScoreText;
-
-        [SerializeField] Image _timerSlider;
-
-        [SerializeField] TMP_Text _leftTimeText;
-        [SerializeField] TMP_Text _totalTimeText;
-
-        //[SerializeField] TMP_Text _titleText;
         [SerializeField] GameObject _hintPanel;
-        [SerializeField] GameObject _rememberPanel;
 
+        [Header("GameOver")]
         [SerializeField] GameObject _gameOverPanel;
         [SerializeField] TMP_Text _clearStageCount;
         [SerializeField] Transform _clearStageContent;
         [SerializeField] Button _nextBtn;
 
+        [Header("GameResult")]
         [SerializeField] GameObject _gameResultPanel;
         [SerializeField] TMP_Text _resultScore;
         [SerializeField] TMP_Text _goldCount;
@@ -47,29 +54,11 @@ namespace Challenge
         [SerializeField] Button _tryAgainBtn;
         [SerializeField] Button _exitBtn;
 
+        #region Stage
+
         MapData _mapData;
         Dot[,] _dots;
         Dot[] _colorPenDots;
-
-        public struct Data
-        {
-            int _myScore;
-            int _clearStageCount;
-            List<MapData> _stageData;
-
-            public Data(int myScore = 0)
-            {
-                _myScore = myScore;
-                _clearStageCount = 0;
-                _stageData = new List<MapData>();
-            }
-
-            public int MyScore { get => _myScore; set => _myScore = value; }
-            public int ClearStageCount { get => _clearStageCount; set => _clearStageCount = value; }
-            public List<MapData> StageData { get => _stageData; }
-        }
-
-        ChallengeMode.Data _modeData;
 
         void DestroyDots()
         {
@@ -89,23 +78,58 @@ namespace Challenge
             _dots = null;
         }
 
-        void SetLevelData(Dot[,] dots, Dot[] colorPenDots, MapData mapData)
-        {
-            _dots = dots;
-            _colorPenDots = colorPenDots;
-            _mapData = mapData;
-            _modeData.StageData.Add(mapData);
-        }
-
-        Tuple<Dot[,], Dot[], MapData> GetLevelData()
+        Tuple<Dot[,], Dot[], MapData> GetStage()
         {
             return new Tuple<Dot[,], Dot[], MapData>(_dots, _colorPenDots, _mapData);
         }
 
-        ChallengeMode.Data GetChallengeModeData()
+        void SetStage(Dot[,] dots, Dot[] colorPenDots, MapData mapData)
         {
-            return _modeData;
+            _dots = dots;
+            _colorPenDots = colorPenDots;
+            _mapData = mapData;
         }
+
+        #endregion 
+
+        public class ModeData
+        {
+            float _memorizeDuration;
+            float _playDuration;
+
+            float _decreaseDurationOnMiss; // 틀릴 시 감소 시간
+            float _increaseDurationOnClear; // 클리어 시 증가 시간
+
+            int _stageCount;
+            int _myScore;
+            int _clearStageCount;
+            List<MapData> _stageData;
+
+            public ModeData(float memorizeDuration = 0, float leftDuration = 0, float decreaseDurationOnMiss = 0, float increaseDurationOnClear = 0)
+            {
+                _memorizeDuration = memorizeDuration;
+                _playDuration = leftDuration;
+                _decreaseDurationOnMiss = decreaseDurationOnMiss;
+                _increaseDurationOnClear = increaseDurationOnClear;
+
+                _stageCount = 0;
+                _myScore = 0;
+                _clearStageCount = 0;
+                _stageData = new List<MapData>();
+            }
+
+            public int StageCount { get => _stageCount; set => _stageCount = value; }
+            public int MyScore { get => _myScore; set => _myScore = value; }
+            public int ClearStageCount { get => _clearStageCount; set => _clearStageCount = value; }
+            public List<MapData> StageData { get => _stageData; set => _stageData = value; }
+            public float MemorizeDuration { get => _memorizeDuration; set => _memorizeDuration = value; }
+            public float PlayDuration { get => _playDuration; set => _playDuration = value; }
+            public float DecreaseDurationOnMiss { get => _decreaseDurationOnMiss; set => _decreaseDurationOnMiss = value; }
+            public float IncreaseDurationOnClear { get => _increaseDurationOnClear; set => _increaseDurationOnClear = value; }
+        }
+
+        ModeData _modeData;
+      
 
         const int clearPoint = 100;
         const int pointFixedWeight = 1;
@@ -162,7 +186,7 @@ namespace Challenge
                 addressableHandler.SpawnableUIAssets[SpawnableUI.Name.RankingUI],
                 addressableHandler.RankingIconAssets);
 
-            _modeData = new Data(0);
+            _modeData = new ModeData(5, 10, 1, 5);
 
             ChallengeStageUIModel model = new ChallengeStageUIModel();
 
@@ -174,6 +198,7 @@ namespace Challenge
                 _timerSlider,
                 _leftTimeText,
                 _totalTimeText,
+                _stageText,
                 _hintPanel,
                 _rememberPanel,
                 _gameOverPanel,
@@ -211,15 +236,16 @@ namespace Challenge
                     _penContent,
                     _penToggleGroup,
                     presenter,
-                    SetLevelData
+                    _modeData,
+                    SetStage
                 )
             },
 
-            { State.Memorize, new MemorizeState(_fsm, _pickColors, 3f, presenter, GetLevelData) },
-            { State.Paint, new PaintState(_fsm, _pickColors, 5f, presenter, GetLevelData) },
-            { State.StageClear, new StageClearState(_fsm, presenter, GetLevelData, DestroyDots, OnStageClear, GetChallengeModeData) },
-            { State.GameOver, new GameOverState(_fsm, presenter, _pickColors, clearPatternUIFactory, GetChallengeModeData) },
-            { State.Result, new ResultState(_fsm, rankingFactory, presenter, GetChallengeModeData) }
+            { State.Memorize, new MemorizeState(_fsm, _pickColors, _modeData, presenter, GetStage) },
+            { State.Paint, new PaintState(_fsm, _pickColors, _modeData, presenter, GetStage) },
+            { State.StageClear, new StageClearState(_fsm, presenter, _modeData, GetStage, DestroyDots) },
+            { State.GameOver, new GameOverState(_fsm, presenter, _pickColors, clearPatternUIFactory, _modeData) },
+            { State.Result, new ResultState(_fsm, rankingFactory, presenter, _modeData) }
         };
 
             _fsm.Initialize(states, State.Initialize);

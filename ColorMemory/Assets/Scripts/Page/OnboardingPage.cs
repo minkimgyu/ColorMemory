@@ -29,11 +29,13 @@ public class OnboardingPage : MonoBehaviour
     void Initialize(AddressableHandler addressableHandler)
     {
         SceneController sceneController = new SceneController();
+        SaveManager saveManager = new SaveManager(new SaveData("meal"));
 
         //SoundPlayer soundPlayer = FindObjectOfType<SoundPlayer>();
         //soundPlayer.Initialize(addressableHandler.SoundAsset);
 
         ServiceLocater.Provide(sceneController);
+        ServiceLocater.Provide(saveManager);
         //ServiceLocater.Provide(soundPlayer);
 
         ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.HomeScene);
