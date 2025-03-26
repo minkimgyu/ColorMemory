@@ -50,9 +50,9 @@ abstract public class ScrollUI : MonoBehaviour, IBeginDragHandler, IDragHandler,
 
     public void DestroyItems()
     {
-        for (int i = 0; i < _content.childCount; i++)
+        for (int i = _content.childCount - 1; i >= 0; i--)
         {
-            Destroy(_content.GetChild(i--));
+            _content.GetChild(i).GetComponent<SpawnableUI>().DestroyObject();
         }
     }
 

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class CollectPagePresenter
 {
@@ -10,12 +11,20 @@ public class CollectPagePresenter
     ArtworkUIFactory _artworkFactory;
     StageUIFactory _stageUIFactory;
 
-    public CollectPagePresenter(CollectPageModel collectPageModel, ArtworkUIFactory artworkFactory, StageUIFactory stageUIFactory)
+    Action OnClickPlayBtn;
+
+    public CollectPagePresenter(
+        CollectPageModel collectPageModel,
+        ArtworkUIFactory artworkFactory,
+        StageUIFactory stageUIFactory,
+        Action OnClickPlayBtn)
     {
         _collectPageModel = collectPageModel;
 
         _artworkFactory = artworkFactory;
         _stageUIFactory = stageUIFactory;
+
+        this.OnClickPlayBtn = OnClickPlayBtn;
     }
 
     public void InjectViewer(CollectPageViewer collectPageViewer)
@@ -40,7 +49,7 @@ public class CollectPagePresenter
     {
         for (int i = 0; i < _collectPageModel.CurrentArtNames.Count; i++)
         {
-            SpawnableUI artwork = _artworkFactory.Create(_collectPageModel.CurrentArtNames[i], ArtworkUI.Type.Bronze);
+            SpawnableUI artwork = _artworkFactory.Create(_collectPageModel.CurrentArtNames[i], Rank.COPPER);
             artwork.InjectClickEvent(() => {
                 RemoveAllStage();
 
@@ -74,12 +83,27 @@ public class CollectPagePresenter
         {
             for (int j = 0; j < col; j++)
             {
-                Vector2Int index = new Vector2Int(i, j);
                 SpawnableUI spawnableUI = _stageUIFactory.Create(sections[i][j].Blocks, sections[i][j].UsedColors);
-                spawnableUI.ChangeIndex(index);
+                spawnableUI.ChangeIndex(new Vector2Int(i, j));
 
-                if (i == 0 && j == 0) spawnableUI.SetState(StageUI.State.Open);
-                else spawnableUI.SetState(StageUI.State.Lock);
+                spawnableUI.InjectClickEvent((index) => 
+                {
+                    _collectPageModel.SelectedArtworkIndex = index;
+                    _collectPageViewer.SelectStage(index);
+                });
+
+                if ((i == 0 && j == 0))
+                {
+                    spawnableUI.SetState(StageUI.State.Clear);
+                }
+                else if ((i == 0 && j == 1) || (i == 0 && j == 2))
+                {
+                    spawnableUI.SetState(StageUI.State.Open);
+                }
+                else
+                {
+                    spawnableUI.SetState(StageUI.State.Lock);
+                }
 
                 _collectPageViewer.AddStage(spawnableUI);
             }
@@ -89,6 +113,11 @@ public class CollectPagePresenter
     public void RemoveAllStage()
     {
         _collectPageViewer.RemoveAllStage();
+    }
+
+    public void PlayCollectMode()
+    {
+        OnClickPlayBtn?.Invoke();
     }
 
     void UpdateArtInfo()

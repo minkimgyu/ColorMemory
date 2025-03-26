@@ -17,27 +17,27 @@ namespace Challenge
         readonly Color _fadeColor = new Color(236f / 255f, 232f / 255f, 232f / 255f);
 
         Timer _timer;
-        float _memorizeDuration;
+        ChallengeMode.ModeData _modeData;
 
-        Func<Tuple<Dot[,], Dot[], MapData>> GetLevelData;
+        Func<Tuple<Dot[,], Dot[], MapData>> GetStage;
 
         ChallengeStageUIPresenter _challengeStageUIPresenter;
 
         public MemorizeState(
             FSM<ChallengeMode.State> fsm,
             Color[] pickColors,
-            float memorizeDuration,
+            ChallengeMode.ModeData modeData,
 
             ChallengeStageUIPresenter challengeStageUIPresenter,
-            Func<Tuple<Dot[,], Dot[], MapData>> GetLevelData
+            Func<Tuple<Dot[,], Dot[], MapData>> GetStage
         ) : base(fsm)
         {
             _pickColors = pickColors;
-            _memorizeDuration = memorizeDuration;
+            _modeData = modeData;
             _timer = new Timer();
 
             _challengeStageUIPresenter = challengeStageUIPresenter;
-            this.GetLevelData = GetLevelData;
+            this.GetStage = GetStage;
         }
 
         Color GetDotColor(int row, int col)
@@ -48,7 +48,7 @@ namespace Challenge
         public override void OnStateEnter()
         {
             // 초기화 진행
-            Tuple<Dot[,], Dot[], MapData> levelData = GetLevelData();
+            Tuple<Dot[,], Dot[], MapData> levelData = GetStage();
             _dots = levelData.Item1;
             _mapData = levelData.Item3;
             _levelSize = new Vector2Int(_dots.GetLength(0), _dots.GetLength(1));
@@ -74,8 +74,8 @@ namespace Challenge
             }
 
             _challengeStageUIPresenter.ActivateRememberPanel(true);
-            _challengeStageUIPresenter.ChangeTotalTime(_memorizeDuration);
-            _timer.Start(_memorizeDuration);
+            _challengeStageUIPresenter.ChangeTotalTime(_modeData.MemorizeDuration);
+            _timer.Start(_modeData.MemorizeDuration);
         }
 
         public override void OnStateUpdate()

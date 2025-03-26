@@ -15,6 +15,8 @@ public class ChallengeStageUIViewer
     TMP_Text _leftTimeText;
     TMP_Text _totalTimeText;
 
+    TMP_Text _stageText;
+
     GameObject _hintPanel;
     GameObject _rememberPanel;
 
@@ -37,6 +39,8 @@ public class ChallengeStageUIViewer
         Image timerSlider,
         TMP_Text leftTimeText,
         TMP_Text totalTimeText,
+        TMP_Text stageText,
+
         GameObject hintPanel,
         GameObject rememberPanel,
 
@@ -60,6 +64,8 @@ public class ChallengeStageUIViewer
         _timerSlider = timerSlider;
         _leftTimeText = leftTimeText;
         _totalTimeText = totalTimeText;
+        _stageText = stageText;
+
         _hintPanel = hintPanel;
         _rememberPanel = rememberPanel;
 
@@ -122,6 +128,11 @@ public class ChallengeStageUIViewer
 
         _leftTimeText.text = $"{formattedIntPart}.{(decimalPart * 100):00}";
         FillTimeSlider(ratio);
+    }
+
+    public void ChangeStageCount(int stageCount)
+    {
+        _stageText.text = stageCount.ToString();
     }
 
     public void ActivateRememberPanel(bool active)

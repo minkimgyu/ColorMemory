@@ -22,14 +22,14 @@ public class RankingPageViewer
 
     public void DestoryRankingItems()
     {
-        for (int i = 0; i < _scrollContent.childCount; i++)
+        for (int i = _scrollContent.childCount - 1; i >= 0; i--)
         {
-            _scrollContent.GetChild(i--).GetComponent<RankingUI>().DestroyObject();
+            _scrollContent.GetChild(i).GetComponent<SpawnableUI>().DestroyObject();
         }
 
-        for (int i = 0; i < _myRankingContent.childCount; i++)
+        for (int i = _myRankingContent.childCount - 1; i >= 0; i--)
         {
-            _myRankingContent.GetChild(i--).GetComponent<RankingUI>().DestroyObject();
+            _myRankingContent.GetChild(i).GetComponent<SpawnableUI>().DestroyObject();
         }
     }
 

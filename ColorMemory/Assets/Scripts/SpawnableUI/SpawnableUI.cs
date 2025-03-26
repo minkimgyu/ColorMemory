@@ -21,11 +21,13 @@ abstract public class SpawnableUI : MonoBehaviour
        List<List<CollectiveArtData.Color>> usedColors)
     { }
 
+    public virtual void InjectClickEvent(System.Action<Vector2Int> OnClick) { }
     public virtual void InjectClickEvent(System.Action OnClick) { }
+
     public virtual void SetState(StageUI.State state) { }
 
     public virtual void ChangeIndex(Vector2Int index) { }
-    public virtual void ChangeIndex(int index) { }
+    public virtual void ChangeSelect(bool select) { }
 
     public virtual void ResetPosition() { }
 

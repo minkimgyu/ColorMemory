@@ -6,37 +6,36 @@ namespace Challenge
     public class StageClearState : BaseState<ChallengeMode.State>
     {
         Action DestroyDots;
-        Action<PaintState.Data> OnStageClear;
-        Func<ChallengeMode.Data> GetStageControllerData;
 
-        Func<Tuple<Dot[,], Dot[], MapData>> GetLevelData;
+        Func<Tuple<Dot[,], Dot[], MapData>> GetStage;
         ChallengeStageUIPresenter _challengeStageUIPresenter;
+
+        ChallengeMode.ModeData _modeData;
 
         public StageClearState(
             FSM<ChallengeMode.State> fsm,
             ChallengeStageUIPresenter challengeStageUIPresenter,
 
-            Func<Tuple<Dot[,], Dot[], MapData>> GetLevelData,
-            Action DestroyDots,
-            Action<PaintState.Data> OnStageClear,
-            Func<ChallengeMode.Data> GetStageControllerData) : base(fsm)
+            ChallengeMode.ModeData modeData,
+
+            Func<Tuple<Dot[,], Dot[], MapData>> GetStage,
+            Action DestroyDots) : base(fsm)
         {
             _challengeStageUIPresenter = challengeStageUIPresenter;
-            this.GetLevelData = GetLevelData;
+            _modeData = modeData;
+            this.GetStage = GetStage;
             this.DestroyDots = DestroyDots;
-            this.OnStageClear = OnStageClear;
-            this.GetStageControllerData = GetStageControllerData;
         }
 
-        PaintState.Data _data;
+        PaintState.Data _sentData;
 
-        public override void OnStateEnter(PaintState.Data data)
+        public override void OnStateEnter(PaintState.Data sentData)
         {
-            _data = data;
+            _sentData = sentData;
 
             DOVirtual.DelayedCall(0.5f, () =>
             {
-                Tuple<Dot[,], Dot[], MapData> levelData = GetLevelData();
+                Tuple<Dot[,], Dot[], MapData> levelData = GetStage();
                 Dot[,] dots = levelData.Item1;
                 Vector2Int levelSize = new Vector2Int(dots.GetLength(0), dots.GetLength(1));
 
@@ -57,11 +56,16 @@ namespace Challenge
             });
         }
 
+        const int clearPoint = 100;
+        const int pointFixedWeight = 1;
+
         public override void OnStateExit()
         {
-            OnStageClear?.Invoke(_data);
-            ChallengeMode.Data data = GetStageControllerData();
-            _challengeStageUIPresenter.ChangeNowScore(data.MyScore);
+            float weight = pointFixedWeight + _sentData.LeftDurationRatio;
+            _modeData.MyScore += Mathf.RoundToInt(clearPoint * weight);
+            _modeData.ClearStageCount += 1;
+
+            _challengeStageUIPresenter.ChangeNowScore(_modeData.MyScore);
             //_challengeStageUIPresenter.ChangeBestScore(data.MyScore);
         }
 

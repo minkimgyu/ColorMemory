@@ -17,11 +17,15 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
         TMP_Text titleTxt,
         TMP_Text descriptionTxt,
 
+        Image completeSlider,
+        TMP_Text leftCompleteText,
+        TMP_Text totalCompleteText,
+
         GameObject selectStageContent,
         Transform stageUIContent,
+        Button playBtn,
 
         ArtworkScrollUI artworkScrollUI,
-        Button selectBtn,
 
         ArtworkUIFactory artworkFactory,
         StageUIFactory stageUIFactory,
@@ -37,19 +41,27 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
         for (int i = 0; i < artworkDatas.Count; i++) artNames.Add((ArtName)i);
 
         CollectPageModel collectPageModel = new CollectPageModel(artNames, artworkDatas, artDatas);
-        _collectPagePresenter = new CollectPagePresenter(collectPageModel, artworkFactory, stageUIFactory);
+        _collectPagePresenter = new CollectPagePresenter(collectPageModel, artworkFactory, stageUIFactory, GoToCollectMode);
         CollectPageViewer collectPageViewer = new CollectPageViewer(
             collectionContent,
             titleTxt,
             descriptionTxt,
-            selectBtn,
             artworkScrollUI,
+            completeSlider,
+            leftCompleteText,
+            totalCompleteText,
             selectStageContent,
             stageUIContent,
+            playBtn,
             _collectPagePresenter);
 
         _collectPagePresenter.InjectViewer(collectPageViewer);
         _collectPagePresenter.ActiveContent(false);
+    }
+
+    void GoToCollectMode()
+    {
+        ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.CollectScene);
     }
 
     public override void OnClickRankingBtn()

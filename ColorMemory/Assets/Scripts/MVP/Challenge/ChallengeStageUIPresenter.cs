@@ -68,6 +68,12 @@ public class ChallengeStageUIPresenter
         _viewer.ChangeLeftTime(_model.LeftTime, _model.TimeRatio);
     }
 
+    public void ChangeStageCount(int stageCount)
+    {
+        _model.StageCount = stageCount;
+        _viewer.ChangeStageCount(_model.StageCount);
+    }
+
     public void ActivateRememberPanel(bool active)
     {
         _model.ActiveRememberPanel = active;

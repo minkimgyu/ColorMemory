@@ -1,17 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class ArtworkUI : SpawnableUI
 {
-    public enum Type
-    {
-        Bronze,
-        Silver,
-        Gold
-    }
-
     [SerializeField] Image _artImg;
 
     Image _artFrameImage;

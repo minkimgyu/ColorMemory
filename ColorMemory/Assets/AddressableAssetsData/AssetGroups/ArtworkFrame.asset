@@ -18,19 +18,19 @@ MonoBehaviour:
   m_GUID: 2b57536b8fac4214198b348499a0012f
   m_SerializeEntries:
   - m_GUID: 48c127411a0310e419878646f75abfe7
-    m_Address: Gold
+    m_Address: GOLD
     m_ReadOnly: 0
     m_SerializedLabels:
     - ArtworkFrame
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 95d8278459c0b1744808f07e19d1a660
-    m_Address: Silver
+    m_Address: SILVER
     m_ReadOnly: 0
     m_SerializedLabels:
     - ArtworkFrame
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c9e2dcb4692175e4ca0e562bd65a908e
-    m_Address: Bronze
+    m_Address: COPPER
     m_ReadOnly: 0
     m_SerializedLabels:
     - ArtworkFrame

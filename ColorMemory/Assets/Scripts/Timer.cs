@@ -6,7 +6,7 @@ public class Timer
     {
         Ready,
         Running,
-        Finish
+        Finish,
     }
 
     State _state;
@@ -45,6 +45,19 @@ public class Timer
         }
     }
 
+    public float PassedTime
+    {
+        get
+        {
+            if (_state == State.Ready) return 0;
+            else
+            {
+                return Mathf.Clamp(Time.time - _startTime, 0, _duration);
+            }
+        }
+    }
+
+
     public Timer()
     {
         _state = State.Ready;
@@ -59,6 +72,11 @@ public class Timer
 
         _startTime = Time.time;
         _duration = duration;
+    }
+
+    public void DecreaseDuration(float duration)
+    {
+        _startTime -= duration;
     }
 
     // 타이머를 처음으로 초기화해준다.

@@ -52,7 +52,7 @@ public class AddressableHandler : MonoBehaviour
 
     public ArtworkDataObject ArtworkJsonAsset { get; private set; }
     public Dictionary<ArtName, Sprite> ArtSpriteAsserts { get; private set; }
-    public Dictionary<ArtworkUI.Type, Sprite> ArtworkFrameAsserts { get; private set; }
+    public Dictionary<Rank, Sprite> ArtworkFrameAsserts { get; private set; }
 
 
     public Dictionary<Dot.Name, Dot> DotAssets { get; private set; }

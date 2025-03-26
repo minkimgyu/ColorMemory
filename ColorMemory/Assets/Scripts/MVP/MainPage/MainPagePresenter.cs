@@ -55,6 +55,8 @@ public class MainPagePresenter
             _mainPageModel.ModeType = GameMode.Type.Collect;
         }
 
+        ServiceLocater.ReturnSaveManager().ChangeGameModeType(_mainPageModel.ModeType);
+
         _mainPageViewer.ChangeTitleImage(_mainPageModel.TitleImages[_mainPageModel.ModeType]);
         _mainPageViewer.ChangeDotColors(_mainPageModel.DotColors[_mainPageModel.ModeType]);
         _mainPageViewer.ChangePlayBtnColor(_mainPageModel.PlayBtnColors[_mainPageModel.ModeType]);

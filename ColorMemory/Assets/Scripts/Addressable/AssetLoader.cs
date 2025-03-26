@@ -20,9 +20,9 @@ public class ArtSpriteAssetLoader : AssetLoader<ArtName, Sprite, Sprite>
     }
 }
 
-public class ArtworkFrameAssetLoader : AssetLoader<ArtworkUI.Type, Sprite, Sprite>
+public class ArtworkFrameAssetLoader : AssetLoader<Rank, Sprite, Sprite>
 {
-    public ArtworkFrameAssetLoader(AddressableHandler.Label label, Action<Dictionary<ArtworkUI.Type, Sprite>, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
+    public ArtworkFrameAssetLoader(AddressableHandler.Label label, Action<Dictionary<Rank, Sprite>, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
     {
     }
 }

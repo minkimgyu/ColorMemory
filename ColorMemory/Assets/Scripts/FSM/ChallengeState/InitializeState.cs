@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 using DG.Tweening;
+using static Challenge.ChallengeMode;
 
 namespace Challenge
 {
@@ -20,10 +21,11 @@ namespace Challenge
         RectTransform _penContent;
         ToggleGroup _penToggleGroup;
 
-        Action<Dot[,], Dot[], MapData> SetLevelData;
+        ModeData _modeData;
+
+        Action<Dot[,], Dot[], MapData> SetStage;
 
         ChallengeStageUIPresenter _challengeStageUIPresenter;
-        int _level = 0;
 
         public InitializeState(
             FSM<ChallengeMode.State> fsm,
@@ -40,7 +42,8 @@ namespace Challenge
             ToggleGroup penToggleGroup,
             ChallengeStageUIPresenter challengeStageUIPresenter,
 
-            Action<Dot[,], Dot[], MapData> SetLevelData
+            ModeData modeData,
+            Action<Dot[,], Dot[], MapData> SetStage
         ) : base(fsm)
         {
             _pickColors = pickColors;
@@ -55,7 +58,9 @@ namespace Challenge
             _penToggleGroup = penToggleGroup;
 
             _challengeStageUIPresenter = challengeStageUIPresenter;
-            this.SetLevelData = SetLevelData;
+
+            _modeData = modeData;
+            this.SetStage = SetStage;
         }
 
         public override void OnStateEnter()
@@ -100,7 +105,10 @@ namespace Challenge
                 colorPenDots[i] = colorPenDot;
             }
 
-            SetLevelData?.Invoke(dots, colorPenDots, mapData);
+            _modeData.StageCount += 1;
+
+            SetStage?.Invoke(dots, colorPenDots, mapData);
+            _challengeStageUIPresenter.ChangeStageCount(_modeData.StageCount);
         }
     }
 }
