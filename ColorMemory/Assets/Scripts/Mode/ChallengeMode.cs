@@ -16,7 +16,6 @@ namespace Challenge
         [SerializeField] TMP_Text _leftTimeText;
         [SerializeField] TMP_Text _totalTimeText;
 
-        [SerializeField] GameObject _rememberPanel;
 
         [SerializeField] TMP_Text _stageText;
 
@@ -30,13 +29,14 @@ namespace Challenge
         [Header("ModeData")]
         [SerializeField] Color[] _pickColors;
         [SerializeField] Vector2 _spacing;
-        [SerializeField] int _pickCount;
-        [SerializeField] Vector2Int _levelSize = new Vector2Int(5, 5); // row, col
+        //[SerializeField] int _pickCount;
+        //[SerializeField] Vector2Int _levelSize = new Vector2Int(5, 5); // row, col
 
         [Header("Hint")]
         [SerializeField] Button _randomHintBtn;
         [SerializeField] Button _revealSameColorHintBtn;
         [SerializeField] GameObject _hintPanel;
+        [SerializeField] GameObject _rememberPanel;
 
         [Header("GameOver")]
         [SerializeField] GameObject _gameOverPanel;
@@ -46,11 +46,10 @@ namespace Challenge
 
         [Header("GameResult")]
         [SerializeField] GameObject _gameResultPanel;
-        [SerializeField] TMP_Text _resultScore;
+        //[SerializeField] TMP_Text _resultScore;
         [SerializeField] TMP_Text _goldCount;
 
         [SerializeField] RankingScrollUI _rankingScrollUI;
-        [SerializeField] Transform _rankingContent;
         [SerializeField] Button _tryAgainBtn;
         [SerializeField] Button _exitBtn;
 
@@ -62,9 +61,12 @@ namespace Challenge
 
         void DestroyDots()
         {
-            for (int i = 0; i < _levelSize.x; i++)
+            int row = _dots.GetLength(0);
+            int col = _dots.GetLength(1);
+
+            for (int i = 0; i < row; i++)
             {
-                for (int j = 0; j < _levelSize.y; j++)
+                for (int j = 0; j < col; j++)
                 {
                     Destroy(_dots[i, j].gameObject);
                 }
@@ -76,6 +78,7 @@ namespace Challenge
             }
 
             _dots = null;
+            _colorPenDots = null;
         }
 
         Tuple<Dot[,], Dot[], MapData> GetStage()
@@ -92,10 +95,42 @@ namespace Challenge
 
         #endregion 
 
+        public struct StageData
+        {
+            [Newtonsoft.Json.JsonProperty] int _mapSize;
+            [Newtonsoft.Json.JsonProperty] int _colorCount;
+            [Newtonsoft.Json.JsonProperty] int _randomPointCount;
+
+            public StageData(int mapSize, int colorCount, int randomPointCount)
+            {
+                _mapSize = mapSize;
+                _colorCount = colorCount;
+                _randomPointCount = randomPointCount;
+            }
+
+            [Newtonsoft.Json.JsonIgnore] public int MapSize { get => _mapSize; }
+            [Newtonsoft.Json.JsonIgnore] public int ColorCount { get => _colorCount; }
+            [Newtonsoft.Json.JsonIgnore] public int RandomPointCount { get => _randomPointCount; }
+        }
+
+        public struct StageDataWrapper
+        {
+            [Newtonsoft.Json.JsonProperty] List<StageData> stageDatas;
+
+            public StageDataWrapper(List<StageData> stageDatas)
+            {
+                this.stageDatas = stageDatas;
+            }
+
+            [Newtonsoft.Json.JsonIgnore] public List<StageData> StageDatas { get => stageDatas; }
+        }
+
         public class ModeData
         {
             float _memorizeDuration;
             float _playDuration;
+
+            float _passedDuration; // 플레이하면서 지나간 시간
 
             float _decreaseDurationOnMiss; // 틀릴 시 감소 시간
             float _increaseDurationOnClear; // 클리어 시 증가 시간
@@ -126,6 +161,7 @@ namespace Challenge
             public float PlayDuration { get => _playDuration; set => _playDuration = value; }
             public float DecreaseDurationOnMiss { get => _decreaseDurationOnMiss; set => _decreaseDurationOnMiss = value; }
             public float IncreaseDurationOnClear { get => _increaseDurationOnClear; set => _increaseDurationOnClear = value; }
+            public float PassedDuration { get => _passedDuration; set => _passedDuration = value; }
         }
 
         ModeData _modeData;
@@ -159,25 +195,13 @@ namespace Challenge
             _fsm.OnUpdate();
         }
 
-        void OnClickNextBtn()
-        {
-            _fsm.SetState(State.Result);
-        }
-
-        void OnClickRetryBtn()
-        {
-            ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.ChallengeScene);
-        }
-
-        void OnClickExitBtn()
-        {
-            ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.HomeScene);
-        }
-
         public override void Initialize()
         {
             AddressableHandler addressableHandler = FindObjectOfType<AddressableHandler>();
             if (addressableHandler == null) return;
+
+            RandomLevelGenerator randomLevelGenerator = new RandomLevelGenerator(addressableHandler.ChallengeStageDataWrapper.StageDatas);
+
 
             ClearPatternUIFactory clearPatternUIFactory = new ClearPatternUIFactory(
                 addressableHandler.SpawnableUIAssets[SpawnableUI.Name.ClearPatternUI]);
@@ -186,12 +210,9 @@ namespace Challenge
                 addressableHandler.SpawnableUIAssets[SpawnableUI.Name.RankingUI],
                 addressableHandler.RankingIconAssets);
 
-            _modeData = new ModeData(5, 10, 1, 5);
+            _modeData = new ModeData(5, 10, 1, 3);
 
             ChallengeStageUIModel model = new ChallengeStageUIModel();
-
-            ChallengeStageUIPresenter presenter = new ChallengeStageUIPresenter(model, OnClickNextBtn, OnClickRetryBtn, OnClickExitBtn);
-
             ChallengeStageUIViewer viewer = new ChallengeStageUIViewer(
                 _bestScoreText,
                 _nowScoreText,
@@ -204,49 +225,51 @@ namespace Challenge
                 _gameOverPanel,
                 _clearStageCount,
                 _clearStageContent,
-                _nextBtn,
                 _gameResultPanel,
-                _resultScore,
                 _goldCount,
-                _rankingScrollUI,
-                _rankingContent,
-                _tryAgainBtn,
-                _exitBtn,
-                presenter);
+                _rankingScrollUI);
 
-            presenter.InjectViewer(viewer);
+            ChallengeStageUIPresenter presenter = new ChallengeStageUIPresenter(model, viewer);
+
+            _nextBtn.onClick.AddListener(() => 
+            { 
+                _fsm.OnClickNextBtn(); 
+            });
+
+            _tryAgainBtn.onClick.AddListener(() => { _fsm.OnClickRetryBtn(); });
+            _exitBtn.onClick.AddListener(() => { _fsm.OnClickExitBtn(); });
 
             _randomHintBtn.onClick.AddListener(() => { _fsm.OnClickRandomFillHint(); });
             _revealSameColorHintBtn.onClick.AddListener(() => { _fsm.OnClickRevealSameColorHint(); });
 
+
             _fsm = new FSM<State>();
             Dictionary<State, BaseState<State>> states = new Dictionary<State, BaseState<State>>()
-        {
             {
-                State.Initialize,
-                new InitializeState
-                (
-                    _fsm,
-                    _pickColors,
-                    _pickCount,
-                    _levelSize,
-                    new EffectFactory(addressableHandler.EffectAssets),
-                    new DotFactory(addressableHandler.DotAssets),
-                    _dotGridContent,
-                    _penContent,
-                    _penToggleGroup,
-                    presenter,
-                    _modeData,
-                    SetStage
-                )
-            },
+                {
+                    State.Initialize,
+                    new InitializeState
+                    (
+                        _fsm,
+                        _pickColors,
+                        new EffectFactory(addressableHandler.EffectAssets),
+                        new DotFactory(addressableHandler.DotAssets),
+                        _dotGridContent,
+                        _penContent,
+                        _penToggleGroup,
+                        randomLevelGenerator,
+                        presenter,
+                        _modeData,
+                        SetStage
+                    )
+                },
 
-            { State.Memorize, new MemorizeState(_fsm, _pickColors, _modeData, presenter, GetStage) },
-            { State.Paint, new PaintState(_fsm, _pickColors, _modeData, presenter, GetStage) },
-            { State.StageClear, new StageClearState(_fsm, presenter, _modeData, GetStage, DestroyDots) },
-            { State.GameOver, new GameOverState(_fsm, presenter, _pickColors, clearPatternUIFactory, _modeData) },
-            { State.Result, new ResultState(_fsm, rankingFactory, presenter, _modeData) }
-        };
+                { State.Memorize, new MemorizeState(_fsm, _pickColors, _modeData, presenter, GetStage) },
+                { State.Paint, new PaintState(_fsm, _pickColors, _modeData, presenter, GetStage) },
+                { State.StageClear, new StageClearState(_fsm, presenter, _modeData, GetStage, DestroyDots) },
+                { State.GameOver, new GameOverState(_fsm, presenter, _pickColors, clearPatternUIFactory, _modeData) },
+                { State.Result, new ResultState(_fsm, rankingFactory, presenter, _modeData) }
+            };
 
             _fsm.Initialize(states, State.Initialize);
         }

@@ -8,14 +8,13 @@ public class RandomLevelGenerator : LevelGenerator
     int _pickCount;
     Vector2Int _levelSize = new Vector2Int(5, 5); // row, col
     Vector2Int[] _closePoints;
-
     int _pickColorSize;
 
-    public RandomLevelGenerator(int pickColorSize, int pickCount, Vector2Int levelSize)
+    List<Challenge.ChallengeMode.StageData> _stageDatas;
+
+    public RandomLevelGenerator(List<Challenge.ChallengeMode.StageData> stageDatas)
     {
-        _pickColorSize = pickColorSize;
-        _pickCount = pickCount;
-        _levelSize = levelSize;
+        _stageDatas = stageDatas;
 
         _closePoints = new Vector2Int[4]
         {
@@ -83,14 +82,23 @@ public class RandomLevelGenerator : LevelGenerator
         return nearPoints;
     }
 
-    public override bool CanGenerateLevelData()
+    public bool CanGenerateLevelData()
     {
         if (_pickColorSize < _pickCount) return false;
         return true;
     }
 
-    public override MapData GenerateLevelData()
+    public MapData GenerateLevelData(int currentStageIndex)
     {
+        Challenge.ChallengeMode.StageData stageData;
+
+        if(currentStageIndex >= _stageDatas.Count) stageData = _stageDatas[_stageDatas.Count - 1];
+        else stageData = _stageDatas[currentStageIndex];
+
+        _pickColorSize = stageData.ColorCount;
+        _pickCount = stageData.RandomPointCount;
+        _levelSize = new Vector2Int(stageData.MapSize, stageData.MapSize);
+
         int[,] levelMap = new int[_levelSize.x, _levelSize.y];
         for (int x = 0; x < _levelSize.x; x++)
         {

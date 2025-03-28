@@ -25,6 +25,10 @@ namespace Challenge
             _modeData = modeData;
         }
 
+        public override void OnClickNextBtn()
+        {
+            _fsm.SetState(ChallengeMode.State.Result);
+        }
 
         public override void OnStateEnter()
         {
@@ -32,11 +36,11 @@ namespace Challenge
 
             for (int i = 0; i < _modeData.ClearStageCount; i++)
             {
-                SpawnableUI patternUI = _clearPatternUIFactory.Create(_modeData.StageData[i], _pickColors);
+                SpawnableUI patternUI = _clearPatternUIFactory.Create(i + 1, _modeData.ClearStageCount, _modeData.StageData[i], _pickColors);
                 _challengeStageUIPresenter.AddClearPattern(patternUI);
             }
 
-            _challengeStageUIPresenter.ChangeClearStageCount(_modeData.ClearStageCount);
+            _challengeStageUIPresenter.ChangeClearStageCount((int)_modeData.PassedDuration, _modeData.ClearStageCount);
         }
 
         public override void OnStateExit()

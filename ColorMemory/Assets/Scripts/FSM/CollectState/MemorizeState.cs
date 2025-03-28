@@ -12,41 +12,39 @@ namespace Collect
         Vector2Int _levelSize;
         MapData _mapData;
 
-        Color[] _pickColors;
-
         readonly Color _fadeColor = new Color(236f / 255f, 232f / 255f, 232f / 255f);
 
         Timer _timer;
-        float _memorizeDuration;
-
         Func<Tuple<Dot[,], Dot[], MapData>> GetLevelData;
 
-        ChallengeStageUIPresenter _challengeStageUIPresenter;
+        CollectMode.Data _data;
+
+        CollectStageUIPresenter _collectStageUIPresenter;
 
         public MemorizeState(
             FSM<CollectMode.State> fsm,
-            Color[] pickColors,
-            float memorizeDuration,
+            CollectMode.Data data,
 
-            ChallengeStageUIPresenter challengeStageUIPresenter,
+            CollectStageUIPresenter collectStageUIPresenter,
             Func<Tuple<Dot[,], Dot[], MapData>> GetLevelData
         ) : base(fsm)
         {
-            _pickColors = pickColors;
-            _memorizeDuration = memorizeDuration;
+            _data = data;
             _timer = new Timer();
 
-            _challengeStageUIPresenter = challengeStageUIPresenter;
+            _collectStageUIPresenter = collectStageUIPresenter;
             this.GetLevelData = GetLevelData;
         }
 
         Color GetDotColor(int row, int col)
         {
-            return _pickColors[_mapData.DotColor[row, col]];
+            return _data.PickColors[_mapData.DotColor[row, col]];
         }
 
         public override void OnStateEnter()
         {
+            _collectStageUIPresenter.ActivateTimerContent(true);
+
             // 초기화 진행
             Tuple<Dot[,], Dot[], MapData> levelData = GetLevelData();
             _dots = levelData.Item1;
@@ -73,18 +71,19 @@ namespace Collect
                 }
             }
 
-            _challengeStageUIPresenter.ActivateRememberPanel(true);
-            _challengeStageUIPresenter.ChangeTotalTime(_memorizeDuration);
-            _timer.Start(_memorizeDuration);
+            _collectStageUIPresenter.ActivateRememberPanel(true);
+            _collectStageUIPresenter.ChangeTotalTime(_data.MemorizeDuration);
+            _timer.Start(_data.MemorizeDuration);
         }
 
         public override void OnStateUpdate()
         {
-            _challengeStageUIPresenter.ChangeLeftTime(_timer.LeftTime, 1 - _timer.Ratio);
+            _collectStageUIPresenter.ChangeLeftTime(_timer.LeftTime, 1 - _timer.Ratio);
 
             if (_timer.CurrentState == Timer.State.Finish)
             {
-                _challengeStageUIPresenter.ActivateRememberPanel(false);
+                _collectStageUIPresenter.ActivateRememberPanel(false);
+                _collectStageUIPresenter.ActivateTimerContent(false);
 
                 // dot 뒤집는 코드 추가
                 for (int i = 0; i < _levelSize.x; i++)

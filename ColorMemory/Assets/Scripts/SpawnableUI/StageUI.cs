@@ -34,6 +34,7 @@ public class StageUI : SpawnableUI
     }
 
     Vector2Int _index;
+    public Vector2Int Index { get => _index; }
 
     public override void ChangeIndex(Vector2Int index)
     {

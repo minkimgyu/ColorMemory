@@ -46,11 +46,19 @@ namespace Challenge
             return rankingData;
         }
 
+        public override void OnClickRetryBtn()
+        {
+            ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.ChallengeScene);
+        }
+
+        public override void OnClickExitBtn()
+        {
+            ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.HomeScene);
+        }
+
         public override void OnStateEnter()
         {
             _challengeStageUIPresenter.ActivateGameResultPanel(true);
-
-            _challengeStageUIPresenter.ChangeResultScore(_modeData.MyScore);
             _challengeStageUIPresenter.ChangeGoldCount(_modeData.MyScore);
 
             // 积己矫难林扁

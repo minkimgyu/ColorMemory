@@ -62,6 +62,8 @@ public class MainPageState : BaseState<HomePage.InnerPageState>
 
     MainPagePresenter _homePagePresenter;
 
+    readonly Color[] _pickColors = new Color[] { new Color(255f/255f, 182f/255f, 108f/255f), new Color(255f/255f, 236f/255f, 89f/255f), new Color(219f/255f, 200f/255f, 255f/255f) };
+
     public MainPageState(
         GameMode.Type type,
         EffectFactory effectFactory,
@@ -101,7 +103,7 @@ public class MainPageState : BaseState<HomePage.InnerPageState>
             {
                 Dot dot = _dotFactory.Create(Dot.Name.Basic);
                 dot.Initialize();
-                dot.Inject(_effectFactory, new Vector2Int(i, j), (v2) => { dot.Pop(Color.white); });
+                dot.Inject(_effectFactory, new Vector2Int(i, j), (v2) => { dot.Pop(_pickColors[Random.Range(0, _pickColors.Length)]); });
 
                 dot.transform.SetParent(_dotParent);
                 dots[i, j] = dot;
@@ -134,6 +136,11 @@ public class MainPageState : BaseState<HomePage.InnerPageState>
             default:
                 break;
         }
+    }
+
+    public override void OnClickShopBtn()
+    {
+        _fsm.SetState(HomePage.InnerPageState.Shop);
     }
 
     public override void OnClickRankingBtn()

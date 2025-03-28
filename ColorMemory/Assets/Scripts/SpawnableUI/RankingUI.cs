@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Newtonsoft.Json;
+using static UnityEngine.GraphicsBuffer;
 
 public enum RankingIconName
 {
@@ -52,13 +53,26 @@ public struct PersonalRankingData
 
 public class RankingUI : SpawnableUI
 {
+    [SerializeField] Image _backgroundImg;
     [SerializeField] Image _profileImg;
 
     [SerializeField] TMP_Text _nameTxt;
     [SerializeField] TMP_Text _scoreTxt;
     [SerializeField] TMP_Text _rankTxt;
+    [SerializeField] Color _selectedColor;
 
     RectTransform _rectTransform;
+
+    public override void ChangeSelect(bool select)
+    {
+        if(select) _backgroundImg.color = _selectedColor;
+        else _backgroundImg.color = Color.white;
+    }
+
+    public override void ChangeScale(Vector3 scale, float ratio)
+    {
+        transform.localScale = Vector3.Lerp(transform.localScale, scale, ratio);
+    }
 
     public override void ResetPosition()
     {
@@ -72,6 +86,6 @@ public class RankingUI : SpawnableUI
         _profileImg.sprite = profileSprite;
         _nameTxt.text = title;
         _scoreTxt.text = $"{score:N0}";
-        _rankTxt.text = $"#{rank}";
+        _rankTxt.text = $"{rank}À§";
     }
 }

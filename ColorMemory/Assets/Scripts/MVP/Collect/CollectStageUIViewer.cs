@@ -7,85 +7,58 @@ using UnityEngine.UI;
 
 public class CollectStageUIViewer
 {
-    TMP_Text _bestScoreText;
-    TMP_Text _nowScoreText;
+    TMP_Text _titleText;
 
+    GameObject _timerContent;
     Image _timerSlider;
-
     TMP_Text _leftTimeText;
     TMP_Text _totalTimeText;
 
     GameObject _hintPanel;
     GameObject _rememberPanel;
 
-    GameObject _gameOverPanel;
-    TMP_Text _clearStageCount;
-    Transform _clearStageContent;
-    Button _nextBtn;
+    GameObject _gameClearPanel;
+    Image _cropArtworkImg;
+    Button _nextStageBtn;
+    Button _gameClearExitBtn;
 
     GameObject _gameResultPanel;
-    TMP_Text _resultScore;
     TMP_Text _goldCount;
-    Transform _rankingContent;
-    Button _tryAgainBtn;
-    Button _exitBtn;
 
     public CollectStageUIViewer(
-        TMP_Text bestScoreText,
-        TMP_Text nowScoreText,
+        TMP_Text titleText,
+        GameObject timerContent,
         Image timerSlider,
         TMP_Text leftTimeText,
         TMP_Text totalTimeText,
+
         GameObject hintPanel,
         GameObject rememberPanel,
 
-        GameObject gameOverPanel,
-        TMP_Text clearStageCount,
-        Transform clearStageContent,
-        Button nextBtn,
+        GameObject gameClearPanel,
+        Image cropArtworkImg,
 
         GameObject gameResultPanel,
-        TMP_Text resultScore,
-        TMP_Text goldCount,
-        Transform rankingContent,
-        Button tryAgainBtn, // -> Reload Scene
-        Button exitBtn, // -> Go to home Scene
-
-        ChallengeStageUIPresenter presenter)
+        TMP_Text goldCount)
     {
-        _bestScoreText = bestScoreText;
-        _nowScoreText = nowScoreText;
+        _titleText = titleText;
+        _timerContent = timerContent;
         _timerSlider = timerSlider;
         _leftTimeText = leftTimeText;
         _totalTimeText = totalTimeText;
         _hintPanel = hintPanel;
         _rememberPanel = rememberPanel;
 
-        _gameOverPanel = gameOverPanel;
-        _clearStageCount = clearStageCount;
-        _clearStageContent = clearStageContent;
-        _nextBtn = nextBtn;
+        _gameClearPanel = gameClearPanel;
+        _cropArtworkImg = cropArtworkImg;
 
         _gameResultPanel = gameResultPanel;
-        _resultScore = resultScore;
         _goldCount = goldCount;
-        _rankingContent = rankingContent;
-        _tryAgainBtn = tryAgainBtn;
-        _exitBtn = exitBtn;
-
-        _nextBtn.onClick.AddListener(() => presenter.OnNextBtnClicked());
-        _tryAgainBtn.onClick.AddListener(() => presenter.OnRetryBtnClicked());
-        _exitBtn.onClick.AddListener(() => presenter.OnExitBtnClicked());
     }
 
-    public void ChangeNowScore(int score)
+    public void ChangeTitle(string title)
     {
-        _nowScoreText.text = score.ToString();
-    }
-
-    public void ChangeBestScore(int score)
-    {
-        _bestScoreText.text = score.ToString();
+        _titleText.text = title;
     }
 
     public void FillTimeSlider(float ratio)
@@ -116,6 +89,11 @@ public class CollectStageUIViewer
         FillTimeSlider(ratio);
     }
 
+    public void ActivateTimerContent(bool active)
+    {
+        _timerContent.SetActive(active);
+    }
+
     public void ActivateRememberPanel(bool active)
     {
         _rememberPanel.SetActive(active);
@@ -126,19 +104,14 @@ public class CollectStageUIViewer
         _hintPanel.SetActive(active);
     }
 
-    public void ActivateGameOverPanel(bool active)
+    public void ActivateGameClearPanel(bool active)
     {
-        _gameOverPanel.SetActive(active);
+        _gameClearPanel.SetActive(active);
     }
 
-    public void ChangeClearStageCount(int stageCount)
+    public void ChangeCropArtworkImg(Sprite artSprite)
     {
-        _clearStageCount.text = stageCount.ToString();
-    }
-
-    public void AddClearPattern(ClearPatternUI patternUI)
-    {
-        patternUI.transform.SetParent(_clearStageContent);
+        _cropArtworkImg.sprite = artSprite;
     }
 
     public void ActivateGameResultPanel(bool active)
@@ -146,18 +119,8 @@ public class CollectStageUIViewer
         _gameResultPanel.SetActive(active);
     }
 
-    public void ChangeResultScore(int resultScore)
-    {
-        _resultScore.text = resultScore.ToString();
-    }
-
     public void ChangeGoldCount(int goldCount)
     {
         _goldCount.text = goldCount.ToString();
-    }
-
-    public void AddRanking(RankingUI ranking)
-    {
-        ranking.transform.SetParent(_rankingContent);
     }
 }

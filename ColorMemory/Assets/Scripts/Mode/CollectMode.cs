@@ -9,49 +9,81 @@ namespace Collect
 {
     public class CollectMode : GameMode
     {
-        [SerializeField] ToggleGroup _penToggleGroup;
-        [SerializeField] RectTransform _penContent;
-        [SerializeField] GridLayoutGroup _dotGridContent;
-
-        [SerializeField] Color[] _pickColors;
-        [SerializeField] Vector2 _spacing;
-        [SerializeField] int _pickCount;
-        [SerializeField] Vector2Int _levelSize = new Vector2Int(5, 5); // row, col
-
-        [SerializeField] Button _randomHintBtn;
-        [SerializeField] Button _revealSameColorHintBtn;
-
+        [Header("Top")]
+        [SerializeField] TMP_Text _titleText;
+        [SerializeField] GameObject _timerContent;
         [SerializeField] Image _timerSlider;
 
         [SerializeField] TMP_Text _leftTimeText;
         [SerializeField] TMP_Text _totalTimeText;
 
+        [Header("Middle")]
+        [SerializeField] GridLayoutGroup _dotGridContent;
+
+        [Header("Bottom")]
+        [SerializeField] ToggleGroup _penToggleGroup;
+        [SerializeField] RectTransform _penContent;
+
+        [Header("ModeData")]
+        //[SerializeField] Color[] _pickColors;
+        [SerializeField] Vector2 _spacing;
+        //[SerializeField] int _pickCount;
+        //[SerializeField] Vector2Int _levelSize = new Vector2Int(5, 5); // row, col
+
+        [Header("Hint")]
+        [SerializeField] Button _goBackBtn;
+
+        [SerializeField] Button _randomHintBtn;
+        [SerializeField] Button _revealSameColorHintBtn;
+
         [SerializeField] GameObject _hintPanel;
         [SerializeField] GameObject _rememberPanel;
 
+        [Header("Clear")]
+        [SerializeField] GameObject _gameClearPanel;
+        [SerializeField] Image _cropArtworkImg;
+        [SerializeField] Button _nextStageBtn;
+        [SerializeField] Button _gameClearExitBtn;
+
+        [Header("Result")]
+        [SerializeField] GameObject _gameResultPanel;
+        [SerializeField] TMP_Text _goldCount;
+        [SerializeField] Button _exitBtn;
+
+
+        CollectiveArtData.Section _section;
         MapData _mapData;
         Dot[,] _dots;
         Dot[] _colorPenDots;
 
-        public struct Data
+        public class Data
         {
+            float _memorizeDuration;
             int _myScore;
-            int _clearStageCount;
-            List<MapData> _stageData;
 
-            public Data(int myScore = 0)
+            Color[] _pickColors; // 색상 종류
+
+            bool[,] _isPlayed; // 플레이 여부
+            int[,] _goBackCount;
+
+            public Data(Vector2Int sectionSize, int memorizeDuration, int myScore = 0)
             {
                 _myScore = myScore;
-                _clearStageCount = 0;
-                _stageData = new List<MapData>();
+                _memorizeDuration = memorizeDuration;
+
+                _pickColors = new Color[3];
+                _isPlayed = new bool[sectionSize.x, sectionSize.y];
+                _goBackCount = new int[sectionSize.x, sectionSize.y];
             }
 
+            public float MemorizeDuration { get => _memorizeDuration; set => _memorizeDuration = value; }
             public int MyScore { get => _myScore; set => _myScore = value; }
-            public int ClearStageCount { get => _clearStageCount; set => _clearStageCount = value; }
-            public List<MapData> StageData { get => _stageData; }
+            public bool[,] IsPlayed { get => _isPlayed; set => _isPlayed = value; }
+            public int[,] GoBackCount { get => _goBackCount; set => _goBackCount = value; }
+            public Color[] PickColors { get => _pickColors; set => _pickColors = value; }
         }
 
-        CollectMode.Data _collectModeData;
+        CollectMode.Data _modeData;
 
         public enum State
         {
@@ -64,106 +96,123 @@ namespace Collect
 
         FSM<State> _fsm;
 
-    //    void DestroyDots()
-    //    {
-    //        for (int i = 0; i < _levelSize.x; i++)
-    //        {
-    //            for (int j = 0; j < _levelSize.y; j++)
-    //            {
-    //                Destroy(_dots[i, j].gameObject);
-    //            }
-    //        }
+        void DestroyDots()
+        {
+            int row = _dots.GetLength(0);
+            int col = _dots.GetLength(1);
 
-    //        for (int i = 0; i < _colorPenDots.Length; i++)
-    //        {
-    //            Destroy(_colorPenDots[i].gameObject);
-    //        }
+            for (int i = 0; i < row; i++)
+            {
+                for (int j = 0; j < col; j++)
+                {
+                    Destroy(_dots[i, j].gameObject);
+                }
+            }
 
-    //        _dots = null;
-    //    }
+            for (int i = 0; i < _colorPenDots.Length; i++)
+            {
+                Destroy(_colorPenDots[i].gameObject);
+            }
 
-    //    void SetLevelData(Dot[,] dots, Dot[] colorPenDots, MapData mapData)
-    //    {
-    //        _dots = dots;
-    //        _colorPenDots = colorPenDots;
-    //        _mapData = mapData;
-    //    }
+            _dots = null;
+            _colorPenDots = null;
+        }
 
-    //    Tuple<Dot[,], Dot[], MapData> GetLevelData()
-    //    {
-    //        return new Tuple<Dot[,], Dot[], MapData>(_dots, _colorPenDots, _mapData);
-    //    }
+        void SetLevelData(Dot[,] dots, Dot[] colorPenDots, MapData mapData)
+        {
+            _dots = dots;
+            _colorPenDots = colorPenDots;
+            _mapData = mapData;
+        }
 
-    //    CollectMode.Data GetCollectModeData()
-    //    {
-    //        return _collectModeData;
-    //    }
+        Tuple<Dot[,], Dot[], MapData> GetLevelData()
+        {
+            return new Tuple<Dot[,], Dot[], MapData>(_dots, _colorPenDots, _mapData);
+        }
+
+        CollectMode.Data GetCollectModeData()
+        {
+            return _modeData;
+        }
+
+        void OnClickExitBtn()
+        {
+            ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.HomeScene);
+        }
+
+        private void Update()
+        {
+            _fsm.OnUpdate();
+        }
 
         public override void Initialize()
         {
-    //        AddressableHandler addressableHandler = FindObjectOfType<AddressableHandler>();
-    //        if (addressableHandler == null) return;
+            AddressableHandler addressableHandler = FindObjectOfType<AddressableHandler>();
+            if (addressableHandler == null) return;
 
-    //        _collectModeData = new Data(0);
+            SaveData saveData = ServiceLocater.ReturnSaveManager().GetSaveData();
 
-    //        CollectStageUIModel model = new CollectStageUIModel();
+            ArtName artName = (ArtName)Enum.Parse(typeof(ArtName), saveData.SelectedArtworkName);
+            Vector2Int sectionIndex = saveData.SelectedArtworkSectionIndex;
 
-    //        CollectStageUIPresenter presenter = new CollectStageUIPresenter(model, OnClickNextBtn, OnClickRetryBtn, OnClickExitBtn);
+            CollectiveArtData artData = addressableHandler.CollectiveArtJsonAsserts[artName];
 
-    //        CollectStageUIViewer viewer = new CollectStageUIViewer(
-    //            _bestScoreText,
-    //            _nowScoreText,
-    //            _timerSlider,
-    //            _leftTimeText,
-    //            _totalTimeText,
-    //            _hintPanel,
-    //            _rememberPanel,
-    //            _gameOverPanel,
-    //            _clearStageCount,
-    //            _clearStageContent,
-    //            _nextBtn,
-    //            _gameResultPanel,
-    //            _goldCount,
-    //            _resultScore,
-    //            _rankingContent,
-    //            _tryAgainBtn,
-    //            _exitBtn,
-    //            presenter);
+            _section = artData.Sections[sectionIndex.x][sectionIndex.y];
 
-    //        presenter.InjectViewer(viewer);
+            Vector2Int index = new Vector2Int(_section.Blocks.Count, _section.Blocks[0].Count);
+            _modeData = new Data(index, 5);
 
-    //        _randomHintBtn.onClick.AddListener(() => { _fsm.OnClickRandomFillHint(); });
-    //        _revealSameColorHintBtn.onClick.AddListener(() => { _fsm.OnClickRevealSameColorHint(); });
 
-    //        _fsm = new FSM<State>();
-    //        Dictionary<State, BaseState<State>> states = new Dictionary<State, BaseState<State>>()
-    //    {
-    //        {
-    //            State.Init,
-    //            new InitState
-    //            (
-    //                _fsm,
-    //                _pickColors,
-    //                _pickCount,
-    //                _levelSize,
-    //                new EffectFactory(addressableHandler.EffectAssets),
-    //                new DotFactory(addressableHandler.DotAssets),
-    //                _dotGridContent,
-    //                _penContent,
-    //                _penToggleGroup,
-    //                presenter,
-    //                SetLevelData
-    //            )
-    //        },
+            CollectStageUIModel model = new CollectStageUIModel();
+            CollectStageUIViewer viewer = new CollectStageUIViewer(
+                _titleText,
+                _timerContent,
+                _timerSlider,
+                _leftTimeText,
+                _totalTimeText,
+                _hintPanel,
+                _rememberPanel,
+                _gameClearPanel,
+                _cropArtworkImg,
+                _gameResultPanel,
+                _goldCount);
 
-    //        { State.Memorize, new MemorizeState(_fsm, _pickColors, 3f, presenter, GetLevelData) },
-    //        { State.Paint, new PaintState(_fsm, _pickColors, 5f, presenter, GetLevelData) },
-    //        { State.Clear, new ClearState(_fsm, presenter, GetLevelData, DestroyDots, OnStageClear, GetChallengeModeData) },
-    //        { State.GameOver, new GameOverState(_fsm, presenter, _pickColors, clearPatternFactory, GetChallengeModeData) },
-    //        { State.GameResult, new GameResultState(_fsm, presenter, GetChallengeModeData) }
-    //    };
+            CollectStageUIPresenter presenter = new CollectStageUIPresenter(model, viewer);
 
-    //        _fsm.Initialize(states, State.Init);
+            _gameClearExitBtn.onClick.AddListener(() => { _fsm.OnClickExitBtn(); });
+            _nextStageBtn.onClick.AddListener(() => { _fsm.OnClickNextStageBtn(); });
+
+            _goBackBtn.onClick.AddListener(() => { _fsm.OnClickGoBackHint(); });
+            _randomHintBtn.onClick.AddListener(() => { _fsm.OnClickRandomFillHint(); });
+            _revealSameColorHintBtn.onClick.AddListener(() => { _fsm.OnClickRevealSameColorHint(); });
+
+            _fsm = new FSM<State>();
+            Dictionary<State, BaseState<State>> states = new Dictionary<State, BaseState<State>>()
+            {
+                {
+                    State.Initialize,
+                    new InitializeState
+                    (
+                        _fsm,
+                        _modeData,
+                        new EffectFactory(addressableHandler.EffectAssets),
+                        new DotFactory(addressableHandler.DotAssets),
+                        _dotGridContent,
+                        _penContent,
+                        _penToggleGroup,
+                        artData,
+                        presenter,
+                        SetLevelData
+                    )
+                },
+
+                { State.Memorize, new MemorizeState(_fsm, _modeData, presenter, GetLevelData) },
+                { State.Paint, new PaintState(_fsm, _modeData, presenter, GetLevelData) },
+                { State.Clear, new ClearState(_fsm, _modeData, artData, presenter, GetLevelData, DestroyDots) },
+                { State.Result, new GameResultState(_fsm, presenter, _modeData) }
+            };
+
+            _fsm.Initialize(states, State.Initialize, sectionIndex);
         }
     }
 }

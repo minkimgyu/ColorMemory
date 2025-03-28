@@ -7,34 +7,57 @@ namespace Collect
     public class ClearState : BaseState<CollectMode.State>
     {
         Action DestroyDots;
-        Action<PaintState.Data> OnStageClear;
-        Func<CollectMode.Data> GetStageControllerData;
+        CollectMode.Data _modeData;
+        CollectiveArtData _artData;
 
         Func<Tuple<Dot[,], Dot[], MapData>> GetLevelData;
-        ChallengeStageUIPresenter _challengeStageUIPresenter;
+        CollectStageUIPresenter _collectStageUIPresenter;
 
         public ClearState(
             FSM<CollectMode.State> fsm,
-            ChallengeStageUIPresenter challengeStageUIPresenter,
+            CollectMode.Data modeData,
+            CollectiveArtData artData,
+            CollectStageUIPresenter collectStageUIPresenter,
 
             Func<Tuple<Dot[,], Dot[], MapData>> GetLevelData,
-            Action DestroyDots,
-            Action<PaintState.Data> OnStageClear,
-            Func<CollectMode.Data> GetStageControllerData) : base(fsm)
+            Action DestroyDots) : base(fsm)
         {
-            _challengeStageUIPresenter = challengeStageUIPresenter;
+            _collectStageUIPresenter = collectStageUIPresenter;
             this.GetLevelData = GetLevelData;
             this.DestroyDots = DestroyDots;
-            this.OnStageClear = OnStageClear;
-            this.GetStageControllerData = GetStageControllerData;
+            _modeData = modeData;
+            _artData = artData;
         }
 
-        PaintState.Data _data;
-
-        public override void OnStateEnter(PaintState.Data data)
+        public override void OnClickExitBtn()
         {
-            _data = data;
+            ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.HomeScene);
+        }
 
+        public override void OnClickNextStageBtn()
+        {
+            SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
+            int row = _artData.Sections.Count;
+            int col = _artData.Sections[0].Count;
+
+            if (data.SelectedArtworkSectionIndex.x == row - 1
+            && data.SelectedArtworkSectionIndex.y == col - 1)
+            {
+                _fsm.SetState(CollectMode.State.Result); // 현재 스테이지가 마지막인 경우
+                return;
+            }
+
+            Vector2Int changedIndex;
+            int nextIndex = data.SelectedArtworkSectionIndex.y + 1;
+            if (nextIndex >= col) changedIndex = new Vector2Int(data.SelectedArtworkSectionIndex.x + 1, 0);
+            else changedIndex = new Vector2Int(data.SelectedArtworkSectionIndex.x, data.SelectedArtworkSectionIndex.y + 1);
+            ServiceLocater.ReturnSaveManager().SelectArtwork(changedIndex);
+
+            _fsm.SetState(CollectMode.State.Initialize, changedIndex);
+        }
+
+        public override void OnStateEnter()
+        {
             DOVirtual.DelayedCall(0.5f, () =>
             {
                 Tuple<Dot[,], Dot[], MapData> levelData = GetLevelData();
@@ -53,16 +76,22 @@ namespace Collect
                 DOVirtual.DelayedCall(1.5f, () =>
                 {
                     DestroyDots?.Invoke();
-                    _fsm.SetState(CollectMode.State.Initialize);
+
+                    // 다음 스테이지로 갈 것인지 판단하는 UI 띄우기
+                    _collectStageUIPresenter.ActivateGameClearPanel(true);
+
+                    //_fsm.SetState(CollectMode.State.Initialize);
                 });
             });
         }
 
+        const int clearPoint = 100;
+
         public override void OnStateExit()
         {
-            OnStageClear?.Invoke(_data);
-            CollectMode.Data data = GetStageControllerData();
-            _challengeStageUIPresenter.ChangeNowScore(data.MyScore);
+            _modeData.MyScore += clearPoint;
+            _collectStageUIPresenter.ActivateGameClearPanel(false);
+            //_collectStageUIPresenter.ChangeNowScore(data.MyScore);
             //_challengeStageUIPresenter.ChangeBestScore(data.MyScore);
         }
     }

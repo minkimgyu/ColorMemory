@@ -88,21 +88,20 @@ public class CollectPagePresenter
 
                 spawnableUI.InjectClickEvent((index) => 
                 {
+                    ServiceLocater.ReturnSaveManager().SelectArtwork(name.ToString(), index);
+
+
                     _collectPageModel.SelectedArtworkIndex = index;
                     _collectPageViewer.SelectStage(index);
                 });
 
-                if ((i == 0 && j == 0))
+                if(i == row - 1 && j == col - 1)
                 {
-                    spawnableUI.SetState(StageUI.State.Clear);
-                }
-                else if ((i == 0 && j == 1) || (i == 0 && j == 2))
-                {
-                    spawnableUI.SetState(StageUI.State.Open);
+                    spawnableUI.SetState(StageUI.State.Lock);
                 }
                 else
                 {
-                    spawnableUI.SetState(StageUI.State.Lock);
+                    spawnableUI.SetState(StageUI.State.Clear);
                 }
 
                 _collectPageViewer.AddStage(spawnableUI);

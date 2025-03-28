@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using static UnityEditor.Timeline.TimelinePlaybackControls;
 
 abstract public class ScrollUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     [SerializeField] Scrollbar _scrollbar;
     [SerializeField] protected Transform _content;
 
-    List<Transform> _items;
+    public int ItemCount { get { return _content.childCount; } }
 
     protected int _menuSize;
     protected float[] _points;
@@ -30,7 +31,6 @@ abstract public class ScrollUI : MonoBehaviour, IBeginDragHandler, IDragHandler,
         _scaleChangeTimer = new Timer();
 
         _menuSize = menuCount;
-        _items = new List<Transform>();
         _points = new float[_menuSize];
 
         // 거리에 따라 0~1인 pos대입
@@ -43,12 +43,18 @@ abstract public class ScrollUI : MonoBehaviour, IBeginDragHandler, IDragHandler,
         _targetPos = _points[startIndex];
     }
 
-    public void AddItem(Transform item)
+    public virtual void AddItem(Transform item, bool setToMiddle)
+    {
+        item.SetParent(_content);
+        if (setToMiddle) item.SetSiblingIndex(ItemCount / 2);
+    }
+
+    public virtual void AddItem(Transform item)
     {
         item.SetParent(_content);
     }
 
-    public void DestroyItems()
+    public virtual void DestroyItems()
     {
         for (int i = _content.childCount - 1; i >= 0; i--)
         {

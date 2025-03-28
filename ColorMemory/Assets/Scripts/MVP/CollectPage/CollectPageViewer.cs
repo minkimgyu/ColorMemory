@@ -19,6 +19,7 @@ public class CollectPageViewer
 
     GameObject _selectStageContent;
     Transform _stageUIContent;
+    Button _exitBtn;
     Button _playBtn;
 
     CollectPagePresenter _collectPagePresenter;
@@ -36,6 +37,7 @@ public class CollectPageViewer
 
         GameObject selectStageContent,
         Transform stageUIContent,
+        Button exitBtn,
         Button playBtn,
 
         CollectPagePresenter collectPagePresenter)
@@ -52,9 +54,11 @@ public class CollectPageViewer
         _selectStageContent = selectStageContent;
         _stageUIContent = stageUIContent;
 
+        _exitBtn = exitBtn;
         _playBtn = playBtn;
         _collectPagePresenter = collectPagePresenter;
 
+        _exitBtn.onClick.AddListener(() => { ActiveSelectStageContent(false); });
         _playBtn.onClick.AddListener(() => { collectPagePresenter.PlayCollectMode(); });
         artworkScrollUI.OnDragEnd += collectPagePresenter.ChangeArtworkDescription;
         ActiveContent(false);
@@ -86,10 +90,8 @@ public class CollectPageViewer
         int childCount = _stageUIContent.childCount;
         for (int i = 0; i < childCount; i++)
         {
-            int row = i / 5;
-            int col = i % 5;
-
-            if(row == index.x && col == index.y)
+            StageUI stageUI = _stageUIContent.GetChild(i).GetComponent<StageUI>();
+            if(stageUI.Index == index)
             {
                 _stageUIContent.GetChild(i).GetComponent<StageUI>().ChangeSelect(true);
             }

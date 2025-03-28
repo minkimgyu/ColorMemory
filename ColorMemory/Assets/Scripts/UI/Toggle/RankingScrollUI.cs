@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -13,6 +14,8 @@ public class RankingScrollUI : ScrollUI
 
     const int menuSize = 250;
 
+    List<RankingUI> _rankingUIs = new List<RankingUI>();
+
     public override void SetUp(int menuCount, int startIndex = 0)
     {
         FitVerticalLayoutGroup(menuSize);
@@ -20,7 +23,6 @@ public class RankingScrollUI : ScrollUI
         base.SetUp(menuCount, startIndex);
         _scaleChangeTimer = new Timer();
         _contentRectTransform = _content.GetComponent<RectTransform>();
-
         ScrollToLevel(startIndex);
     }
 
@@ -56,19 +58,45 @@ public class RankingScrollUI : ScrollUI
         _scaleChangeTimer.Start(1f);
     }
 
-    void ScaleTarget(float ratio = 1)
+    public override void AddItem(Transform item)
     {
+        base.AddItem(item);
+        _rankingUIs.Add(item.GetComponent<RankingUI>());
+    }
+
+
+    public override void AddItem(Transform item, bool setToMiddle)
+    {
+        base.AddItem(item, setToMiddle);
+
+        _rankingUIs.Clear();
         for (int i = 0; i < _content.childCount; i++)
         {
+            _rankingUIs.Add(_content.GetChild(i).GetComponent<RankingUI>());
+        }
+    }
+
+    public override void DestroyItems()
+    {
+        base.DestroyItems();
+        _rankingUIs.Clear();
+    }
+
+    void ScaleTarget(float ratio)
+    {
+        for (int i = 0; i < _rankingUIs.Count; i++)
+        {
+            RankingUI rankingUI = _rankingUIs[i];
+
             if (i == _targetIndex)
             {
-                Transform targetTr = _content.GetChild(i);
-                targetTr.localScale = Vector3.Lerp(targetTr.localScale, Vector3.one, ratio);
+                rankingUI.ChangeSelect(true);
+                rankingUI.ChangeScale(Vector3.one, ratio);
             }
             else
             {
-                Transform targetTr = _content.GetChild(i);
-                targetTr.localScale = Vector3.Lerp(targetTr.localScale, Vector3.one * 0.8f, ratio);
+                rankingUI.ChangeSelect(false);
+                rankingUI.ChangeScale(Vector3.one * 0.8f, ratio);
             }
         }
     }

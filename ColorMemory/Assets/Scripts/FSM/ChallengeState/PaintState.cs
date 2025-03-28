@@ -3,7 +3,6 @@ using System;
 using UnityEngine;
 using DG.Tweening;
 using Random = UnityEngine.Random;
-using static Challenge.ChallengeMode;
 
 namespace Challenge
 {
@@ -25,6 +24,7 @@ namespace Challenge
 
         Dot[,] _dots;
         Dot[] _penDots;
+
         Color[] _pickColors;
         Vector2Int[] _closePoints;
         Vector2Int _levelSize;
@@ -90,9 +90,46 @@ namespace Challenge
 
             if (_timer.CurrentState == Timer.State.Finish)
             {
+                _modeData.PassedDuration += _timer.PassedTime;
+
                 _timer.Reset(); // 타이머 리셋
                 _fsm.SetState(ChallengeMode.State.GameOver);
                 return;
+            }
+        }
+
+        void ChangePenDotColorCount()
+        {
+            int row = _mapData.DotColor.GetLength(0);
+            int col = _mapData.DotColor.GetLength(1);
+
+            List<int> pickColor = _mapData.PickColors;
+            int[] colorArr = new int[_pickColors.Length];
+
+            for (int i = 0; i < row; i++)
+            {
+                for (int j = 0; j < col; j++)
+                {
+                    int colorIndex = _mapData.DotColor[i, j];
+                    colorArr[colorIndex]++;
+                }
+            }
+
+            // 방문한 건 따로 체크해주기
+            for (int x = 0; x < _levelSize.x; x++)
+            {
+                for (int y = 0; y < _levelSize.y; y++)
+                {
+                    if (_visit[x, y] != -1)
+                    {
+                        colorArr[_visit[x, y]]--;
+                    }
+                }
+            }
+
+            for (int i = 0; i < _penDots.Length; i++)
+            {
+                _penDots[i].ChangeColorCount(colorArr[pickColor[i]]);
             }
         }
 
@@ -112,9 +149,6 @@ namespace Challenge
                 _penDots[i].Maximize(0.5f);
             }
 
-
-
-
             _visit = new int[_levelSize.x, _levelSize.y];
 
             for (int x = 0; x < _levelSize.x; x++)
@@ -124,6 +158,8 @@ namespace Challenge
                     _visit[x, y] = -1;
                 }
             }
+
+            ChangePenDotColorCount();
 
             _challengeStageUIPresenter.ChangeTotalTime(_modeData.PlayDuration);
 
@@ -200,6 +236,8 @@ namespace Challenge
                             }
                         }
                     }
+
+                    ChangePenDotColorCount();
 
                     Time.timeScale = 1;
                     _state = RevealSameColorHintState.Idle;
@@ -289,8 +327,12 @@ namespace Challenge
                 }
             }
 
+            ChangePenDotColorCount();
+
             bool canClear = CanClearStage();
             if (canClear == false) return;
+
+            _modeData.PassedDuration += _timer.PassedTime;
 
             _modeData.PlayDuration -= _timer.PassedTime;
             _modeData.PlayDuration += _modeData.IncreaseDurationOnClear;

@@ -26,10 +26,10 @@ public class ClearPatternCreater : SpawnableUICreater
     {
     }
 
-    public override SpawnableUI Create(MapData data, Color[] pickColors)
+    public override SpawnableUI Create(int currentStageCount, int totalStageCount, MapData data, Color[] pickColors)
     {
         SpawnableUI clearPatternUI = Object.Instantiate(_prefab);
-        clearPatternUI.Initialize(data, pickColors);
+        clearPatternUI.Initialize(currentStageCount, totalStageCount, data, pickColors);
 
         return clearPatternUI;
     }
@@ -85,7 +85,7 @@ abstract public class SpawnableUICreater
     
 
     public virtual SpawnableUI Create(ArtName name, Rank frameType) { return default; }
-    public virtual SpawnableUI Create(MapData data, Color[] pickColors) { return default; }
+    public virtual SpawnableUI Create(int currentStageCount, int totalStageCount, MapData data, Color[] pickColors) { return default; }
     public virtual SpawnableUI Create(
         List<List<CollectiveArtData.Block>> blocks,
         List<List<CollectiveArtData.Color>> usedColors) { return default; }
@@ -104,9 +104,9 @@ public class ClearPatternUIFactory : BaseFactory
         _clearPatternCreater = new ClearPatternCreater(clearPatternUIPrefab);
     }
 
-    public override SpawnableUI Create(MapData data, Color[] pickColors)
+    public override SpawnableUI Create(int currentStageCount, int totalStageCount, MapData data, Color[] pickColors)
     {
-        return _clearPatternCreater.Create(data, pickColors);
+        return _clearPatternCreater.Create(currentStageCount, totalStageCount, data, pickColors);
     }
 }
 

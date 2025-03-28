@@ -25,6 +25,7 @@ public class AddressableHandler : MonoBehaviour
         RankingIcon,
 
         SpawnableUI,
+        ChallengeModeStageData
     }
 
     HashSet<BaseLoader> _assetLoaders;
@@ -63,6 +64,8 @@ public class AddressableHandler : MonoBehaviour
 
     public Dictionary<SpawnableUI.Name, SpawnableUI> SpawnableUIAssets { get; private set; }
 
+    public Challenge.ChallengeMode.StageDataWrapper ChallengeStageDataWrapper { get; private set; }
+
 
     public void Load(Action OnCompleted)
     {
@@ -80,6 +83,8 @@ public class AddressableHandler : MonoBehaviour
         _assetLoaders.Add(new RankingIconAssetLoader(Label.RankingIcon, (value, label) => { RankingIconAssets = value; OnSuccess(label); }));
 
         _assetLoaders.Add(new SpawnableUIAssetLoader(Label.SpawnableUI, (value, label) => { SpawnableUIAssets = value; OnSuccess(label); }));
+
+        _assetLoaders.Add(new ChallengeModeStageDataJsonAssetLoader(Label.ChallengeModeStageData, (value, label) => { ChallengeStageDataWrapper = value; OnSuccess(label); }));
 
         this.OnCompleted = OnCompleted;
         _totalCount = _assetLoaders.Count;

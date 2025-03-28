@@ -66,3 +66,10 @@ public class ArtworkJsonAssetLoader : SingleJsonAssetLoader<ArtworkDataObject>
     {
     }
 }
+
+public class ChallengeModeStageDataJsonAssetLoader : SingleJsonAssetLoader<Challenge.ChallengeMode.StageDataWrapper>
+{
+    public ChallengeModeStageDataJsonAssetLoader(AddressableHandler.Label label, Action<Challenge.ChallengeMode.StageDataWrapper, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
+    {
+    }
+}
