@@ -23,6 +23,7 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
 
         GameObject selectStageContent,
         Transform stageUIContent,
+        Button exitBtn,
         Button playBtn,
 
         ArtworkScrollUI artworkScrollUI,
@@ -52,6 +53,7 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
             totalCompleteText,
             selectStageContent,
             stageUIContent,
+            exitBtn,
             playBtn,
             _collectPagePresenter);
 
@@ -62,6 +64,11 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
     void GoToCollectMode()
     {
         ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.CollectScene);
+    }
+
+    public override void OnClickShopBtn()
+    {
+        _fsm.SetState(HomePage.InnerPageState.Shop);
     }
 
     public override void OnClickRankingBtn()

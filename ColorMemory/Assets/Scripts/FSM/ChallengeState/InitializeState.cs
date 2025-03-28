@@ -9,10 +9,10 @@ namespace Challenge
     public class InitializeState : BaseState<ChallengeMode.State>
     {
         // 스테이지 생성 후 다른 State로 레벨 데이터 뿌리기
-        Vector2Int _levelSize;
+        //Vector2Int _levelSize;
 
         Color[] _pickColors;
-        int _pickCount;
+        //int _pickCount;
 
         EffectFactory _effectFactory;
         DotFactory _dotFactory;
@@ -25,14 +25,13 @@ namespace Challenge
 
         Action<Dot[,], Dot[], MapData> SetStage;
 
+        RandomLevelGenerator _randomLevelGenerator;
         ChallengeStageUIPresenter _challengeStageUIPresenter;
 
         public InitializeState(
             FSM<ChallengeMode.State> fsm,
 
             Color[] pickColors,
-            int pickCount,
-            Vector2Int levelSize,
 
             EffectFactory effectFactory,
             DotFactory dotFactory,
@@ -40,6 +39,8 @@ namespace Challenge
             GridLayoutGroup grid,
             RectTransform penContent,
             ToggleGroup penToggleGroup,
+
+            RandomLevelGenerator randomLevelGenerator,
             ChallengeStageUIPresenter challengeStageUIPresenter,
 
             ModeData modeData,
@@ -47,8 +48,8 @@ namespace Challenge
         ) : base(fsm)
         {
             _pickColors = pickColors;
-            _pickCount = pickCount;
-            _levelSize = levelSize;
+            //_pickCount = pickCount;
+            //_levelSize = levelSize;
 
             _effectFactory = effectFactory;
             _dotFactory = dotFactory;
@@ -57,6 +58,7 @@ namespace Challenge
             _penContent = penContent;
             _penToggleGroup = penToggleGroup;
 
+            _randomLevelGenerator = randomLevelGenerator;
             _challengeStageUIPresenter = challengeStageUIPresenter;
 
             _modeData = modeData;
@@ -72,15 +74,20 @@ namespace Challenge
 
         void CreateLevel()
         {
-            RandomLevelGenerator randomLevelGenerator = new RandomLevelGenerator(_pickColors.Length, _pickCount, _levelSize);
-            if (randomLevelGenerator.CanGenerateLevelData() == false) return;
+            if (_randomLevelGenerator.CanGenerateLevelData() == false) return;
 
-            MapData mapData = randomLevelGenerator.GenerateLevelData();
-            Dot[,] dots = new Dot[_levelSize.x, _levelSize.y];
+            MapData mapData = _randomLevelGenerator.GenerateLevelData(_modeData.StageCount);
 
-            for (int i = 0; i < _levelSize.x; i++)
+            int row = mapData.DotColor.GetLength(0);
+            int col = mapData.DotColor.GetLength(1);
+
+            _dotGridContent.constraintCount = row;
+
+            Dot[,] dots = new Dot[row, col];
+
+            for (int i = 0; i < row; i++)
             {
-                for (int j = 0; j < _levelSize.y; j++)
+                for (int j = 0; j < col; j++)
                 {
                     Dot dot = _dotFactory.Create(Dot.Name.Basic);
 
@@ -91,9 +98,9 @@ namespace Challenge
                 }
             }
 
-            Dot[] colorPenDots = new Dot[_pickCount];
+            Dot[] colorPenDots = new Dot[mapData.PickColors.Count];
 
-            for (int i = 0; i < _pickCount; i++)
+            for (int i = 0; i < mapData.PickColors.Count; i++)
             {
                 Dot colorPenDot = _dotFactory.Create(Dot.Name.ColorPen);
                 colorPenDot.ChangeColor(_pickColors[mapData.PickColors[i]]);
@@ -105,6 +112,7 @@ namespace Challenge
                 colorPenDots[i] = colorPenDot;
             }
 
+            _modeData.StageData.Add(mapData);
             _modeData.StageCount += 1;
 
             SetStage?.Invoke(dots, colorPenDots, mapData);

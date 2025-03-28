@@ -1,7 +1,8 @@
 using UnityEngine;
 
-abstract public class LevelGenerator
+public interface LevelGenerator
 {
-    public abstract bool CanGenerateLevelData();
-    public abstract MapData GenerateLevelData();
+    bool CanGenerateLevelData();
+    MapData GenerateLevelData(int currentStageIndex) { return default; }
+    MapData GenerateLevelData() { return default; }
 }

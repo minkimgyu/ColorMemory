@@ -11,7 +11,7 @@ public class ColorPenDot : Dot
     protected Action<int> OnClick;
 
     Toggle _toggle;
-    [SerializeField] TextMeshPro _colorCountTxt;
+    [SerializeField] TMP_Text _colorCountTxt;
 
     public override void Initialize()
     {

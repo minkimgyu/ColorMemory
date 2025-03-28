@@ -13,7 +13,7 @@ public class CollectStageUIModel
         _timeRatio = 0;
         _activeRememberPanel = false;
         _activeHintPanel = false;
-        _activeGameOverPanel = false;
+        _activeGameClearPanel = false;
         _clearStageCount = 0;
         _activeGameResultPanel = false;
         _goldCount = 0;
@@ -55,6 +55,13 @@ public class CollectStageUIModel
         set => _timeRatio = value;
     }
 
+    bool _activeTimerContent;
+    public bool ActiveTimerContent
+    {
+        get => _activeTimerContent;
+        set => _activeTimerContent = value;
+    }
+
     bool _activeRememberPanel;
     public bool ActiveRememberPanel
     {
@@ -69,12 +76,12 @@ public class CollectStageUIModel
         set => _activeHintPanel = value;
     }
 
-    bool _activeGameOverPanel;
+    bool _activeGameClearPanel;
 
-    public bool ActiveGameOverPanel
+    public bool ActiveGameClearPanel
     {
-        get => _activeGameOverPanel;
-        set => _activeGameOverPanel = value;
+        get => _activeGameClearPanel;
+        set => _activeGameClearPanel = value;
     }
 
     int _clearStageCount;
@@ -105,4 +112,7 @@ public class CollectStageUIModel
         get => _goldCount;
         set => _goldCount = value;
     }
+
+    string _title;
+    public string Title { get => _title; set => _title = value; }
 }

@@ -8,41 +8,28 @@ namespace Collect
 {
     public class PaintState : BaseState<CollectMode.State>
     {
-        public struct Data
-        {
-            float _leftDurationRatio;
-
-            public Data(float leftDurationRatio)
-            {
-                _leftDurationRatio = leftDurationRatio;
-            }
-
-            public float LeftDurationRatio { get => _leftDurationRatio; }
-        }
-
         MapData _mapData;
 
         Dot[,] _dots;
         Dot[] _penDots;
-        Color[] _pickColors;
+        CollectMode.Data _modeData;
         Vector2Int[] _closePoints;
         Vector2Int _levelSize;
 
-        Timer _timer;
-        float _paintDuration;
+        //Timer _timer;
+        //float _paintDuration;
 
         Func<Tuple<Dot[,], Dot[], MapData>> GetLevelData;
-        ChallengeStageUIPresenter _challengeStageUIPresenter;
+        CollectStageUIPresenter _collectStageUIPresenter;
 
         public PaintState(
             FSM<CollectMode.State> fsm,
-            Color[] pickColors,
-            float paintDuration,
-            ChallengeStageUIPresenter challengeStageUIPresenter,
+            CollectMode.Data modeData,
+            CollectStageUIPresenter collectStageUIPresenter,
             Func<Tuple<Dot[,], Dot[], MapData>> GetLevelData
         ) : base(fsm)
         {
-            _pickColors = pickColors;
+            _modeData = modeData;
             _closePoints = new Vector2Int[8]
             {
             new Vector2Int(-1, 0), // ↑
@@ -55,10 +42,10 @@ namespace Collect
             new Vector2Int(-1, -1), // ↖
             };
 
-            _paintDuration = paintDuration;
-            _timer = new Timer();
+            //_paintDuration = paintDuration;
+            //_timer = new Timer();
 
-            _challengeStageUIPresenter = challengeStageUIPresenter;
+            _collectStageUIPresenter = collectStageUIPresenter;
             this.GetLevelData = GetLevelData;
         }
 
@@ -83,16 +70,48 @@ namespace Collect
             return canClear;
         }
 
-        public override void OnStateUpdate()
+        void ChangePenDotColorCount()
         {
-            _challengeStageUIPresenter.ChangeLeftTime(_timer.LeftTime, 1 - _timer.Ratio);
+            int row = _mapData.DotColor.GetLength(0);
+            int col = _mapData.DotColor.GetLength(1);
 
-            if (_timer.CurrentState == Timer.State.Finish)
+            List<int> pickColor = _mapData.PickColors;
+            int[] colorArr = new int[_modeData.PickColors.Length];
+
+            for (int i = 0; i < row; i++)
             {
-                _timer.Reset(); // 타이머 리셋
-                //_fsm.SetState(CollectMode.State.GameOver);
-                return;
+                for (int j = 0; j < col; j++)
+                {
+                    int colorIndex = _mapData.DotColor[i, j];
+                    colorArr[colorIndex]++;
+                }
             }
+
+            // 방문한 건 따로 체크해주기
+            for (int x = 0; x < _levelSize.x; x++)
+            {
+                for (int y = 0; y < _levelSize.y; y++)
+                {
+                    if (_visit[x, y] != -1)
+                    {
+                        colorArr[_visit[x, y]]--;
+                    }
+                }
+            }
+
+            for (int i = 0; i < _penDots.Length; i++)
+            {
+                _penDots[i].ChangeColorCount(colorArr[pickColor[i]]);
+            }
+        }
+
+        public override void OnClickGoBackHint()
+        {
+            SaveData save = ServiceLocater.ReturnSaveManager().GetSaveData();
+
+            _modeData.IsPlayed[save.SelectedArtworkSectionIndex.x, save.SelectedArtworkSectionIndex.y] = true;
+            _modeData.GoBackCount[save.SelectedArtworkSectionIndex.x, save.SelectedArtworkSectionIndex.y] += 1;
+            _fsm.SetState(CollectMode.State.Memorize);
         }
 
         public override void OnStateEnter()
@@ -121,11 +140,13 @@ namespace Collect
                 }
             }
 
-            _challengeStageUIPresenter.ChangeTotalTime(_paintDuration);
+            ChangePenDotColorCount();
+
+            //_challengeStageUIPresenter.ChangeTotalTime(_paintDuration);
 
             DOVirtual.DelayedCall(0.5f, () =>
             {
-                _timer.Start(_paintDuration);
+                //_timer.Start(_paintDuration);
             });
         }
 
@@ -151,7 +172,7 @@ namespace Collect
 
         Color GetDotColor(Vector2Int index)
         {
-            return _pickColors[_mapData.DotColor[index.x, index.y]];
+            return _modeData.PickColors[_mapData.DotColor[index.x, index.y]];
         }
 
         public override void OnClickDot(Vector2Int index)
@@ -191,13 +212,16 @@ namespace Collect
                         }
                     }
 
+                    ChangePenDotColorCount();
+
+                    Time.timeScale = 1;
                     _state = RevealSameColorHintState.Idle;
-                    _challengeStageUIPresenter.ActivateHintPanel(false);
+                    _collectStageUIPresenter.ActivateHintPanel(false);
 
                     bool canClear = CanClearStage();
                     if (canClear == false) return;
 
-                    _timer.Reset(); // 타이머 리셋
+                    //_timer.Reset(); // 타이머 리셋
                     _fsm.SetState(CollectMode.State.Clear);
 
                     break;
@@ -216,8 +240,9 @@ namespace Collect
 
         public override void OnClickRevealSameColorHint()
         {
+            Time.timeScale = 0;
             _state = RevealSameColorHintState.SelectColor;
-            _challengeStageUIPresenter.ActivateHintPanel(true); // active panel 적용해주기
+            _collectStageUIPresenter.ActivateHintPanel(true); // active panel 적용해주기
         }
 
         public override void OnClickRandomFillHint()
@@ -272,12 +297,15 @@ namespace Collect
                 }
             }
 
+            ChangePenDotColorCount();
+
             bool canClear = CanClearStage();
             if (canClear == false) return;
 
-            float leftRatio = _timer.Ratio;
-            _timer.Reset(); // 타이머 리셋
-            _fsm.SetState(CollectMode.State.Clear, new Collect.PaintState.Data(leftRatio));
+            //float leftRatio = _timer.Ratio;
+            //_timer.Reset(); // 타이머 리셋
+
+            _fsm.SetState(CollectMode.State.Clear);
         }
     }
 }

@@ -9,27 +9,11 @@ public class ChallengeStageUIPresenter
     ChallengeStageUIModel _model;
     ChallengeStageUIViewer _viewer;
 
-    Action OnClickNextBtn;
-    Action OnClickRetryBtn;
-    Action OnClickExitBtn;
-
-    public ChallengeStageUIPresenter(ChallengeStageUIModel model, Action OnClickNextBtn, Action OnClickRetryBtn, Action OnClickExitBtn)
+    public ChallengeStageUIPresenter(ChallengeStageUIModel model, ChallengeStageUIViewer viewer)
     {
         _model = model;
-        this.OnClickNextBtn = OnClickNextBtn;
-        this.OnClickRetryBtn = OnClickRetryBtn;
-        this.OnClickExitBtn = OnClickExitBtn;
-    }
-
-    public void InjectViewer(ChallengeStageUIViewer viewer)
-    {
         _viewer = viewer;
     }
-
-    //public void ChangeTitle(string title)
-    //{
-    //    _model.Title = title;
-    //}
 
     public void FillTimeSlider(float duration)
     {
@@ -92,10 +76,11 @@ public class ChallengeStageUIPresenter
         _viewer.ActivateGameOverPanel(_model.ActiveGameOverPanel);
     }
 
-    public void ChangeClearStageCount(int clearStageCount)
+    public void ChangeClearStageCount(int passedDuration, int clearStageCount)
     {
+        _model.PassedDuration = passedDuration;
         _model.ClearStageCount = clearStageCount;
-        _viewer.ChangeClearStageCount(_model.ClearStageCount);
+        _viewer.ChangeClearStageCount(_model.PassedDuration, _model.ClearStageCount);
     }
 
     public void AddClearPattern(SpawnableUI clearPattern)
@@ -108,31 +93,10 @@ public class ChallengeStageUIPresenter
         _viewer.RemoveClearPattern();
     }
 
-    public void OnNextBtnClicked()
-    {
-        OnClickNextBtn?.Invoke();
-    }
-
-    public void OnExitBtnClicked()
-    {
-        OnClickExitBtn?.Invoke();
-    }
-
-    public void OnRetryBtnClicked()
-    {
-        OnClickRetryBtn?.Invoke();
-    }
-
     public void ActivateGameResultPanel(bool active)
     {
         _model.ActiveGameResultPanel = active;
         _viewer.ActivateGameResultPanel(_model.ActiveGameResultPanel);
-    }
-
-    public void ChangeResultScore(int resultScore)
-    {
-        _model.ResultScore = resultScore;
-        _viewer.ChangeResultScore(_model.ResultScore);
     }
 
     public void ChangeGoldCount(int goldCount)

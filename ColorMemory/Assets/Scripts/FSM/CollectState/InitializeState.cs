@@ -2,16 +2,16 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 using DG.Tweening;
+using System.Collections.Generic;
 
 namespace Collect
 {
     public class InitializeState : BaseState<CollectMode.State>
     {
         // 스테이지 생성 후 다른 State로 레벨 데이터 뿌리기
-        Vector2Int _levelSize;
 
-        Color[] _pickColors;
-        int _pickCount;
+        CollectiveArtData _artData;
+        CollectMode.Data _modeData;
 
         EffectFactory _effectFactory;
         DotFactory _dotFactory;
@@ -21,16 +21,13 @@ namespace Collect
         ToggleGroup _penToggleGroup;
 
         Action<Dot[,], Dot[], MapData> SetLevelData;
-
-        ChallengeStageUIPresenter _challengeStageUIPresenter;
+        CollectStageUIPresenter _collectStageUIPresenter;
         int _level = 0;
 
         public InitializeState(
             FSM<CollectMode.State> fsm,
 
-            Color[] pickColors,
-            int pickCount,
-            Vector2Int levelSize,
+            CollectMode.Data modeData,
 
             EffectFactory effectFactory,
             DotFactory dotFactory,
@@ -38,14 +35,14 @@ namespace Collect
             GridLayoutGroup grid,
             RectTransform penContent,
             ToggleGroup penToggleGroup,
-            ChallengeStageUIPresenter challengeStageUIPresenter,
+
+            CollectiveArtData artData,
+            CollectStageUIPresenter collectStageUIPresenter,
 
             Action<Dot[,], Dot[], MapData> SetLevelData
         ) : base(fsm)
         {
-            _pickColors = pickColors;
-            _pickCount = pickCount;
-            _levelSize = levelSize;
+            _modeData = modeData;
 
             _effectFactory = effectFactory;
             _dotFactory = dotFactory;
@@ -54,28 +51,43 @@ namespace Collect
             _penContent = penContent;
             _penToggleGroup = penToggleGroup;
 
-            _challengeStageUIPresenter = challengeStageUIPresenter;
+            _artData = artData;
+            _collectStageUIPresenter = collectStageUIPresenter;
             this.SetLevelData = SetLevelData;
         }
 
-        public override void OnStateEnter()
+        public override void OnStateEnter(Vector2Int sectionIndex)
         {
-            //_challengeStageUIPresenter.ChangeTitle($"LEVEL {++_level}");
-            CreateLevel();
+            CreateLevel(sectionIndex);
             _fsm.SetState(CollectMode.State.Memorize);
         }
 
-        void CreateLevel()
+        void CreateLevel(Vector2Int sectionIndex)
         {
-            RandomLevelGenerator randomLevelGenerator = new RandomLevelGenerator(_pickColors.Length, _pickCount, _levelSize);
-            if (randomLevelGenerator.CanGenerateLevelData() == false) return;
+            int colorCount = _artData.Sections[sectionIndex.x][sectionIndex.y].UsedColors[0].Count;
+            _modeData.PickColors = new Color[colorCount];
 
-            MapData mapData = randomLevelGenerator.GenerateLevelData();
-            Dot[,] dots = new Dot[_levelSize.x, _levelSize.y];
-
-            for (int i = 0; i < _levelSize.x; i++)
+            for (int i = 0; i < colorCount; i++)
             {
-                for (int j = 0; j < _levelSize.y; j++)
+                _modeData.PickColors[i] = _artData.Sections[sectionIndex.x][sectionIndex.y].UsedColors[0][i].GetColor();
+            }
+
+            CustomLevelGenerator customLevelGenerator = new CustomLevelGenerator(_artData.Sections[sectionIndex.x][sectionIndex.y]);
+            if (customLevelGenerator.CanGenerateLevelData() == false) return;
+
+            MapData mapData = customLevelGenerator.GenerateLevelData();
+
+            string title = ServiceLocater.ReturnSaveManager().GetSaveData().SelectedArtworkName;
+            _collectStageUIPresenter.ChangeTitle(title);
+
+            int row = mapData.DotColor.GetLength(0);
+            int col = mapData.DotColor.GetLength(1);
+
+            Dot[,] dots = new Dot[row, col];
+
+            for (int i = 0; i < row; i++)
+            {
+                for (int j = 0; j < col; j++)
                 {
                     Dot dot = _dotFactory.Create(Dot.Name.Basic);
 
@@ -86,12 +98,12 @@ namespace Collect
                 }
             }
 
-            Dot[] colorPenDots = new Dot[_pickCount];
+            Dot[] colorPenDots = new Dot[mapData.PickColors.Count];
 
-            for (int i = 0; i < _pickCount; i++)
+            for (int i = 0; i < mapData.PickColors.Count; i++)
             {
                 Dot colorPenDot = _dotFactory.Create(Dot.Name.ColorPen);
-                colorPenDot.ChangeColor(_pickColors[mapData.PickColors[i]]);
+                colorPenDot.ChangeColor(_modeData.PickColors[mapData.PickColors[i]]);
 
                 colorPenDot.Inject(_effectFactory, _penToggleGroup, mapData.PickColors[i], (index) => { _fsm.OnClickDot(index); });
                 colorPenDot.transform.SetParent(_penContent);

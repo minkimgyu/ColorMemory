@@ -24,9 +24,10 @@ public interface ISaveable
     void ChangeBGMVolume(float volume) { }
     void ChangeSFXVolume(float volume) { }
     void ChangeGameModeType(GameMode.Type type) { }
+    void SelectArtwork(string selectedArtworkName, Vector2Int selectedArtworkSectionIndex) { }
+    void SelectArtwork(Vector2Int selectedArtworkSectionIndex) { }
 
     void ChangeMoney(int money) { }
-
 
     void ChangeHighScore(int highScore) { }
     void ChangeOneColorHintCount(int oneColorHintCount) { }
@@ -47,13 +48,15 @@ public class PlayerArtwork
 
 public struct SaveData
 {
-    [JsonProperty("muteBGM")] bool _muteBGM;
-    [JsonProperty("muteSFX")] bool _muteSFX;
+    [JsonProperty] bool _muteBGM;
+    [JsonProperty] bool _muteSFX;
 
-    [JsonProperty("bgmVolume")] float _bgmVolume;
-    [JsonProperty("sfxVolume")] float _sfxVolume;
-    [JsonProperty("selectedType")]
-    [JsonConverter(typeof(StringEnumConverter))] GameMode.Type _selectedType;
+    [JsonProperty] float _bgmVolume;
+    [JsonProperty] float _sfxVolume;
+    [JsonProperty] [JsonConverter(typeof(StringEnumConverter))] GameMode.Type _selectedType;
+
+    [JsonProperty] string _selectedArtworkName;
+    [JsonProperty] Vector2Int _selectedArtworkSectionIndex;
 
     [JsonIgnore] string _name;
     [JsonIgnore] int _money; // °ñµå
@@ -72,6 +75,8 @@ public struct SaveData
         _sfxVolume = 1f;
 
         _selectedType = GameMode.Type.Collect;
+        _selectedArtworkName = "";
+        _selectedArtworkSectionIndex = Vector2Int.zero;
 
         _name = name;
         _money = 0;
@@ -96,6 +101,8 @@ public struct SaveData
         _sfxVolume = 1f;
 
         _selectedType = GameMode.Type.Collect;
+        _selectedArtworkName = "";
+        _selectedArtworkSectionIndex = Vector2Int.zero;
 
         _name = name;
         _money = money;
@@ -116,6 +123,8 @@ public struct SaveData
     [JsonIgnore] public int OneColorHintCount { get => _oneColorHintCount; set => _oneColorHintCount = value; }
     [JsonIgnore] public int OneZoneHintCount { get => _oneZoneHintCount; set => _oneZoneHintCount = value; }
     [JsonIgnore] public List<PlayerArtwork> ArtworkDatas { get => _artworkDatas; set => _artworkDatas = value; }
+    [JsonIgnore] public string SelectedArtworkName { get => _selectedArtworkName; set => _selectedArtworkName = value; }
+    [JsonIgnore] public Vector2Int SelectedArtworkSectionIndex { get => _selectedArtworkSectionIndex; set => _selectedArtworkSectionIndex = value; }
 }
 
 public class SaveManager : ISaveable
@@ -250,6 +259,18 @@ public class SaveManager : ISaveable
         Save();
     }
 
+    public void SelectArtwork(Vector2Int selectedArtworkSectionIndex)
+    {
+        _saveData.SelectedArtworkSectionIndex = selectedArtworkSectionIndex;
+        Save();
+    }
+
+    public void SelectArtwork(string selectedArtworkName, Vector2Int selectedArtworkSectionIndex) 
+    {
+        _saveData.SelectedArtworkName = selectedArtworkName;
+        _saveData.SelectedArtworkSectionIndex = selectedArtworkSectionIndex;
+        Save();
+    }
 
     public void ChangeHighScore(int highScore) 
     {

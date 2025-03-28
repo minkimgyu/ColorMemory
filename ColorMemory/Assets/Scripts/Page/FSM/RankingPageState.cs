@@ -26,6 +26,11 @@ public class RankingPageState : BaseState<HomePage.InnerPageState>
         _rankingPagePresenter.ActiveContent(false);
     }
 
+    public override void OnClickShopBtn()
+    {
+        _fsm.SetState(HomePage.InnerPageState.Shop);
+    }
+
     public override void OnClickHomeBtn()
     {
         _fsm.SetState(HomePage.InnerPageState.Main);

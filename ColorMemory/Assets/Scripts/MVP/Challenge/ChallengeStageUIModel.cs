@@ -84,6 +84,13 @@ public class ChallengeStageUIModel
         set => _activeGameOverPanel = value;
     }
 
+    int _passedDuration;
+    public int PassedDuration
+    {
+        get => _passedDuration;
+        set => _passedDuration = value;
+    }
+
     int _clearStageCount;
     public int ClearStageCount
     {
@@ -97,13 +104,6 @@ public class ChallengeStageUIModel
     {
         get => _activeGameResultPanel;
         set => _activeGameResultPanel = value;
-    }
-
-    int _resultScore;
-    public int ResultScore
-    {
-        get => _resultScore;
-        set => _resultScore = value;
     }
 
     int _goldCount;

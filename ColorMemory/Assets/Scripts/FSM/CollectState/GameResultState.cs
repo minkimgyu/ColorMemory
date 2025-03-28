@@ -6,30 +6,28 @@ namespace Collect
 {
     public class GameResultState : BaseState<CollectMode.State>
     {
-        ChallengeStageUIPresenter _challengeStageUIPresenter;
-        System.Func<CollectMode.Data> GetChallengeModeData;
+        CollectStageUIPresenter _collectStageUIPresenter;
+        CollectMode.Data _modeData;
 
         public GameResultState(
             FSM<CollectMode.State> fsm,
-            ChallengeStageUIPresenter challengeStageUIPresenter,
-            System.Func<CollectMode.Data> GetChallengeModeData) : base(fsm)
+            CollectStageUIPresenter collectStageUIPresenter,
+            CollectMode.Data modeData) : base(fsm)
         {
-            _challengeStageUIPresenter = challengeStageUIPresenter;
-            this.GetChallengeModeData = GetChallengeModeData;
+            _collectStageUIPresenter = collectStageUIPresenter;
+            _modeData = modeData;
         }
 
         public override void OnStateEnter()
         {
-            _challengeStageUIPresenter.ActivateGameResultPanel(true);
+            _collectStageUIPresenter.ActivateGameResultPanel(true);
 
-            CollectMode.Data modeData = GetChallengeModeData();
-            _challengeStageUIPresenter.ChangeResultScore(modeData.MyScore);
-            _challengeStageUIPresenter.ChangeGoldCount(modeData.MyScore);
+            _collectStageUIPresenter.ChangeGoldCount(_modeData.MyScore);
         }
 
         public override void OnStateExit()
         {
-            _challengeStageUIPresenter.ActivateGameResultPanel(false);
+            _collectStageUIPresenter.ActivateGameResultPanel(false);
         }
     }
 }

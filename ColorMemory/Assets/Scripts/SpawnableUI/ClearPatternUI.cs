@@ -2,15 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class ClearPatternUI : SpawnableUI
 {
     const int maxSize = 5;
+    [SerializeField] TMP_Text _stageTxt;
     [SerializeField] Transform _content;
+    [SerializeField] GridLayoutGroup _gridLayoutGroup;
     GameObject[,] _dots;
 
-    public override void Initialize(MapData data, Color[] pickColors)
+    public override void Initialize(int currentStageCount, int totalStageCount, MapData data, Color[] pickColors)
     {
+        _stageTxt.text = $"{currentStageCount}/{totalStageCount}";
+
         _dots = new GameObject[maxSize, maxSize];
         for (int i = 0; i < maxSize * maxSize; i++)
         {
@@ -23,6 +28,8 @@ public class ClearPatternUI : SpawnableUI
 
         int row = data.DotColor.GetLength(0);
         int height = data.DotColor.GetLength(1);
+
+        _gridLayoutGroup.constraintCount = row;
 
         for (int i = 0; i < row; i++)
         {

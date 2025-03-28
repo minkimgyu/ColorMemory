@@ -9,27 +9,17 @@ public class CollectStageUIPresenter
     CollectStageUIModel _model;
     CollectStageUIViewer _viewer;
 
-    Action OnClickNextBtn;
-    Action OnClickRetryBtn;
-    Action OnClickExitBtn;
-
-    public CollectStageUIPresenter(CollectStageUIModel model, Action OnClickNextBtn, Action OnClickRetryBtn, Action OnClickExitBtn)
+    public CollectStageUIPresenter(CollectStageUIModel model, CollectStageUIViewer viewer)
     {
         _model = model;
-        this.OnClickNextBtn = OnClickNextBtn;
-        this.OnClickRetryBtn = OnClickRetryBtn;
-        this.OnClickExitBtn = OnClickExitBtn;
-    }
-
-    public void InjectViewer(CollectStageUIViewer viewer)
-    {
         _viewer = viewer;
     }
 
-    //public void ChangeTitle(string title)
-    //{
-    //    _model.Title = title;
-    //}
+    public void ChangeTitle(string title)
+    {
+        _model.Title = title;
+        _viewer.ChangeTitle(_model.Title);
+    }
 
     public void FillTimeSlider(float duration)
     {
@@ -40,18 +30,6 @@ public class CollectStageUIPresenter
                 _viewer.FillTimeSlider(_model.TimeRatio);
             }
         ));
-    }
-
-    public void ChangeBestScore(int bestScore)
-    {
-        _model.BestScore = bestScore;
-        _viewer.ChangeBestScore(_model.BestScore);
-    }
-
-    public void ChangeNowScore(int nowScore)
-    {
-        _model.NowScore = nowScore;
-        _viewer.ChangeNowScore(_model.NowScore);
     }
 
     public void ChangeTotalTime(float totalTime)
@@ -68,6 +46,12 @@ public class CollectStageUIPresenter
         _viewer.ChangeLeftTime(_model.LeftTime, _model.TimeRatio);
     }
 
+    public void ActivateTimerContent(bool active)
+    {
+        _model.ActiveTimerContent = active;
+        _viewer.ActivateTimerContent(_model.ActiveTimerContent);
+    }
+
     public void ActivateRememberPanel(bool active)
     {
         _model.ActiveRememberPanel = active;
@@ -80,36 +64,10 @@ public class CollectStageUIPresenter
         _viewer.ActivateHintPanel(_model.ActiveHintPanel);
     }
 
-    public void ActivateGameOverPanel(bool active)
+    public void ActivateGameClearPanel(bool active)
     {
-        _model.ActiveGameOverPanel = active;
-        _viewer.ActivateGameOverPanel(_model.ActiveGameOverPanel);
-    }
-
-    public void ChangeClearStageCount(int clearStageCount)
-    {
-        _model.ClearStageCount = clearStageCount;
-        _viewer.ChangeClearStageCount(_model.ClearStageCount);
-    }
-
-    public void AddClearPattern(ClearPatternUI clearPattern)
-    {
-        _viewer.AddClearPattern(clearPattern);
-    }
-
-    public void OnNextBtnClicked()
-    {
-        OnClickNextBtn?.Invoke();
-    }
-
-    public void OnExitBtnClicked()
-    {
-        OnClickExitBtn?.Invoke();
-    }
-
-    public void OnRetryBtnClicked()
-    {
-        OnClickRetryBtn?.Invoke();
+        _model.ActiveGameClearPanel = active;
+        _viewer.ActivateGameClearPanel(_model.ActiveGameClearPanel);
     }
 
     public void ActivateGameResultPanel(bool active)
@@ -118,20 +76,9 @@ public class CollectStageUIPresenter
         _viewer.ActivateGameResultPanel(_model.ActiveGameResultPanel);
     }
 
-    public void ChangeResultScore(int resultScore)
-    {
-        _model.ResultScore = resultScore;
-        _viewer.ChangeResultScore(_model.ResultScore);
-    }
-
     public void ChangeGoldCount(int goldCount)
     {
         _model.GoldCount = goldCount;
         _viewer.ChangeGoldCount(_model.GoldCount);
-    }
-
-    public void AddRanking(RankingUI ranking)
-    {
-        _viewer.AddRanking(ranking);
     }
 }

@@ -17,14 +17,14 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: 9e2e58cad9bc0d743b9b06b55430a62a
   m_SerializeEntries:
-  - m_GUID: 45ce1681c0b583947a6bdb2fedb03a3f
-    m_Address: Challenge
+  - m_GUID: 344dc784bcc527d41a6bb5ee28aa32bf
+    m_Address: Collect
     m_ReadOnly: 0
     m_SerializedLabels:
     - ModeTitle
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: edb8b2c542e75f743a690d1c3a3a51e5
-    m_Address: Collect
+  - m_GUID: edab252852418e943b79343cdde7d96c
+    m_Address: Challenge
     m_ReadOnly: 0
     m_SerializedLabels:
     - ModeTitle

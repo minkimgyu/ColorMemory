@@ -20,9 +20,12 @@ public class HomePage : MonoBehaviour
     const int _dotSize = 6;
     const float _contentSize = 0.8f;
 
+    [Header("Setting")]
+    [SerializeField] SideSheetUI _sideSheetUI;
 
     [Header("Top")]
     [SerializeField] Button _homeBtn;
+    [SerializeField] Button _shopBtn;
     [SerializeField] TMP_Text _goldTxt;
     [SerializeField] Button _rankingBtn;
     [SerializeField] Button _settingBtn;
@@ -47,6 +50,7 @@ public class HomePage : MonoBehaviour
     [SerializeField] TMP_Text _leftCompleteText;
     [SerializeField] TMP_Text _totalCompleteText;
     [SerializeField] Button _playCollectModeBtn;
+    [SerializeField] Button _exitBtn;
 
     [SerializeField] ArtworkScrollUI _artworkScrollUI;
 
@@ -54,6 +58,10 @@ public class HomePage : MonoBehaviour
     [SerializeField] GameObject _rankingContent;
     [SerializeField] Transform _rankingScrollContent;
     [SerializeField] Transform _myRankingContent;
+
+    [Header("Shop")]
+    [SerializeField] GameObject _shopContent;
+    [SerializeField] Transform _shopScrollContent;
 
     FSM<InnerPageState> _pageFsm;
 
@@ -80,8 +88,11 @@ public class HomePage : MonoBehaviour
             addressableHandler.RankingIconAssets
         );
 
+        _shopBtn.onClick.AddListener(() => { _pageFsm.OnClickShopBtn(); });
         _homeBtn.onClick.AddListener(() => { _pageFsm.OnClickHomeBtn(); });
         _rankingBtn.onClick.AddListener(() => { _pageFsm.OnClickRankingBtn(); });
+
+        _settingBtn.onClick.AddListener(() => { _sideSheetUI.TogglePanel(); });
 
         SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
         _goldTxt.text = data.Money.ToString();
@@ -113,6 +124,7 @@ public class HomePage : MonoBehaviour
                 _totalCompleteText,
                 _selectStageContent,
                 _stageUIContent,
+                _exitBtn,
                 _playCollectModeBtn,
                 _artworkScrollUI,
                 artWorkUIFactory,
@@ -127,6 +139,12 @@ public class HomePage : MonoBehaviour
                 _rankingScrollContent,
                 _myRankingContent,
                 rankingUIFactory,
+                _pageFsm)
+            },
+            {
+                InnerPageState.Shop, new ShopPageState(
+                _shopContent,
+                _shopScrollContent,
                 _pageFsm)
             },
         }, InnerPageState.Main);
