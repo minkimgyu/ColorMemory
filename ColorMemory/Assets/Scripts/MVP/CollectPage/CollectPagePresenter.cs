@@ -90,7 +90,6 @@ public class CollectPagePresenter
                 {
                     ServiceLocater.ReturnSaveManager().SelectArtwork(name.ToString(), index);
 
-
                     _collectPageModel.SelectedArtworkIndex = index;
                     _collectPageViewer.SelectStage(index);
                 });
