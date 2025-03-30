@@ -67,7 +67,7 @@ namespace Challenge
 
         public override void OnStateEnter()
         {
-            //_challengeStageUIPresenter.ChangeTitle($"LEVEL {++_level}");
+            _challengeStageUIPresenter.ActivatePlayPanel(true);
             CreateLevel();
             _fsm.SetState(ChallengeMode.State.Memorize);
         }
@@ -93,7 +93,6 @@ namespace Challenge
 
                     dot.Inject(_effectFactory, new Vector2Int(i, j), (index) => { _fsm.OnClickDot(index); });
                     dot.transform.SetParent(_dotGridContent.transform);
-
                     dots[i, j] = dot;
                 }
             }

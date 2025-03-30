@@ -1,4 +1,5 @@
 using DG.Tweening;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -7,6 +8,8 @@ using UnityEngine.UI;
 
 public class ChallengeStageUIViewer
 {
+    GameObject _playPanel;
+
     TMP_Text _bestScoreText;
     TMP_Text _nowScoreText;
 
@@ -20,16 +23,21 @@ public class ChallengeStageUIViewer
     GameObject _hintPanel;
     GameObject _rememberPanel;
 
+    GameObject _coinPanel;
+    TMP_Text _coinTxt;
+
     GameObject _gameOverPanel;
     TMP_Text _clearStageCount;
     Transform _clearStageContent;
 
     GameObject _gameResultPanel;
     TMP_Text _goldCount;
-    RankingScrollUI _rankingScrollRect;
+
     Transform _rankingContent;
+    ScrollRect _rankingScrollRect;
 
     public ChallengeStageUIViewer(
+        GameObject playPanel,
         TMP_Text bestScoreText,
         TMP_Text nowScoreText,
         Image timerSlider,
@@ -40,14 +48,20 @@ public class ChallengeStageUIViewer
         GameObject hintPanel,
         GameObject rememberPanel,
 
+        GameObject coinPanel,
+        TMP_Text coinTxt,
+
         GameObject gameOverPanel,
         TMP_Text clearStageCount,
         Transform clearStageContent,
 
         GameObject gameResultPanel,
         TMP_Text goldCount,
-        RankingScrollUI rankingScrollRect)
+        Transform rankingContent,
+        ScrollRect rankingScrollRect)
     {
+        _playPanel = playPanel;
+
         _bestScoreText = bestScoreText;
         _nowScoreText = nowScoreText;
         _timerSlider = timerSlider;
@@ -58,18 +72,22 @@ public class ChallengeStageUIViewer
         _hintPanel = hintPanel;
         _rememberPanel = rememberPanel;
 
+        _coinPanel = coinPanel;
+        _coinTxt = coinTxt;
+
         _gameOverPanel = gameOverPanel;
         _clearStageCount = clearStageCount;
         _clearStageContent = clearStageContent;
 
         _gameResultPanel = gameResultPanel;
         _goldCount = goldCount;
+        _rankingContent = rankingContent;
         _rankingScrollRect = rankingScrollRect;
     }
 
-    public void ChangeRankingScrollValue(int menuCount, int index)
+    public void ActivatePlayPanel(bool active)
     {
-        _rankingScrollRect.SetUp(menuCount, index);
+        _playPanel.SetActive(active);
     }
 
     public void ChangeNowScore(int score)
@@ -120,6 +138,17 @@ public class ChallengeStageUIViewer
         _rememberPanel.SetActive(active);
     }
 
+    public void ActivateCoinPanel(bool active)
+    {
+        _coinPanel.SetActive(active);
+    }
+
+    public void ChangeCoinCount(int coin)
+    {
+        _coinTxt.text = coin.ToString("N0"); // "9,000"
+    }
+
+
     public void ActivateHintPanel(bool active)
     {
         _hintPanel.SetActive(active);
@@ -144,7 +173,10 @@ public class ChallengeStageUIViewer
     {
         for (int i = _clearStageContent.childCount - 1; i >= 0; i--)
         {
-            _clearStageContent.GetChild(i).GetComponent<SpawnableUI>().DestroyObject();
+            SpawnableUI spawnableUI = _clearStageContent.GetChild(i).GetComponent<SpawnableUI>();
+            if (spawnableUI == null) continue;
+
+            spawnableUI.DestroyObject();
         }
     }
 
@@ -160,11 +192,23 @@ public class ChallengeStageUIViewer
 
     public void AddRanking(SpawnableUI ranking, bool setToMiddle = false)
     {
-        _rankingScrollRect.AddItem(ranking.transform, setToMiddle);
+        ranking.transform.SetParent(_rankingContent);
+        if(setToMiddle == true) ranking.transform.SetSiblingIndex(_rankingContent.childCount / 2);
     }
 
     public void RemoveAllRanking()
     {
-        _rankingScrollRect.DestroyItems();
+        for (int i = _rankingContent.childCount - 1; i >= 0; i--)
+        {
+            SpawnableUI spawnableUI = _rankingContent.GetChild(i).GetComponent<SpawnableUI>();
+            if(spawnableUI == null) continue;
+
+            spawnableUI.DestroyObject();
+        }
+    }
+
+    public void ChangeRankingScrollValue(int menuCount, int scrollIndex)
+    {
+        _rankingScrollRect.verticalNormalizedPosition = (float)scrollIndex / (float)menuCount;
     }
 }

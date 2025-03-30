@@ -7,6 +7,8 @@ using UnityEngine.UI;
 
 public class CollectStageUIViewer
 {
+    GameObject _playPanel;
+
     TMP_Text _titleText;
 
     GameObject _timerContent;
@@ -14,8 +16,10 @@ public class CollectStageUIViewer
     TMP_Text _leftTimeText;
     TMP_Text _totalTimeText;
 
-    GameObject _hintPanel;
+    TMP_Text _progressText;
+
     GameObject _rememberPanel;
+    TMP_Text _hintInfoText;
 
     GameObject _gameClearPanel;
     Image _cropArtworkImg;
@@ -26,14 +30,17 @@ public class CollectStageUIViewer
     TMP_Text _goldCount;
 
     public CollectStageUIViewer(
+         GameObject playPanel,
         TMP_Text titleText,
         GameObject timerContent,
         Image timerSlider,
         TMP_Text leftTimeText,
         TMP_Text totalTimeText,
 
-        GameObject hintPanel,
+        TMP_Text progressText,
+
         GameObject rememberPanel,
+        TMP_Text hintInfoText,
 
         GameObject gameClearPanel,
         Image cropArtworkImg,
@@ -41,13 +48,18 @@ public class CollectStageUIViewer
         GameObject gameResultPanel,
         TMP_Text goldCount)
     {
+        _playPanel = playPanel;
+
         _titleText = titleText;
         _timerContent = timerContent;
         _timerSlider = timerSlider;
         _leftTimeText = leftTimeText;
         _totalTimeText = totalTimeText;
-        _hintPanel = hintPanel;
+
+        _progressText = progressText;
+
         _rememberPanel = rememberPanel;
+        _hintInfoText = hintInfoText;
 
         _gameClearPanel = gameClearPanel;
         _cropArtworkImg = cropArtworkImg;
@@ -56,9 +68,24 @@ public class CollectStageUIViewer
         _goldCount = goldCount;
     }
 
+    public void ActivatePlayPanel(bool active)
+    {
+        _playPanel.SetActive(active);
+    }
+
     public void ChangeTitle(string title)
     {
         _titleText.text = title;
+    }
+
+    public void ChangeHintInfoText(string infoText)
+    {
+        _hintInfoText.text = infoText;
+    }
+
+    public void ChangeProgressText(int progress)
+    {
+        _progressText.text = $"{progress}%";
     }
 
     public void FillTimeSlider(float ratio)
@@ -97,11 +124,6 @@ public class CollectStageUIViewer
     public void ActivateRememberPanel(bool active)
     {
         _rememberPanel.SetActive(active);
-    }
-
-    public void ActivateHintPanel(bool active)
-    {
-        _hintPanel.SetActive(active);
     }
 
     public void ActivateGameClearPanel(bool active)

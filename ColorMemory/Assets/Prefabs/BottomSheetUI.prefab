@@ -53,7 +53,7 @@ MonoBehaviour:
   slideDuration: 0.3
   speedThreshold: 1500
   _hiddenPositionOffset: 522
-  _visiblePoistionOffset: 450
+  _visiblePoistionOffset: 380
 --- !u!1 &2895854081393867584
 GameObject:
   m_ObjectHideFlags: 0

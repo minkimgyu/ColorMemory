@@ -6,6 +6,7 @@ public class ChallengeStageUIModel
 {
     public ChallengeStageUIModel()
     {
+        _activePlayPanel = false;
         _bestScore = 0;
         _nowScore = 0;
         _leftTime = 0;
@@ -17,6 +18,14 @@ public class ChallengeStageUIModel
         _clearStageCount = 0;
         _activeGameResultPanel = false;
         _goldCount = 0;
+    }
+
+    bool _activePlayPanel;
+
+    public bool ActivePlayPanel
+    {
+        get => _activePlayPanel;
+        set => _activePlayPanel = value;
     }
 
     int _bestScore;
@@ -75,6 +84,27 @@ public class ChallengeStageUIModel
         get => _activeHintPanel;
         set => _activeHintPanel = value;
     }
+
+
+
+
+    bool _activeCoinPanel;
+    public bool ActiveCoinPanel
+    {
+        get => _activeCoinPanel;
+        set => _activeCoinPanel = value;
+    }
+
+    int _coinCount;
+    public int CoinCount
+    {
+        get => _coinCount;
+        set => _coinCount = value;
+    }
+
+
+
+
 
     bool _activeGameOverPanel;
 

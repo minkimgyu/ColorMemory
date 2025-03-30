@@ -69,9 +69,9 @@ public class RankingUI : SpawnableUI
         else _backgroundImg.color = Color.white;
     }
 
-    public override void ChangeScale(Vector3 scale, float ratio)
+    public override void ChangeScale(Vector3 scale)
     {
-        transform.localScale = Vector3.Lerp(transform.localScale, scale, ratio);
+        transform.localScale = scale;
     }
 
     public override void ResetPosition()

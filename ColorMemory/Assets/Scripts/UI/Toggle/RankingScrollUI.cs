@@ -82,32 +82,32 @@ public class RankingScrollUI : ScrollUI
         _rankingUIs.Clear();
     }
 
-    void ScaleTarget(float ratio)
-    {
-        for (int i = 0; i < _rankingUIs.Count; i++)
-        {
-            RankingUI rankingUI = _rankingUIs[i];
+    //void ScaleTarget(float ratio)
+    //{
+    //    for (int i = 0; i < _rankingUIs.Count; i++)
+    //    {
+    //        RankingUI rankingUI = _rankingUIs[i];
 
-            if (i == _targetIndex)
-            {
-                rankingUI.ChangeSelect(true);
-                rankingUI.ChangeScale(Vector3.one, ratio);
-            }
-            else
-            {
-                rankingUI.ChangeSelect(false);
-                rankingUI.ChangeScale(Vector3.one * 0.8f, ratio);
-            }
-        }
-    }
+    //        if (i == _targetIndex)
+    //        {
+    //            rankingUI.ChangeSelect(true);
+    //            rankingUI.ChangeScale(Vector3.one, ratio);
+    //        }
+    //        else
+    //        {
+    //            rankingUI.ChangeSelect(false);
+    //            rankingUI.ChangeScale(Vector3.one * 0.8f, ratio);
+    //        }
+    //    }
+    //}
 
-    protected override void Update()
-    {
-        base.Update();
-        if (_scaleChangeTimer.CurrentState == Timer.State.Running)
-        {
-            ScaleTarget(_scaleChangeTimer.Ratio);
-            LayoutRebuilder.ForceRebuildLayoutImmediate(_contentRectTransform);
-        }
-    }
+    //protected override void Update()
+    //{
+    //    base.Update();
+    //    if (_scaleChangeTimer.CurrentState == Timer.State.Running)
+    //    {
+    //        ScaleTarget(_scaleChangeTimer.Ratio);
+    //        LayoutRebuilder.ForceRebuildLayoutImmediate(_contentRectTransform);
+    //    }
+    //}
 }

@@ -36,6 +36,7 @@ public class HomePage : MonoBehaviour
     [SerializeField] ToggleBtn _toggleBtn;
     [SerializeField] Transform _dotParent;
     [SerializeField] Button _playBtn;
+    [SerializeField] TMP_Text _playBtnTxt;
 
     [Header("Collect")]
     [SerializeField] GameObject _collectionContent;
@@ -109,6 +110,7 @@ public class HomePage : MonoBehaviour
                 _toggleBtn,
                 _dotParent,
                 _playBtn,
+                _playBtnTxt,
                 _mainContent,
                 addressableHandler.ModeTitleIconAssets,
                 _pageFsm)

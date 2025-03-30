@@ -9,6 +9,9 @@ namespace Collect
 {
     public class CollectMode : GameMode
     {
+        [Header("Play")]
+        [SerializeField] GameObject _playPanel;
+
         [Header("Top")]
         [SerializeField] TMP_Text _titleText;
         [SerializeField] GameObject _timerContent;
@@ -16,6 +19,8 @@ namespace Collect
 
         [SerializeField] TMP_Text _leftTimeText;
         [SerializeField] TMP_Text _totalTimeText;
+
+        [SerializeField] TMP_Text _progressText;
 
         [Header("Middle")]
         [SerializeField] GridLayoutGroup _dotGridContent;
@@ -32,12 +37,8 @@ namespace Collect
 
         [Header("Hint")]
         [SerializeField] Button _goBackBtn;
-
-        [SerializeField] Button _randomHintBtn;
-        [SerializeField] Button _revealSameColorHintBtn;
-
-        [SerializeField] GameObject _hintPanel;
         [SerializeField] GameObject _rememberPanel;
+        [SerializeField] TMP_Text _hintInfoText;
 
         [Header("Clear")]
         [SerializeField] GameObject _gameClearPanel;
@@ -165,13 +166,17 @@ namespace Collect
 
             CollectStageUIModel model = new CollectStageUIModel();
             CollectStageUIViewer viewer = new CollectStageUIViewer(
+                _playPanel,
                 _titleText,
                 _timerContent,
                 _timerSlider,
                 _leftTimeText,
                 _totalTimeText,
-                _hintPanel,
+                _progressText,
+
                 _rememberPanel,
+                _hintInfoText,
+
                 _gameClearPanel,
                 _cropArtworkImg,
                 _gameResultPanel,
@@ -183,8 +188,6 @@ namespace Collect
             _nextStageBtn.onClick.AddListener(() => { _fsm.OnClickNextStageBtn(); });
 
             _goBackBtn.onClick.AddListener(() => { _fsm.OnClickGoBackHint(); });
-            _randomHintBtn.onClick.AddListener(() => { _fsm.OnClickRandomFillHint(); });
-            _revealSameColorHintBtn.onClick.AddListener(() => { _fsm.OnClickRevealSameColorHint(); });
 
             _fsm = new FSM<State>();
             Dictionary<State, BaseState<State>> states = new Dictionary<State, BaseState<State>>()

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,6 +10,8 @@ public class MainPageViewer
     Image _titleImg;
 
     Button _playBtn;
+    TMPro.TMP_Text _playBtnTxt;
+
     Image _playBtnImg;
     ToggleBtn _toggleBtn;
     Dot[,] _dots;
@@ -19,6 +22,8 @@ public class MainPageViewer
         GameObject content,
         Image titleImg,
         Button playBtn,
+        TMPro.TMP_Text playBtnTxt,
+
         Image playBtnImg,
         ToggleBtn toggleBtn,
         Dot[,] dots,
@@ -29,6 +34,7 @@ public class MainPageViewer
         _playBtn = playBtn;
         _playBtn.onClick.AddListener(() => { homePagePresenter.OnClickPlayBtn(); });
 
+        _playBtnTxt = playBtnTxt;
 
         _playBtnImg = playBtnImg;
         _dots = dots;
@@ -68,8 +74,13 @@ public class MainPageViewer
         {
             for (int j = 0; j < size; j++)
             {
-                _dots[i, j].Fade(colors[i, j], UnityEngine.UI.Image.FillMethod.Horizontal, 0.3f);
+                _dots[i, j].ChangeColor(colors[i, j]);
             }
         }
+    }
+
+    public void ChangePlayBtnTxt(string btnTxt)
+    {
+        _playBtnTxt.text = btnTxt;
     }
 }

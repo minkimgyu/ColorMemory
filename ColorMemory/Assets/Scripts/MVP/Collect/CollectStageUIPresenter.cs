@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
 using System;
+using Unity.VisualScripting;
 
 public class CollectStageUIPresenter
 {
@@ -13,6 +14,24 @@ public class CollectStageUIPresenter
     {
         _model = model;
         _viewer = viewer;
+    }
+
+    public void ActivatePlayPanel(bool active)
+    {
+        _model.ActivePlayPanel = active;
+        _viewer.ActivatePlayPanel(_model.ActivePlayPanel);
+    }
+
+    public void ChangeHintInfoText(string infoText)
+    {
+        _model.HintInfo = infoText;
+        _viewer.ChangeHintInfoText(_model.HintInfo);
+    }
+
+    public void ChangeProgressText(int progress)
+    {
+        _model.Progress = progress;
+        _viewer.ChangeProgressText(_model.Progress);
     }
 
     public void ChangeTitle(string title)
@@ -56,12 +75,6 @@ public class CollectStageUIPresenter
     {
         _model.ActiveRememberPanel = active;
         _viewer.ActivateRememberPanel(_model.ActiveRememberPanel);
-    }
-
-    public void ActivateHintPanel(bool active)
-    {
-        _model.ActiveHintPanel = active;
-        _viewer.ActivateHintPanel(_model.ActiveHintPanel);
     }
 
     public void ActivateGameClearPanel(bool active)

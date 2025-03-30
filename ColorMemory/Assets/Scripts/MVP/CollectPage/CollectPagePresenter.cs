@@ -83,9 +83,7 @@ public class CollectPagePresenter
         {
             for (int j = 0; j < col; j++)
             {
-                SpawnableUI spawnableUI = _stageUIFactory.Create(sections[i][j].Blocks, sections[i][j].UsedColors);
-                spawnableUI.ChangeIndex(new Vector2Int(i, j));
-
+                SpawnableUI spawnableUI = _stageUIFactory.Create(new Vector2Int(i, j));
                 spawnableUI.InjectClickEvent((index) => 
                 {
                     ServiceLocater.ReturnSaveManager().SelectArtwork(name.ToString(), index);
@@ -94,15 +92,16 @@ public class CollectPagePresenter
                     _collectPageViewer.SelectStage(index);
                 });
 
-                if(i == row - 1 && j == col - 1)
-                {
-                    spawnableUI.SetState(StageUI.State.Lock);
-                }
-                else
-                {
-                    spawnableUI.SetState(StageUI.State.Clear);
-                }
+                //if(i == row - 1 && j == col - 1)
+                //{
+                //    spawnableUI.SetState(StageUI.State.Lock);
+                //}
+                //else
+                //{
+                //    spawnableUI.SetState(StageUI.State.Clear);
+                //}
 
+                spawnableUI.SetState(StageUI.State.Clear);
                 _collectPageViewer.AddStage(spawnableUI);
             }
         }

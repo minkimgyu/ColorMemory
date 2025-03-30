@@ -32,6 +32,7 @@ namespace Challenge
 
         public override void OnStateEnter()
         {
+            _challengeStageUIPresenter.ActivatePlayPanel(false);
             _challengeStageUIPresenter.ActivateGameOverPanel(true);
 
             for (int i = 0; i < _modeData.ClearStageCount; i++)

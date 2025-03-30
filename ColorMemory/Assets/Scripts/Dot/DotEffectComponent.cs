@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
-using System.Collections.Generic;
+using System;
 
 public class DotEffectComponent : MonoBehaviour
 {
@@ -19,23 +19,64 @@ public class DotEffectComponent : MonoBehaviour
         _effectFactory = effectFactory;
     }
 
-    public void Fade(Color endColor, Image.FillMethod method, float duration)
+    //public void Fade(Color endColor, Image.FillMethod method, float duration)
+    //{
+    //    Effect fadeEffect = _effectFactory.Create(Effect.Name.CircleEffect);
+
+    //    fadeEffect.transform.SetParent(transform);
+    //    fadeEffect.transform.SetAsLastSibling();
+
+    //    fadeEffect.transform.position = transform.position;
+
+    //    fadeEffect.ChangeSize(_dotTransform.sizeDelta);
+    //    fadeEffect.ChangeColor(_dotImage.color);
+
+    //    ChangeColor(endColor); // 본인 색 바꾸기
+
+    //    fadeEffect.Fade(transform.localScale, duration, method,
+    //        () =>
+    //        {
+    //            Destroy(fadeEffect.gameObject);
+    //        }
+    //    );
+    //}
+
+    public void Expand(float endScale, Color endColor, Color originColor, float duration, Action OnComplete)
     {
+        Effect expendEffect = _effectFactory.Create(Effect.Name.CircleEffect);
+
+        expendEffect.transform.SetParent(transform);
+        expendEffect.transform.SetAsLastSibling();
+
+        expendEffect.transform.position = transform.position;
+        expendEffect.transform.localScale = Vector3.zero;
+
+        expendEffect.ChangeSize(_dotTransform.sizeDelta);
+        expendEffect.ChangeColor(endColor);
+
+        expendEffect.Scale(endScale, duration,
+            () =>
+            {
+                Destroy(expendEffect.gameObject);
+            }
+        );
+
+
         Effect fadeEffect = _effectFactory.Create(Effect.Name.CircleEffect);
 
         fadeEffect.transform.SetParent(transform);
         fadeEffect.transform.SetAsLastSibling();
 
         fadeEffect.transform.position = transform.position;
+        fadeEffect.transform.localScale = 1f * Vector3.one;
 
         fadeEffect.ChangeSize(_dotTransform.sizeDelta);
-        fadeEffect.ChangeColor(_dotImage.color);
+        fadeEffect.ChangeColor(originColor);
 
-        ChangeColor(endColor); // 본인 색 바꾸기
-
-        fadeEffect.Fade(transform.localScale, duration, method,
+        fadeEffect.Color(new Color(originColor.r, originColor.g, originColor.b, 0), duration,
             () =>
             {
+                OnComplete?.Invoke();
                 Destroy(fadeEffect.gameObject);
             }
         );
@@ -46,6 +87,7 @@ public class DotEffectComponent : MonoBehaviour
         ChangeColor(endColor);
 
         Effect diffuseEffect = _effectFactory.Create(Effect.Name.CircleEffect);
+        diffuseEffect.name = "diffuseEffect";
 
         diffuseEffect.transform.SetParent(_dotTransform);
         diffuseEffect.transform.SetAsFirstSibling();
@@ -63,6 +105,7 @@ public class DotEffectComponent : MonoBehaviour
         );
 
         Effect fadeEffect = _effectFactory.Create(Effect.Name.CircleEffect);
+        fadeEffect.name = "fadeEffect";
 
         fadeEffect.transform.SetParent(transform);
         fadeEffect.transform.SetAsLastSibling();
@@ -70,33 +113,10 @@ public class DotEffectComponent : MonoBehaviour
         fadeEffect.transform.position = transform.position;
 
         fadeEffect.ChangeSize(_dotTransform.sizeDelta);
-
         fadeEffect.Fade(transform.localScale, duration, Image.FillMethod.Horizontal,
             () =>
             {
                 Destroy(fadeEffect.gameObject);
-            }
-        );
-    }
-
-    public void Fill(Color endColor, float duration)
-    {
-        ChangeColor(endColor);
-
-        Effect rectEffect = _effectFactory.Create(Effect.Name.RectEffect);
-
-        rectEffect.transform.SetParent(transform);
-        rectEffect.transform.SetAsLastSibling();
-
-        rectEffect.transform.position = transform.position;
-
-        rectEffect.ChangeSize(_dotTransform.sizeDelta);
-        rectEffect.ChangeColor(endColor);
-
-        rectEffect.Scale(1 + 0.07f, duration,
-            () =>
-            {
-                Destroy(rectEffect.gameObject);
             }
         );
     }

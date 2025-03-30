@@ -3,21 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using System.Reflection;
 
 public class StageUI : SpawnableUI
 {
     const int maxSize = 5;
-    [SerializeField] Transform _content;
     [SerializeField] GameObject _outline;
-    [SerializeField] Image _coverImg;
+    [SerializeField] Image _outlineImg;
+
+    [SerializeField] Image _selectBtnImg;
     [SerializeField] Button _selectBtn;
 
     public Action<Vector2Int> OnClickRequested;
 
-    readonly Color _lockColor = new Color(43/255f, 43/255f, 43/255f);
-    readonly Color _openColor = new Color(255/255f, 255/255f, 255/255f);
-
-    GameObject[,] _dots;
+    readonly Color _lockColor = new Color(236/255f, 232/255f, 232/255f);
+    readonly Color _openColor = new Color(113/255f, 196/255f, 255/255f);
 
     public enum State
     {
@@ -36,11 +36,6 @@ public class StageUI : SpawnableUI
     Vector2Int _index;
     public Vector2Int Index { get => _index; }
 
-    public override void ChangeIndex(Vector2Int index)
-    {
-        _index = index;
-    }
-
     public override void ChangeSelect(bool select) 
     {
         _outline.SetActive(select);
@@ -52,50 +47,26 @@ public class StageUI : SpawnableUI
         switch (_state)
         {
             case State.Lock:
-                _coverImg.gameObject.SetActive(true);
-                _coverImg.color = _lockColor;
+                _outlineImg.color = _lockColor;
+                _selectBtnImg.color = _lockColor;
 
                 break;
             case State.Open:
-                _coverImg.gameObject.SetActive(true);
-                _coverImg.color = _openColor;
+                _outlineImg.color = _openColor;
+                _selectBtnImg.color = _openColor;
 
                 break;
             case State.Clear:
-                _coverImg.gameObject.SetActive(false);
                 break;
             default:
                 break;
         }
     }
 
-    public override void Initialize(
-        List<List<CollectiveArtData.Block>> blocks, 
-        List<List<CollectiveArtData.Color>> usedColors)
+    public override void Initialize(Vector2Int index)
     {
+        _index = index;
         ChangeSelect(false);
-
-        _dots = new GameObject[maxSize, maxSize];
-        for (int i = 0; i < maxSize * maxSize; i++)
-        {
-            Transform child = _content.GetChild(i);
-            int maxCol = i % maxSize;
-            int maxRow = i / maxSize;
-            _dots[maxRow, maxCol] = child.gameObject;
-            child.gameObject.SetActive(false);
-        }
-
-        int row = blocks.Count;
-        int height = blocks[0].Count;
-
-        for (int i = 0; i < row; i++)
-        {
-            for (int j = 0; j < height; j++)
-            {
-                _dots[i, j].gameObject.SetActive(true);
-                _dots[i, j].GetComponent<Image>().color = blocks[i][j].Color.GetColor();
-            }
-        }
 
         _selectBtn.onClick.AddListener(() => 
         {

@@ -41,12 +41,10 @@ public class StageCreater : SpawnableUICreater
     {
     }
 
-    public override SpawnableUI Create(
-        List<List<CollectiveArtData.Block>> blocks,
-        List<List<CollectiveArtData.Color>> usedColors)
+    public override SpawnableUI Create(Vector2Int index)
     {
         SpawnableUI selectStageUI = Object.Instantiate(_prefab);
-        selectStageUI.Initialize(blocks, usedColors);
+        selectStageUI.Initialize(index);
 
         return selectStageUI;
     }
@@ -86,9 +84,7 @@ abstract public class SpawnableUICreater
 
     public virtual SpawnableUI Create(ArtName name, Rank frameType) { return default; }
     public virtual SpawnableUI Create(int currentStageCount, int totalStageCount, MapData data, Color[] pickColors) { return default; }
-    public virtual SpawnableUI Create(
-        List<List<CollectiveArtData.Block>> blocks,
-        List<List<CollectiveArtData.Color>> usedColors) { return default; }
+    public virtual SpawnableUI Create(Vector2Int index) { return default; }
     public virtual SpawnableUI Create(PersonalRankingData data) { return default; }
 }
 
@@ -119,11 +115,9 @@ public class StageUIFactory : BaseFactory
         _selectStageCreater = new StageCreater(clearPatternUIPrefab);
     }
 
-    public override SpawnableUI Create(
-        List<List<CollectiveArtData.Block>> blocks,
-        List<List<CollectiveArtData.Color>> usedColors)
+    public override SpawnableUI Create(Vector2Int index)
     {
-        return _selectStageCreater.Create(blocks, usedColors);
+        return _selectStageCreater.Create(index);
     }
 }
 

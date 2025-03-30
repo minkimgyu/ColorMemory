@@ -30,16 +30,16 @@ namespace Collect
         ) : base(fsm)
         {
             _modeData = modeData;
-            _closePoints = new Vector2Int[8]
+            _closePoints = new Vector2Int[4]
             {
             new Vector2Int(-1, 0), // ↑
             new Vector2Int(0, 1), // →
             new Vector2Int(1, 0), // ↓
             new Vector2Int(0, -1), // ←
-            new Vector2Int(-1, 1), // ↗
-            new Vector2Int(1, 1), // ↘
-            new Vector2Int(1, -1), // ↙
-            new Vector2Int(-1, -1), // ↖
+            //new Vector2Int(-1, 1), // ↗
+            //new Vector2Int(1, 1), // ↘
+            //new Vector2Int(1, -1), // ↙
+            //new Vector2Int(-1, -1), // ↖
             };
 
             //_paintDuration = paintDuration;
@@ -105,14 +105,30 @@ namespace Collect
             }
         }
 
+
+
         public override void OnClickGoBackHint()
         {
+            _goBackActivated = true;
+            _goBackCount++;
+
+            for (int i = 0; i < _penDots.Length; i++)
+            {
+                _penDots[i].Minimize();
+            }
+
+            _collectStageUIPresenter.ChangeHintInfoText($"힌트를 사용할수록 높은 랭크를 받을 확률이 떨어져요!");
             SaveData save = ServiceLocater.ReturnSaveManager().GetSaveData();
 
             _modeData.IsPlayed[save.SelectedArtworkSectionIndex.x, save.SelectedArtworkSectionIndex.y] = true;
             _modeData.GoBackCount[save.SelectedArtworkSectionIndex.x, save.SelectedArtworkSectionIndex.y] += 1;
             _fsm.SetState(CollectMode.State.Memorize);
         }
+
+        bool _goBackActivated = false;
+        int _goBackCount = 0;
+
+        readonly Color _fadeColor = new Color(236f / 255f, 232f / 255f, 232f / 255f);
 
         public override void OnStateEnter()
         {
@@ -123,31 +139,44 @@ namespace Collect
             _mapData = levelData.Item3;
             _levelSize = new Vector2Int(_dots.GetLength(0), _dots.GetLength(1));
 
-            _selectedColorIndex = _mapData.PickColors[0];
+            _collectStageUIPresenter.ChangeHintInfoText($"힌트를 {_goBackCount}번 사용했어요");
+
+            if (_goBackActivated == true)
+            {
+                _goBackActivated = false;
+
+                for (int i = 0; i < _levelSize.x; i++)
+                {
+                    for (int j = 0; j < _levelSize.y; j++)
+                    {
+                        if (_visit[i, j] == -1) continue;
+
+                        int colorIndex = _visit[i, j];
+                        _dots[i, j].Pop(_modeData.PickColors[colorIndex]);
+                    }
+                }
+            }
+            else
+            {
+                _selectedColorIndex = _mapData.PickColors[0];
+
+                _visit = new int[_levelSize.x, _levelSize.y];
+
+                for (int x = 0; x < _levelSize.x; x++)
+                {
+                    for (int y = 0; y < _levelSize.y; y++)
+                    {
+                        _visit[x, y] = -1;
+                    }
+                }
+
+                ChangePenDotColorCount();
+            }
 
             for (int i = 0; i < _penDots.Length; i++)
             {
                 _penDots[i].Maximize(0.5f);
             }
-
-            _visit = new int[_levelSize.x, _levelSize.y];
-
-            for (int x = 0; x < _levelSize.x; x++)
-            {
-                for (int y = 0; y < _levelSize.y; y++)
-                {
-                    _visit[x, y] = -1;
-                }
-            }
-
-            ChangePenDotColorCount();
-
-            //_challengeStageUIPresenter.ChangeTotalTime(_paintDuration);
-
-            DOVirtual.DelayedCall(0.5f, () =>
-            {
-                //_timer.Start(_paintDuration);
-            });
         }
 
         bool OutOfRange(Vector2Int point)
@@ -184,84 +213,11 @@ namespace Collect
         }
 
         int _selectedColorIndex = 0;
-        void ChangeSelectedColor(int index) => _selectedColorIndex = index;
 
         // color pen dot의 경우
         public override void OnClickDot(int index)
         {
-            Debug.Log(index);
-
-            switch (_state)
-            {
-                case RevealSameColorHintState.Idle:
-                    ChangeSelectedColor(index);
-                    break;
-                case RevealSameColorHintState.SelectColor:
-
-                    for (int x = 0; x < _levelSize.x; x++)
-                    {
-                        for (int y = 0; y < _levelSize.y; y++)
-                        {
-                            int colorIndex = _mapData.DotColor[x, y];
-                            if (colorIndex == index && _visit[x, y] < 0) // 같은 색상이고 방문하지 않은 경우
-                            {
-                                Color nearDotColor = GetDotColor(new Vector2Int(x, y));
-                                _dots[x, y].Pop(nearDotColor); // 색 바꿔주는 코드 추가
-                                _visit[x, y] = colorIndex;
-                            }
-                        }
-                    }
-
-                    ChangePenDotColorCount();
-
-                    Time.timeScale = 1;
-                    _state = RevealSameColorHintState.Idle;
-                    _collectStageUIPresenter.ActivateHintPanel(false);
-
-                    bool canClear = CanClearStage();
-                    if (canClear == false) return;
-
-                    //_timer.Reset(); // 타이머 리셋
-                    _fsm.SetState(CollectMode.State.Clear);
-
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        public enum RevealSameColorHintState
-        {
-            Idle,
-            SelectColor,
-        }
-
-        RevealSameColorHintState _state = RevealSameColorHintState.Idle;
-
-        public override void OnClickRevealSameColorHint()
-        {
-            Time.timeScale = 0;
-            _state = RevealSameColorHintState.SelectColor;
-            _collectStageUIPresenter.ActivateHintPanel(true); // active panel 적용해주기
-        }
-
-        public override void OnClickRandomFillHint()
-        {
-            RandomFindHint();
-        }
-
-        void RandomFindHint()
-        {
-            while (true)
-            {
-                int randomRow = Random.Range(0, _levelSize.x);
-                int randomCol = Random.Range(0, _levelSize.y);
-
-                if (_visit[randomRow, randomCol] >= 0) continue; // 이미 방문한 지점이라면 다시 뽑음
-
-                SpreadColor(new Vector2Int(randomRow, randomCol));
-                break;
-            }
+            _selectedColorIndex = index;
         }
 
         // 색 같은 거끼리 bfs 돌려서 확인해줌
@@ -305,6 +261,7 @@ namespace Collect
             //float leftRatio = _timer.Ratio;
             //_timer.Reset(); // 타이머 리셋
 
+            _goBackCount = 0;
             _fsm.SetState(CollectMode.State.Clear);
         }
     }

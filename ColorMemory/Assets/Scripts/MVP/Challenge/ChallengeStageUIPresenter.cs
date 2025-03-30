@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
 using System;
+using Unity.VisualScripting;
 
 public class ChallengeStageUIPresenter
 {
@@ -13,6 +14,12 @@ public class ChallengeStageUIPresenter
     {
         _model = model;
         _viewer = viewer;
+    }
+
+    public void ActivatePlayPanel(bool active)
+    {
+        _model.ActivePlayPanel = active;
+        _viewer.ActivatePlayPanel(_model.ActivePlayPanel);
     }
 
     public void FillTimeSlider(float duration)
@@ -69,6 +76,20 @@ public class ChallengeStageUIPresenter
         _model.ActiveHintPanel = active;
         _viewer.ActivateHintPanel(_model.ActiveHintPanel);
     }
+
+
+    public void ActiveGoldPanel(bool active)
+    {
+        _model.ActiveCoinPanel = active;
+        _viewer.ActivateCoinPanel(_model.ActiveCoinPanel);
+    }
+
+    public void ChangeCoinCount(int coinCount)
+    {
+        _model.CoinCount = coinCount;
+        _viewer.ChangeCoinCount(coinCount);
+    }
+
 
     public void ActivateGameOverPanel(bool active)
     {

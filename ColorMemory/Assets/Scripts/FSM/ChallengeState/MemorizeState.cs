@@ -91,10 +91,10 @@ namespace Challenge
                 {
                     for (int j = 0; j < _levelSize.y; j++)
                     {
-                        Image.FillMethod fillMethod = (Image.FillMethod)Random.Range(0, 5);
-                        float duration = Random.Range(0, 1.5f);
-
-                        _dots[i, j].Fade(_fadeColor, fillMethod, duration);
+                        //float duration = Random.Range(0.5f, 1.5f);
+                        Color originColor = GetDotColor(i, j);
+                        _dots[i, j].ChangeColor(new Color(0, 0, 0, 0));
+                        _dots[i, j].Expand(_fadeColor, originColor, 1.6f);
                     }
                 }
 
@@ -104,6 +104,15 @@ namespace Challenge
                 // 일정 시간 지나면 다음 State로 이동
                 DOVirtual.DelayedCall(1.5f, () =>
                 {
+                    // dot 뒤집는 코드 추가
+                    for (int i = 0; i < _levelSize.x; i++)
+                    {
+                        for (int j = 0; j < _levelSize.y; j++)
+                        {
+                            _dots[i, j].ChangeColor(_fadeColor);
+                        }
+                    }
+
                     _fsm.SetState(ChallengeMode.State.Paint);
                 });
                 return;

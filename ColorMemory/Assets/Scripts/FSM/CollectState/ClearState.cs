@@ -68,7 +68,7 @@ namespace Collect
                 {
                     for (int j = 0; j < levelSize.y; j++)
                     {
-                        // 랜덤하게 키우기
+                        // 랜덤하게 줄이기
                         dots[i, j].Minimize(1f);
                     }
                 }

@@ -58,6 +58,15 @@ namespace Collect
 
         public override void OnStateEnter(Vector2Int sectionIndex)
         {
+            _collectStageUIPresenter.ActivatePlayPanel(true);
+
+            SaveData saveData = ServiceLocater.ReturnSaveManager().GetSaveData();
+
+            int progress = saveData.SelectedArtworkSectionIndex.x * 4 + saveData.SelectedArtworkSectionIndex.y;
+            float ratio = (progress / 16f);
+            _collectStageUIPresenter.ChangeProgressText((int)(ratio * 100));
+            _collectStageUIPresenter.ChangeHintInfoText("힌트를 사용할수록 높은 랭크를 받을 확률이 떨어져요!");
+
             CreateLevel(sectionIndex);
             _fsm.SetState(CollectMode.State.Memorize);
         }

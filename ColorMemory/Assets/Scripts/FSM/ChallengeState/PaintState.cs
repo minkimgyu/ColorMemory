@@ -44,16 +44,16 @@ namespace Challenge
         ) : base(fsm)
         {
             _pickColors = pickColors;
-            _closePoints = new Vector2Int[8]
+            _closePoints = new Vector2Int[4]
             {
-            new Vector2Int(-1, 0), // ↑
-            new Vector2Int(0, 1), // →
-            new Vector2Int(1, 0), // ↓
-            new Vector2Int(0, -1), // ←
-            new Vector2Int(-1, 1), // ↗
-            new Vector2Int(1, 1), // ↘
-            new Vector2Int(1, -1), // ↙
-            new Vector2Int(-1, -1), // ↖
+                new Vector2Int(-1, 0), // ↑
+                new Vector2Int(0, 1), // →
+                new Vector2Int(1, 0), // ↓
+                new Vector2Int(0, -1), // ←
+                //new Vector2Int(-1, 1), // ↗
+                //new Vector2Int(1, 1), // ↘
+                //new Vector2Int(1, -1), // ↙
+                //new Vector2Int(-1, -1), // ↖
             };
 
             _modeData = modeData;
@@ -160,6 +160,10 @@ namespace Challenge
             }
 
             ChangePenDotColorCount();
+
+            _challengeStageUIPresenter.ActiveGoldPanel(true);
+            _challengeStageUIPresenter.ChangeCoinCount(9000);
+
 
             _challengeStageUIPresenter.ChangeTotalTime(_modeData.PlayDuration);
 
@@ -270,6 +274,8 @@ namespace Challenge
 
         void GoToClearStage()
         {
+            _challengeStageUIPresenter.ActiveGoldPanel(false);
+
             float leftRatio = _timer.Ratio;
             _timer.Reset(); // 타이머 리셋
             _fsm.SetState(ChallengeMode.State.StageClear, new PaintState.Data(leftRatio));

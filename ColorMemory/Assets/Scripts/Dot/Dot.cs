@@ -28,14 +28,14 @@ abstract public class Dot : MonoBehaviour, IPointerDownHandler
 
     public virtual void ChangeColorCount(int colorCount) { }
 
-    public void ChangeColor(Color color)
+    public virtual void ChangeColor(Color color)
     {
         _dotEffectComponent.ChangeColor(color);
     }
 
     public void Minimize()
     {
-        _dotEffectComponent.Scale(0f);
+        _dotEffectComponent.Scale(0);
     }
 
     public void Minimize(float duration)
@@ -48,10 +48,15 @@ abstract public class Dot : MonoBehaviour, IPointerDownHandler
         _dotEffectComponent.Scale(1f, duration);
     }
 
-    public void Fade(Color color, Image.FillMethod method, float duration)
+    public void Expand(Color endColor, Color originColor, float duration, Action OnComplete = null)
     {
-        _dotEffectComponent.Fade(color, method, duration);
+        _dotEffectComponent.Expand(1f, endColor, originColor, duration, OnComplete);
     }
+
+    //public void Fade(Color color, Image.FillMethod method, float duration)
+    //{
+    //    _dotEffectComponent.Fade(color, method, duration);
+    //}
 
     public void Pop(Color changeColor)
     {

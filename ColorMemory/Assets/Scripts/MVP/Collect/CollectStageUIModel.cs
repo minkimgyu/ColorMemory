@@ -6,6 +6,9 @@ public class CollectStageUIModel
 {
     public CollectStageUIModel()
     {
+        _activePlayPanel = false;
+        _hintInfo = "";
+        _progress = 0;
         _bestScore = 0;
         _nowScore = 0;
         _leftTime = 0;
@@ -18,6 +21,29 @@ public class CollectStageUIModel
         _activeGameResultPanel = false;
         _goldCount = 0;
     }
+
+    bool _activePlayPanel;
+
+    public bool ActivePlayPanel
+    {
+        get => _activePlayPanel;
+        set => _activePlayPanel = value;
+    }
+
+    string _hintInfo;
+    public string HintInfo
+    {
+        get => _hintInfo;
+        set => _hintInfo = value;
+    }
+
+    int _progress;
+    public int Progress
+    {
+        get => _progress;
+        set => _progress = value;
+    }
+
 
     int _bestScore;
     public int BestScore

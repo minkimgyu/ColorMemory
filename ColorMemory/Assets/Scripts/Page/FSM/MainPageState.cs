@@ -10,7 +10,7 @@ public class MainPageState : BaseState<HomePage.InnerPageState>
     DotFactory _dotFactory;
 
     const int _dotSize = 6;
-    const float _contentSize = 0.8f;
+    const float _contentSize = 0.7f;
 
     Image _modeTitleImg;
     ToggleBtn _toggleBtn;
@@ -18,6 +18,7 @@ public class MainPageState : BaseState<HomePage.InnerPageState>
 
     Image _playBtnImg;
     Button _playBtn;
+    TMPro.TMP_Text _playBtnTxt;
 
     GameObject _mainContent;
 
@@ -60,6 +61,12 @@ public class MainPageState : BaseState<HomePage.InnerPageState>
         { GameMode.Type.Collect, new Color(113f/255f, 191f/255f, 255f/255f) }
     };
 
+    Dictionary<GameMode.Type, string> _playBtnTxts = new Dictionary<GameMode.Type, string>()
+    {
+        { GameMode.Type.Challenge, "Game Start" },
+        { GameMode.Type.Collect, "Play" }
+    };
+
     MainPagePresenter _homePagePresenter;
 
     readonly Color[] _pickColors = new Color[] { new Color(255f/255f, 182f/255f, 108f/255f), new Color(255f/255f, 236f/255f, 89f/255f), new Color(219f/255f, 200f/255f, 255f/255f) };
@@ -72,6 +79,7 @@ public class MainPageState : BaseState<HomePage.InnerPageState>
         ToggleBtn toggleBtn,
         Transform dotParent,
         Button playBtn,
+        TMPro.TMP_Text playBtnTxt,
 
         GameObject mainContent,
         Dictionary<GameMode.Type, Sprite> modeTitleIconAssets,
@@ -90,6 +98,7 @@ public class MainPageState : BaseState<HomePage.InnerPageState>
         _mainContent = mainContent;
 
         _playBtn = playBtn;
+        _playBtnTxt = playBtnTxt;
         _playBtnImg = _playBtn.gameObject.GetComponent<Image>();
 
         _toggleBtn.Initialize();
@@ -106,18 +115,24 @@ public class MainPageState : BaseState<HomePage.InnerPageState>
                 dot.Inject(_effectFactory, new Vector2Int(i, j), (v2) => { dot.Pop(_pickColors[Random.Range(0, _pickColors.Length)]); });
 
                 dot.transform.SetParent(_dotParent);
+
                 dots[i, j] = dot;
             }
         }
 
-        _dotParent.localScale = Vector3.one * _contentSize;
+        //_dotParent.localScale = Vector3.one * _contentSize;
+
+        //GridLayoutGroup gridLayout = _dotParent.GetComponent<GridLayoutGroup>();
+        //gridLayout.SetLayoutHorizontal();
+        //gridLayout.SetLayoutVertical();
+        // 레이아웃을 강제로 다시 계산
 
         // _toggleBtn 이거 넣기
         // _playBtn 이거 넣기
 
-        MainPageModel homePageModel = new MainPageModel(_type, modeTitleIconAssets, _dotColors, _playBtnColors);
+        MainPageModel homePageModel = new MainPageModel(_type, modeTitleIconAssets, _dotColors, _playBtnColors, _playBtnTxts);
         _homePagePresenter = new MainPagePresenter(homePageModel, OnClickPlayBtn);
-        MainPageViewer homePageViewer = new MainPageViewer(_mainContent, _modeTitleImg, _playBtn, _playBtnImg, _toggleBtn, dots, _homePagePresenter);
+        MainPageViewer homePageViewer = new MainPageViewer(_mainContent, _modeTitleImg, _playBtn, _playBtnTxt, _playBtnImg, _toggleBtn, dots, _homePagePresenter);
         _homePagePresenter.InjectViewer(homePageViewer);
 
         _homePagePresenter.ActiveContent(false);

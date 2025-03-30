@@ -8,6 +8,9 @@ namespace Challenge
 {
     public class ChallengeMode : GameMode
     {
+        [Header("Play")]
+        [SerializeField] GameObject _playPanel;
+
         [Header("Top")]
         [SerializeField] TMP_Text _bestScoreText;
         [SerializeField] TMP_Text _nowScoreText;
@@ -15,7 +18,6 @@ namespace Challenge
         [SerializeField] Image _timerSlider;
         [SerializeField] TMP_Text _leftTimeText;
         [SerializeField] TMP_Text _totalTimeText;
-
 
         [SerializeField] TMP_Text _stageText;
 
@@ -37,6 +39,8 @@ namespace Challenge
         [SerializeField] Button _revealSameColorHintBtn;
         [SerializeField] GameObject _hintPanel;
         [SerializeField] GameObject _rememberPanel;
+        [SerializeField] GameObject _coinPanel;
+        [SerializeField] TMP_Text _coinTxt;
 
         [Header("GameOver")]
         [SerializeField] GameObject _gameOverPanel;
@@ -49,7 +53,8 @@ namespace Challenge
         //[SerializeField] TMP_Text _resultScore;
         [SerializeField] TMP_Text _goldCount;
 
-        [SerializeField] RankingScrollUI _rankingScrollUI;
+        [SerializeField] Transform _rankingContent;
+        [SerializeField] ScrollRect _rankingScrollRect;
         [SerializeField] Button _tryAgainBtn;
         [SerializeField] Button _exitBtn;
 
@@ -214,6 +219,7 @@ namespace Challenge
 
             ChallengeStageUIModel model = new ChallengeStageUIModel();
             ChallengeStageUIViewer viewer = new ChallengeStageUIViewer(
+                _playPanel,
                 _bestScoreText,
                 _nowScoreText,
                 _timerSlider,
@@ -222,12 +228,17 @@ namespace Challenge
                 _stageText,
                 _hintPanel,
                 _rememberPanel,
+
+                _coinPanel,
+                _coinTxt,
+
                 _gameOverPanel,
                 _clearStageCount,
                 _clearStageContent,
                 _gameResultPanel,
                 _goldCount,
-                _rankingScrollUI);
+                _rankingContent,
+                _rankingScrollRect);
 
             ChallengeStageUIPresenter presenter = new ChallengeStageUIPresenter(model, viewer);
 
@@ -242,6 +253,7 @@ namespace Challenge
             _randomHintBtn.onClick.AddListener(() => { _fsm.OnClickRandomFillHint(); });
             _revealSameColorHintBtn.onClick.AddListener(() => { _fsm.OnClickRevealSameColorHint(); });
 
+            presenter.ActivatePlayPanel(true);
 
             _fsm = new FSM<State>();
             Dictionary<State, BaseState<State>> states = new Dictionary<State, BaseState<State>>()

@@ -20,6 +20,7 @@ namespace Collect
 
         public override void OnStateEnter()
         {
+            _collectStageUIPresenter.ActivatePlayPanel(false);
             _collectStageUIPresenter.ActivateGameResultPanel(true);
 
             _collectStageUIPresenter.ChangeGoldCount(_modeData.MyScore);

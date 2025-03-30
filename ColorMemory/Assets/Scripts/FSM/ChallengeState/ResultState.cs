@@ -67,10 +67,16 @@ namespace Challenge
             for (int i = 0; i < rankingData.OtherRankingDatas.Count; i++)
             {
                 SpawnableUI rankingUI = _rankingUIFactory.Create(rankingData.OtherRankingDatas[i]);
+                rankingUI.ChangeSelect(false);
+                rankingUI.ChangeScale(Vector3.one * 0.8f);
+
                 _challengeStageUIPresenter.AddRanking(rankingUI);
             }
 
             SpawnableUI myRankingUI = _rankingUIFactory.Create(rankingData.MyRankingData);
+            myRankingUI.ChangeSelect(true);
+            myRankingUI.ChangeScale(Vector3.one);
+
             _challengeStageUIPresenter.AddRanking(myRankingUI, true);
 
             int totalCount = rankingData.OtherRankingDatas.Count + 1;
