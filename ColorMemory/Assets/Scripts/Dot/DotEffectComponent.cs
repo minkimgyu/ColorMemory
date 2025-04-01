@@ -41,9 +41,13 @@ public class DotEffectComponent : MonoBehaviour
     //    );
     //}
 
-    public void Expand(float endScale, Color endColor, Color originColor, float duration, Action OnComplete)
+    public void Expand(float endScale, Color endColor, float duration, Action OnComplete)
     {
+        Color originColor = _dotImage.color;
+        ChangeColor(new Color(0, 0, 0, 0));
+
         Effect expendEffect = _effectFactory.Create(Effect.Name.CircleEffect);
+        expendEffect.name = "expendEffect";
 
         expendEffect.transform.SetParent(transform);
         expendEffect.transform.SetAsLastSibling();
@@ -63,6 +67,7 @@ public class DotEffectComponent : MonoBehaviour
 
 
         Effect fadeEffect = _effectFactory.Create(Effect.Name.CircleEffect);
+        fadeEffect.name = "fadeEffect";
 
         fadeEffect.transform.SetParent(transform);
         fadeEffect.transform.SetAsLastSibling();
@@ -77,6 +82,7 @@ public class DotEffectComponent : MonoBehaviour
             () =>
             {
                 OnComplete?.Invoke();
+                ChangeColor(endColor);
                 Destroy(fadeEffect.gameObject);
             }
         );

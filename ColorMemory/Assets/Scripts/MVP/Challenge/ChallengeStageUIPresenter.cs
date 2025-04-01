@@ -10,11 +10,68 @@ public class ChallengeStageUIPresenter
     ChallengeStageUIModel _model;
     ChallengeStageUIViewer _viewer;
 
-    public ChallengeStageUIPresenter(ChallengeStageUIModel model, ChallengeStageUIViewer viewer)
+    public ChallengeStageUIPresenter(ChallengeStageUIModel model)
     {
         _model = model;
+    }
+
+    public void InjectViewer(ChallengeStageUIViewer viewer)
+    {
         _viewer = viewer;
     }
+
+    public void ActivatePausePanel(bool active)
+    {
+        if(active)
+        {
+            Time.timeScale = 0.0f;
+        }
+        else
+        {
+            Time.timeScale = 1.0f;
+        }
+
+        SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
+        OnBGMSliderValeChanged(data.BgmVolume);
+        OnBGMSliderValeChanged(data.SfxVolume);
+
+        _model.ActivePausePanel = active;
+        _viewer.ActivatePausePanel(_model.ActivePausePanel);
+    }
+
+    public void OnBGMSliderValeChanged(float ratio)
+    {
+        _model.BgmRatio = ratio;
+        ServiceLocater.ReturnSoundPlayer().SetBGMVolume(ratio);
+    }
+
+    public void OnSFXSliderValeChanged(float ratio)
+    {
+        _model.SfxRatio = ratio;
+        ServiceLocater.ReturnSoundPlayer().SetSFXVolume(ratio);
+    }
+
+
+    public void ActivateStageOverPreviewPanel(bool active)
+    {
+        _model.ActiveStageOverPreviewPanel = active;
+        _viewer.ActivateStageOverPreviewPanel(_model.ActiveStageOverPreviewPanel);
+    }
+
+    public void ChangeLastStagePattern(MapData data, Color[] pickColors)
+    {
+        _model.MapData = data;
+        _model.PickColors = pickColors;
+        _viewer.ChangeLastStagePattern(_model.StageCount, _model.MapData, _model.PickColors);
+    }
+
+    public void ChangeStageOverInfo()
+    {
+        _viewer.ChangeStageOverInfo(_model.StageCount);
+    }
+
+
+
 
     public void ActivatePlayPanel(bool active)
     {

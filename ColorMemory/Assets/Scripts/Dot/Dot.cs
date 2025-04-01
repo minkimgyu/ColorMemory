@@ -48,9 +48,9 @@ abstract public class Dot : MonoBehaviour, IPointerDownHandler
         _dotEffectComponent.Scale(1f, duration);
     }
 
-    public void Expand(Color endColor, Color originColor, float duration, Action OnComplete = null)
+    public void Expand(Color endColor, float duration, Action OnComplete = null)
     {
-        _dotEffectComponent.Expand(1f, endColor, originColor, duration, OnComplete);
+        _dotEffectComponent.Expand(1f, endColor, duration, OnComplete);
     }
 
     //public void Fade(Color color, Image.FillMethod method, float duration)

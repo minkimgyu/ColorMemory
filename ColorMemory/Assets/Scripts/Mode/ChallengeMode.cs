@@ -14,6 +14,7 @@ namespace Challenge
         [Header("Top")]
         [SerializeField] TMP_Text _bestScoreText;
         [SerializeField] TMP_Text _nowScoreText;
+        [SerializeField] Button _pauseBtn;
 
         [SerializeField] Image _timerSlider;
         [SerializeField] TMP_Text _leftTimeText;
@@ -27,6 +28,19 @@ namespace Challenge
         [Header("Bottom")]
         [SerializeField] ToggleGroup _penToggleGroup;
         [SerializeField] RectTransform _penContent;
+
+        [Header("Setting")]
+        [SerializeField] GameObject _pausePanel;
+        [SerializeField] Button _pauseExitBtn;
+        [SerializeField] Button _gameExitBtn;
+        [SerializeField] Slider _bgmSlider;
+        [SerializeField] Slider _sfxSlider;
+
+        [Header("Preview")]
+        [SerializeField] GameObject _stageOverPreviewPanel;
+        [SerializeField] ClearPatternUI _lastStagePattern;
+        [SerializeField] TMP_Text _stageOverInfoText;
+        [SerializeField] Button _goToGameOverBtn;
 
         [Header("ModeData")]
         [SerializeField] Color[] _pickColors;
@@ -189,6 +203,7 @@ namespace Challenge
             Memorize,
             Paint,
             StageClear,
+            StageOverPreview,
             GameOver,
             Result,
         }
@@ -218,6 +233,8 @@ namespace Challenge
             _modeData = new ModeData(5, 10, 1, 3);
 
             ChallengeStageUIModel model = new ChallengeStageUIModel();
+            ChallengeStageUIPresenter presenter = new ChallengeStageUIPresenter(model);
+
             ChallengeStageUIViewer viewer = new ChallengeStageUIViewer(
                 _playPanel,
                 _bestScoreText,
@@ -238,9 +255,26 @@ namespace Challenge
                 _gameResultPanel,
                 _goldCount,
                 _rankingContent,
-                _rankingScrollRect);
+                _rankingScrollRect,
+                
+                _stageOverPreviewPanel,
+                _lastStagePattern,
+                _stageOverInfoText,
+                
+                _pausePanel,
+                _pauseBtn,
+                _pauseExitBtn,
+                _gameExitBtn,
+                _bgmSlider,
+                _sfxSlider,
+                presenter);
 
-            ChallengeStageUIPresenter presenter = new ChallengeStageUIPresenter(model, viewer);
+            presenter.InjectViewer(viewer);
+
+            _goToGameOverBtn.onClick.AddListener(() =>
+            {
+                _fsm.OnClickGoToGameOver();
+            });
 
             _nextBtn.onClick.AddListener(() => 
             { 

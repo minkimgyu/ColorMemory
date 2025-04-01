@@ -93,9 +93,19 @@ namespace Challenge
                 _modeData.PassedDuration += _timer.PassedTime;
 
                 _timer.Reset(); // 타이머 리셋
-                _fsm.SetState(ChallengeMode.State.GameOver);
+
+                _challengeStageUIPresenter.ActivateStageOverPreviewPanel(true);
+
+                int lastStageIndex = _modeData.StageData.Count - 1;
+                _challengeStageUIPresenter.ChangeLastStagePattern(_modeData.StageData[lastStageIndex], _pickColors);
+                _challengeStageUIPresenter.ChangeStageOverInfo();
                 return;
             }
+        }
+
+        public override void OnClickGoToGameOver() 
+        {
+            _fsm.SetState(ChallengeMode.State.GameOver);
         }
 
         void ChangePenDotColorCount()

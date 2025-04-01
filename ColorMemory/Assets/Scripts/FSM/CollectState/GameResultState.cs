@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -18,12 +19,25 @@ namespace Collect
             _modeData = modeData;
         }
 
+        public override void OnClickNextBtn()
+        {
+            ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.HomeScene);
+        }
+
         public override void OnStateEnter()
         {
             _collectStageUIPresenter.ActivatePlayPanel(false);
             _collectStageUIPresenter.ActivateGameResultPanel(true);
 
-            _collectStageUIPresenter.ChangeGoldCount(_modeData.MyScore);
+            AddressableHandler addressableHandler = UnityEngine.Object.FindObjectOfType<AddressableHandler>();
+            if (addressableHandler == null) return;
+
+            SaveData saveData = ServiceLocater.ReturnSaveManager().GetSaveData();
+
+            //_collectStageUIPresenter.ChangeArtwork();
+            //_collectStageUIPresenter.ChangeGetRank();
+            //_collectStageUIPresenter.ChangeRank();
+            //_collectStageUIPresenter.ChangeCollectionRatio();
         }
 
         public override void OnStateExit()

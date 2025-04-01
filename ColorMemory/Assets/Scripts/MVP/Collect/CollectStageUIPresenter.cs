@@ -10,10 +10,80 @@ public class CollectStageUIPresenter
     CollectStageUIModel _model;
     CollectStageUIViewer _viewer;
 
-    public CollectStageUIPresenter(CollectStageUIModel model, CollectStageUIViewer viewer)
+    public CollectStageUIPresenter(CollectStageUIModel model)
     {
         _model = model;
+    }
+
+    public void InjectViewer(CollectStageUIViewer viewer)
+    {
         _viewer = viewer;
+    }
+
+
+
+    public void ChangeArtwork(Sprite artSprite, Sprite artFrameSprite)
+    {
+        _model.ArtSprite = artSprite;
+        _model.ArtFrameSprite = artFrameSprite;
+        _viewer.ChangeArtwork(_model.ArtSprite, _model.ArtFrameSprite);
+    }
+
+    public void ChangeRank(Color rankColor, Sprite rankIcon, string rankName)
+    {
+        _model.RankColor = rankColor;
+        _model.RankIcon = rankIcon;
+        _model.RankName = rankName;
+
+        _viewer.ChangeRank(_model.RankColor, _model.RankIcon, _model.RankName);
+    }
+
+    public void ChangeGetRank(int hintUseCount, int wrongCount)
+    {
+        _model.HintUseCount = hintUseCount;
+        _model.WrongCount = wrongCount;
+
+        _viewer.ChangeGetRank(_model.HintUseCount, _model.WrongCount);
+    }
+
+    public void ChangeCollectionRatio(int totalCollectRatio)
+    {
+        _model.TotalCollectRatio = totalCollectRatio;
+        _viewer.ChangeCollectionRatio(_model.TotalCollectRatio);
+    }
+
+
+
+
+    public void ActivatePausePanel(bool active)
+    {
+        if (active)
+        {
+            Time.timeScale = 0.0f;
+        }
+        else
+        {
+            Time.timeScale = 1.0f;
+        }
+
+        SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
+        OnBGMSliderValeChanged(data.BgmVolume);
+        OnBGMSliderValeChanged(data.SfxVolume);
+
+        _model.ActivePausePanel = active;
+        _viewer.ActivatePausePanel(_model.ActivePausePanel);
+    }
+
+    public void OnBGMSliderValeChanged(float ratio)
+    {
+        _model.BgmRatio = ratio;
+        ServiceLocater.ReturnSoundPlayer().SetBGMVolume(ratio);
+    }
+
+    public void OnSFXSliderValeChanged(float ratio)
+    {
+        _model.SfxRatio = ratio;
+        ServiceLocater.ReturnSoundPlayer().SetSFXVolume(ratio);
     }
 
     public void ActivatePlayPanel(bool active)
@@ -87,11 +157,5 @@ public class CollectStageUIPresenter
     {
         _model.ActiveGameResultPanel = active;
         _viewer.ActivateGameResultPanel(_model.ActiveGameResultPanel);
-    }
-
-    public void ChangeGoldCount(int goldCount)
-    {
-        _model.GoldCount = goldCount;
-        _viewer.ChangeGoldCount(_model.GoldCount);
     }
 }

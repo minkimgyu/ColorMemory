@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class OnboardingPage : MonoBehaviour
 {
-    [SerializeField] Slider _loadingPregressBar;
+    [SerializeField] Image _loadingPregressBar;
     [SerializeField] TMP_Text _loadingPregressTxt;
 
     // Start is called before the first frame update
@@ -18,11 +18,11 @@ public class OnboardingPage : MonoBehaviour
 
     void SetUp()
     {
-        _loadingPregressBar.value = 0;
+        _loadingPregressBar.fillAmount = 0;
         _loadingPregressTxt.text = $"{0} %";
 
         AddressableHandler addressableHandler = CreateAddressableHandler();
-        addressableHandler.AddProgressEvent((value) => { _loadingPregressBar.value = value; _loadingPregressTxt.text = $"{value * 100} %"; });
+        addressableHandler.AddProgressEvent((value) => { _loadingPregressBar.fillAmount = value; _loadingPregressTxt.text = $"{value * 100} %"; });
         addressableHandler.Load(() => { Initialize(addressableHandler); });
     }
 

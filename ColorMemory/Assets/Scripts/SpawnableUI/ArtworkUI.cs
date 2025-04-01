@@ -7,6 +7,7 @@ public class ArtworkUI : SpawnableUI
 
     Image _artFrameImage;
     Button _artFrameBtn;
+
     [SerializeField] RectTransform _artFrame;
     // 크기는 500 ~ 700 사이로 맞춰야함
 

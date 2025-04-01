@@ -28,7 +28,7 @@ namespace Challenge
             List<PersonalRankingData> topRankingDatas = new List<PersonalRankingData>();
             string[] names = { "Alice", "Bob", "Charlie", "David", "Eve", "Frank", "Grace", "Hank", "Ivy", "Jack" };
 
-            int count = 10; // 생성할 데이터 개수
+            int count = 4; // 생성할 데이터 개수
             for (int i = 0; i < count; i++)
             {
                 RankingIconName iconName = (RankingIconName)UnityEngine.Random.Range(0, Enum.GetValues(typeof(RankingIconName)).Length);
