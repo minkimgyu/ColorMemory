@@ -11,6 +11,8 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
 
     CollectPagePresenter _collectPagePresenter;
 
+    ArtworkScrollUI _artworkScrollUI;
+
     public CollectionPageState(
         Button homeBtn,
         GameObject collectionContent,
@@ -35,8 +37,7 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
         Dictionary<ArtName, CollectiveArtData> artDatas,
         FSM<HomePage.InnerPageState> fsm) : base(fsm)
     {
-        int artDataCount = Enum.GetValues(typeof(ArtName)).Length;
-        artworkScrollUI.SetUp(artDataCount);
+        _artworkScrollUI = artworkScrollUI;
 
         List<ArtName> artNames = new List<ArtName>();
         for (int i = 0; i < artworkDatas.Count; i++) artNames.Add((ArtName)i);
@@ -84,6 +85,10 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
     public override void OnStateEnter()
     {
         _collectPagePresenter.FillArtwork();
+
+        int artDataCount = Enum.GetValues(typeof(ArtName)).Length;
+        _artworkScrollUI.SetUp(artDataCount);
+
         _collectPagePresenter.ActiveContent(true); // home ╢щ╬фаж╠Б
     }
 

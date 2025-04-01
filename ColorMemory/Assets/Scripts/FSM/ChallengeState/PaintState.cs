@@ -3,6 +3,7 @@ using System;
 using UnityEngine;
 using DG.Tweening;
 using Random = UnityEngine.Random;
+using NetworkService.Manager;
 
 namespace Challenge
 {
@@ -143,6 +144,15 @@ namespace Challenge
             }
         }
 
+        async void UpdateMoney()
+        {
+            _challengeStageUIPresenter.ActiveGoldPanel(true);
+
+            MoneyManager moneyManager = new MoneyManager();
+            int money = await moneyManager.GetMoneyAsync("testId1");
+            _challengeStageUIPresenter.ChangeCoinCount(money);
+        }
+
         public override void OnStateEnter()
         {
             // 초기화 진행
@@ -170,11 +180,9 @@ namespace Challenge
             }
 
             ChangePenDotColorCount();
+            UpdateMoney();
 
             _challengeStageUIPresenter.ActiveGoldPanel(true);
-            _challengeStageUIPresenter.ChangeCoinCount(9000);
-
-
             _challengeStageUIPresenter.ChangeTotalTime(_modeData.PlayDuration);
 
             DOVirtual.DelayedCall(0.5f, () =>

@@ -68,7 +68,7 @@ public class HomePage : MonoBehaviour
 
     FSM<InnerPageState> _pageFsm;
 
-    private void Start()
+    private async void Start()
     {
         AddressableHandler addressableHandler = FindObjectOfType<AddressableHandler>();
         if (addressableHandler == null) return;
@@ -100,13 +100,10 @@ public class HomePage : MonoBehaviour
         SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
         MoneyManager moneyManager = new MoneyManager();
 
-        PlayerArtworkDTO playerArtworkDTO = new PlayerArtworkDTO();
+        //await moneyManager.EarnPlayerMoneyAsync("testId1", 100);
 
-        HintManager hintManager = new HintManager();
-        ScoreManager scoreManager = new ScoreManager();
-        ArtworkManager artworkManager = new ArtworkManager();
-
-        //_goldTxt.text = data.Money.ToString();
+        int money = await moneyManager.GetMoneyAsync("testId1");
+        _goldTxt.text = money.ToString();
 
         _pageFsm = new FSM<InnerPageState>();
         _pageFsm.Initialize(new Dictionary<InnerPageState, BaseState<InnerPageState>>

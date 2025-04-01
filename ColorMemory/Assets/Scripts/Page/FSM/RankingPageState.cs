@@ -1,6 +1,9 @@
+using NetworkService.DTO;
+using NetworkService.Manager;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 
@@ -36,33 +39,50 @@ public class RankingPageState : BaseState<HomePage.InnerPageState>
         _fsm.SetState(HomePage.InnerPageState.Main);
     }
 
-    RankingData GetRankingData()
+    //RankingData GetRankingData()
+    //{
+    //    List<PersonalRankingData> topRankingDatas = new List<PersonalRankingData>();
+    //    string[] names = { "Alice", "Bob", "Charlie", "David", "Eve", "Frank", "Grace", "Hank", "Ivy", "Jack" };
+
+    //    int count = 10; // 생성할 데이터 개수
+    //    for (int i = 0; i < count; i++)
+    //    {
+    //        RankingIconName iconName = (RankingIconName)UnityEngine.Random.Range(0, Enum.GetValues(typeof(RankingIconName)).Length);
+    //        string name = names[i];
+    //        int score = UnityEngine.Random.Range(0, 100000000);
+    //        int rank = i + 1; // 1부터 시작하는 순위
+
+    //        topRankingDatas.Add(new PersonalRankingData(iconName, name, score, rank));
+    //    }
+
+    //    // 생성시켜주기
+    //    PersonalRankingData myRankingData = new PersonalRankingData((RankingIconName)1, "Meal", 10000000, 15);
+
+    //    RankingData rankingData = new RankingData(topRankingDatas, myRankingData);
+    //    return rankingData;
+    //}
+
+    public override async void OnStateEnter()
     {
+        ScoreManager scoreManager = new ScoreManager();
+
+
         List<PersonalRankingData> topRankingDatas = new List<PersonalRankingData>();
-        string[] names = { "Alice", "Bob", "Charlie", "David", "Eve", "Frank", "Grace", "Hank", "Ivy", "Jack" };
 
-        int count = 10; // 생성할 데이터 개수
-        for (int i = 0; i < count; i++)
+        List<PlayerScoreDTO> scores = await scoreManager.GetTopWeeklyScoresAsync(10);
+        for (int i = 0; i < scores.Count; i++)
         {
-            RankingIconName iconName = (RankingIconName)UnityEngine.Random.Range(0, Enum.GetValues(typeof(RankingIconName)).Length);
-            string name = names[i];
-            int score = UnityEngine.Random.Range(0, 100000000);
-            int rank = i + 1; // 1부터 시작하는 순위
-
-            topRankingDatas.Add(new PersonalRankingData(iconName, name, score, rank));
+            topRankingDatas.Add(new PersonalRankingData(RankingIconName.Icon5, scores[i].Name, scores[i].Score, i + 1));
         }
 
-        // 생성시켜주기
-        PersonalRankingData myRankingData = new PersonalRankingData((RankingIconName)1, "Meal", 10000000, 15);
+        //PlayerManager playerManager = new PlayerManager();
+        //playerManager.getpla();
 
+        int score = await scoreManager.GetPlayerWeeklyScore("testId1");
+        PersonalRankingData myRankingData = new PersonalRankingData(RankingIconName.Icon5, "meal", score, 15);
+
+        // 생성시켜주기
         RankingData rankingData = new RankingData(topRankingDatas, myRankingData);
-        return rankingData;
-    }
-
-    public override void OnStateEnter()
-    {
-        // 생성시켜주기
-        RankingData rankingData = GetRankingData();
 
         for (int i = 0; i < rankingData.OtherRankingDatas.Count; i++)
         {

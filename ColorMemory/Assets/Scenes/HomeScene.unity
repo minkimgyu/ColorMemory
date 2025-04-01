@@ -1725,8 +1725,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _scrollbar: {fileID: 727653770}
   _content: {fileID: 1684678815}
+  _scrollRect: {fileID: 455951139}
   _targetIndex: 0
-  _canLoop: 1
 --- !u!1 &481930077
 GameObject:
   m_ObjectHideFlags: 0
@@ -5740,7 +5740,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -806, y: 300}
+  m_SizeDelta: {x: -1206, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1684678816
 MonoBehaviour:
@@ -5755,12 +5755,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 200
-    m_Right: 200
+    m_Left: 0
+    m_Right: 0
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 4
-  m_Spacing: 20
+  m_Spacing: 100
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 0
