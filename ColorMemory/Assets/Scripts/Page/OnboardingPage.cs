@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using NetworkService.Manager;
 
 public class OnboardingPage : MonoBehaviour
 {
@@ -24,6 +25,9 @@ public class OnboardingPage : MonoBehaviour
         AddressableHandler addressableHandler = CreateAddressableHandler();
         addressableHandler.AddProgressEvent((value) => { _loadingPregressBar.value = value; _loadingPregressTxt.text = $"{value * 100} %"; });
         addressableHandler.Load(() => { Initialize(addressableHandler); });
+
+        PlayerManager playerManager = new PlayerManager();
+        playerManager.AddPlayerAsync("testId", "testName");
     }
 
     void Initialize(AddressableHandler addressableHandler)
