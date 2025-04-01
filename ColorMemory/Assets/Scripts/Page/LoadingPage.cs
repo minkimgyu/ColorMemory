@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using NetworkService.Manager;
 
-public class OnboardingPage : MonoBehaviour
+public class LoadingPage : MonoBehaviour
 {
     [SerializeField] Image _loadingPregressBar;
     [SerializeField] TMP_Text _loadingPregressTxt;
@@ -27,7 +27,7 @@ public class OnboardingPage : MonoBehaviour
         addressableHandler.Load(() => { Initialize(addressableHandler); });
 
         PlayerManager playerManager = new PlayerManager();
-        playerManager.AddPlayerAsync("testId", "testName");
+        playerManager.AddPlayerAsync("testId1", "meal");
     }
 
     void Initialize(AddressableHandler addressableHandler)

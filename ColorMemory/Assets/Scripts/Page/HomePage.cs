@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using NetworkService.Manager;
+using NetworkService.DTO;
 
 public class HomePage : MonoBehaviour
 {
@@ -96,7 +98,15 @@ public class HomePage : MonoBehaviour
         _settingBtn.onClick.AddListener(() => { _sideSheetUI.TogglePanel(); });
 
         SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
-        _goldTxt.text = data.Money.ToString();
+        MoneyManager moneyManager = new MoneyManager();
+
+        PlayerArtworkDTO playerArtworkDTO = new PlayerArtworkDTO();
+
+        HintManager hintManager = new HintManager();
+        ScoreManager scoreManager = new ScoreManager();
+        ArtworkManager artworkManager = new ArtworkManager();
+
+        //_goldTxt.text = data.Money.ToString();
 
         _pageFsm = new FSM<InnerPageState>();
         _pageFsm.Initialize(new Dictionary<InnerPageState, BaseState<InnerPageState>>

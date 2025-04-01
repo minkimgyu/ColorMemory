@@ -799,7 +799,7 @@ GameObject:
   - component: {fileID: 1404783565}
   - component: {fileID: 1404783566}
   m_Layer: 0
-  m_Name: OnboardingPage
+  m_Name: LoadingPage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
