@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -70,13 +71,59 @@ public class MainPageViewer
     {
         int size = _dots.GetLength(0);
 
-        for (int i = 0; i < size; i++)
+        ToWhite();
+        DOVirtual.DelayedCall(0.5f, () =>
         {
-            for (int j = 0; j < size; j++)
+            ToColor(colors);
+        });
+    }
+
+    void ToColor(Color[,] colors)
+    {
+        int gridSize = 6;
+        float delay = 0;
+
+        for (int d = 0; d < gridSize * 2 - 1; d++)
+        {
+            delay += 0.1f;
+            int startX = Mathf.Max(0, d - (gridSize - 1));
+            int startY = Mathf.Min(d, gridSize - 1);
+
+            while (startX < gridSize && startY >= 0)
             {
-                _dots[i, j].ChangeColor(colors[i, j]);
+                DelayCall(delay, startX, startY, colors[startX, startY]);
+                startX++;
+                startY--;
             }
         }
+    }
+
+    void ToWhite()
+    {
+        int gridSize = 6;
+        float delay = 0;
+
+        for (int d = 0; d < gridSize * 2 - 1; d++)
+        {
+            delay += 0.1f;
+            int startX = Mathf.Max(0, d - (gridSize - 1));
+            int startY = Mathf.Min(d, gridSize - 1);
+
+            while (startX < gridSize && startY >= 0)
+            {
+                DelayCall(delay, startX, startY, Color.white);
+                startX++;
+                startY--;
+            }
+        }
+    }
+
+    void DelayCall(float delay, int i, int j, Color color)
+    {
+        DOVirtual.DelayedCall(delay, () =>
+        {
+            _dots[i, j].Expand(color, 0.5f);
+        });
     }
 
     public void ChangePlayBtnTxt(string btnTxt)

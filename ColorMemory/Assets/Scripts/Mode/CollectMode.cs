@@ -16,6 +16,7 @@ namespace Collect
         [SerializeField] TMP_Text _titleText;
         [SerializeField] GameObject _timerContent;
         [SerializeField] Image _timerSlider;
+        [SerializeField] Button _pauseBtn;
 
         [SerializeField] TMP_Text _leftTimeText;
         [SerializeField] TMP_Text _totalTimeText;
@@ -28,6 +29,13 @@ namespace Collect
         [Header("Bottom")]
         [SerializeField] ToggleGroup _penToggleGroup;
         [SerializeField] RectTransform _penContent;
+
+        [Header("Setting")]
+        [SerializeField] GameObject _pausePanel;
+        [SerializeField] Button _pauseExitBtn;
+        [SerializeField] Button _gameExitBtn;
+        [SerializeField] Slider _bgmSlider;
+        [SerializeField] Slider _sfxSlider;
 
         [Header("ModeData")]
         //[SerializeField] Color[] _pickColors;
@@ -48,9 +56,17 @@ namespace Collect
 
         [Header("Result")]
         [SerializeField] GameObject _gameResultPanel;
-        [SerializeField] TMP_Text _goldCount;
-        [SerializeField] Button _exitBtn;
+        [SerializeField] ArtworkUI _artworkUI;
+        [SerializeField] TMP_Text _hintUseCount;
+        [SerializeField] TMP_Text _wrongCount;
 
+        [SerializeField] Image _rankBackground;
+        [SerializeField] Image _rankIcon;
+        [SerializeField] TMP_Text _rankText;
+
+        [SerializeField] Image _totalCollectRatio;
+        [SerializeField] TMP_Text _totalCollectText;
+        [SerializeField] Button _nextBtn;
 
         CollectiveArtData.Section _section;
         MapData _mapData;
@@ -65,7 +81,9 @@ namespace Collect
             Color[] _pickColors; // 색상 종류
 
             bool[,] _isPlayed; // 플레이 여부
-            int[,] _goBackCount;
+
+            int[,] _goBackCount; // 힌트 사용 개수
+            int[,] _wrongCount; // 틀린 개수
 
             public Data(Vector2Int sectionSize, int memorizeDuration, int myScore = 0)
             {
@@ -75,12 +93,15 @@ namespace Collect
                 _pickColors = new Color[3];
                 _isPlayed = new bool[sectionSize.x, sectionSize.y];
                 _goBackCount = new int[sectionSize.x, sectionSize.y];
+                _wrongCount = new int[sectionSize.x, sectionSize.y];
             }
 
             public float MemorizeDuration { get => _memorizeDuration; set => _memorizeDuration = value; }
             public int MyScore { get => _myScore; set => _myScore = value; }
             public bool[,] IsPlayed { get => _isPlayed; set => _isPlayed = value; }
             public int[,] GoBackCount { get => _goBackCount; set => _goBackCount = value; }
+            public int[,] WrongCount { get => _wrongCount; set => _wrongCount = value; }
+
             public Color[] PickColors { get => _pickColors; set => _pickColors = value; }
         }
 
@@ -165,6 +186,8 @@ namespace Collect
 
 
             CollectStageUIModel model = new CollectStageUIModel();
+            CollectStageUIPresenter presenter = new CollectStageUIPresenter(model);
+
             CollectStageUIViewer viewer = new CollectStageUIViewer(
                 _playPanel,
                 _titleText,
@@ -179,10 +202,30 @@ namespace Collect
 
                 _gameClearPanel,
                 _cropArtworkImg,
-                _gameResultPanel,
-                _goldCount);
 
-            CollectStageUIPresenter presenter = new CollectStageUIPresenter(model, viewer);
+                _pausePanel,
+                _pauseBtn,
+                _pauseExitBtn,
+                _gameExitBtn,
+                _bgmSlider,
+                _sfxSlider,
+
+                _gameResultPanel,
+                _artworkUI,
+                _hintUseCount,
+                _wrongCount,
+
+                _rankBackground,
+                _rankIcon,
+                _rankText,
+
+                _totalCollectRatio,
+                _totalCollectText,
+                presenter);
+
+            presenter.InjectViewer(viewer);
+
+            _nextBtn.onClick.AddListener(() => { _fsm.OnClickNextBtn(); });
 
             _gameClearExitBtn.onClick.AddListener(() => { _fsm.OnClickExitBtn(); });
             _nextStageBtn.onClick.AddListener(() => { _fsm.OnClickNextStageBtn(); });

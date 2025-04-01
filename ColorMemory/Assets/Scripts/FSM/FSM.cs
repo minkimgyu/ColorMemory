@@ -52,6 +52,9 @@ public class FSM<State>
     public void OnClickRankingBtn() => _states[_currentState].OnClickRankingBtn();
     public void OnClickSettingBtn() => _states[_currentState].OnClickSettingBtn();
 
+    public void OnClickGoToGameOver() => _states[_currentState].OnClickGoToGameOver();
+    public void OnClickPauseBtn() => _states[_currentState].OnClickPauseBtn();
+
     public void OnClickNextBtn() => _states[_currentState].OnClickNextBtn();
     public void OnClickRetryBtn() => _states[_currentState].OnClickRetryBtn();
 

@@ -17,6 +17,9 @@ public class NullSoundPlayer : ISoundPlayable
     public void PlaySFX(ISoundPlayable.SoundName name, float volumn = 1) { }
     public void PlaySFX(ISoundPlayable.SoundName name, Vector3 pos, float volumn = 1) { }
 
+    public void SetBGMVolume(float volume = 1) { }
+    public void SetSFXVolume(float volume = 1) { }
+
     public void StopAllSound() { }
     public void StopBGM() { }
 }

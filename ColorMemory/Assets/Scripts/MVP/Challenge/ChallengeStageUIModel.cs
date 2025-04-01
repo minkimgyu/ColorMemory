@@ -6,6 +6,16 @@ public class ChallengeStageUIModel
 {
     public ChallengeStageUIModel()
     {
+        _activeStageOverPreviewPanel = false;
+        _mapData = default;
+        _pickColors = default;
+
+        _activePausePanel = false;
+        _bgmRatio = 0;
+        _sfxRatio = 0;
+
+        _stageCount = 0;
+
         _activePlayPanel = false;
         _bestScore = 0;
         _nowScore = 0;
@@ -18,6 +28,55 @@ public class ChallengeStageUIModel
         _clearStageCount = 0;
         _activeGameResultPanel = false;
         _goldCount = 0;
+    }
+
+    bool _activePausePanel;
+
+    public bool ActivePausePanel
+    {
+        get => _activePausePanel;
+        set => _activePausePanel = value;
+    }
+
+    float _bgmRatio;
+    public float BgmRatio
+    {
+        get => _bgmRatio;
+        set => _bgmRatio = value;
+    }
+
+    float _sfxRatio;
+    public float SfxRatio
+    {
+        get => _sfxRatio;
+        set => _sfxRatio = value;
+    }
+
+
+
+
+    bool _activeStageOverPreviewPanel;
+
+    public bool ActiveStageOverPreviewPanel
+    {
+        get => _activeStageOverPreviewPanel;
+        set => _activeStageOverPreviewPanel = value;
+    }
+
+    MapData _mapData;
+
+    public MapData MapData 
+    { 
+        get => _mapData; 
+        set => _mapData = value; 
+    }
+
+    Color[] _pickColors;
+
+    public Color[] PickColors 
+    { 
+        get => _pickColors; 
+        set => _pickColors = value; 
     }
 
     bool _activePlayPanel;

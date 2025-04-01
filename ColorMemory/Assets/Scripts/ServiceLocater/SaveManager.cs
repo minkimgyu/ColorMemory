@@ -238,13 +238,13 @@ public class SaveManager : ISaveable
     public void ChangeBGMVolume(float volume) 
     {
         _saveData.BgmVolume = volume;
-        Save();
+        //Save();
     }
 
     public void ChangeSFXVolume(float volume)
     {
         _saveData.SfxVolume = volume;
-        Save();
+        //Save();
     }
 
     public void ChangeGameModeType(GameMode.Type type) 

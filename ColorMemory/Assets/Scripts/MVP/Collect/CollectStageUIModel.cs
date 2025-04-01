@@ -20,7 +20,59 @@ public class CollectStageUIModel
         _clearStageCount = 0;
         _activeGameResultPanel = false;
         _goldCount = 0;
+
+        _activePausePanel = false;
+        _bgmRatio = 0;
+        _sfxRatio = 0;
+
+
     }
+
+    Sprite _artSprite;
+    Sprite _artFrameSprite;
+    int _hintUseCount; 
+    int _wrongCount;
+    int _totalCollectRatio;
+
+    Color _rankColor;
+    Sprite _rankIcon;
+    string _rankName;
+
+
+    public Sprite ArtSprite { get => _artSprite; set => _artSprite = value; }
+    public Sprite ArtFrameSprite { get => _artFrameSprite; set => _artFrameSprite = value; }
+    public int HintUseCount { get => _hintUseCount; set => _hintUseCount = value; }
+    public int WrongCount { get => _wrongCount; set => _wrongCount = value; }
+    public int TotalCollectRatio { get => _totalCollectRatio; set => _totalCollectRatio = value; }
+    public Color RankColor { get => _rankColor; set => _rankColor = value; }
+    public Sprite RankIcon { get => _rankIcon; set => _rankIcon = value; }
+    public string RankName { get => _rankName; set => _rankName = value; }
+
+
+
+    bool _activePausePanel;
+
+    public bool ActivePausePanel
+    {
+        get => _activePausePanel;
+        set => _activePausePanel = value;
+    }
+
+    float _bgmRatio;
+    public float BgmRatio
+    {
+        get => _bgmRatio;
+        set => _bgmRatio = value;
+    }
+
+    float _sfxRatio;
+    public float SfxRatio
+    {
+        get => _sfxRatio;
+        set => _sfxRatio = value;
+    }
+
+
 
     bool _activePlayPanel;
 

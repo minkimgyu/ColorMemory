@@ -18,6 +18,8 @@ abstract public class BaseState<T>
     public virtual void OnClickNextStageBtn() { }
     public virtual void OnClickExitBtn() { }
 
+    public virtual void OnClickGoToGameOver() { }
+
     public virtual void OnClickNextBtn() { }
     public virtual void OnClickRetryBtn() { }
 
@@ -32,4 +34,6 @@ abstract public class BaseState<T>
     public virtual void OnClickShopBtn() { }
     public virtual void OnClickRankingBtn() { }
     public virtual void OnClickSettingBtn() { }
+
+    public virtual void OnClickPauseBtn() { }
 }

@@ -33,24 +33,24 @@ public class MainPageState : BaseState<HomePage.InnerPageState>
             GameMode.Type.Challenge,
             new Color[6 , 6]
             {
-                { new Color(236f/255f, 232f/255f, 232f/255f), new Color(208f/255f, 162f/255f, 117f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(255f/255f, 154f/255f, 145f/255f), new Color(236f/255f, 232f/255f, 232f/255f)},
-                { new Color(208f/255f, 162f/255f, 117f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(208f/255f, 162f/255f, 117f/255f), new Color(255f/255f, 154f/255f, 145f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(255f/255f, 154f/255f, 145f/255f)},
-                { new Color(208f/255f, 162f/255f, 117f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(255f/255f, 154f/255f, 145f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(255f/255f, 154f/255f, 145f/255f)},
-                { new Color(208f/255f, 162f/255f, 117f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(255f/255f, 154f/255f, 145f/255f), new Color(255f/255f, 154f/255f, 145f/255f), new Color(255f/255f, 154f/255f, 145f/255f)},
-                { new Color(208f/255f, 162f/255f, 117f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(208f/255f, 162f/255f, 117f/255f), new Color(255f/255f, 154f/255f, 145f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(255f/255f, 154f/255f, 145f/255f)},
-                { new Color(236f/255f, 232f/255f, 232f/255f), new Color(208f/255f, 162f/255f, 117f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(255f/255f, 154f/255f, 145f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(255f/255f, 154f/255f, 145f/255f)}
+                { new Color(236f/255f, 232f/255f, 232f/255f), new Color(118f/255f, 113f/255f, 111f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(255f/255f, 154f/255f, 145f/255f), new Color(236f/255f, 232f/255f, 232f/255f)},
+                { new Color(118f/255f, 113f/255f, 111f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(118f/255f, 113f/255f, 111f/255f), new Color(255f/255f, 154f/255f, 145f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(255f/255f, 154f/255f, 145f/255f)},
+                { new Color(118f/255f, 113f/255f, 111f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(255f/255f, 154f/255f, 145f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(255f/255f, 154f/255f, 145f/255f)},
+                { new Color(118f/255f, 113f/255f, 111f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(255f/255f, 154f/255f, 145f/255f), new Color(255f/255f, 154f/255f, 145f/255f), new Color(255f/255f, 154f/255f, 145f/255f)},
+                { new Color(118f/255f, 113f/255f, 111f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(118f/255f, 113f/255f, 111f/255f), new Color(255f/255f, 154f/255f, 145f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(255f/255f, 154f/255f, 145f/255f)},
+                { new Color(236f/255f, 232f/255f, 232f/255f), new Color(118f/255f, 113f/255f, 111f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(255f/255f, 154f/255f, 145f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(255f/255f, 154f/255f, 145f/255f)}
             }
         },
         {
             GameMode.Type.Collect,
             new Color[6 , 6]
             {
-                { new Color(236f/255f, 232f/255f, 232f/255f), new Color(208f/255f, 162f/255f, 117f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(113f/255f, 191f/255f, 255f/255f), new Color(236f/255f, 232f/255f, 232f/255f)},
-                { new Color(208f/255f, 162f/255f, 117f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(208f/255f, 162f/255f, 117f/255f), new Color(113f/255f, 191f/255f, 255f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(113f/255f, 191f/255f, 255f/255f)},
-                { new Color(208f/255f, 162f/255f, 117f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(113f/255f, 191f/255f, 255f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(113f/255f, 191f/255f, 255f/255f)},
-                { new Color(208f/255f, 162f/255f, 117f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(113f/255f, 191f/255f, 255f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(113f/255f, 191f/255f, 255f/255f)},
-                { new Color(208f/255f, 162f/255f, 117f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(208f/255f, 162f/255f, 117f/255f), new Color(113f/255f, 191f/255f, 255f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(113f/255f, 191f/255f, 255f/255f)},
-                { new Color(236f/255f, 232f/255f, 232f/255f), new Color(208f/255f, 162f/255f, 117f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(113f/255f, 191f/255f, 255f/255f), new Color(236f/255f, 232f/255f, 232f/255f)}
+                { new Color(236f/255f, 232f/255f, 232f/255f), new Color(118f/255f, 113f/255f, 111f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(113f/255f, 191f/255f, 255f/255f), new Color(236f/255f, 232f/255f, 232f/255f)},
+                { new Color(118f/255f, 113f/255f, 111f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(118f/255f, 113f/255f, 111f/255f), new Color(113f/255f, 191f/255f, 255f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(113f/255f, 191f/255f, 255f/255f)},
+                { new Color(118f/255f, 113f/255f, 111f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(113f/255f, 191f/255f, 255f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(113f/255f, 191f/255f, 255f/255f)},
+                { new Color(118f/255f, 113f/255f, 111f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(113f/255f, 191f/255f, 255f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(113f/255f, 191f/255f, 255f/255f)},
+                { new Color(118f/255f, 113f/255f, 111f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(118f/255f, 113f/255f, 111f/255f), new Color(113f/255f, 191f/255f, 255f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(113f/255f, 191f/255f, 255f/255f)},
+                { new Color(236f/255f, 232f/255f, 232f/255f), new Color(118f/255f, 113f/255f, 111f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(236f/255f, 232f/255f, 232f/255f), new Color(113f/255f, 191f/255f, 255f/255f), new Color(236f/255f, 232f/255f, 232f/255f)}
             }
         }
     };

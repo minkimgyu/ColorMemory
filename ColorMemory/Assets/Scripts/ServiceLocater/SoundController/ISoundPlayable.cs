@@ -14,12 +14,17 @@ public interface ISoundPlayable
     void MuteBGM(bool nowMute);
     void MuteSFX(bool nowMute);
 
+
+    void SetBGMVolume(float volume = 1);
+    void SetSFXVolume(float volume = 1);
+
+
     bool GetBGMMute();
     bool GetSFXMute();
 
-    void PlayBGM(SoundName name, float volumn = 1);
-    void PlaySFX(SoundName name, float volumn = 1);
-    void PlaySFX(SoundName name, Vector3 pos, float volumn = 1);
+    void PlayBGM(SoundName name, float volume = 1);
+    void PlaySFX(SoundName name, float volume = 1);
+    void PlaySFX(SoundName name, Vector3 pos, float volume = 1);
 
     void StopBGM();
     void StopAllSound();

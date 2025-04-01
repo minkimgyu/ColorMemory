@@ -36,6 +36,17 @@ public class ChallengeStageUIViewer
     Transform _rankingContent;
     ScrollRect _rankingScrollRect;
 
+    GameObject _stageOverPreviewPanel;
+    ClearPatternUI _lastStagePattern;
+    TMP_Text _stageOverInfoText;
+
+    GameObject _pausePanel;
+    Button _pauseBtn;
+    Button _pauseExitBtn;
+    Button _gameExitBtn;
+    Slider _bgmSlider;
+    Slider _sfxSlider;
+
     public ChallengeStageUIViewer(
         GameObject playPanel,
         TMP_Text bestScoreText,
@@ -58,7 +69,19 @@ public class ChallengeStageUIViewer
         GameObject gameResultPanel,
         TMP_Text goldCount,
         Transform rankingContent,
-        ScrollRect rankingScrollRect)
+        ScrollRect rankingScrollRect,
+
+        GameObject stageOverPreviewPanel,
+        ClearPatternUI lastStagePattern,
+        TMP_Text stageOverInfoText,
+
+        GameObject pausePanel,
+        Button pauseBtn,
+        Button pauseExitBtn,
+        Button gameExitBtn,
+        Slider bgmSlider,
+        Slider sfxSlider,
+        ChallengeStageUIPresenter presenter)
     {
         _playPanel = playPanel;
 
@@ -83,7 +106,51 @@ public class ChallengeStageUIViewer
         _goldCount = goldCount;
         _rankingContent = rankingContent;
         _rankingScrollRect = rankingScrollRect;
+
+        _stageOverPreviewPanel = stageOverPreviewPanel;
+
+        _lastStagePattern = lastStagePattern;
+        _stageOverInfoText = stageOverInfoText;
+
+        _pausePanel = pausePanel;
+        _pauseBtn = pauseBtn;
+        _gameExitBtn = gameExitBtn;
+        _pauseExitBtn = pauseExitBtn;
+        _bgmSlider = bgmSlider;
+        _sfxSlider = sfxSlider;
+
+
+        _gameExitBtn.onClick.AddListener(() =>
+        {
+            ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.HomeScene);
+        });
+        _pauseBtn.onClick.AddListener(() =>{ presenter.ActivatePausePanel(true); });
+        _pauseExitBtn.onClick.AddListener(() => { presenter.ActivatePausePanel(false); });
+        _bgmSlider.onValueChanged.AddListener((ratio) => { presenter.OnBGMSliderValeChanged(ratio); });
+        _sfxSlider.onValueChanged.AddListener((ratio) => { presenter.OnSFXSliderValeChanged(ratio); });
     }
+
+    public void ActivatePausePanel(bool active)
+    {
+        _pausePanel.SetActive(active);
+    }
+
+    public void ActivateStageOverPreviewPanel(bool active)
+    {
+        _stageOverPreviewPanel.SetActive(active);
+    }
+
+    public void ChangeLastStagePattern(int currentStageCount, MapData data, Color[] pickColors)
+    {
+        _lastStagePattern.Initialize(currentStageCount, data, pickColors);
+    }
+
+    public void ChangeStageOverInfo(int currentStageCount)
+    {
+        _stageOverInfoText.text = $"클리어하지 못한 {currentStageCount}번째 패턴이에요";
+    }
+
+
 
     public void ActivatePlayPanel(bool active)
     {

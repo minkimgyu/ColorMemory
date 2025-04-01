@@ -18,6 +18,7 @@ abstract public class ScrollUI : MonoBehaviour, IBeginDragHandler, IDragHandler,
 
     const int _layoutGroupSpacing = 200;
     [SerializeField] protected int _targetIndex;
+    [SerializeField] bool _canLoop = false;
 
     Timer _scaleChangeTimer;
 
@@ -67,6 +68,44 @@ abstract public class ScrollUI : MonoBehaviour, IBeginDragHandler, IDragHandler,
         {
             _scrollbar.value = Mathf.Lerp(_scrollbar.value, _targetPos, 0.1f);
         }
+
+        if (_canLoop && !_isDrag && ItemCount > 1)
+        {
+            if (_isHorizontal)
+            {
+                if (_scrollbar.value <= 0f)
+                {
+                    MoveLastItemToFront();
+                    _scrollbar.value = _points[_menuSize - 1] - _distance;
+                    _targetPos = _scrollbar.value;
+                    _targetIndex = _menuSize - 1;
+                }
+                else if (_scrollbar.value >= 1f)
+                {
+                    MoveFirstItemToEnd();
+                    _scrollbar.value = _points[0] + _distance;
+                    _targetPos = _scrollbar.value;
+                    _targetIndex = 0;
+                }
+            }
+            else
+            {
+                if (_scrollbar.value <= 0f)
+                {
+                    MoveLastItemToFront();
+                    _scrollbar.value = _points[_menuSize - 1] - _distance;
+                    _targetPos = _scrollbar.value;
+                    _targetIndex = _menuSize - 1;
+                }
+                else if (_scrollbar.value >= 1f)
+                {
+                    MoveFirstItemToEnd();
+                    _scrollbar.value = _points[0] + _distance;
+                    _targetPos = _scrollbar.value;
+                    _targetIndex = 0;
+                }
+            }
+        }
     }
 
     public virtual void OnBeginDrag(PointerEventData eventData)
@@ -91,18 +130,20 @@ abstract public class ScrollUI : MonoBehaviour, IBeginDragHandler, IDragHandler,
         {
             if(_isHorizontal)
             {
-                // ← 으로 가려면 목표가 하나 감소
-                if (eventData.delta.x > 18 && _currentPos - _distance >= 0)
+                if(_canLoop == false)
                 {
-                    --_targetIndex;
-                    _targetPos = _currentPos - _distance;
-                }
-
-                // → 으로 가려면 목표가 하나 증가
-                else if (eventData.delta.x < -18 && _currentPos + _distance <= 1.01f)
-                {
-                    ++_targetIndex;
-                    _targetPos = _currentPos + _distance;
+                    // ← 으로 가려면 목표가 하나 감소
+                    if (eventData.delta.x > 18 && _currentPos - _distance >= 0)
+                    {
+                        --_targetIndex;
+                        _targetPos = _currentPos - _distance;
+                    }
+                    // → 으로 가려면 목표가 하나 증가
+                    else if (eventData.delta.x < -18 && _currentPos + _distance <= 1.01f)
+                    {
+                        ++_targetIndex;
+                        _targetPos = _currentPos + _distance;
+                    }
                 }
             }
             else
@@ -122,10 +163,88 @@ abstract public class ScrollUI : MonoBehaviour, IBeginDragHandler, IDragHandler,
             }
         }
 
+
+
         OnDragEnd?.Invoke(_targetIndex);
 
         _scaleChangeTimer.Reset();
         _scaleChangeTimer.Start(1f);
+
+
+
+        if (_canLoop)
+        {
+            if (_isHorizontal)
+            {
+                if (eventData.delta.x > 18) // Dragged Left (towards end)
+                {
+                    if (_scrollbar.value <= 0f)
+                    {
+                        MoveLastItemToFront();
+                        //_scrollbar.value = _points[_menuSize - 1] - _distance; // Adjust scrollbar value
+                        _targetPos = _scrollbar.value;
+                        _targetIndex = _menuSize - 1;
+                    }
+                }
+                else if (eventData.delta.x < -18) // Dragged Right (towards start)
+                {
+                    if (_scrollbar.value >= 1f)
+                    {
+                        MoveFirstItemToEnd();
+                        //_scrollbar.value = _points[0] + _distance; // Adjust scrollbar value
+                        _targetPos = _scrollbar.value;
+                        _targetIndex = 0;
+                    }
+                }
+            }
+            else
+            {
+                if (eventData.delta.y > 18) // Dragged Up (towards end - in Scrollbar value)
+                {
+                    if (_scrollbar.value >= 1f)
+                    {
+                        // Vertical scrollbar value increases upwards, so logic is reversed
+                        MoveFirstItemToEnd();
+                        //_scrollbar.value = _points[0] + _distance;
+                        _targetPos = _scrollbar.value;
+                        _targetIndex = 0;
+                    }
+                }
+                else if (eventData.delta.y < -18) // Dragged Down (towards start - in Scrollbar value)
+                {
+                    if (_scrollbar.value <= 0f)
+                    {
+                        // Vertical scrollbar value increases upwards, so logic is reversed
+                        MoveLastItemToFront();
+                        //_scrollbar.value = _points[_menuSize - 1] - _distance;
+                        _targetPos = _scrollbar.value;
+                        _targetIndex = _menuSize - 1;
+                    }
+                }
+            }
+        }
+    }
+
+    private void MoveFirstItemToEnd()
+    {
+        if (_content.childCount == 0) return;
+
+        Transform firstItem = _content.GetChild(0);
+        firstItem.SetSiblingIndex(_content.childCount - 1);
+
+        // 스크롤 값 조정 (자연스럽게 이어지도록)
+        //_scrollbar.value += _distance;
+    }
+
+    private void MoveLastItemToFront()
+    {
+        if (_content.childCount == 0) return;
+
+        Transform lastItem = _content.GetChild(_content.childCount - 1);
+        lastItem.SetSiblingIndex(0);
+
+        // 스크롤 값 조정 (자연스럽게 이어지도록)
+        //_scrollbar.value -= _distance;
     }
 
     protected float GetPos()
