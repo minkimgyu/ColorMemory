@@ -22,6 +22,9 @@ public class CollectPageViewer
     Button _exitBtn;
     Button _playBtn;
 
+    TMP_Text _stageHintUseCount;
+    TMP_Text _stageWrongCount;
+
     CollectPagePresenter _collectPagePresenter;
 
     public CollectPageViewer(
@@ -40,6 +43,9 @@ public class CollectPageViewer
         Button exitBtn,
         Button playBtn,
 
+        TMP_Text stageHintUseCount,
+        TMP_Text stageWrongCount,
+
         CollectPagePresenter collectPagePresenter)
     {
         _content = content;
@@ -56,6 +62,10 @@ public class CollectPageViewer
 
         _exitBtn = exitBtn;
         _playBtn = playBtn;
+
+        _stageHintUseCount = stageHintUseCount;
+        _stageWrongCount = stageWrongCount;
+
         _collectPagePresenter = collectPagePresenter;
 
         _exitBtn.onClick.AddListener(() => { ActiveSelectStageContent(false); });
@@ -64,10 +74,21 @@ public class CollectPageViewer
         ActiveContent(false);
     }
 
+    public void ChangeStageDetails(int hintCount, int wrongCount)
+    {
+        _stageHintUseCount.text = hintCount.ToString();
+        _stageWrongCount.text = wrongCount.ToString();
+    }
+
     public void ChangeArtDescription(string title, string description)
     {
         _titleTxt.text = title;
         _descriptionTxt.text = description;
+    }
+
+    public void SetUpArtworkScroll(int itemCount)
+    {
+        _artworkScrollUI.SetUp(itemCount);
     }
 
     public void AddArtwork(SpawnableUI artwork)

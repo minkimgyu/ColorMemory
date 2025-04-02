@@ -8,10 +8,7 @@ using UnityEngine.UI;
 public class CollectionPageState : BaseState<HomePage.InnerPageState>
 {
     ArtworkUIFactory _artworkFactory;
-
     CollectPagePresenter _collectPagePresenter;
-
-    ArtworkScrollUI _artworkScrollUI;
 
     public CollectionPageState(
         Button homeBtn,
@@ -28,20 +25,19 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
         Button exitBtn,
         Button playBtn,
 
+        TMP_Text stageUsedHintUseCount,
+        TMP_Text stageWrongCount,
+
         ArtworkScrollUI artworkScrollUI,
 
         ArtworkUIFactory artworkFactory,
         StageUIFactory stageUIFactory,
 
-        Dictionary<ArtName, ArtData> artworkDatas,
-        Dictionary<ArtName, CollectiveArtData> artDatas,
+        List<int> artNames,
+        Dictionary<int, ArtworkData> artworkDatas,
+        Dictionary<int, CollectiveArtData> artDatas,
         FSM<HomePage.InnerPageState> fsm) : base(fsm)
     {
-        _artworkScrollUI = artworkScrollUI;
-
-        List<ArtName> artNames = new List<ArtName>();
-        for (int i = 0; i < artworkDatas.Count; i++) artNames.Add((ArtName)i);
-
         CollectPageModel collectPageModel = new CollectPageModel(artNames, artworkDatas, artDatas);
         _collectPagePresenter = new CollectPagePresenter(collectPageModel, artworkFactory, stageUIFactory, GoToCollectMode);
         CollectPageViewer collectPageViewer = new CollectPageViewer(
@@ -56,6 +52,8 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
             stageUIContent,
             exitBtn,
             playBtn,
+            stageUsedHintUseCount,
+            stageWrongCount,
             _collectPagePresenter);
 
         _collectPagePresenter.InjectViewer(collectPageViewer);
@@ -85,10 +83,6 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
     public override void OnStateEnter()
     {
         _collectPagePresenter.FillArtwork();
-
-        int artDataCount = Enum.GetValues(typeof(ArtName)).Length;
-        _artworkScrollUI.SetUp(artDataCount);
-
         _collectPagePresenter.ActiveContent(true); // home ╢щ╬фаж╠Б
     }
 

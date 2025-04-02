@@ -5,26 +5,10 @@ using Newtonsoft.Json;
 using UnityEngine.Networking;
 using System;
 using Challenge;
+using System.Net;
 
-public class ChallengeModeStageDataBuilder : MonoBehaviour
+public class ChallengeModeStageDataBuilder : SheetDataBuilder
 {
-    const string URL = "https://docs.google.com/spreadsheets/d/1YMPCChQ5VHH_Gg7RgglN4P8YZzTqNt5HkDNI5ohNhj4/export?format=tsv";
-
-    IEnumerator Load(System.Action<string> OnComplete)
-    {
-        UnityWebRequest request = UnityWebRequest.Get(URL);
-        yield return request.SendWebRequest();
-
-        if(request.result == UnityWebRequest.Result.Success)
-        {
-            OnComplete?.Invoke(request.downloadHandler.text);
-        }
-        else
-        {
-            Debug.LogError(request.result);
-        }
-    }
-
     List<ChallengeMode.StageData> ParseTsv(string tsv)
     {
         List<ChallengeMode.StageData> stageDatas = new List<ChallengeMode.StageData>();
@@ -51,19 +35,16 @@ public class ChallengeModeStageDataBuilder : MonoBehaviour
     }
 
     [ContextMenu("CreateData")]
-    public void CreateData()
+    public override void CreateData()
     {
         FileIO fileIO = new FileIO(new JsonParser(), ".txt");
 
-        string fileName = "ChallengeModeLevelDataAsset";
-        string fileLocation = "JsonDatas";
-
-        StartCoroutine(Load((string tsv) => {
+        StartCoroutine(Load(_address, _sheetID, (string tsv) => {
 
             List<ChallengeMode.StageData> stageDatas = ParseTsv(tsv);
 
             ChallengeMode.StageDataWrapper stageDataWrapper = new ChallengeMode.StageDataWrapper(stageDatas);
-            fileIO.SaveData(stageDataWrapper, fileLocation, fileName, true);
+            fileIO.SaveData(stageDataWrapper, _fileLocation, _fileName, true);
         }));
     }
 }

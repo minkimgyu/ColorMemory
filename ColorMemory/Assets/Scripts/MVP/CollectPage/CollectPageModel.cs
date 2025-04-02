@@ -10,15 +10,18 @@ public class CollectPageModel
     string _title;
     string _description;
 
-    Dictionary<ArtName, ArtData> _artworkDatas;
-    Dictionary<ArtName, CollectiveArtData> _artData;
+    Dictionary<int, ArtworkData> _artworkDatas;
+    Dictionary<int, CollectiveArtData> _artData;
 
     int _artworkIndex;
-    List<ArtName> _currentArtNames;
+    List<int> _haveArtworkIndexes;
 
     Vector2Int _selectedArtworkIndex;
 
-    public CollectPageModel(List<ArtName> currentArtNames, Dictionary<ArtName, ArtData> artworkDatas, Dictionary<ArtName, CollectiveArtData> artData)
+    int _usedHintCount;
+    int _wrongCount;
+
+    public CollectPageModel(List<int> currentArtworkIndexes, Dictionary<int, ArtworkData> artworkDatas, Dictionary<int, CollectiveArtData> artData)
     {
         _activeContent = false;
         _activeSelectStageContent = false;
@@ -27,7 +30,10 @@ public class CollectPageModel
         _artworkIndex = 0;
         _selectedArtworkIndex = Vector2Int.zero;
 
-        _currentArtNames = currentArtNames;
+        _usedHintCount = 0;
+        _wrongCount = 0;
+
+        _haveArtworkIndexes = currentArtworkIndexes;
         _artworkDatas = artworkDatas;
         _artData = artData;
     }
@@ -38,8 +44,11 @@ public class CollectPageModel
     public string Title { get => _title; set => _title = value; }
     public string Description { get => _description; set => _description = value; }
     public int ArtworkIndex { get => _artworkIndex; set => _artworkIndex = value; }
-    public Dictionary<ArtName, CollectiveArtData> ArtData { get => _artData; }
-    public Dictionary<ArtName, ArtData> ArtworkDatas { get => _artworkDatas; }
-    public List<ArtName> CurrentArtNames { get => _currentArtNames; set => _currentArtNames = value; }
+    public Dictionary<int, CollectiveArtData> ArtData { get => _artData; }
+    public Dictionary<int, ArtworkData> ArtworkDatas { get => _artworkDatas; }
+    public List<int> HaveArtworkIndexes { get => _haveArtworkIndexes; set => _haveArtworkIndexes = value; }
     public Vector2Int SelectedArtworkIndex { get => _selectedArtworkIndex; set => _selectedArtworkIndex = value; }
+
+    public int UsedHintCount { get => _usedHintCount; set => _usedHintCount = value; }
+    public int WrongCount { get => _wrongCount; set => _wrongCount = value; }
 }

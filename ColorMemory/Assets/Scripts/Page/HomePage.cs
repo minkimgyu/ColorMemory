@@ -55,6 +55,9 @@ public class HomePage : MonoBehaviour
     [SerializeField] Button _playCollectModeBtn;
     [SerializeField] Button _exitBtn;
 
+    [SerializeField] TMP_Text _stageUsedHintUseCount;
+    [SerializeField] TMP_Text _stageWrongCount;
+
     [SerializeField] ArtworkScrollUI _artworkScrollUI;
 
     [Header("Ranking")]
@@ -68,8 +71,31 @@ public class HomePage : MonoBehaviour
 
     FSM<InnerPageState> _pageFsm;
 
+
     private async void Start()
     {
+        //ArtworkManager artworkManager = new ArtworkManager();
+        //List<PlayerArtworkDTO> ownedArtworkDTOs = await artworkManager.GetOwnedArtworksAsync("testId1");
+        //List<PlayerArtworkDTO> unownedArtworkDTOs = await artworkManager.GetUnownedArtworksAsync("testId1");
+
+        //List<int> artworkIndexes = new List<int>();
+        //for (int i = 0; i < ownedArtworkDTOs.Count; i++)
+        //{
+        //    artworkIndexes.Add(i);
+        //}
+
+        //for (int i = 0; i < unownedArtworkDTOs.Count; i++)
+        //{
+        //    artworkIndexes.Add(i);
+        //}
+
+        List<int> artworkIndexes = new List<int>();
+        for (int i = 1; i <= 375; i++)
+        {
+            artworkIndexes.Add(i);
+        }
+
+
         AddressableHandler addressableHandler = FindObjectOfType<AddressableHandler>();
         if (addressableHandler == null) return;
 
@@ -98,10 +124,8 @@ public class HomePage : MonoBehaviour
         _settingBtn.onClick.AddListener(() => { _sideSheetUI.TogglePanel(); });
 
         SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
+
         MoneyManager moneyManager = new MoneyManager();
-
-        //await moneyManager.EarnPlayerMoneyAsync("testId1", 100);
-
         int money = await moneyManager.GetMoneyAsync("testId1");
         _goldTxt.text = money.ToString();
 
@@ -135,9 +159,12 @@ public class HomePage : MonoBehaviour
                 _stageUIContent,
                 _exitBtn,
                 _playCollectModeBtn,
+                _stageUsedHintUseCount,
+                _stageWrongCount,
                 _artworkScrollUI,
                 artWorkUIFactory,
                 stageUIFactory,
+                artworkIndexes,
                 addressableHandler.ArtworkJsonAsset.Data,
                 addressableHandler.CollectiveArtJsonAsserts,
                 _pageFsm)

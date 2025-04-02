@@ -52,22 +52,22 @@ public class StageCreater : SpawnableUICreater
 
 public class ArtworkCreater : SpawnableUICreater
 {
-    Dictionary<ArtName, Sprite> _artSprites;
-    Dictionary<Rank, Sprite> _artworkFrameSprites;
+    Dictionary<int, Sprite> _artSprites;
+    Dictionary<NetworkService.DTO.Rank, Sprite> _artworkFrameSprites;
 
     public ArtworkCreater(
         SpawnableUI prefab,
-        Dictionary<ArtName, Sprite> artSprites,
-        Dictionary<Rank, Sprite> artworkFrameSprites) : base(prefab)
+        Dictionary<int, Sprite> artSprites,
+        Dictionary<NetworkService.DTO.Rank, Sprite> artworkFrameSprites) : base(prefab)
     {
         _artSprites = artSprites;
         _artworkFrameSprites = artworkFrameSprites;
     }
 
-    public override SpawnableUI Create(ArtName name, Rank frameType)
+    public override SpawnableUI Create(int artworkIndex, NetworkService.DTO.Rank frameType)
     {
         SpawnableUI artwork = Object.Instantiate(_prefab);
-        artwork.Initialize(_artSprites[name], _artworkFrameSprites[frameType]);
+        artwork.Initialize(_artSprites[artworkIndex], _artworkFrameSprites[frameType]);
         return artwork;
     }
 }
@@ -82,7 +82,7 @@ abstract public class SpawnableUICreater
     }
     
 
-    public virtual SpawnableUI Create(ArtName name, Rank frameType) { return default; }
+    public virtual SpawnableUI Create(int artworkIndex, NetworkService.DTO.Rank frameType) { return default; }
     public virtual SpawnableUI Create(int currentStageCount, int totalStageCount, MapData data, Color[] pickColors) { return default; }
     public virtual SpawnableUI Create(Vector2Int index) { return default; }
     public virtual SpawnableUI Create(PersonalRankingData data) { return default; }
@@ -145,14 +145,14 @@ public class ArtworkUIFactory : BaseFactory
 
     public ArtworkUIFactory(
         SpawnableUI artworkUIPrefab,
-        Dictionary<ArtName, Sprite> artSprites,
-        Dictionary<Rank, Sprite> artworkFrameSprites)
+        Dictionary<int, Sprite> artSprites,
+        Dictionary<NetworkService.DTO.Rank, Sprite> artworkFrameSprites)
     {
         _artworkUICreater = new ArtworkCreater(artworkUIPrefab, artSprites, artworkFrameSprites);
     }
 
-    public override SpawnableUI Create(ArtName artworkName, Rank frameType)
+    public override SpawnableUI Create(int artworkIndex, NetworkService.DTO.Rank frameType)
     {
-        return _artworkUICreater.Create(artworkName, frameType);
+        return _artworkUICreater.Create(artworkIndex, frameType);
     }
 }

@@ -21,7 +21,9 @@ abstract public class SpawnableUI : MonoBehaviour
     public virtual void InjectClickEvent(System.Action<Vector2Int> OnClick) { }
     public virtual void InjectClickEvent(System.Action OnClick) { }
 
+    public virtual void SetRank(NetworkService.DTO.Rank rank) { }
     public virtual void SetState(StageUI.State state) { }
+
     public virtual void ChangeSelect(bool select) { }
     public virtual void ChangeScale(Vector3 scale) { }
 

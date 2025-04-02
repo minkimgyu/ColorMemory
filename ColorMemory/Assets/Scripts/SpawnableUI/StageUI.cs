@@ -19,6 +19,10 @@ public class StageUI : SpawnableUI
     readonly Color _lockColor = new Color(236/255f, 232/255f, 232/255f);
     readonly Color _openColor = new Color(113/255f, 196/255f, 255/255f);
 
+    readonly Color _copperColor = new Color(208 / 255f, 148 / 255f, 107 / 255f);
+    readonly Color _silverColor = new Color(205 / 255f, 205 / 255f, 205 / 255f);
+    readonly Color _goleColor = new Color(249 / 255f, 210 / 255f, 56 / 255f);
+
     public enum State
     {
         Lock,
@@ -27,6 +31,7 @@ public class StageUI : SpawnableUI
     }
 
     State _state;
+    NetworkService.DTO.Rank _rank;
 
     public override void InjectClickEvent(System.Action<Vector2Int> OnClick)
     {
@@ -41,20 +46,43 @@ public class StageUI : SpawnableUI
         _outline.SetActive(select);
     }
 
+    void ChangeColor(Color color)
+    {
+        _outlineImg.color = color;
+        _selectBtnImg.color = color;
+    }
+
+    public override void SetRank(NetworkService.DTO.Rank rank)
+    {
+        _rank = rank;
+        switch (_rank)
+        {
+            case NetworkService.DTO.Rank.NONE:
+                break;
+            case NetworkService.DTO.Rank.COPPER:
+                ChangeColor(_copperColor);
+                break;
+            case NetworkService.DTO.Rank.SILVER:
+                ChangeColor(_silverColor);
+                break;
+            case NetworkService.DTO.Rank.GOLD:
+                ChangeColor(_goleColor);
+                break;
+            default:
+                break;
+        }
+    }
+
     public override void SetState(State state)
     {
         _state = state;
         switch (_state)
         {
             case State.Lock:
-                _outlineImg.color = _lockColor;
-                _selectBtnImg.color = _lockColor;
-
+                ChangeColor(_lockColor);
                 break;
             case State.Open:
-                _outlineImg.color = _openColor;
-                _selectBtnImg.color = _openColor;
-
+                ChangeColor(_openColor);
                 break;
             case State.Clear:
                 break;

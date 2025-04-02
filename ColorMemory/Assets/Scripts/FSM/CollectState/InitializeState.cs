@@ -86,8 +86,8 @@ namespace Collect
 
             MapData mapData = customLevelGenerator.GenerateLevelData();
 
-            string title = ServiceLocater.ReturnSaveManager().GetSaveData().SelectedArtworkName;
-            _collectStageUIPresenter.ChangeTitle(title);
+            int index = ServiceLocater.ReturnSaveManager().GetSaveData().SelectedArtworkKey;
+            _collectStageUIPresenter.ChangeTitle(index.ToString());
 
             int row = mapData.DotColor.GetLength(0);
             int col = mapData.DotColor.GetLength(1);

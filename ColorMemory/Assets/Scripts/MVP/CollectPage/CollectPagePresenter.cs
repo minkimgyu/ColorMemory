@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using Unity.VisualScripting;
 
 public class CollectPagePresenter
 {
@@ -33,6 +34,13 @@ public class CollectPagePresenter
         ChangeArtworkDescription(_collectPageModel.ArtworkIndex);
     }
 
+    public void ChangeStageDetails(int usedHintCount, int wrongCount)
+    {
+        _collectPageModel.UsedHintCount = usedHintCount;
+        _collectPageModel.WrongCount = wrongCount;
+        _collectPageViewer.ChangeStageDetails(_collectPageModel.UsedHintCount, _collectPageModel.WrongCount);
+    }
+
     public void ActiveContent(bool active)
     {
         _collectPageModel.ActiveContent = active;
@@ -47,9 +55,9 @@ public class CollectPagePresenter
 
     public void FillArtwork()
     {
-        for (int i = 0; i < _collectPageModel.CurrentArtNames.Count; i++)
+        for (int i = 0; i < _collectPageModel.HaveArtworkIndexes.Count; i++)
         {
-            SpawnableUI artwork = _artworkFactory.Create(_collectPageModel.CurrentArtNames[i], Rank.COPPER);
+            SpawnableUI artwork = _artworkFactory.Create(_collectPageModel.HaveArtworkIndexes[i], NetworkService.DTO.Rank.COPPER);
             artwork.InjectClickEvent(() => {
                 RemoveAllStage();
 
@@ -59,6 +67,8 @@ public class CollectPagePresenter
 
             _collectPageViewer.AddArtwork(artwork);
         }
+
+        _collectPageViewer.SetUpArtworkScroll(_collectPageModel.HaveArtworkIndexes.Count);
     }
 
     public void AddArtwork(SpawnableUI artwork)
@@ -73,8 +83,8 @@ public class CollectPagePresenter
 
     public void FillStage()
     {
-        ArtName name = _collectPageModel.CurrentArtNames[_collectPageModel.ArtworkIndex];
-        List<List<CollectiveArtData.Section>> sections = _collectPageModel.ArtData[name].Sections;
+        int artworkIndex = _collectPageModel.HaveArtworkIndexes[_collectPageModel.ArtworkIndex];
+        List<List<CollectiveArtData.Section>> sections = _collectPageModel.ArtData[artworkIndex].Sections;
 
         int row = sections.Count;
         int col = sections[0].Count;
@@ -86,22 +96,14 @@ public class CollectPagePresenter
                 SpawnableUI spawnableUI = _stageUIFactory.Create(new Vector2Int(i, j));
                 spawnableUI.InjectClickEvent((index) => 
                 {
-                    ServiceLocater.ReturnSaveManager().SelectArtwork(name.ToString(), index);
+                    ServiceLocater.ReturnSaveManager().SelectArtwork(artworkIndex.ToString(), index);
 
                     _collectPageModel.SelectedArtworkIndex = index;
                     _collectPageViewer.SelectStage(index);
                 });
 
-                //if(i == row - 1 && j == col - 1)
-                //{
-                //    spawnableUI.SetState(StageUI.State.Lock);
-                //}
-                //else
-                //{
-                //    spawnableUI.SetState(StageUI.State.Clear);
-                //}
-
-                spawnableUI.SetState(StageUI.State.Clear);
+                spawnableUI.SetState(StageUI.State.Open);
+                spawnableUI.SetRank(NetworkService.DTO.Rank.SILVER);
                 _collectPageViewer.AddStage(spawnableUI);
             }
         }
@@ -119,14 +121,14 @@ public class CollectPagePresenter
 
     void UpdateArtInfo()
     {
-        ArtName name = _collectPageModel.CurrentArtNames[_collectPageModel.ArtworkIndex];
-        ArtData artData = _collectPageModel.ArtworkDatas[name];
+        int artIndex = _collectPageModel.HaveArtworkIndexes[_collectPageModel.ArtworkIndex];
+        ArtworkData artData = _collectPageModel.ArtworkDatas[artIndex];
         _collectPageViewer.ChangeArtDescription(artData.Title, artData.Description);
     }
 
-    public void ChangeArtworkList(List<ArtName> currentArtNames)
+    public void ChangeArtworkList(List<int> currentArtNames)
     {
-        _collectPageModel.CurrentArtNames = currentArtNames;
+        _collectPageModel.HaveArtworkIndexes = currentArtNames;
         _collectPageModel.ArtworkIndex = 0;
         UpdateArtInfo();
     }

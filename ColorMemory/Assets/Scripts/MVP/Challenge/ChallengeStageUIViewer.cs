@@ -130,6 +130,16 @@ public class ChallengeStageUIViewer
         _sfxSlider.onValueChanged.AddListener((ratio) => { presenter.OnSFXSliderValeChanged(ratio); });
     }
 
+    public void ChangeBGMSliderValue(float ratio)
+    {
+        _bgmSlider.value = ratio;
+    }
+
+    public void ChangeSFXSliderValue(float ratio)
+    {
+        _sfxSlider.value = ratio;
+    }
+
     public void ActivatePausePanel(bool active)
     {
         _pausePanel.SetActive(active);

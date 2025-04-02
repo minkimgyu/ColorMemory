@@ -1182,7 +1182,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &370595959
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1784,7 +1784,7 @@ MonoBehaviour:
   _playBtn: {fileID: 168579025}
   _playBtnTxt: {fileID: 837978126}
   _collectionContent: {fileID: 455951138}
-  _selectStageContent: {fileID: 370595958}
+  _selectStageContent: {fileID: 1586043720}
   _stageUIContent: {fileID: 826072362}
   _titleTxt: {fileID: 1233506141}
   _descriptionTxt: {fileID: 1405961326}
@@ -1793,6 +1793,8 @@ MonoBehaviour:
   _totalCompleteText: {fileID: 1600787894}
   _playCollectModeBtn: {fileID: 456427974}
   _exitBtn: {fileID: 452860395}
+  _stageUsedHintUseCount: {fileID: 2020706975}
+  _stageWrongCount: {fileID: 1790477447}
   _artworkScrollUI: {fileID: 463184592}
   _rankingContent: {fileID: 1729391204}
   _rankingScrollContent: {fileID: 776696775}
@@ -5025,7 +5027,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1586043721
 RectTransform:
   m_ObjectHideFlags: 0

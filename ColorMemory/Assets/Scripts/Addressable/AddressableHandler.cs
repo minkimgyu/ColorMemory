@@ -49,11 +49,16 @@ public class AddressableHandler : MonoBehaviour
         _assetLoaders = new HashSet<BaseLoader>();
     }
 
-    public Dictionary<ArtName, CollectiveArtData> CollectiveArtJsonAsserts { get; private set; }
+    public Dictionary<int, CollectiveArtData> CollectiveArtJsonAsserts { get; private set; }
 
-    public ArtworkDataObject ArtworkJsonAsset { get; private set; }
-    public Dictionary<ArtName, Sprite> ArtSpriteAsserts { get; private set; }
-    public Dictionary<Rank, Sprite> ArtworkFrameAsserts { get; private set; }
+    public ArtworkDateWrapper ArtworkJsonAsset { get; private set; }
+
+
+    public Dictionary<int, Sprite> ArtSpriteAsserts { get; private set; }
+
+
+
+    public Dictionary<NetworkService.DTO.Rank, Sprite> ArtworkFrameAsserts { get; private set; }
 
 
     public Dictionary<Dot.Name, Dot> DotAssets { get; private set; }

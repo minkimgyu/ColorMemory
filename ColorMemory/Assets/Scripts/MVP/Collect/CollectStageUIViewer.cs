@@ -1,4 +1,5 @@
 using DG.Tweening;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -231,5 +232,15 @@ public class CollectStageUIViewer
     public void ActivateGameResultPanel(bool active)
     {
         _gameResultPanel.SetActive(active);
+    }
+
+    public void ChangeBGMSliderValue(float ratio)
+    {
+        _bgmSlider.value = ratio;
+    }
+
+    public void ChangeSFXSliderValue(float ratio)
+    {
+        _sfxSlider.value = ratio;
     }
 }

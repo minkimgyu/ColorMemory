@@ -174,10 +174,10 @@ namespace Collect
 
             SaveData saveData = ServiceLocater.ReturnSaveManager().GetSaveData();
 
-            ArtName artName = (ArtName)Enum.Parse(typeof(ArtName), saveData.SelectedArtworkName);
+            int artworkIndex = saveData.SelectedArtworkKey;
             Vector2Int sectionIndex = saveData.SelectedArtworkSectionIndex;
 
-            CollectiveArtData artData = addressableHandler.CollectiveArtJsonAsserts[artName];
+            CollectiveArtData artData = addressableHandler.CollectiveArtJsonAsserts[artworkIndex];
 
             _section = artData.Sections[sectionIndex.x][sectionIndex.y];
 

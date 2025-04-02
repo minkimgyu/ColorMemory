@@ -5,6 +5,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using NetworkService.Manager;
+using NetworkService.DTO;
+using System.Threading.Tasks;
 
 public class LoadingPage : MonoBehaviour
 {
@@ -17,17 +19,18 @@ public class LoadingPage : MonoBehaviour
         SetUp();
     }
 
-    void SetUp()
+    async void SetUp()
     {
+        PlayerManager playerManager = new PlayerManager();
+        bool canLogin = await playerManager.AddPlayerAsync("testId1", "meal");
+        if (canLogin == false) return;
+
         _loadingPregressBar.fillAmount = 0;
         _loadingPregressTxt.text = $"{0} %";
 
         AddressableHandler addressableHandler = CreateAddressableHandler();
         addressableHandler.AddProgressEvent((value) => { _loadingPregressBar.fillAmount = value; _loadingPregressTxt.text = $"{value * 100} %"; });
         addressableHandler.Load(() => { Initialize(addressableHandler); });
-
-        PlayerManager playerManager = new PlayerManager();
-        playerManager.AddPlayerAsync("testId1", "meal");
     }
 
     void Initialize(AddressableHandler addressableHandler)

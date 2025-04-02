@@ -3,59 +3,87 @@ using System.Collections.Generic;
 using UnityEngine;
 using Newtonsoft.Json;
 using TMPro;
+using System;
 
-public enum ArtName
-{
-    ABlossomingBush,
-    AChristmasRepast,
-    ACoastalLandscapeintheSouthofFrance,
-    ACottageGardenWithChickens,
-    ADoewithFawn,
-    AFavoriteSummerPastime,
-    AForestPathwithHunteratSunset,
-    AFreshBreeze,
-    AGardenIdyll,
-    AGardeninSeptember
-}
+//public enum ArtName
+//{
+//    ABlossomingBush,
+//    AChristmasRepast,
+//    ACoastalLandscapeintheSouthofFrance,
+//    ACottageGardenWithChickens,
+//    ADoewithFawn,
+//    AFavoriteSummerPastime,
+//    AForestPathwithHunteratSunset,
+//    AFreshBreeze,
+//    AGardenIdyll,
+//    AGardeninSeptember
+//}
 
 [System.Serializable]
-public struct ArtworkDataObject
+public struct ArtworkDateWrapper
 {
-    [JsonProperty] Dictionary<ArtName, ArtData> _data;
+    [JsonProperty] Dictionary<int, ArtworkData> _data;
 
-    public ArtworkDataObject(Dictionary<ArtName, ArtData> data)
+    public ArtworkDateWrapper(Dictionary<int, ArtworkData> data)
     {
         _data = data;
     }
 
-    [JsonIgnore] public Dictionary<ArtName, ArtData> Data { get => _data; }
+    [JsonIgnore] public Dictionary<int, ArtworkData> Data { get => _data; }
 }
 
-public enum Rank
+public struct ArtworkData
 {
-    NONE,
-    COPPER,
-    SILVER,
-    GOLD
-}
-
-[System.Serializable]
-public struct ArtData
-{
-    [JsonProperty] Rank _type;
+    [JsonProperty] string _artist;
     [JsonProperty] string _title;
     [JsonProperty] string _description;
 
-    public ArtData(Rank type, string title, string description)
+    public ArtworkData(string artist, string title, string description)
     {
-        _type = type;
+        _artist = artist;
         _title = title;
         _description = description;
     }
 
+    [JsonIgnore] public string Artist { get => _artist; }
     [JsonIgnore] public string Title { get => _title; }
     [JsonIgnore] public string Description { get => _description; }
-    public Rank Type { get => _type; }
+}
+
+
+public struct ArtData
+{
+    NetworkService.DTO.Rank _type;
+    bool _hasIt;
+
+    int _totalMistakesAndHints;
+    Dictionary<int, int> _hintUsagePerStage;
+    Dictionary<int, int> _incorrectPerStage;
+    DateTime? _obtainedDate;
+
+    public ArtData(
+        NetworkService.DTO.Rank type,
+        bool hasIt,
+        int totalMistakesAndHints,
+        Dictionary<int, int> hintUsagePerStage,
+        Dictionary<int, int> incorrectPerStage,
+        DateTime? obtainedDate)
+    {
+        _type = type;
+        _hasIt = hasIt;
+        _totalMistakesAndHints = totalMistakesAndHints;
+        _hintUsagePerStage = hintUsagePerStage;
+        _incorrectPerStage = incorrectPerStage;
+        _obtainedDate = obtainedDate;
+    }
+
+    public NetworkService.DTO.Rank Type { get => _type; }
+    public bool HasIt { get => _hasIt; }
+
+    public int TotalMistakesAndHints { get => _totalMistakesAndHints; }
+    public Dictionary<int, int> HintUsagePerStage { get => _hintUsagePerStage; set => _hintUsagePerStage = value; }
+    public Dictionary<int, int> IncorrectPerStage { get => _incorrectPerStage; set => _incorrectPerStage = value; }
+    public DateTime? ObtainedDate { get => _obtainedDate; set => _obtainedDate = value; }
 }
 
 [System.Serializable]

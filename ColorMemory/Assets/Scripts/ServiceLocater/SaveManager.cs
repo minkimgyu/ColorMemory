@@ -43,7 +43,7 @@ public class PlayerArtwork
 {
     string artName;
     bool hasIt;
-    Rank rank;
+    NetworkService.DTO.Rank rank;
 }
 
 public struct SaveData
@@ -55,7 +55,7 @@ public struct SaveData
     [JsonProperty] float _sfxVolume;
     [JsonProperty] [JsonConverter(typeof(StringEnumConverter))] GameMode.Type _selectedType;
 
-    [JsonProperty] string _selectedArtworkName;
+    [JsonProperty] int _selectedArtworkKey;
     [JsonProperty] Vector2Int _selectedArtworkSectionIndex;
 
     [JsonIgnore] string _name;
@@ -71,11 +71,11 @@ public struct SaveData
         _muteBGM = false;
         _muteSFX = false;
 
-        _bgmVolume = 1f;
-        _sfxVolume = 1f;
+        _bgmVolume = 0.5f;
+        _sfxVolume = 0.5f;
 
         _selectedType = GameMode.Type.Collect;
-        _selectedArtworkName = "";
+        _selectedArtworkKey = 0;
         _selectedArtworkSectionIndex = Vector2Int.zero;
 
         _name = name;
@@ -101,7 +101,7 @@ public struct SaveData
         _sfxVolume = 1f;
 
         _selectedType = GameMode.Type.Collect;
-        _selectedArtworkName = "";
+        _selectedArtworkKey = 0;
         _selectedArtworkSectionIndex = Vector2Int.zero;
 
         _name = name;
@@ -123,7 +123,7 @@ public struct SaveData
     [JsonIgnore] public int OneColorHintCount { get => _oneColorHintCount; set => _oneColorHintCount = value; }
     [JsonIgnore] public int OneZoneHintCount { get => _oneZoneHintCount; set => _oneZoneHintCount = value; }
     [JsonIgnore] public List<PlayerArtwork> ArtworkDatas { get => _artworkDatas; set => _artworkDatas = value; }
-    [JsonIgnore] public string SelectedArtworkName { get => _selectedArtworkName; set => _selectedArtworkName = value; }
+    [JsonIgnore] public int SelectedArtworkKey { get => _selectedArtworkKey; set => _selectedArtworkKey = value; }
     [JsonIgnore] public Vector2Int SelectedArtworkSectionIndex { get => _selectedArtworkSectionIndex; set => _selectedArtworkSectionIndex = value; }
 }
 
@@ -265,9 +265,9 @@ public class SaveManager : ISaveable
         Save();
     }
 
-    public void SelectArtwork(string selectedArtworkName, Vector2Int selectedArtworkSectionIndex) 
+    public void SelectArtwork(int selectedArtworkIndex, Vector2Int selectedArtworkSectionIndex) 
     {
-        _saveData.SelectedArtworkName = selectedArtworkName;
+        _saveData.SelectedArtworkKey = selectedArtworkIndex;
         _saveData.SelectedArtworkSectionIndex = selectedArtworkSectionIndex;
         Save();
     }

@@ -60,15 +60,18 @@ public class CollectStageUIPresenter
         if (active)
         {
             Time.timeScale = 0.0f;
+            // 데이터 불러와서 반영
+            SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
+            _viewer.ChangeBGMSliderValue(data.BgmVolume);
+            _viewer.ChangeSFXSliderValue(data.SfxVolume);
         }
         else
         {
             Time.timeScale = 1.0f;
+            // 데이터 저장
+            ServiceLocater.ReturnSaveManager().ChangeBGMVolume(_model.BgmRatio);
+            ServiceLocater.ReturnSaveManager().ChangeSFXVolume(_model.SfxRatio);
         }
-
-        SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
-        OnBGMSliderValeChanged(data.BgmVolume);
-        OnBGMSliderValeChanged(data.SfxVolume);
 
         _model.ActivePausePanel = active;
         _viewer.ActivatePausePanel(_model.ActivePausePanel);

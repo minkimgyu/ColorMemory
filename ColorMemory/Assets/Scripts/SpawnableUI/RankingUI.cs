@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using Newtonsoft.Json;
-using static UnityEngine.GraphicsBuffer;
 
 public enum RankingIconName
 {
@@ -35,20 +33,20 @@ public struct PersonalRankingData
     RankingIconName _iconName;
     string _name; // key
     int _score;
-    int _rank;
+    int _ranking;
 
-    public PersonalRankingData(RankingIconName iconName, string name, int score, int rank)
+    public PersonalRankingData(RankingIconName iconName, string name, int score, int ranking)
     {
         _iconName = iconName;
         _name = name;
         _score = score;
-        _rank = rank;
+        _ranking = ranking;
     }
 
     public RankingIconName IconName { get => _iconName; }
     public string Name { get => _name; }
     public int Score { get => _score; }
-    public int Rank { get => _rank; }
+    public int Rank { get => _ranking; }
 }
 
 public class RankingUI : SpawnableUI
