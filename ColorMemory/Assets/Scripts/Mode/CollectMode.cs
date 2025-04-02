@@ -68,7 +68,7 @@ namespace Collect
         [SerializeField] TMP_Text _totalCollectText;
         [SerializeField] Button _nextBtn;
 
-        CollectiveArtData.Section _section;
+        CollectArtData.Section _section;
         MapData _mapData;
         Dot[,] _dots;
         Dot[] _colorPenDots;
@@ -177,7 +177,7 @@ namespace Collect
             int artworkIndex = saveData.SelectedArtworkKey;
             Vector2Int sectionIndex = saveData.SelectedArtworkSectionIndex;
 
-            CollectiveArtData artData = addressableHandler.CollectiveArtJsonAsserts[artworkIndex];
+            CollectArtData artData = addressableHandler.CollectiveArtJsonAsserts[artworkIndex];
 
             _section = artData.Sections[sectionIndex.x][sectionIndex.y];
 

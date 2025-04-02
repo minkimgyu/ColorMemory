@@ -74,25 +74,30 @@ public class HomePage : MonoBehaviour
 
     private async void Start()
     {
-        //ArtworkManager artworkManager = new ArtworkManager();
-        //List<PlayerArtworkDTO> ownedArtworkDTOs = await artworkManager.GetOwnedArtworksAsync("testId1");
-        //List<PlayerArtworkDTO> unownedArtworkDTOs = await artworkManager.GetUnownedArtworksAsync("testId1");
+        ArtworkManager artworkManager = new ArtworkManager();
+        List<PlayerArtworkDTO> ownedArtworkDTOs = await artworkManager.GetOwnedArtworksAsync("testId1");
+        List<PlayerArtworkDTO> unownedArtworkDTOs = await artworkManager.GetUnownedArtworksAsync("testId1");
 
-        //List<int> artworkIndexes = new List<int>();
-        //for (int i = 0; i < ownedArtworkDTOs.Count; i++)
-        //{
-        //    artworkIndexes.Add(i);
-        //}
+        Dictionary<int, ArtData> artDatas = new Dictionary<int, ArtData>();
 
-        //for (int i = 0; i < unownedArtworkDTOs.Count; i++)
-        //{
-        //    artworkIndexes.Add(i);
-        //}
-
-        List<int> artworkIndexes = new List<int>();
-        for (int i = 1; i <= 375; i++)
+        for (int i = 0; i < ownedArtworkDTOs.Count; i++)
         {
-            artworkIndexes.Add(i);
+            Dictionary<int, StageData> stageDatas = new Dictionary<int, StageData>();
+
+            foreach (var dto in ownedArtworkDTOs[i].Stages)
+            {
+                StageData stageData = new StageData(dto.Value.Rank, dto.Value.HintUsage, dto.Value.IncorrectCnt);
+                stageDatas.Add(dto.Key, stageData);
+            }
+            
+            ArtData artData = new ArtData(
+                ownedArtworkDTOs[i].Rank,
+                ownedArtworkDTOs[i].HasIt,
+                stageDatas,
+                ownedArtworkDTOs[i].TotalMistakesAndHints,
+                ownedArtworkDTOs[i].ObtainedDate);
+
+            artDatas.Add(ownedArtworkDTOs[i].ArtworkId, artData);
         }
 
 
@@ -164,7 +169,7 @@ public class HomePage : MonoBehaviour
                 _artworkScrollUI,
                 artWorkUIFactory,
                 stageUIFactory,
-                artworkIndexes,
+                artDatas,
                 addressableHandler.ArtworkJsonAsset.Data,
                 addressableHandler.CollectiveArtJsonAsserts,
                 _pageFsm)

@@ -33,12 +33,12 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
         ArtworkUIFactory artworkFactory,
         StageUIFactory stageUIFactory,
 
-        List<int> artNames,
+        Dictionary<int, ArtData> artDatas,
         Dictionary<int, ArtworkData> artworkDatas,
-        Dictionary<int, CollectiveArtData> artDatas,
+        Dictionary<int, CollectArtData> collectArtDatas,
         FSM<HomePage.InnerPageState> fsm) : base(fsm)
     {
-        CollectPageModel collectPageModel = new CollectPageModel(artNames, artworkDatas, artDatas);
+        CollectPageModel collectPageModel = new CollectPageModel(artDatas, artworkDatas, collectArtDatas);
         _collectPagePresenter = new CollectPagePresenter(collectPageModel, artworkFactory, stageUIFactory, GoToCollectMode);
         CollectPageViewer collectPageViewer = new CollectPageViewer(
             collectionContent,

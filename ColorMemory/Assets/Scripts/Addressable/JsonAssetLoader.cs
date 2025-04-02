@@ -86,9 +86,9 @@ public class IntMultipleJsonAssetLoader<Key, Value> : MultipleAssetLoader<Key, V
     }
 }
 
-public class CollectiveArtJsonAssetLoader : IntMultipleJsonAssetLoader<int, CollectiveArtData>
+public class CollectiveArtJsonAssetLoader : IntMultipleJsonAssetLoader<int, CollectArtData>
 {
-    public CollectiveArtJsonAssetLoader(AddressableHandler.Label label, Action<Dictionary<int, CollectiveArtData>, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
+    public CollectiveArtJsonAssetLoader(AddressableHandler.Label label, Action<Dictionary<int, CollectArtData>, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
     {
     }
 }

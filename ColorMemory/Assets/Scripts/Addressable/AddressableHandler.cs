@@ -49,7 +49,7 @@ public class AddressableHandler : MonoBehaviour
         _assetLoaders = new HashSet<BaseLoader>();
     }
 
-    public Dictionary<int, CollectiveArtData> CollectiveArtJsonAsserts { get; private set; }
+    public Dictionary<int, CollectArtData> CollectiveArtJsonAsserts { get; private set; }
 
     public ArtworkDateWrapper ArtworkJsonAsset { get; private set; }
 

@@ -4,6 +4,7 @@ using UnityEngine;
 using Newtonsoft.Json;
 using TMPro;
 using System;
+using NetworkService.DTO;
 
 //public enum ArtName
 //{
@@ -50,44 +51,61 @@ public struct ArtworkData
     [JsonIgnore] public string Description { get => _description; }
 }
 
+public struct StageData
+{
+    Rank _rank;
+    int _hintUsage;
+    int _incorrectCnt;
+
+    public StageData(Rank rank, int hintUsage, int incorrectCnt)
+    {
+        _rank = rank;
+        _hintUsage = hintUsage;
+        _incorrectCnt = incorrectCnt;
+    }
+
+    public Rank Rank { get => _rank; }
+    public int HintUsage { get => _hintUsage; }
+    public int IncorrectCnt { get => _incorrectCnt; }
+}
 
 public struct ArtData
 {
-    NetworkService.DTO.Rank _type;
+    NetworkService.DTO.Rank _rank;
     bool _hasIt;
 
+    Dictionary<int, StageData> _stageDatas;
+
     int _totalMistakesAndHints;
-    Dictionary<int, int> _hintUsagePerStage;
-    Dictionary<int, int> _incorrectPerStage;
     DateTime? _obtainedDate;
 
     public ArtData(
-        NetworkService.DTO.Rank type,
+        NetworkService.DTO.Rank rank,
         bool hasIt,
+
+        Dictionary<int, StageData> stageDatas,
         int totalMistakesAndHints,
-        Dictionary<int, int> hintUsagePerStage,
-        Dictionary<int, int> incorrectPerStage,
         DateTime? obtainedDate)
     {
-        _type = type;
+        _rank = rank;
         _hasIt = hasIt;
+
+        _stageDatas = stageDatas;
+
         _totalMistakesAndHints = totalMistakesAndHints;
-        _hintUsagePerStage = hintUsagePerStage;
-        _incorrectPerStage = incorrectPerStage;
         _obtainedDate = obtainedDate;
     }
 
-    public NetworkService.DTO.Rank Type { get => _type; }
+    public NetworkService.DTO.Rank Rank { get => _rank; }
     public bool HasIt { get => _hasIt; }
 
     public int TotalMistakesAndHints { get => _totalMistakesAndHints; }
-    public Dictionary<int, int> HintUsagePerStage { get => _hintUsagePerStage; set => _hintUsagePerStage = value; }
-    public Dictionary<int, int> IncorrectPerStage { get => _incorrectPerStage; set => _incorrectPerStage = value; }
     public DateTime? ObtainedDate { get => _obtainedDate; set => _obtainedDate = value; }
+    public Dictionary<int, StageData> StageDatas { get => _stageDatas; set => _stageDatas = value; }
 }
 
 [System.Serializable]
-public struct CollectiveArtData
+public struct CollectArtData
 {
     public struct ArtSize
     {

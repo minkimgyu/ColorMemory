@@ -78,8 +78,9 @@ public class RankingPageState : BaseState<HomePage.InnerPageState>
         //PlayerManager playerManager = new PlayerManager();
         //playerManager.getpla();
 
-        int score = await scoreManager.GetPlayerWeeklyScore("testId1");
-        PersonalRankingData myRankingData = new PersonalRankingData(RankingIconName.Icon5, "meal", score, 15);
+        PlayerScoreDTO playerScoreDTO = await scoreManager.GetPlayerWeeklyScoreAsDTOAsync("testId1");
+        int ranking = await scoreManager.GetPlayerWeeklyRankingAsync("testId1");
+        PersonalRankingData myRankingData = new PersonalRankingData(RankingIconName.Icon5, playerScoreDTO.Name, playerScoreDTO.Score, ranking);
 
         // 积己矫难林扁
         RankingData rankingData = new RankingData(topRankingDatas, myRankingData);

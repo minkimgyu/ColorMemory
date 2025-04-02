@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using Unity.VisualScripting;
+using NetworkService.Manager;
+using NetworkService.DTO;
 
 public class CollectPagePresenter
 {
@@ -55,9 +57,11 @@ public class CollectPagePresenter
 
     public void FillArtwork()
     {
-        for (int i = 0; i < _collectPageModel.HaveArtworkIndexes.Count; i++)
+        foreach (var item in _collectPageModel.ArtDatas)
         {
-            SpawnableUI artwork = _artworkFactory.Create(_collectPageModel.HaveArtworkIndexes[i], NetworkService.DTO.Rank.COPPER);
+            int keyIndex = item.Key;
+
+            SpawnableUI artwork = _artworkFactory.Create(keyIndex, NetworkService.DTO.Rank.COPPER);
             artwork.InjectClickEvent(() => {
                 RemoveAllStage();
 
@@ -68,7 +72,7 @@ public class CollectPagePresenter
             _collectPageViewer.AddArtwork(artwork);
         }
 
-        _collectPageViewer.SetUpArtworkScroll(_collectPageModel.HaveArtworkIndexes.Count);
+        _collectPageViewer.SetUpArtworkScroll(_collectPageModel.ArtDatas.Count);
     }
 
     public void AddArtwork(SpawnableUI artwork)
@@ -81,13 +85,23 @@ public class CollectPagePresenter
         _collectPageViewer.RemoveAllArtwork();
     }
 
-    public void FillStage()
+    public async void FillStage()
     {
-        int artworkIndex = _collectPageModel.HaveArtworkIndexes[_collectPageModel.ArtworkIndex];
-        List<List<CollectiveArtData.Section>> sections = _collectPageModel.ArtData[artworkIndex].Sections;
+        int artworkIndex = _collectPageModel.ArtworkIndex;
+        ArtData artData = _collectPageModel.ArtDatas[artworkIndex];
 
-        int row = sections.Count;
-        int col = sections[0].Count;
+
+
+        //NetworkService.Manager.PlayerManager p = new NetworkService.Manager.PlayerManager();
+        //NetworkService.Manager.PlayerManager p = new NetworkService.Manager.PlayerManager();
+        //MoneyManager moneyManager = new MoneyManager();
+        //ScoreManager scoreManager = new ScoreManager();
+
+        //NetworkService.Manager.ArtworkManager artworkManager = new NetworkService.Manager.ArtworkManager();
+        //List<PlayerArtworkDTO> playerArtworkDTOs = await artworkManager.GetUnownedArtworksAsync("testId1");
+
+        int row = 4;
+        int col = 4;
 
         for (int i = 0; i < row; i++)
         {
@@ -121,15 +135,15 @@ public class CollectPagePresenter
 
     void UpdateArtInfo()
     {
-        int artIndex = _collectPageModel.HaveArtworkIndexes[_collectPageModel.ArtworkIndex];
+        int artIndex = _collectPageModel.ArtworkIndex;
         ArtworkData artData = _collectPageModel.ArtworkDatas[artIndex];
         _collectPageViewer.ChangeArtDescription(artData.Title, artData.Description);
     }
 
     public void ChangeArtworkList(List<int> currentArtNames)
     {
-        _collectPageModel.HaveArtworkIndexes = currentArtNames;
-        _collectPageModel.ArtworkIndex = 0;
+        //_collectPageModel.HaveArtworkIndexes = currentArtNames;
+        //_collectPageModel.ArtworkIndex = 0;
         UpdateArtInfo();
     }
 

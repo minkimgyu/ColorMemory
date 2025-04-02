@@ -10,7 +10,7 @@ namespace Collect
     {
         // 스테이지 생성 후 다른 State로 레벨 데이터 뿌리기
 
-        CollectiveArtData _artData;
+        CollectArtData _artData;
         CollectMode.Data _modeData;
 
         EffectFactory _effectFactory;
@@ -36,7 +36,7 @@ namespace Collect
             RectTransform penContent,
             ToggleGroup penToggleGroup,
 
-            CollectiveArtData artData,
+            CollectArtData artData,
             CollectStageUIPresenter collectStageUIPresenter,
 
             Action<Dot[,], Dot[], MapData> SetLevelData

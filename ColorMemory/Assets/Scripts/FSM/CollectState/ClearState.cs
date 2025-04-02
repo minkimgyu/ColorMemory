@@ -8,7 +8,7 @@ namespace Collect
     {
         Action DestroyDots;
         CollectMode.Data _modeData;
-        CollectiveArtData _artData;
+        CollectArtData _artData;
 
         Func<Tuple<Dot[,], Dot[], MapData>> GetLevelData;
         CollectStageUIPresenter _collectStageUIPresenter;
@@ -16,7 +16,7 @@ namespace Collect
         public ClearState(
             FSM<CollectMode.State> fsm,
             CollectMode.Data modeData,
-            CollectiveArtData artData,
+            CollectArtData artData,
             CollectStageUIPresenter collectStageUIPresenter,
 
             Func<Tuple<Dot[,], Dot[], MapData>> GetLevelData,
