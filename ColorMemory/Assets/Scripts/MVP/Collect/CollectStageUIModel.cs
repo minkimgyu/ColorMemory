@@ -32,7 +32,7 @@ public class CollectStageUIModel
     Sprite _artFrameSprite;
     int _hintUseCount; 
     int _wrongCount;
-    int _totalCollectRatio;
+    float _totalCollectRatio;
 
     Color _rankColor;
     Sprite _rankIcon;
@@ -43,7 +43,7 @@ public class CollectStageUIModel
     public Sprite ArtFrameSprite { get => _artFrameSprite; set => _artFrameSprite = value; }
     public int HintUseCount { get => _hintUseCount; set => _hintUseCount = value; }
     public int WrongCount { get => _wrongCount; set => _wrongCount = value; }
-    public int TotalCollectRatio { get => _totalCollectRatio; set => _totalCollectRatio = value; }
+    public float TotalCollectRatio { get => _totalCollectRatio; set => _totalCollectRatio = value; }
     public Color RankColor { get => _rankColor; set => _rankColor = value; }
     public Sprite RankIcon { get => _rankIcon; set => _rankIcon = value; }
     public string RankName { get => _rankName; set => _rankName = value; }

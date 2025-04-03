@@ -23,6 +23,7 @@ public class AddressableHandler : MonoBehaviour
         ArtworkData,
 
         ProfileIcon,
+        RankIcon,
 
         SpawnableUI,
         ChallengeModeStageData
@@ -66,6 +67,7 @@ public class AddressableHandler : MonoBehaviour
     public Dictionary<GameMode.Type, Sprite> ModeTitleIconAssets { get; private set; }
 
     public Dictionary<int, Sprite> ProfileIconAssets { get; private set; }
+    public Dictionary<NetworkService.DTO.Rank, Sprite> RankIconAssets { get; private set; }
 
     public Dictionary<SpawnableUI.Name, SpawnableUI> SpawnableUIAssets { get; private set; }
 
@@ -86,6 +88,7 @@ public class AddressableHandler : MonoBehaviour
 
 
         _assetLoaders.Add(new ProfileIconAssetLoader(Label.ProfileIcon, (value, label) => { ProfileIconAssets = value; OnSuccess(label); }));
+        _assetLoaders.Add(new RankIconAssetLoader(Label.RankIcon, (value, label) => { RankIconAssets = value; OnSuccess(label); }));
 
         _assetLoaders.Add(new SpawnableUIAssetLoader(Label.SpawnableUI, (value, label) => { SpawnableUIAssets = value; OnSuccess(label); }));
 

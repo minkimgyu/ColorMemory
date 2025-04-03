@@ -34,6 +34,14 @@ public class ProfileIconAssetLoader : IntKeyAssetLoader<Sprite, Sprite>
     }
 }
 
+public class RankIconAssetLoader : AssetLoader<NetworkService.DTO.Rank, Sprite, Sprite>
+{
+    public RankIconAssetLoader(AddressableHandler.Label label, Action<Dictionary<NetworkService.DTO.Rank, Sprite>, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
+    {
+    }
+}
+
+
 //public class GoldIconAssetLoader : SingleAssetLoader<Sprite, Sprite>
 //{
 //    public GoldIconAssetLoader(AddressableHandler.Label label, Action<Sprite, AddressableHandler.Label> OnComplete) : base(label, OnComplete)

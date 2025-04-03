@@ -81,68 +81,24 @@ namespace Collect
 
             Color[] _pickColors; // 색상 종류
 
-            bool[,] _isPlayed; // 플레이 여부
+            int _goBackCount; // 힌트 사용 개수
+            int _wrongCount; // 틀린 개수
 
-            int[,] _goBackCount; // 힌트 사용 개수
-            int[,] _wrongCount; // 틀린 개수
-
-            public int TotalGoBackCount
+            public Data(Vector2Int sectionSize, int memorizeDuration, string title)
             {
-                get
-                {
-                    int result = 0;
-                    int row = _goBackCount.GetLength(0);
-                    int col = _goBackCount.GetLength(1);
-
-                    for (int i = 0; i < row; i++)
-                    {
-                        for (int j = 0; j < col; j++)
-                        {
-                            result += _goBackCount[i, j];
-                        }
-                    }
-
-                    return result;
-                }
-            }
-
-            public int TotalWrongCount
-            {
-                get
-                {
-                    int result = 0;
-                    int row = _wrongCount.GetLength(0);
-                    int col = _wrongCount.GetLength(1);
-
-                    for (int i = 0; i < row; i++)
-                    {
-                        for (int j = 0; j < col; j++)
-                        {
-                            result += _wrongCount[i, j];
-                        }
-                    }
-
-                    return result;
-                }
-            }
-
-            public Data(Vector2Int sectionSize, int memorizeDuration, string title, int myScore = 0)
-            {
-                _myScore = myScore;
+                _myScore = 0;
                 _memorizeDuration = memorizeDuration;
                 _title = title;
 
                 _pickColors = new Color[3];
-                _isPlayed = new bool[sectionSize.x, sectionSize.y];
-                _goBackCount = new int[sectionSize.x, sectionSize.y];
-                _wrongCount = new int[sectionSize.x, sectionSize.y];
+                _goBackCount = 0;
+                _wrongCount = 0;
             }
 
             public float MemorizeDuration { get => _memorizeDuration; set => _memorizeDuration = value; }
             public int MyScore { get => _myScore; set => _myScore = value; }
-            public bool[,] IsPlayed { get => _isPlayed; set => _isPlayed = value; }
-            public int[,] GoBackCount { get => _goBackCount; set => _goBackCount = value; }
-            public int[,] WrongCount { get => _wrongCount; set => _wrongCount = value; }
+            public int GoBackCount { get => _goBackCount; set => _goBackCount = value; }
+            public int WrongCount { get => _wrongCount; set => _wrongCount = value; }
 
             public Color[] PickColors { get => _pickColors; set => _pickColors = value; }
             public string Title { get => _title; set => _title = value; }

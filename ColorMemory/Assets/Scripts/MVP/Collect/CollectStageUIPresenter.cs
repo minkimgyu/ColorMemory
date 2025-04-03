@@ -46,7 +46,7 @@ public class CollectStageUIPresenter
         _viewer.ChangeGetRank(_model.HintUseCount, _model.WrongCount);
     }
 
-    public void ChangeCollectionRatio(int totalCollectRatio)
+    public void ChangeCollectionRatio(float totalCollectRatio)
     {
         _model.TotalCollectRatio = totalCollectRatio;
         _viewer.ChangeCollectionRatio(_model.TotalCollectRatio);

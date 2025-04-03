@@ -1,6 +1,12 @@
 using UnityEngine;
 using System;
 using DG.Tweening;
+using NetworkService.DTO;
+using NetworkService.Manager;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Collections;
+using static Challenge.ChallengeMode;
 
 namespace Collect
 {
@@ -34,9 +40,65 @@ namespace Collect
             ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.HomeScene);
         }
 
-        public override void OnClickNextStageBtn()
+        async Task<List<PlayerArtworkDTO>> GetArtDataFromServer()
         {
+            ArtworkManager artworkManager = new ArtworkManager();
+            List<PlayerArtworkDTO> ownedArtworkDTOs, unownedArtworkDTOs;
+
+            try
+            {
+                ownedArtworkDTOs = await artworkManager.GetOwnedArtworksAsync("testId1");
+                unownedArtworkDTOs = await artworkManager.GetUnownedArtworksAsync("testId1");
+            }
+            catch (System.Exception e)
+            {
+                Debug.Log(e);
+                Debug.Log("서버로부터 데이터를 받아오지 못함");
+                return null;
+            }
+
+            ownedArtworkDTOs.AddRange(unownedArtworkDTOs); // list1에 list2 요소 추가
+            return ownedArtworkDTOs;
+        }
+
+        async Task<Rank?> UpdateArtDataToServer(PlayerArtworkDTO artworkDTO)
+        {
+            ArtworkManager artworkManager = new ArtworkManager();
+            Rank? rank = null;
+
+            try
+            {
+                rank = await artworkManager.UpdatePlayerArtworkAsync(artworkDTO);
+            }
+            catch (System.Exception e)
+            {
+                Debug.Log(e);
+                Debug.Log("서버로 데이터를 업데이트하지 못 함");
+                return null;
+            }
+
+            return rank;
+        }
+
+
+        public override async void OnClickNextStageBtn()
+        {
+            List<PlayerArtworkDTO> artDatas = await GetArtDataFromServer();
+            if (artDatas == null) return;
+
             SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
+            PlayerArtworkDTO artworkDTO = artDatas.Find(x => x.ArtworkId == data.SelectedArtworkKey);
+
+            // 데이터 업데이트
+            artworkDTO.Stages[data.SelectedArtworkSectionIntIndex + 1].IncorrectCnt = _modeData.WrongCount;
+            artworkDTO.Stages[data.SelectedArtworkSectionIntIndex + 1].HintUsage = _modeData.GoBackCount;
+
+            Rank? rank = await UpdateArtDataToServer(artworkDTO);
+            if (rank == null) return;
+
+            Debug.Log(rank.ToString());
+
+
             int row = _artData.Sections.Count;
             int col = _artData.Sections[0].Count;
 
@@ -53,6 +115,8 @@ namespace Collect
             else changedIndex = new Vector2Int(data.SelectedArtworkSectionIndex.x, data.SelectedArtworkSectionIndex.y + 1);
 
             ServiceLocater.ReturnSaveManager().SelectArtworkSection(changedIndex);
+
+
 
             SaveData newData = ServiceLocater.ReturnSaveManager().GetSaveData();
             _fsm.SetState(CollectMode.State.Initialize);

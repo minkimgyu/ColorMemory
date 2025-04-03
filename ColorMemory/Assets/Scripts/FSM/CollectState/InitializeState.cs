@@ -22,7 +22,6 @@ namespace Collect
 
         Action<Dot[,], Dot[], MapData> SetLevelData;
         CollectStageUIPresenter _collectStageUIPresenter;
-        int _level = 0;
 
         public InitializeState(
             FSM<CollectMode.State> fsm,
@@ -74,6 +73,10 @@ namespace Collect
         {
             int colorCount = _artData.Sections[sectionIndex.x][sectionIndex.y].UsedColors[0].Count;
             _modeData.PickColors = new Color[colorCount];
+
+            // 진입 전에 초기화
+            _modeData.GoBackCount = 0;
+            _modeData.WrongCount = 0;
 
             for (int i = 0; i < colorCount; i++)
             {

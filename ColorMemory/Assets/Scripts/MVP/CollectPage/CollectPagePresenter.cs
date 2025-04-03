@@ -39,7 +39,7 @@ public class CollectPagePresenter
 
     void SelectStage(int index)
     {
-        ServiceLocater.ReturnSaveManager().SelectArtworkSection(index - 1);
+        ServiceLocater.ReturnSaveManager().SelectArtworkSection(index);
         _collectPageModel.SelectedSectionIndex = index;
         _collectPageViewer.SelectStage(_collectPageModel.SelectedSectionIndex);
     }
@@ -125,7 +125,7 @@ public class CollectPagePresenter
             spawnableUI.InjectClickEvent(() =>
             {
                 int index = data.Key;
-                SelectStage(index);
+                SelectStage(index - 1);
                 ChangeStageDetails(artData.StageDatas[index].HintUsage, artData.StageDatas[index].IncorrectCnt);
             });
 
@@ -153,8 +153,9 @@ public class CollectPagePresenter
             _collectPageViewer.AddStage(spawnableUI);
         }
 
+
         // Auto Select ±â´É
-        SelectStage(1);
+        SelectStage(0);
         ChangeStageDetails(artData.StageDatas[1].HintUsage, artData.StageDatas[1].IncorrectCnt);
         ChangeCurrentProgress(progressCount);
     }

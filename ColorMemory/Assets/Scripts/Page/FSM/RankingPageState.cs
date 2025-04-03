@@ -39,18 +39,18 @@ public class RankingPageState : BaseState<HomePage.InnerPageState>
         _fsm.SetState(HomePage.InnerPageState.Main);
     }
 
-    async Task<Tuple<List<PlayerRankingDTO>, PlayerRankingDTO, int>> GetRankingDataFromServer()
+    async Task<Tuple<List<PlayerRankingDTO>, PlayerRankingDTO>> GetRankingDataFromServer()
     {
         ScoreManager scoreManager = new ScoreManager();
         List<PlayerRankingDTO> otherScores;
         PlayerRankingDTO myScore;
-        int ranking = 0;
+        //int ranking = 0;
 
         try
         {
             otherScores = await scoreManager.GetTopWeeklyScoresAsync(10);
             myScore = await scoreManager.GetPlayerWeeklyScoreAsDTOAsync("testId1");
-            ranking = await scoreManager.GetPlayerWeeklyRankingAsync("testId1");
+            //ranking = await scoreManager.GetPlayerWeeklyRankingAsync("testId1");
         }
         catch (System.Exception e)
         {
@@ -59,23 +59,23 @@ public class RankingPageState : BaseState<HomePage.InnerPageState>
             return null;
         }
 
-        return new Tuple<List<PlayerRankingDTO>, PlayerRankingDTO, int>(otherScores, myScore, ranking);
+        return new Tuple<List<PlayerRankingDTO>, PlayerRankingDTO>(otherScores, myScore);
     }
 
     public override async void OnStateEnter()
     {
-        Tuple<List<PlayerRankingDTO>, PlayerRankingDTO, int> rankingData = await GetRankingDataFromServer();
+        Tuple<List<PlayerRankingDTO>, PlayerRankingDTO> rankingData = await GetRankingDataFromServer();
         if (rankingData == null) return;
 
         List<PersonalRankingData> topRankingDatas = new List<PersonalRankingData>();
 
         for (int i = 0; i < rankingData.Item1.Count; i++)
         {
-            topRankingDatas.Add(new PersonalRankingData(1, rankingData.Item1[i].Name, rankingData.Item1[i].Score, i + 1));
+            topRankingDatas.Add(new PersonalRankingData(1, rankingData.Item1[i].Name, rankingData.Item1[i].Score, rankingData.Item1[i].Ranking));
         }
 
         PlayerRankingDTO playerScoreDTO = rankingData.Item2;
-        PersonalRankingData myRankingData = new PersonalRankingData(1, playerScoreDTO.Name, playerScoreDTO.Score, rankingData.Item3);
+        PersonalRankingData myRankingData = new PersonalRankingData(1, playerScoreDTO.Name, playerScoreDTO.Score, playerScoreDTO.Ranking);
 
         for (int i = 0; i < topRankingDatas.Count; i++)
         {

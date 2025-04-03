@@ -118,9 +118,7 @@ namespace Collect
             _collectStageUIPresenter.ChangeHintInfoText($"힌트를 사용할수록 높은 랭크를 받을 확률이 떨어져요!");
             SaveData save = ServiceLocater.ReturnSaveManager().GetSaveData();
 
-            _modeData.IsPlayed[save.SelectedArtworkSectionIndex.x, save.SelectedArtworkSectionIndex.y] = true;
-            _modeData.GoBackCount[save.SelectedArtworkSectionIndex.x, save.SelectedArtworkSectionIndex.y] += 1;
-
+            _modeData.GoBackCount += 1;
             _fsm.SetState(CollectMode.State.Memorize);
         }
 
@@ -207,7 +205,11 @@ namespace Collect
         {
             Debug.Log(index);
 
-            if (_selectedColorIndex != _mapData.DotColor[index.x, index.y]) return;
+            if (_selectedColorIndex != _mapData.DotColor[index.x, index.y])
+            {
+                _modeData.WrongCount += 1;
+                return;
+            }
             SpreadColor(index);
         }
 

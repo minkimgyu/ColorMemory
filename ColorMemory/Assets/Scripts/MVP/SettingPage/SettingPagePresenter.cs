@@ -69,31 +69,31 @@ public class SettingPagePresenter
         _settingPageViewer.ChangeProfileImg(_settingPageModel.ProfileSprites[_settingPageModel.ProfileIndex]);
     }
 
-    //public async void ChangeProfileImgFromServer()
-    //{
-    //    int index = await GetPlayerIconFromServer();
-    //    _settingPageModel.ProfileIndex = index;
-    //    _settingPageViewer.ChangeProfileImg(_settingPageModel.ProfileSprites[_settingPageModel.ProfileIndex]);
-    //}
+    public async void ChangeProfileImgFromServer()
+    {
+        int index = await GetPlayerIconFromServer();
+        _settingPageModel.ProfileIndex = index;
+        _settingPageViewer.ChangeProfileImg(_settingPageModel.ProfileSprites[_settingPageModel.ProfileIndex]);
+    }
 
-    //async Task<bool> GetPlayerIconFromServer()
-    //{
-    //    PlayerManager playerManager = new PlayerManager();
-    //    bool isSuccess = false;
+    async Task<int> GetPlayerIconFromServer()
+    {
+        PlayerManager playerManager = new PlayerManager();
+        int iconIndex = -1;
 
-    //    try
-    //    {
-    //        isSuccess = await playerManager.GetPlayerIconIdAsync("testId1", "meal", _settingPageModel.ProfileIndex);
-    //    }
-    //    catch (Exception e)
-    //    {
-    //        Debug.Log(e);
-    //        Debug.Log("서버로 데이터를 전달할 수 없음");
-    //        return false;
-    //    }
+        try
+        {
+            iconIndex = await playerManager.GetPlayerIconIdAsync("testId1");
+        }
+        catch (Exception e)
+        {
+            Debug.Log(e);
+            Debug.Log("서버로 데이터를 전달할 수 없음");
+            return -1;
+        }
 
-    //    return isSuccess;
-    //}
+        return iconIndex;
+    }
 
     async Task<bool> SendPlayerIconToServer()
     {

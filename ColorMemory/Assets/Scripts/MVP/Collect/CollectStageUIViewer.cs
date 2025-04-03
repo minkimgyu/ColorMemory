@@ -145,10 +145,10 @@ public class CollectStageUIViewer
         _wrongCount.text = wrongCount.ToString();
     }
 
-    public void ChangeCollectionRatio(int totalCollectRatio)
+    public void ChangeCollectionRatio(float totalCollectRatio)
     {
         _totalCollectRatio.fillAmount = totalCollectRatio;
-        _totalCollectText.text = ((int)totalCollectRatio * 100).ToString();
+        _totalCollectText.text = Mathf.FloorToInt(totalCollectRatio * 100).ToString();
     }
 
 

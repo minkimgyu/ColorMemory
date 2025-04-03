@@ -73,10 +73,17 @@ public struct SaveData
     [JsonIgnore] public GameMode.Type SelectedType { get => _selectedType; set => _selectedType = value; }
     [JsonIgnore] public int SelectedArtworkKey { get => _selectedArtworkKey; set => _selectedArtworkKey = value; }
     [JsonIgnore] public Vector2Int SelectedArtworkSectionIndex { get => _selectedArtworkSectionIndex; set => _selectedArtworkSectionIndex = value; }
+    [JsonIgnore] public int SelectedArtworkSectionIntIndex 
+    { 
+        get
+        {
+            return SelectedArtworkSectionIndex.x * ArtworkSize + SelectedArtworkSectionIndex.y;
+        }
+    }
 
-    [JsonIgnore] public float SelectedArtworkProgress { get => ((_selectedArtworkSectionIndex.x * ArtworkSize) + _selectedArtworkSectionIndex.y) / (ArtworkSize * ArtworkSize);  }
+    [JsonIgnore] public float SelectedArtworkProgress { get => (float)((_selectedArtworkSectionIndex.x * ArtworkSize) + _selectedArtworkSectionIndex.y) / (float)(ArtworkSize * ArtworkSize);  }
 
-    [JsonIgnore] const float ArtworkSize = 4;
+    [JsonIgnore] const int ArtworkSize = 4;
 
     //[JsonIgnore] public Vector2Int SelectedArtworkSectionIndex 
     //{

@@ -15,7 +15,7 @@ MonoBehaviour:
   m_DefaultGroup: 311d11c8d2e6e9641aefc4b54a55e39c
   m_currentHash:
     serializedVersion: 2
-    Hash: 7d76aea24365ea9cd139cb4d795616c2
+    Hash: 2c979bf85740803f78e9ceaec34c3a51
   m_OptimizeCatalogSize: 0
   m_BuildRemoteCatalog: 0
   m_BundleLocalCatalog: 0
@@ -54,6 +54,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: b060bcc7c8302e34fa3b37a112baf449, type: 2}
   - {fileID: 11400000, guid: 6447756bad477244397f56ce3842659b, type: 2}
   - {fileID: 11400000, guid: 12ed57960fd08844d9fd53a9d08781a6, type: 2}
+  - {fileID: 11400000, guid: 25b2d9a1c897edf4bb88ff0636f876c2, type: 2}
   m_BuildSettings:
     m_CompileScriptsInVirtualMode: 0
     m_CleanupStreamingAssetsAfterBuilds: 1
@@ -105,6 +106,7 @@ MonoBehaviour:
     - ProfileIcon
     - SpawnableUI
     - ChallengeModeStageData
+    - RankIcon
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: 03dca29f491627045ab1f15b73890c5c, type: 2}

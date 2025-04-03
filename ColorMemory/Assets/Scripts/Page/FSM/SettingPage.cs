@@ -45,7 +45,7 @@ public class SettingPage : MonoBehaviour
             presenter);
         presenter.InjectViewer(viewer);
 
-        //presenter.ChangeProfileImgFromServer();
+        presenter.ChangeProfileImgFromServer();
         presenter.ChangeName("meal");
     }
 }
