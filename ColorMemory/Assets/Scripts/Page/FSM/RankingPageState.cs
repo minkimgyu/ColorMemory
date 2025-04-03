@@ -71,11 +71,11 @@ public class RankingPageState : BaseState<HomePage.InnerPageState>
 
         for (int i = 0; i < rankingData.Item1.Count; i++)
         {
-            topRankingDatas.Add(new PersonalRankingData(1, rankingData.Item1[i].Name, rankingData.Item1[i].Score, rankingData.Item1[i].Ranking));
+            topRankingDatas.Add(new PersonalRankingData(rankingData.Item1[i].IconId, rankingData.Item1[i].Name, rankingData.Item1[i].Score, rankingData.Item1[i].Ranking));
         }
 
         PlayerRankingDTO playerScoreDTO = rankingData.Item2;
-        PersonalRankingData myRankingData = new PersonalRankingData(1, playerScoreDTO.Name, playerScoreDTO.Score, playerScoreDTO.Ranking);
+        PersonalRankingData myRankingData = new PersonalRankingData(playerScoreDTO.IconId, playerScoreDTO.Name, playerScoreDTO.Score, playerScoreDTO.Ranking);
 
         for (int i = 0; i < topRankingDatas.Count; i++)
         {

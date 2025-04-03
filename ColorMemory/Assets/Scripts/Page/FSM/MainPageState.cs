@@ -70,6 +70,7 @@ public class MainPageState : BaseState<HomePage.InnerPageState>
     MainPagePresenter _homePagePresenter;
 
     readonly Color[] _pickColors = new Color[] { new Color(255f/255f, 182f/255f, 108f/255f), new Color(255f/255f, 236f/255f, 89f/255f), new Color(219f/255f, 200f/255f, 255f/255f) };
+    const float _toggleDelay = 1.5f;
 
     public MainPageState(
         GameMode.Type type,
@@ -101,7 +102,7 @@ public class MainPageState : BaseState<HomePage.InnerPageState>
         _playBtnTxt = playBtnTxt;
         _playBtnImg = _playBtn.gameObject.GetComponent<Image>();
 
-        _toggleBtn.Initialize();
+        _toggleBtn.Initialize(_toggleDelay);
 
         Dot[,] dots;
         dots = new Dot[_dotSize, _dotSize];

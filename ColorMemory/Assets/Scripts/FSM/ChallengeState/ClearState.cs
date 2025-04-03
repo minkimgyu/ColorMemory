@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using DG.Tweening;
+using static UnityEditor.Timeline.TimelinePlaybackControls;
 
 namespace Challenge
 {
@@ -53,7 +54,7 @@ namespace Challenge
                     DestroyDots?.Invoke();
                     _fsm.SetState(ChallengeMode.State.Initialize);
                 });
-            });
+            }); // 이 GameObject가 파괴되면 자동 취소;;
         }
 
         const int clearPoint = 100;

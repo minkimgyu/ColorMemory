@@ -138,12 +138,8 @@ public class ChallengeStageUIViewer
         _bgmSlider = bgmSlider;
         _sfxSlider = sfxSlider;
 
-
-        _gameExitBtn.onClick.AddListener(() =>
-        {
-            ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.HomeScene);
-        });
-        _pauseBtn.onClick.AddListener(() =>{ presenter.ActivatePausePanel(true); });
+        _gameExitBtn.onClick.AddListener(() => { presenter.OnClickGameExitBtn(); });
+        _pauseBtn.onClick.AddListener(() => { presenter.ActivatePausePanel(true); });
         _pauseExitBtn.onClick.AddListener(() => { presenter.ActivatePausePanel(false); });
         _bgmSlider.onValueChanged.AddListener((ratio) => { presenter.OnBGMSliderValeChanged(ratio); });
         _sfxSlider.onValueChanged.AddListener((ratio) => { presenter.OnSFXSliderValeChanged(ratio); });

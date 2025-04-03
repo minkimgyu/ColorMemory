@@ -22,6 +22,7 @@ public class CollectPageViewer
     Button _exitBtn;
     Button _playBtn;
 
+    GameObject _stageDetailContent;
     TMP_Text _stageHintUseCount;
     TMP_Text _stageWrongCount;
 
@@ -43,6 +44,7 @@ public class CollectPageViewer
         Button exitBtn,
         Button playBtn,
 
+        GameObject stageDetailContent,
         TMP_Text stageHintUseCount,
         TMP_Text stageWrongCount,
 
@@ -63,22 +65,31 @@ public class CollectPageViewer
         _exitBtn = exitBtn;
         _playBtn = playBtn;
 
+        _stageDetailContent = stageDetailContent;
         _stageHintUseCount = stageHintUseCount;
         _stageWrongCount = stageWrongCount;
 
         _collectPagePresenter = collectPagePresenter;
 
-        _exitBtn.onClick.AddListener(() => { ActiveSelectStageContent(false); });
+        _exitBtn.onClick.AddListener(() => { collectPagePresenter.ActiveSelectStageContent(false); });
         _playBtn.onClick.AddListener(() => { collectPagePresenter.PlayCollectMode(); });
         artworkScrollUI.OnDragEnd += collectPagePresenter.ChangeArtworkDescription;
         ActiveContent(false);
     }
 
-    public void ChangeCurrentProgress(float currentProgress, float totalProgress = 100)
+    public void ActiveStageDetailContent(bool active)
     {
-        _leftCompleteText.text = $"{Mathf.RoundToInt(currentProgress)}%";
-        _totalCompleteText.text = $"{Mathf.RoundToInt(totalProgress)}%";
-        _completeSlider.fillAmount = currentProgress / totalProgress;
+        _stageDetailContent.SetActive(active);
+    }
+
+    public void ChangeCurrentProgress(int currentProgress, int totalProgress = 16)
+    {
+        float ratio = (float)currentProgress / totalProgress;
+        int percentage = Mathf.RoundToInt(ratio * 100);
+
+        _leftCompleteText.text = $"{Mathf.RoundToInt(percentage)}%";
+        _totalCompleteText.text = $"100%";
+        _completeSlider.fillAmount = ratio;
     }
 
     public void ChangeStageDetails(int hintCount, int wrongCount)

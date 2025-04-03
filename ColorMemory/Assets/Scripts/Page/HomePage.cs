@@ -6,6 +6,7 @@ using TMPro;
 using NetworkService.Manager;
 using NetworkService.DTO;
 using System.Threading.Tasks;
+using DG.Tweening;
 
 public class HomePage : MonoBehaviour
 {
@@ -57,6 +58,7 @@ public class HomePage : MonoBehaviour
     [SerializeField] Button _playCollectModeBtn;
     [SerializeField] Button _exitBtn;
 
+    [SerializeField] GameObject _stageDetailContent;
     [SerializeField] TMP_Text _stageUsedHintUseCount;
     [SerializeField] TMP_Text _stageWrongCount;
 
@@ -95,27 +97,10 @@ public class HomePage : MonoBehaviour
             return null;
         }
 
+        unownedArtworkDTOs.AddRange(ownedArtworkDTOs);
+        unownedArtworkDTOs.Sort((a, b) => a.ArtworkId.CompareTo(b.ArtworkId));
+
         Dictionary<int, ArtData> artDatas = new Dictionary<int, ArtData>();
-
-        for (int i = 0; i < ownedArtworkDTOs.Count; i++)
-        {
-            Dictionary<int, StageData> stageDatas = new Dictionary<int, StageData>();
-
-            foreach (var dto in ownedArtworkDTOs[i].Stages)
-            {
-                StageData stageData = new StageData(dto.Value.Rank, dto.Value.HintUsage, dto.Value.IncorrectCnt);
-                stageDatas.Add(dto.Key, stageData);
-            }
-
-            ArtData artData = new ArtData(
-                ownedArtworkDTOs[i].Rank,
-                ownedArtworkDTOs[i].HasIt,
-                stageDatas,
-                ownedArtworkDTOs[i].TotalMistakesAndHints,
-                ownedArtworkDTOs[i].ObtainedDate);
-
-            artDatas.Add(ownedArtworkDTOs[i].ArtworkId, artData);
-        }
 
         for (int i = 0; i < unownedArtworkDTOs.Count; i++)
         {
@@ -123,7 +108,7 @@ public class HomePage : MonoBehaviour
 
             foreach (var dto in unownedArtworkDTOs[i].Stages)
             {
-                StageData stageData = new StageData(dto.Value.Rank, dto.Value.HintUsage, dto.Value.IncorrectCnt);
+                StageData stageData = new StageData(dto.Value.Rank, dto.Value.HintUsage, dto.Value.IncorrectCnt, dto.Value.IsLock);
                 stageDatas.Add(dto.Key, stageData);
             }
 
@@ -219,6 +204,7 @@ public class HomePage : MonoBehaviour
                 _stageUIContent,
                 _exitBtn,
                 _playCollectModeBtn,
+                _stageDetailContent,
                 _stageUsedHintUseCount,
                 _stageWrongCount,
                 _artworkScrollUI,

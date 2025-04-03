@@ -51,12 +51,14 @@ public class SettingPagePresenter
     public void OnBGMSliderValeChanged(float ratio)
     {
         _settingPageModel.BgmRatio = ratio;
+        _settingPageViewer.ChangeBGMSliderValue(_settingPageModel.BgmRatio);
         ServiceLocater.ReturnSoundPlayer().SetBGMVolume(ratio);
     }
 
     public void OnSFXSliderValeChanged(float ratio)
     {
         _settingPageModel.SfxRatio = ratio;
+        _settingPageViewer.ChangeSFXSliderValue(_settingPageModel.SfxRatio);
         ServiceLocater.ReturnSoundPlayer().SetSFXVolume(ratio);
     }
 
@@ -74,6 +76,7 @@ public class SettingPagePresenter
         int index = await GetPlayerIconFromServer();
         _settingPageModel.ProfileIndex = index;
         _settingPageViewer.ChangeProfileImg(_settingPageModel.ProfileSprites[_settingPageModel.ProfileIndex]);
+        _settingPageViewer.ChangeProfileToggle(index - 1);
     }
 
     async Task<int> GetPlayerIconFromServer()

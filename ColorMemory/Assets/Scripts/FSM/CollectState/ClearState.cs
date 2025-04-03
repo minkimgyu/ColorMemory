@@ -80,50 +80,68 @@ namespace Collect
             return rank;
         }
 
-
-        public override async void OnClickNextStageBtn()
+        async Task<Rank?> UpdateArtData()
         {
             List<PlayerArtworkDTO> artDatas = await GetArtDataFromServer();
-            if (artDatas == null) return;
+            if (artDatas == null) return null;
 
             SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
             PlayerArtworkDTO artworkDTO = artDatas.Find(x => x.ArtworkId == data.SelectedArtworkKey);
 
             // 데이터 업데이트
-            artworkDTO.Stages[data.SelectedArtworkSectionIntIndex + 1].IncorrectCnt = _modeData.WrongCount;
+
+            // 다음 스테이지 해금해주는 코드
+            int lastIndex = artworkDTO.Stages.Count; // 스테이지 개수
+            if(lastIndex >= data.SelectedArtworkSectionIntIndex + 2) // lastIndex 보다 작거나 같은 경우만 진행
+            {
+                artworkDTO.Stages[data.SelectedArtworkSectionIntIndex + 2].IsLock = false;
+            }
+
+            artworkDTO.Stages[data.SelectedArtworkSectionIntIndex + 1].IncorrectCnt = _modeData.WrongCount; // index + 1 해서 찾기 -> 1-indexed임
             artworkDTO.Stages[data.SelectedArtworkSectionIntIndex + 1].HintUsage = _modeData.GoBackCount;
 
             Rank? rank = await UpdateArtDataToServer(artworkDTO);
-            if (rank == null) return;
+            if (rank == null) return null;
 
-            Debug.Log(rank.ToString());
+            return rank;
+        }
 
+        public override void OnClickNextStageBtn()
+        {
+            //List<PlayerArtworkDTO> artDatas = await GetArtDataFromServer();
+            //if (artDatas == null) return;
+
+            SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
+            //PlayerArtworkDTO artworkDTO = artDatas.Find(x => x.ArtworkId == data.SelectedArtworkKey);
 
             int row = _artData.Sections.Count;
             int col = _artData.Sections[0].Count;
 
             if (data.SelectedArtworkSectionIndex.x == row - 1
             && data.SelectedArtworkSectionIndex.y == col - 1)
+            //&& artworkDTO.HasIt == false)
             {
-                _fsm.SetState(CollectMode.State.Result); // 현재 스테이지가 마지막인 경우
+                _fsm.SetState(CollectMode.State.Result); // 현재 스테이지가 마지막인 경우 그리고 보유 중이지 않은 경우
                 return;
             }
 
+            // 0, 0
+
             Vector2Int changedIndex;
             int nextIndex = data.SelectedArtworkSectionIndex.y + 1;
-            if (nextIndex >= col) changedIndex = new Vector2Int(data.SelectedArtworkSectionIndex.x + 1, data.SelectedArtworkSectionIndex.y);
+            if (nextIndex == col) changedIndex = new Vector2Int(data.SelectedArtworkSectionIndex.x + 1, 0);
             else changedIndex = new Vector2Int(data.SelectedArtworkSectionIndex.x, data.SelectedArtworkSectionIndex.y + 1);
 
             ServiceLocater.ReturnSaveManager().SelectArtworkSection(changedIndex);
-
-
 
             SaveData newData = ServiceLocater.ReturnSaveManager().GetSaveData();
             _fsm.SetState(CollectMode.State.Initialize);
         }
 
-        public override void OnStateEnter()
+        public override async void OnStateEnter()
         {
+            await UpdateArtData();
+
             DOVirtual.DelayedCall(0.5f, () =>
             {
                 Tuple<Dot[,], Dot[], MapData> levelData = GetLevelData();
@@ -145,8 +163,6 @@ namespace Collect
 
                     // 다음 스테이지로 갈 것인지 판단하는 UI 띄우기
                     _collectStageUIPresenter.ActivateGameClearPanel(true);
-
-                    //_fsm.SetState(CollectMode.State.Initialize);
                 });
             });
         }

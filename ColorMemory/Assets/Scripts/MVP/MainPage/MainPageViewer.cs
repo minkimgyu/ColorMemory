@@ -75,7 +75,7 @@ public class MainPageViewer
         DOVirtual.DelayedCall(0.5f, () =>
         {
             ToColor(colors);
-        });
+        }).SetLink(_content);
     }
 
     void ToColor(Color[,] colors)
@@ -123,7 +123,7 @@ public class MainPageViewer
         DOVirtual.DelayedCall(delay, () =>
         {
             _dots[i, j].Expand(color, 0.5f);
-        });
+        }).SetLink(_content);
     }
 
     public void ChangePlayBtnTxt(string btnTxt)

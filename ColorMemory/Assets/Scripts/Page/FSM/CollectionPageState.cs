@@ -25,6 +25,8 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
         Button exitBtn,
         Button playBtn,
 
+        GameObject stageDetailContent,
+
         TMP_Text stageUsedHintUseCount,
         TMP_Text stageWrongCount,
 
@@ -52,6 +54,7 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
             stageUIContent,
             exitBtn,
             playBtn,
+            stageDetailContent,
             stageUsedHintUseCount,
             stageWrongCount,
             _collectPagePresenter);

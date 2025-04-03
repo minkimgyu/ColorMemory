@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using NetworkService.Manager;
 using NetworkService.DTO;
 using System.Threading.Tasks;
+using DG.Tweening;
 
 public class LoadingPage : MonoBehaviour
 {
@@ -53,12 +54,16 @@ public class LoadingPage : MonoBehaviour
 
     void Initialize(AddressableHandler addressableHandler)
     {
+
+        TimeController timeController = new TimeController();
         SceneController sceneController = new SceneController();
         SaveManager saveManager = new SaveManager(new SaveData("meal"));
 
+
+
         //SoundPlayer soundPlayer = FindObjectOfType<SoundPlayer>();
         //soundPlayer.Initialize(addressableHandler.SoundAsset);
-
+        ServiceLocater.Provide(timeController);
         ServiceLocater.Provide(sceneController);
         ServiceLocater.Provide(saveManager);
         //ServiceLocater.Provide(soundPlayer);

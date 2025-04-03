@@ -56,17 +56,26 @@ public struct StageData
     Rank _rank;
     int _hintUsage;
     int _incorrectCnt;
+    bool _isLock;
 
-    public StageData(Rank rank, int hintUsage, int incorrectCnt)
+    public StageData(Rank rank, int hintUsage, int incorrectCnt, bool isLock)
     {
         _rank = rank;
         _hintUsage = hintUsage;
         _incorrectCnt = incorrectCnt;
+        _isLock = isLock;
     }
 
     public Rank Rank { get => _rank; }
+
+    /// <summary>
+    /// 플레이 한 경우 false로 적용
+    /// </summary>
+    public bool IsPlayed { get { return HintUsage != -1 || IncorrectCnt != -1; } }
+
     public int HintUsage { get => _hintUsage; }
     public int IncorrectCnt { get => _incorrectCnt; }
+    public bool IsLock { get => _isLock; }
 }
 
 public struct ArtData

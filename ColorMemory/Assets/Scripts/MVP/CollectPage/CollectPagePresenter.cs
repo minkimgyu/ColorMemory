@@ -37,17 +37,33 @@ public class CollectPagePresenter
         //ChangeArtworkDescription(_collectPageModel.ArtworkIndex);
     }
 
-    void SelectStage(int index)
+
+
+
+    void SelectStage(int index, StageData stageData)
     {
         ServiceLocater.ReturnSaveManager().SelectArtworkSection(index);
         _collectPageModel.SelectedSectionIndex = index;
         _collectPageViewer.SelectStage(_collectPageModel.SelectedSectionIndex);
+
+        if (stageData.IsPlayed == false) ActiveStageDetailContent(false);
+        else ActiveStageDetailContent(true);
+
+        ChangeStageDetails(stageData.HintUsage, stageData.IncorrectCnt);
     }
 
     void ChangeCurrentProgress(int currentProgress)
     {
         _collectPageModel.CurrentProgress = currentProgress;
         _collectPageViewer.ChangeCurrentProgress(_collectPageModel.CurrentProgress);
+    }
+
+
+
+    void ActiveStageDetailContent(bool active)
+    {
+        _collectPageModel.ActiveStageDetailContent = active;
+        _collectPageViewer.ActiveStageDetailContent(_collectPageModel.ActiveStageDetailContent);
     }
 
     void ChangeStageDetails(int usedHintCount, int wrongCount)
@@ -65,6 +81,7 @@ public class CollectPagePresenter
 
     public void ActiveSelectStageContent(bool active)
     {
+        if (active == false) RemoveAllStage();
         _collectPageModel.ActiveSelectStageContent = active;
         _collectPageViewer.ActiveSelectStageContent(_collectPageModel.ActiveSelectStageContent);
     }
@@ -77,8 +94,7 @@ public class CollectPagePresenter
 
             SpawnableUI artwork = _artworkFactory.Create(keyIndex, NetworkService.DTO.Rank.COPPER);
             artwork.InjectClickEvent(() => {
-                RemoveAllStage();
-
+                ServiceLocater.ReturnSaveManager().SelectArtwork(keyIndex);
                 ActiveSelectStageContent(true);
                 FillStage();
             });
@@ -106,18 +122,20 @@ public class CollectPagePresenter
         int artworkIndex = _collectPageModel.ArtworkIndex;
         ArtData artData = _collectPageModel.ArtDatas[artworkIndex];
 
-        bool allStageNoClear = true; // 모든 스테이지가 클리어 되지 않은 경우
         int progressCount = 0;
 
         foreach (var data in artData.StageDatas)
         {
             StageData stageData = artData.StageDatas[data.Key];
-            if (stageData.Rank != Rank.NONE)
+            if (stageData.IsLock == false && stageData.IsPlayed == true) // 잠겨있지 않고 이전에 플레이 한 경우만 진행도로 친다
             {
                 progressCount++;
-                allStageNoClear = false;
             }
         }
+
+        ChangeCurrentProgress(progressCount);
+
+        int _openIndex = 1;
 
         foreach (var data in artData.StageDatas)
         {
@@ -125,39 +143,24 @@ public class CollectPagePresenter
             spawnableUI.InjectClickEvent(() =>
             {
                 int index = data.Key;
-                SelectStage(index - 1);
-                ChangeStageDetails(artData.StageDatas[index].HintUsage, artData.StageDatas[index].IncorrectCnt);
+                SelectStage(index - 1, data.Value);
             });
 
-            StageData stageData = artData.StageDatas[data.Key];
-
-            if(allStageNoClear == true && data.Key == 1) // 모두 미클이고 첫번째 스테이지인 경우
+            if (data.Value.IsLock == true)
             {
-                spawnableUI.SetState(StageUI.State.Open); // 스테이지 열기
+                spawnableUI.SetState(StageUI.State.Lock);
             }
             else
             {
-                switch (stageData.Rank)
-                {
-                    case Rank.NONE:
-                        spawnableUI.SetState(StageUI.State.Lock);
-                        break;
-                    default:
-                        allStageNoClear = false;
-                        spawnableUI.SetState(StageUI.State.Open);
-                        spawnableUI.SetRank(stageData.Rank);
-                        break;
-                }
+                spawnableUI.SetState(StageUI.State.Open);
+                if(data.Value.IsPlayed == true) spawnableUI.SetRank(data.Value.Rank); // 한번 플레이 한 경우만 랭크 표시
+                else _openIndex = data.Key;
             }
-
             _collectPageViewer.AddStage(spawnableUI);
         }
 
-
-        // Auto Select 기능
-        SelectStage(0);
-        ChangeStageDetails(artData.StageDatas[1].HintUsage, artData.StageDatas[1].IncorrectCnt);
-        ChangeCurrentProgress(progressCount);
+        // 열린 스테이지 Auto Select
+        SelectStage(_openIndex - 1, artData.StageDatas[_openIndex]);
     }
 
     public void RemoveAllStage()

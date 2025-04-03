@@ -29,13 +29,12 @@ public class CollectStageUIPresenter
         _viewer.ChangeArtwork(_model.ArtSprite, _model.ArtFrameSprite);
     }
 
-    public void ChangeRank(Color rankColor, Sprite rankIcon, string rankName)
+    public void ChangeRank(Sprite rankIcon, string rankName)
     {
-        _model.RankColor = rankColor;
         _model.RankIcon = rankIcon;
         _model.RankName = rankName;
 
-        _viewer.ChangeRank(_model.RankColor, _model.RankIcon, _model.RankName);
+        _viewer.ChangeRank(_model.RankIcon, _model.RankName);
     }
 
     public void ChangeGetRank(int hintUseCount, int wrongCount)
@@ -52,14 +51,22 @@ public class CollectStageUIPresenter
         _viewer.ChangeCollectionRatio(_model.TotalCollectRatio);
     }
 
+    public void OnClickGameExitBtn()
+    {
+        // 데이터 저장
+        ServiceLocater.ReturnSaveManager().ChangeBGMVolume(_model.BgmRatio);
+        ServiceLocater.ReturnSaveManager().ChangeSFXVolume(_model.SfxRatio);
 
-
+        ServiceLocater.ReturnTimeController().Start();
+        ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.HomeScene);
+    }
 
     public void ActivatePausePanel(bool active)
     {
         if (active)
         {
-            Time.timeScale = 0.0f;
+            ServiceLocater.ReturnTimeController().Stop();
+
             // 데이터 불러와서 반영
             SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
             _viewer.ChangeBGMSliderValue(data.BgmVolume);
@@ -67,7 +74,8 @@ public class CollectStageUIPresenter
         }
         else
         {
-            Time.timeScale = 1.0f;
+            ServiceLocater.ReturnTimeController().Start();
+
             // 데이터 저장
             ServiceLocater.ReturnSaveManager().ChangeBGMVolume(_model.BgmRatio);
             ServiceLocater.ReturnSaveManager().ChangeSFXVolume(_model.SfxRatio);

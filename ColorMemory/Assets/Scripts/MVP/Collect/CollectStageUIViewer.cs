@@ -117,10 +117,7 @@ public class CollectStageUIViewer
         _totalCollectRatio = totalCollectRatio;
         _totalCollectText = totalCollectText;
 
-        _gameExitBtn.onClick.AddListener(() =>
-        {
-            ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.HomeScene);
-        });
+        _gameExitBtn.onClick.AddListener(() => { presenter.OnClickGameExitBtn(); });
         _pauseBtn.onClick.AddListener(() => { presenter.ActivatePausePanel(true); });
         _pauseExitBtn.onClick.AddListener(() => { presenter.ActivatePausePanel(false); });
         _bgmSlider.onValueChanged.AddListener((ratio) => { presenter.OnBGMSliderValeChanged(ratio); });
@@ -132,9 +129,8 @@ public class CollectStageUIViewer
         _artworkUI.Initialize(artSprite, artFrameSprite);
     }
 
-    public void ChangeRank(Color rankColor, Sprite rankIcon, string rankName)
+    public void ChangeRank(Sprite rankIcon, string rankName)
     {
-        _rankBackground.color = rankColor;
         _rankIcon.sprite = rankIcon;
         _rankText.text = rankName;
     }
@@ -148,11 +144,8 @@ public class CollectStageUIViewer
     public void ChangeCollectionRatio(float totalCollectRatio)
     {
         _totalCollectRatio.fillAmount = totalCollectRatio;
-        _totalCollectText.text = Mathf.FloorToInt(totalCollectRatio * 100).ToString();
+        _totalCollectText.text = $"{(totalCollectRatio * 100).ToString("F2")}%";
     }
-
-
-
 
 
     public void ActivatePausePanel(bool active)

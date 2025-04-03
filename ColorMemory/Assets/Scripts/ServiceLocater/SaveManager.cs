@@ -191,7 +191,7 @@ public class SaveManager : ISaveable
         Save();
     }
 
-    public void Save()
+    void Save()
     {
         string json = _parser.ObjectToJson(_saveData);
         File.WriteAllText(_filePath, json);
@@ -212,11 +212,13 @@ public class SaveManager : ISaveable
     public void ChangeBGMVolume(float volume) 
     {
         _saveData.BgmVolume = volume;
+        Save();
     }
 
     public void ChangeSFXVolume(float volume)
     {
         _saveData.SfxVolume = volume;
+        Save();
     }
 
     public void ChangeGameModeType(GameMode.Type type) 

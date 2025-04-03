@@ -44,7 +44,6 @@ public class CollectStageUIModel
     public int HintUseCount { get => _hintUseCount; set => _hintUseCount = value; }
     public int WrongCount { get => _wrongCount; set => _wrongCount = value; }
     public float TotalCollectRatio { get => _totalCollectRatio; set => _totalCollectRatio = value; }
-    public Color RankColor { get => _rankColor; set => _rankColor = value; }
     public Sprite RankIcon { get => _rankIcon; set => _rankIcon = value; }
     public string RankName { get => _rankName; set => _rankName = value; }
 

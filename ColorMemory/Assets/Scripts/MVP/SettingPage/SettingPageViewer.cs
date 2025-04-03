@@ -52,15 +52,15 @@ public class SettingPageViewer
 
         _doneBtn.onClick.AddListener(() => { presenter.OnProfileDone(); });
 
-        for (int i = 0; i < profileSelectBtns.Length; i++)
+        for (int i = 0; i < _profileSelectBtns.Length; i++)
         {
             int index = i + 1; // 로컬 변수로 복사하여 클로저 문제 해결
-            profileSelectBtns[i].onValueChanged.AddListener((on) => { presenter.OnProfileSelected(on, index); });
+            _profileSelectBtns[i].onValueChanged.AddListener((on) => { presenter.OnProfileSelected(on, index); });
         }
 
         _sideSheetUI.OnPanelActivated += presenter.OnPanelActivated;
 
-        for (int i = 0; i < toggles.Length; i++)
+        for (int i = 0; i < _toggles.Length; i++)
         {
             int index = i; // 로컬 변수로 복사하여 클로저 문제 해결
             _toggles[i].onValueChanged.AddListener((on) => { presenter.ActivateTogglePanel(index); });
@@ -68,6 +68,21 @@ public class SettingPageViewer
 
         _bgmSlider.onValueChanged.AddListener((ratio) => { presenter.OnBGMSliderValeChanged(ratio); });
         _sfxSlider.onValueChanged.AddListener((ratio) => { presenter.OnSFXSliderValeChanged(ratio); });
+    }
+
+    public void ChangeBGMSliderValue(float ratio)
+    {
+        _bgmSlider.value = ratio;
+    }
+
+    public void ChangeSFXSliderValue(float ratio)
+    {
+        _sfxSlider.value = ratio;
+    }
+
+    public void ChangeProfileToggle(int index)
+    {
+        _profileSelectBtns[index].isOn = true;
     }
 
     public void ChangeName(string name)

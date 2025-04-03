@@ -30,6 +30,25 @@ namespace Collect
             ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.HomeScene);
         }
 
+        async Task<Rank?> UpdateArtworkToServer(PlayerArtworkDTO dTO)
+        {
+            ArtworkManager artworkManager = new ArtworkManager();
+            Rank? rank;
+
+            try
+            {
+                rank = await artworkManager.UpdatePlayerArtworkAsync(dTO);
+            }
+            catch (System.Exception e)
+            {
+                Debug.Log(e);
+                Debug.Log("서버로 데이터를 전송하지 못함");
+                return null;
+            }
+
+            return rank;
+        }
+
         async Task<Tuple<List<PlayerArtworkDTO>, int, int>> GetArtDataFromServer()
         {
             ArtworkManager artworkManager = new ArtworkManager();
@@ -48,7 +67,7 @@ namespace Collect
             }
 
             int ownCount = ownedArtworkDTOs.Count;
-            int unownedCount = ownedArtworkDTOs.Count;
+            int unownedCount = unownedArtworkDTOs.Count;
 
             ownedArtworkDTOs.AddRange(unownedArtworkDTOs); // list1에 list2 요소 추가
             return new Tuple<List<PlayerArtworkDTO>, int, int>(ownedArtworkDTOs, ownCount, unownedCount);
@@ -59,26 +78,10 @@ namespace Collect
             Tuple<List<PlayerArtworkDTO>, int, int> artDatas = await GetArtDataFromServer();
             if (artDatas == null) return;
 
-            _collectStageUIPresenter.ActivatePlayPanel(false);
-            _collectStageUIPresenter.ActivateGameResultPanel(true);
-
-            AddressableHandler addressableHandler = UnityEngine.Object.FindObjectOfType<AddressableHandler>();
-            if (addressableHandler == null) return;
-
             SaveData saveData = ServiceLocater.ReturnSaveManager().GetSaveData();
-
-            Sprite artworkSprite = addressableHandler.ArtSpriteAsserts[saveData.SelectedArtworkKey];
-            Sprite rankSprite = addressableHandler.ArtworkFrameAsserts[NetworkService.DTO.Rank.COPPER];
-
-            // 저장하고 랭크 받기
-            // public async Task<Rank> UpdatePlayerArtworkAsync(PlayerArtworkDTO playerArtwork)
-
-            // public async Task<List<PlayerArtworkDTO>> GetOwnedArtworksAsync(string playerId)
-            // public async Task<List<PlayerArtworkDTO>> GetUnownedArtworksAsync(string playerId)
-            // 호출해서 모은 비율 가져오기
-
             PlayerArtworkDTO artworkDTO = artDatas.Item1.Find(x => x.ArtworkId == saveData.SelectedArtworkKey);
 
+            // 힌트, 틀린 개수 업데이트
             int totalGoBackCount = 0;
             int totalWrongCount = 0;
 
@@ -88,24 +91,31 @@ namespace Collect
                 totalWrongCount += item.Value.IncorrectCnt;
             }
 
-            float ratio = (float)artDatas.Item2 / (float)(artDatas.Item2 + artDatas.Item3);
+            artworkDTO.HasIt = true;  // HasIt 업데이트
+            Rank? getRank = await UpdateArtworkToServer(artworkDTO);
+            if (getRank == null) return;
 
-            _collectStageUIPresenter.ChangeRank(_rankColor[artworkDTO.Rank], addressableHandler.RankIconAssets[artworkDTO.Rank], _rankString[artworkDTO.Rank]);
-            _collectStageUIPresenter.ChangeArtwork(artworkSprite, rankSprite);
+            AddressableHandler addressableHandler = UnityEngine.Object.FindObjectOfType<AddressableHandler>();
+            if (addressableHandler == null) return;
+
+            _collectStageUIPresenter.ActivatePlayPanel(false);
+            _collectStageUIPresenter.ActivateGameResultPanel(true);
+
+            Sprite artworkSprite = addressableHandler.ArtSpriteAsserts[saveData.SelectedArtworkKey];
+            Sprite rankFrameSprite = addressableHandler.ArtworkFrameAsserts[getRank.Value];
+            Sprite rankIconSprite = addressableHandler.RankIconAssets[getRank.Value];
+
+            float ratio = (float)artDatas.Item2 / (artDatas.Item2 + artDatas.Item3);
+
+            _collectStageUIPresenter.ChangeRank(rankIconSprite, _rankString[getRank.Value]);
+            _collectStageUIPresenter.ChangeArtwork(artworkSprite, rankFrameSprite);
             _collectStageUIPresenter.ChangeGetRank(totalGoBackCount, totalWrongCount);
             _collectStageUIPresenter.ChangeCollectionRatio(ratio);
         }
 
-        readonly Dictionary<Rank, Color> _rankColor = new Dictionary<Rank, Color>
-        {
-            { Rank.COPPER, new Color(255f / 255f, 248f / 255f, 199f / 255f) },
-            { Rank.SILVER, new Color(175f / 255f, 175f / 255f, 175f / 255f) },
-            { Rank.GOLD, new Color(236f / 255f, 176f / 255f, 87f / 255f) },
-        };
-
         readonly Dictionary<Rank, string> _rankString = new Dictionary<Rank, string>
         {
-            { Rank.COPPER, "Copper" },
+            { Rank.COPPER, "Bronze" },
             { Rank.SILVER, "Silver" },
             { Rank.GOLD, "Gold" },
         };

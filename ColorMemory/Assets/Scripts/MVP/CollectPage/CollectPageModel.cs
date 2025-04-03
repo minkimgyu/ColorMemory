@@ -17,8 +17,9 @@ public class CollectPageModel
     int _artworkIndex;
     int _selectedSectionIndex;
 
-    float _currentProgress;
+    int _currentProgress;
 
+    bool _activeStageDetailContent;
     int _usedHintCount;
     int _wrongCount;
 
@@ -26,6 +27,7 @@ public class CollectPageModel
     {
         _activeContent = false;
         _activeSelectStageContent = false;
+        _activeStageDetailContent = false;
         _title = "";
         _description = "";
         _artworkIndex = 1;
@@ -43,6 +45,7 @@ public class CollectPageModel
 
     public bool ActiveContent { get => _activeContent; set => _activeContent = value; }
     public bool ActiveSelectStageContent { get => _activeSelectStageContent; set => _activeSelectStageContent = value; }
+    public bool ActiveStageDetailContent { get => _activeStageDetailContent; set => _activeStageDetailContent = value; }
 
     public string Title { get => _title; set => _title = value; }
     public string Description { get => _description; set => _description = value; }
@@ -57,5 +60,5 @@ public class CollectPageModel
     public Dictionary<int, CollectArtData> CollectArtDatas { get => _collectArtDatas; set => _collectArtDatas = value; }
     public Dictionary<int, ArtData> ArtDatas { get => _artDatas; set => _artDatas = value; }
 
-    public float CurrentProgress { get => _currentProgress; set => _currentProgress = value; }
+    public int CurrentProgress { get => _currentProgress; set => _currentProgress = value; }
 }

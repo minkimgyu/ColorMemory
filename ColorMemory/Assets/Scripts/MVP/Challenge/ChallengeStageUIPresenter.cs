@@ -34,11 +34,22 @@ public class ChallengeStageUIPresenter
         _viewer.ActivateHint(_model.OneColorHintActive, _model.OneZoneHintActive);
     }
 
+    public void OnClickGameExitBtn()
+    {
+        // 데이터 저장
+        ServiceLocater.ReturnSaveManager().ChangeBGMVolume(_model.BgmRatio);
+        ServiceLocater.ReturnSaveManager().ChangeSFXVolume(_model.SfxRatio);
+
+        ServiceLocater.ReturnTimeController().Start();
+        ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.HomeScene);
+    }
+
     public void ActivatePausePanel(bool active)
     {
         if(active)
         {
-            Time.timeScale = 0.0f;
+            ServiceLocater.ReturnTimeController().Stop();
+
             // 데이터 불러와서 반영
             SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
             _viewer.ChangeBGMSliderValue(data.BgmVolume);
@@ -46,7 +57,8 @@ public class ChallengeStageUIPresenter
         }
         else
         {
-            Time.timeScale = 1.0f;
+            ServiceLocater.ReturnTimeController().Start();
+
             // 데이터 저장
             ServiceLocater.ReturnSaveManager().ChangeBGMVolume(_model.BgmRatio);
             ServiceLocater.ReturnSaveManager().ChangeSFXVolume(_model.SfxRatio);
@@ -94,17 +106,6 @@ public class ChallengeStageUIPresenter
     {
         _model.ActivePlayPanel = active;
         _viewer.ActivatePlayPanel(_model.ActivePlayPanel);
-    }
-
-    public void FillTimeSlider(float duration)
-    {
-        DOVirtual.Float(_model.TimeRatio, 1, duration, 
-            ((ratio) => 
-            { 
-                _model.TimeRatio = ratio; 
-                _viewer.FillTimeSlider(_model.TimeRatio);
-            }
-        ));
     }
 
     public void ChangeBestScore(int bestScore)
