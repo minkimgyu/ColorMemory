@@ -10,15 +10,17 @@ abstract public class SpawnableUI : MonoBehaviour
         ClearPatternUI,
         RankingUI,
         StageSelectBtnUI,
+        ShopBundleUI
     }
 
+    public virtual void Initialize(string title, string description, int reward, int price) { }
     public virtual void Initialize(Sprite profileSprite, string title, int score, int rank) { }
     public virtual void Initialize(Sprite artSprite, Sprite artFrameSprite) { }
     public virtual void Initialize(int currentStageCount, int totalStageCount, MapData data, Color[] pickColors) { }
     public virtual void Initialize(int currentStageCount, MapData data, Color[] pickColors) { }
-    public virtual void Initialize(Vector2Int index) { }
+    public virtual void Initialize() { }
 
-    public virtual void InjectClickEvent(System.Action<Vector2Int> OnClick) { }
+    public virtual void InjectClickEvent(System.Action<int> OnClick) { }
     public virtual void InjectClickEvent(System.Action OnClick) { }
 
     public virtual void SetRank(NetworkService.DTO.Rank rank) { }

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ShopPageViewer
 {
@@ -18,15 +19,18 @@ public class ShopPageViewer
         _content.SetActive(active);
     }
 
-    public void DestoryRankingItems()
+    public void DestoryShopItems()
     {
         for (int i = _scrollContent.childCount - 1; i >= 0; i--)
         {
-            _scrollContent.GetChild(i).GetComponent<SpawnableUI>().DestroyObject();
+            SpawnableUI spawnableUI = _scrollContent.GetChild(i).GetComponent<SpawnableUI>();
+            if (spawnableUI == null) continue;
+
+            spawnableUI.DestroyObject();
         }
     }
 
-    public void AddRankingItemToScroll(SpawnableUI rankingUI)
+    public void AddShopItem(SpawnableUI rankingUI)
     {
         rankingUI.transform.SetParent(_scrollContent);
     }

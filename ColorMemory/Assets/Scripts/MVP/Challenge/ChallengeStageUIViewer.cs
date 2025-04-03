@@ -20,6 +20,13 @@ public class ChallengeStageUIViewer
 
     TMP_Text _stageText;
 
+    Button _oneZoneHintBtn;
+    Button _oneColorHintBtn;
+
+    TMP_Text _oneZoneHintCostText;
+    TMP_Text _oneColorHintCostText;
+
+
     GameObject _hintPanel;
     GameObject _rememberPanel;
 
@@ -55,6 +62,12 @@ public class ChallengeStageUIViewer
         TMP_Text leftTimeText,
         TMP_Text totalTimeText,
         TMP_Text stageText,
+
+        Button oneZoneHintBtn,
+        Button oneColorHintBtn,
+
+        TMP_Text oneZoneHintCostText,
+        TMP_Text oneColorHintCostText,
 
         GameObject hintPanel,
         GameObject rememberPanel,
@@ -92,6 +105,12 @@ public class ChallengeStageUIViewer
         _totalTimeText = totalTimeText;
         _stageText = stageText;
 
+        _oneZoneHintBtn = oneZoneHintBtn;
+        _oneColorHintBtn = oneColorHintBtn;
+
+        _oneColorHintCostText = oneColorHintCostText;
+        _oneZoneHintCostText = oneZoneHintCostText;
+
         _hintPanel = hintPanel;
         _rememberPanel = rememberPanel;
 
@@ -128,6 +147,21 @@ public class ChallengeStageUIViewer
         _pauseExitBtn.onClick.AddListener(() => { presenter.ActivatePausePanel(false); });
         _bgmSlider.onValueChanged.AddListener((ratio) => { presenter.OnBGMSliderValeChanged(ratio); });
         _sfxSlider.onValueChanged.AddListener((ratio) => { presenter.OnSFXSliderValeChanged(ratio); });
+    }
+
+    public void ActivateHint(bool oneColorHintActive, bool oneZoneHintActive)
+    {
+        _oneColorHintBtn.interactable = oneColorHintActive;
+        _oneZoneHintBtn.interactable = oneZoneHintActive;
+    }
+
+    public void ChangeHintCost(int oneColorHintCost, int oneZoneHintCost)
+    {
+        _oneColorHintCostText.text = $"-{oneColorHintCost.ToString("N0")}";
+        _oneZoneHintCostText.text = $"-{oneZoneHintCost.ToString("N0")}";
+
+        LayoutRebuilder.ForceRebuildLayoutImmediate(_oneColorHintCostText.transform.parent.GetComponent<RectTransform>());
+        LayoutRebuilder.ForceRebuildLayoutImmediate(_oneZoneHintCostText.transform.parent.GetComponent<RectTransform>());
     }
 
     public void ChangeBGMSliderValue(float ratio)
@@ -223,6 +257,7 @@ public class ChallengeStageUIViewer
     public void ChangeCoinCount(int coin)
     {
         _coinTxt.text = coin.ToString("N0"); // "9,000"
+        LayoutRebuilder.ForceRebuildLayoutImmediate(_coinTxt.transform.parent.GetComponent<RectTransform>());
     }
 
 
@@ -262,7 +297,7 @@ public class ChallengeStageUIViewer
         _gameResultPanel.SetActive(active);
     }
 
-    public void ChangeGoldCount(int goldCount)
+    public void ChangeResultGoldCount(int goldCount)
     {
         _goldCount.text = $"{goldCount} ÄÚÀÎ È¹µæ!";
     }
@@ -286,6 +321,6 @@ public class ChallengeStageUIViewer
 
     public void ChangeRankingScrollValue(int menuCount, int scrollIndex)
     {
-        _rankingScrollRect.verticalNormalizedPosition = (float)scrollIndex / (float)menuCount;
+        //_rankingScrollRect.verticalNormalizedPosition = (float)scrollIndex / (float)menuCount;
     }
 }

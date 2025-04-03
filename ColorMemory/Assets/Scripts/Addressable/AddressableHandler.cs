@@ -22,7 +22,7 @@ public class AddressableHandler : MonoBehaviour
         ArtworkFrame,
         ArtworkData,
 
-        RankingIcon,
+        ProfileIcon,
 
         SpawnableUI,
         ChallengeModeStageData
@@ -65,7 +65,7 @@ public class AddressableHandler : MonoBehaviour
     public Dictionary<Effect.Name, Effect> EffectAssets { get; private set; }
     public Dictionary<GameMode.Type, Sprite> ModeTitleIconAssets { get; private set; }
 
-    public Dictionary<RankingIconName, Sprite> RankingIconAssets { get; private set; }
+    public Dictionary<int, Sprite> ProfileIconAssets { get; private set; }
 
     public Dictionary<SpawnableUI.Name, SpawnableUI> SpawnableUIAssets { get; private set; }
 
@@ -85,7 +85,7 @@ public class AddressableHandler : MonoBehaviour
         _assetLoaders.Add(new ArtworkJsonAssetLoader(Label.ArtworkData, (value, label) => { ArtworkJsonAsset = value; OnSuccess(label); }));
 
 
-        _assetLoaders.Add(new RankingIconAssetLoader(Label.RankingIcon, (value, label) => { RankingIconAssets = value; OnSuccess(label); }));
+        _assetLoaders.Add(new ProfileIconAssetLoader(Label.ProfileIcon, (value, label) => { ProfileIconAssets = value; OnSuccess(label); }));
 
         _assetLoaders.Add(new SpawnableUIAssetLoader(Label.SpawnableUI, (value, label) => { SpawnableUIAssets = value; OnSuccess(label); }));
 

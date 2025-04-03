@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public enum RankingIconName
+public enum ProfileIconName
 {
     Icon1,
     Icon2,
@@ -30,20 +30,20 @@ public struct RankingData
 
 public struct PersonalRankingData
 {
-    RankingIconName _iconName;
+    int _profileIconIndex;
     string _name; // key
     int _score;
     int _ranking;
 
-    public PersonalRankingData(RankingIconName iconName, string name, int score, int ranking)
+    public PersonalRankingData(int profileIconIndex, string name, int score, int ranking)
     {
-        _iconName = iconName;
+        _profileIconIndex = profileIconIndex;
         _name = name;
         _score = score;
         _ranking = ranking;
     }
 
-    public RankingIconName IconName { get => _iconName; }
+    public int ProfileIconIndex { get => _profileIconIndex; }
     public string Name { get => _name; }
     public int Score { get => _score; }
     public int Rank { get => _ranking; }

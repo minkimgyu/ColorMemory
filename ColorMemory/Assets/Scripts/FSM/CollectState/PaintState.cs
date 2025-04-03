@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using System;
 using UnityEngine;
-using DG.Tweening;
-using Random = UnityEngine.Random;
 
 namespace Collect
 {
@@ -122,6 +120,7 @@ namespace Collect
 
             _modeData.IsPlayed[save.SelectedArtworkSectionIndex.x, save.SelectedArtworkSectionIndex.y] = true;
             _modeData.GoBackCount[save.SelectedArtworkSectionIndex.x, save.SelectedArtworkSectionIndex.y] += 1;
+
             _fsm.SetState(CollectMode.State.Memorize);
         }
 

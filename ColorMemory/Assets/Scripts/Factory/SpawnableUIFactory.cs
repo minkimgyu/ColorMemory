@@ -5,9 +5,9 @@ using UnityEngine;
 
 public class RankingCreater : SpawnableUICreater
 {
-    Dictionary<RankingIconName, Sprite> _rankingIconSprites;
+    Dictionary<int, Sprite> _rankingIconSprites;
 
-    public RankingCreater(SpawnableUI prefab, Dictionary<RankingIconName, Sprite> rankingIconSprites) : base(prefab)
+    public RankingCreater(SpawnableUI prefab, Dictionary<int, Sprite> rankingIconSprites) : base(prefab)
     {
         _rankingIconSprites = rankingIconSprites;
     }
@@ -15,7 +15,7 @@ public class RankingCreater : SpawnableUICreater
     public override SpawnableUI Create(PersonalRankingData data)
     {
         SpawnableUI rankingUI = Object.Instantiate(_prefab);
-        rankingUI.Initialize(_rankingIconSprites[data.IconName], data.Name, data.Score, data.Rank);
+        rankingUI.Initialize(_rankingIconSprites[data.ProfileIconIndex], data.Name, data.Score, data.Rank);
         return rankingUI;
     }
 }
@@ -41,10 +41,10 @@ public class StageCreater : SpawnableUICreater
     {
     }
 
-    public override SpawnableUI Create(Vector2Int index)
+    public override SpawnableUI Create()
     {
         SpawnableUI selectStageUI = Object.Instantiate(_prefab);
-        selectStageUI.Initialize(index);
+        selectStageUI.Initialize();
 
         return selectStageUI;
     }
@@ -72,6 +72,21 @@ public class ArtworkCreater : SpawnableUICreater
     }
 }
 
+public class ShopBundleCreater : SpawnableUICreater
+{
+    public ShopBundleCreater(SpawnableUI prefab) : base(prefab)
+    {
+    }
+
+    public override SpawnableUI Create(string name, string description, int reward, int price)
+    {
+        SpawnableUI selectStageUI = Object.Instantiate(_prefab);
+        selectStageUI.Initialize(name, description, reward, price);
+
+        return selectStageUI;
+    }
+}
+
 abstract public class SpawnableUICreater
 {
     protected SpawnableUI _prefab;
@@ -80,15 +95,28 @@ abstract public class SpawnableUICreater
     {
         _prefab = prefab;
     }
-    
 
+    public virtual SpawnableUI Create(string name, string description, int reward, int price) { return default; }
     public virtual SpawnableUI Create(int artworkIndex, NetworkService.DTO.Rank frameType) { return default; }
     public virtual SpawnableUI Create(int currentStageCount, int totalStageCount, MapData data, Color[] pickColors) { return default; }
-    public virtual SpawnableUI Create(Vector2Int index) { return default; }
+    public virtual SpawnableUI Create() { return default; }
     public virtual SpawnableUI Create(PersonalRankingData data) { return default; }
 }
 
+public class ShopBundleUIFactory : BaseFactory
+{
+    ShopBundleCreater _shopBundleCreater;
 
+    public ShopBundleUIFactory(SpawnableUI shopBundlePrefab)
+    {
+        _shopBundleCreater = new ShopBundleCreater(shopBundlePrefab);
+    }
+
+    public override SpawnableUI Create(string name, string description, int reward, int price)
+    {
+        return _shopBundleCreater.Create(name, description, reward, price);
+    }
+}
 
 
 public class ClearPatternUIFactory : BaseFactory
@@ -115,9 +143,9 @@ public class StageUIFactory : BaseFactory
         _selectStageCreater = new StageCreater(clearPatternUIPrefab);
     }
 
-    public override SpawnableUI Create(Vector2Int index)
+    public override SpawnableUI Create()
     {
-        return _selectStageCreater.Create(index);
+        return _selectStageCreater.Create();
     }
 }
 
@@ -127,7 +155,7 @@ public class RankingUIFactory : BaseFactory
 
     public RankingUIFactory(
         SpawnableUI rankingUIPrefab,
-        Dictionary<RankingIconName, Sprite> rankingIconSprites)
+        Dictionary<int, Sprite> rankingIconSprites)
     {
         _rankingUICreater = new RankingCreater(rankingUIPrefab, rankingIconSprites);
     }

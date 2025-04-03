@@ -13,7 +13,7 @@ public class ModeTitleIconAssetLoader : AssetLoader<GameMode.Type, Sprite, Sprit
     }
 }
 
-public class ArtSpriteAssetLoader : IntKeyAssetLoader<int, Sprite, Sprite>
+public class ArtSpriteAssetLoader : IntKeyAssetLoader<Sprite, Sprite>
 {
     public ArtSpriteAssetLoader(AddressableHandler.Label label, Action<Dictionary<int, Sprite>, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
     {
@@ -27,9 +27,9 @@ public class ArtworkFrameAssetLoader : AssetLoader<NetworkService.DTO.Rank, Spri
     }
 }
 
-public class RankingIconAssetLoader : AssetLoader<RankingIconName, Sprite, Sprite>
+public class ProfileIconAssetLoader : IntKeyAssetLoader<Sprite, Sprite>
 {
-    public RankingIconAssetLoader(AddressableHandler.Label label, Action<Dictionary<RankingIconName, Sprite>, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
+    public ProfileIconAssetLoader(AddressableHandler.Label label, Action<Dictionary<int, Sprite>, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
     {
     }
 }
@@ -74,13 +74,13 @@ abstract public class AssetLoader<Key, Value, Type> : MultipleAssetLoader<Key, V
     }
 }
 
-abstract public class IntKeyAssetLoader<Key, Value, Type> : MultipleAssetLoader<Key, Value, Type>
+abstract public class IntKeyAssetLoader<Value, Type> : MultipleAssetLoader<int, Value, Type>
 {
-    protected IntKeyAssetLoader(AddressableHandler.Label label, Action<Dictionary<Key, Value>, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
+    protected IntKeyAssetLoader(AddressableHandler.Label label, Action<Dictionary<int, Value>, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
     {
     }
 
-    protected override void LoadAsset(IResourceLocation location, Dictionary<Key, Value> dictionary, Action OnComplete)
+    protected override void LoadAsset(IResourceLocation location, Dictionary<int, Value> dictionary, Action OnComplete)
     {
         Addressables.LoadAssetAsync<Value>(location).Completed +=
         (handle) =>
@@ -88,7 +88,7 @@ abstract public class IntKeyAssetLoader<Key, Value, Type> : MultipleAssetLoader<
             switch (handle.Status)
             {
                 case AsyncOperationStatus.Succeeded:
-                    Key key = (Key)(object)int.Parse(location.PrimaryKey);
+                    int key = int.Parse(location.PrimaryKey);
 
                     dictionary.Add(key, handle.Result);
                     OnComplete?.Invoke();

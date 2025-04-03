@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using NetworkService.Manager;
 using NetworkService.DTO;
+using System.Threading.Tasks;
 
 public class HomePage : MonoBehaviour
 {
@@ -13,7 +14,8 @@ public class HomePage : MonoBehaviour
         Main, // -> Collection, Ranking, Shop
         Collection, // -> Main, Ranking
         Ranking, // -> Main, Shop
-        Shop // -> Main, Ranking
+        Shop, // -> Main, Ranking
+        Setting
     }
 
     EffectFactory _effectFactory;
@@ -69,14 +71,29 @@ public class HomePage : MonoBehaviour
     [SerializeField] GameObject _shopContent;
     [SerializeField] Transform _shopScrollContent;
 
+    [Header("Setting")]
+    [SerializeField] SettingPage _settingPage;
+
     FSM<InnerPageState> _pageFsm;
 
+    TopElementPresenter _topElementPresenter;
 
-    private async void Start()
+    async Task<Dictionary<int, ArtData>> GetArtDataFromServer()
     {
         ArtworkManager artworkManager = new ArtworkManager();
-        List<PlayerArtworkDTO> ownedArtworkDTOs = await artworkManager.GetOwnedArtworksAsync("testId1");
-        List<PlayerArtworkDTO> unownedArtworkDTOs = await artworkManager.GetUnownedArtworksAsync("testId1");
+        List<PlayerArtworkDTO> ownedArtworkDTOs, unownedArtworkDTOs;
+
+        try
+        {
+            ownedArtworkDTOs = await artworkManager.GetOwnedArtworksAsync("testId1");
+            unownedArtworkDTOs = await artworkManager.GetUnownedArtworksAsync("testId1");
+        }
+        catch (System.Exception e)
+        {
+            Debug.Log(e);
+            Debug.Log("서버로부터 데이터를 받아오지 못함");
+            return null;
+        }
 
         Dictionary<int, ArtData> artDatas = new Dictionary<int, ArtData>();
 
@@ -89,7 +106,7 @@ public class HomePage : MonoBehaviour
                 StageData stageData = new StageData(dto.Value.Rank, dto.Value.HintUsage, dto.Value.IncorrectCnt);
                 stageDatas.Add(dto.Key, stageData);
             }
-            
+
             ArtData artData = new ArtData(
                 ownedArtworkDTOs[i].Rank,
                 ownedArtworkDTOs[i].HasIt,
@@ -100,6 +117,33 @@ public class HomePage : MonoBehaviour
             artDatas.Add(ownedArtworkDTOs[i].ArtworkId, artData);
         }
 
+        for (int i = 0; i < unownedArtworkDTOs.Count; i++)
+        {
+            Dictionary<int, StageData> stageDatas = new Dictionary<int, StageData>();
+
+            foreach (var dto in unownedArtworkDTOs[i].Stages)
+            {
+                StageData stageData = new StageData(dto.Value.Rank, dto.Value.HintUsage, dto.Value.IncorrectCnt);
+                stageDatas.Add(dto.Key, stageData);
+            }
+
+            ArtData artData = new ArtData(
+                unownedArtworkDTOs[i].Rank,
+                unownedArtworkDTOs[i].HasIt,
+                stageDatas,
+                unownedArtworkDTOs[i].TotalMistakesAndHints,
+                unownedArtworkDTOs[i].ObtainedDate);
+
+            artDatas.Add(unownedArtworkDTOs[i].ArtworkId, artData);
+        }
+
+        return artDatas;
+    }
+
+    private async void Start()
+    {
+        Dictionary<int, ArtData> artDatas = await GetArtDataFromServer();
+        if (artDatas == null) return;
 
         AddressableHandler addressableHandler = FindObjectOfType<AddressableHandler>();
         if (addressableHandler == null) return;
@@ -119,20 +163,31 @@ public class HomePage : MonoBehaviour
 
         RankingUIFactory rankingUIFactory = new RankingUIFactory(
             addressableHandler.SpawnableUIAssets[SpawnableUI.Name.RankingUI],
-            addressableHandler.RankingIconAssets
+            addressableHandler.ProfileIconAssets
+        );
+
+        ShopBundleUIFactory shopBundleUIFactory = new ShopBundleUIFactory(
+            addressableHandler.SpawnableUIAssets[SpawnableUI.Name.ShopBundleUI]
         );
 
         _shopBtn.onClick.AddListener(() => { _pageFsm.OnClickShopBtn(); });
         _homeBtn.onClick.AddListener(() => { _pageFsm.OnClickHomeBtn(); });
         _rankingBtn.onClick.AddListener(() => { _pageFsm.OnClickRankingBtn(); });
+        _settingBtn.onClick.AddListener(() => { _settingPage.TogglePanel(); });
 
-        _settingBtn.onClick.AddListener(() => { _sideSheetUI.TogglePanel(); });
 
-        SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
+        TopElementModel topElementModel = new TopElementModel();
+        TopElementViewer topElementViewer = new TopElementViewer(_goldTxt);
+        _topElementPresenter = new TopElementPresenter(topElementViewer, topElementModel);
+
 
         MoneyManager moneyManager = new MoneyManager();
         int money = await moneyManager.GetMoneyAsync("testId1");
-        _goldTxt.text = money.ToString();
+        _topElementPresenter.ChangeGoldCount(money);
+
+        _settingPage.Initialize(addressableHandler.ProfileIconAssets);
+
+        SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
 
         _pageFsm = new FSM<InnerPageState>();
         _pageFsm.Initialize(new Dictionary<InnerPageState, BaseState<InnerPageState>>
@@ -186,6 +241,8 @@ public class HomePage : MonoBehaviour
                 InnerPageState.Shop, new ShopPageState(
                 _shopContent,
                 _shopScrollContent,
+                shopBundleUIFactory,
+                _topElementPresenter,
                 _pageFsm)
             },
         }, InnerPageState.Main);

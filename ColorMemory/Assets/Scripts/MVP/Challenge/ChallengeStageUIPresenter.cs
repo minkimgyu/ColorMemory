@@ -20,6 +20,20 @@ public class ChallengeStageUIPresenter
         _viewer = viewer;
     }
 
+    public void ChangeHintCost(int oneColorHintCost, int oneZoneHintCost)
+    {
+        _model.OneColorHintCost = oneColorHintCost;
+        _model.OneZoneHintCost = oneZoneHintCost;
+        _viewer.ChangeHintCost(oneColorHintCost, oneZoneHintCost);
+    }
+
+    public void ActivateHint(bool oneColorHintActive, bool oneZoneHintActive)
+    {
+        _model.OneColorHintActive = oneColorHintActive;
+        _model.OneZoneHintActive = oneZoneHintActive;
+        _viewer.ActivateHint(_model.OneColorHintActive, _model.OneZoneHintActive);
+    }
+
     public void ActivatePausePanel(bool active)
     {
         if(active)
@@ -180,10 +194,10 @@ public class ChallengeStageUIPresenter
         _viewer.ActivateGameResultPanel(_model.ActiveGameResultPanel);
     }
 
-    public void ChangeGoldCount(int goldCount)
+    public void ChangeResultGoldCount(int goldCount)
     {
         _model.GoldCount = goldCount;
-        _viewer.ChangeGoldCount(_model.GoldCount);
+        _viewer.ChangeResultGoldCount(_model.GoldCount);
     }
 
     public void AddRanking(SpawnableUI ranking, bool setToMiddle = false)
@@ -200,6 +214,6 @@ public class ChallengeStageUIPresenter
     {
         _model.MenuCount = menuCount;
         _model.ScrollIndex = index;
-        _viewer.ChangeRankingScrollValue(_model.MenuCount, _model.ScrollIndex);
+        //_viewer.ChangeRankingScrollValue(_model.MenuCount);
     }
 }

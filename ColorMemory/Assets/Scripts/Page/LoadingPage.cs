@@ -19,10 +19,28 @@ public class LoadingPage : MonoBehaviour
         SetUp();
     }
 
-    async void SetUp()
+    async Task<bool> SendDataToServer()
     {
         PlayerManager playerManager = new PlayerManager();
-        bool canLogin = await playerManager.AddPlayerAsync("testId1", "meal");
+        bool canLogin = false;
+
+        try
+        {
+            canLogin = await playerManager.AddPlayerAsync("testId1", "meal");
+        }
+        catch (System.Exception e)
+        {
+            Debug.Log(e);
+            Debug.Log("서버에 데이터를 보낼 수 없음");
+            return false;
+        }
+
+        return canLogin;
+    }
+
+    async void SetUp()
+    {
+        bool canLogin = await SendDataToServer();
         if (canLogin == false) return;
 
         _loadingPregressBar.fillAmount = 0;

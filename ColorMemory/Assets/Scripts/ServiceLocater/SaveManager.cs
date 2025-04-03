@@ -24,15 +24,10 @@ public interface ISaveable
     void ChangeBGMVolume(float volume) { }
     void ChangeSFXVolume(float volume) { }
     void ChangeGameModeType(GameMode.Type type) { }
-    void SelectArtwork(string selectedArtworkName, Vector2Int selectedArtworkSectionIndex) { }
-    void SelectArtwork(Vector2Int selectedArtworkSectionIndex) { }
 
-    void ChangeMoney(int money) { }
-
-    void ChangeHighScore(int highScore) { }
-    void ChangeOneColorHintCount(int oneColorHintCount) { }
-    void ChangeOneZoneHintCount(int oneZoneHintCount) { }
-    void ChangeArtworkData(List<PlayerArtwork> artworks) { }
+    void SelectArtwork(int selectedArtworkIndex) { }
+    void SelectArtworkSection(int selectedArtworkSectionIndex) { }
+    void SelectArtworkSection(Vector2Int index) { }
 
     SaveData GetSaveData() { return default; }
 }
@@ -58,14 +53,6 @@ public struct SaveData
     [JsonProperty] int _selectedArtworkKey;
     [JsonProperty] Vector2Int _selectedArtworkSectionIndex;
 
-    [JsonIgnore] string _name;
-    [JsonIgnore] int _money; // °ñµå
-    [JsonIgnore] int _highScore;
-
-    [JsonIgnore] int _oneColorHintCount;
-    [JsonIgnore] int _oneZoneHintCount;
-    [JsonIgnore] List<PlayerArtwork> _artworkDatas;
-
     public SaveData(string name)
     {
         _muteBGM = false;
@@ -75,41 +62,8 @@ public struct SaveData
         _sfxVolume = 0.5f;
 
         _selectedType = GameMode.Type.Collect;
-        _selectedArtworkKey = 0;
+        _selectedArtworkKey = 1;
         _selectedArtworkSectionIndex = Vector2Int.zero;
-
-        _name = name;
-        _money = 0;
-        _highScore = 0;
-        _oneColorHintCount = 0;
-        _oneZoneHintCount = 0;
-        _artworkDatas = new List<PlayerArtwork>();
-    }
-
-    public SaveData(
-        string name,
-        int money,
-        int highScore,
-        int oneColorHintCount,
-        int oneZoneHintCount,
-        List<PlayerArtwork> artworkDatas)
-    {
-        _muteBGM = false;
-        _muteSFX = false;
-
-        _bgmVolume = 1f;
-        _sfxVolume = 1f;
-
-        _selectedType = GameMode.Type.Collect;
-        _selectedArtworkKey = 0;
-        _selectedArtworkSectionIndex = Vector2Int.zero;
-
-        _name = name;
-        _money = money;
-        _highScore = highScore;
-        _oneColorHintCount = oneColorHintCount;
-        _oneZoneHintCount = oneZoneHintCount;
-        _artworkDatas = artworkDatas;
     }
 
     [JsonIgnore] public bool MuteBGM { get => _muteBGM; set => _muteBGM = value; }
@@ -117,14 +71,27 @@ public struct SaveData
     [JsonIgnore] public float BgmVolume { get => _bgmVolume; set => _bgmVolume = value; }
     [JsonIgnore] public float SfxVolume { get => _sfxVolume; set => _sfxVolume = value; }
     [JsonIgnore] public GameMode.Type SelectedType { get => _selectedType; set => _selectedType = value; }
-    [JsonIgnore] public string Name { get => _name; set => _name = value; }
-    [JsonIgnore] public int Money { get => _money; set => _money = value; }
-    [JsonIgnore] public int HighScore { get => _highScore; set => _highScore = value; }
-    [JsonIgnore] public int OneColorHintCount { get => _oneColorHintCount; set => _oneColorHintCount = value; }
-    [JsonIgnore] public int OneZoneHintCount { get => _oneZoneHintCount; set => _oneZoneHintCount = value; }
-    [JsonIgnore] public List<PlayerArtwork> ArtworkDatas { get => _artworkDatas; set => _artworkDatas = value; }
     [JsonIgnore] public int SelectedArtworkKey { get => _selectedArtworkKey; set => _selectedArtworkKey = value; }
     [JsonIgnore] public Vector2Int SelectedArtworkSectionIndex { get => _selectedArtworkSectionIndex; set => _selectedArtworkSectionIndex = value; }
+
+    [JsonIgnore] public float SelectedArtworkProgress { get => ((_selectedArtworkSectionIndex.x * ArtworkSize) + _selectedArtworkSectionIndex.y) / (ArtworkSize * ArtworkSize);  }
+
+    [JsonIgnore] const float ArtworkSize = 4;
+
+    //[JsonIgnore] public Vector2Int SelectedArtworkSectionIndex 
+    //{
+    //    get
+    //    {
+    //        int mod = 4;
+    //        int x = SelectedArtworkSectionIndex % mod;
+    //        int y = SelectedArtworkSectionIndex / mod;
+    //        return new Vector2Int(y, x);
+    //    }
+    //    set
+    //    {
+    //        _selectedArtworkSectionIndex = value.y * 4 + value.x;
+    //    }
+    //}
 }
 
 public class SaveManager : ISaveable
@@ -238,13 +205,11 @@ public class SaveManager : ISaveable
     public void ChangeBGMVolume(float volume) 
     {
         _saveData.BgmVolume = volume;
-        //Save();
     }
 
     public void ChangeSFXVolume(float volume)
     {
         _saveData.SfxVolume = volume;
-        //Save();
     }
 
     public void ChangeGameModeType(GameMode.Type type) 
@@ -253,46 +218,21 @@ public class SaveManager : ISaveable
         Save();
     }
 
-    public void ChangeMoney(int money) 
-    {
-        _saveData.Money = money;
-        Save();
-    }
-
-    public void SelectArtwork(Vector2Int selectedArtworkSectionIndex)
-    {
-        _saveData.SelectedArtworkSectionIndex = selectedArtworkSectionIndex;
-        Save();
-    }
-
-    public void SelectArtwork(int selectedArtworkIndex, Vector2Int selectedArtworkSectionIndex) 
+    public void SelectArtwork(int selectedArtworkIndex) 
     {
         _saveData.SelectedArtworkKey = selectedArtworkIndex;
-        _saveData.SelectedArtworkSectionIndex = selectedArtworkSectionIndex;
         Save();
     }
 
-    public void ChangeHighScore(int highScore) 
+    public void SelectArtworkSection(Vector2Int index) 
     {
-        _saveData.HighScore = highScore;
+        _saveData.SelectedArtworkSectionIndex = index;
         Save();
     }
 
-    public void ChangeOneColorHintCount(int oneColorHintCount) 
+    public void SelectArtworkSection(int selectedArtworkSectionIndex) 
     {
-        _saveData.OneColorHintCount = oneColorHintCount;
-        Save();
-    }
-
-    public void ChangeOneZoneHintCount(int oneZoneHintCount) 
-    {
-        _saveData.OneZoneHintCount = oneZoneHintCount;
-        Save();
-    }
-
-    public void ChangeArtworkData(List<PlayerArtwork> data) 
-    {
-        _saveData.ArtworkDatas = data;
+        _saveData.SelectedArtworkSectionIndex = new Vector2Int(selectedArtworkSectionIndex / 4, selectedArtworkSectionIndex % 4);
         Save();
     }
 }

@@ -107,10 +107,10 @@ public class CollectStageUIPresenter
         _viewer.ChangeProgressText(_model.Progress);
     }
 
-    public void ChangeTitle(string title)
+    public void ChangeTitle(string title, string comment)
     {
         _model.Title = title;
-        _viewer.ChangeTitle(_model.Title);
+        _viewer.ChangeTitle(_model.Title, comment);
     }
 
     public void FillTimeSlider(float duration)

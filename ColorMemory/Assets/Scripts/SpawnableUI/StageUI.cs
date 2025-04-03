@@ -14,7 +14,7 @@ public class StageUI : SpawnableUI
     [SerializeField] Image _selectBtnImg;
     [SerializeField] Button _selectBtn;
 
-    public Action<Vector2Int> OnClickRequested;
+    public Action OnClickRequested;
 
     readonly Color _lockColor = new Color(236/255f, 232/255f, 232/255f);
     readonly Color _openColor = new Color(113/255f, 196/255f, 255/255f);
@@ -33,13 +33,10 @@ public class StageUI : SpawnableUI
     State _state;
     NetworkService.DTO.Rank _rank;
 
-    public override void InjectClickEvent(System.Action<Vector2Int> OnClick)
+    public override void InjectClickEvent(System.Action OnClick)
     {
         this.OnClickRequested = OnClick;
     }
-
-    Vector2Int _index;
-    public Vector2Int Index { get => _index; }
 
     public override void ChangeSelect(bool select) 
     {
@@ -91,9 +88,8 @@ public class StageUI : SpawnableUI
         }
     }
 
-    public override void Initialize(Vector2Int index)
+    public override void Initialize()
     {
-        _index = index;
         ChangeSelect(false);
 
         _selectBtn.onClick.AddListener(() => 
@@ -103,10 +99,10 @@ public class StageUI : SpawnableUI
                 case State.Lock:
                     break;
                 case State.Open:
-                    OnClickRequested?.Invoke(_index);
+                    OnClickRequested?.Invoke();
                     break;
                 case State.Clear:
-                    OnClickRequested?.Invoke(_index);
+                    OnClickRequested?.Invoke();
                     break;
                 default:
                     break;

@@ -82,6 +82,7 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
 
     public override void OnStateEnter()
     {
+        _collectPagePresenter.ChangeArtworkDescription(0);
         _collectPagePresenter.FillArtwork();
         _collectPagePresenter.ActiveContent(true); // home ╢щ╬фаж╠Б
     }

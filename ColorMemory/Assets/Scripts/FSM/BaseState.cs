@@ -10,7 +10,6 @@ abstract public class BaseState<T>
     }
 
     public virtual void OnStateEnter(Challenge.PaintState.Data data) { }
-    public virtual void OnStateEnter(Vector2Int sectionIndex) { }
     public virtual void OnStateEnter() { }
     public virtual void OnStateUpdate() { }
     public virtual void OnStateExit() { }
@@ -24,8 +23,8 @@ abstract public class BaseState<T>
     public virtual void OnClickRetryBtn() { }
 
     public virtual void OnClickGoBackHint() { }
-    public virtual void OnClickRandomFillHint() { }
-    public virtual void OnClickRevealSameColorHint() { }
+    public virtual void OnClickOneZoneHint() { }
+    public virtual void OnClickOneColorHint() { }
 
     public virtual void OnClickDot(Vector2Int index) { }
     public virtual void OnClickDot(int index) { }

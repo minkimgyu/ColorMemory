@@ -15,7 +15,9 @@ public class CollectPageModel
     Dictionary<int, ArtData> _artDatas;
 
     int _artworkIndex;
-    Vector2Int _selectedArtworkIndex;
+    int _selectedSectionIndex;
+
+    float _currentProgress;
 
     int _usedHintCount;
     int _wrongCount;
@@ -26,13 +28,17 @@ public class CollectPageModel
         _activeSelectStageContent = false;
         _title = "";
         _description = "";
-        _artworkIndex = 0;
-        _selectedArtworkIndex = Vector2Int.zero;
+        _artworkIndex = 1;
+        _selectedSectionIndex = 1;
+
+        _currentProgress = 0;
 
         _usedHintCount = 0;
         _wrongCount = 0;
 
+        _artDatas = artDatas;
         _artworkDatas = artworkDatas;
+        _collectArtDatas = collectArtDatas;
     }
 
     public bool ActiveContent { get => _activeContent; set => _activeContent = value; }
@@ -41,7 +47,7 @@ public class CollectPageModel
     public string Title { get => _title; set => _title = value; }
     public string Description { get => _description; set => _description = value; }
     public int ArtworkIndex { get => _artworkIndex; set => _artworkIndex = value; }
-    public Vector2Int SelectedArtworkIndex { get => _selectedArtworkIndex; set => _selectedArtworkIndex = value; }
+    public int SelectedSectionIndex { get => _selectedSectionIndex; set => _selectedSectionIndex = value; }
 
     public int UsedHintCount { get => _usedHintCount; set => _usedHintCount = value; }
     public int WrongCount { get => _wrongCount; set => _wrongCount = value; }
@@ -50,4 +56,6 @@ public class CollectPageModel
     public Dictionary<int, ArtworkData> ArtworkDatas { get => _artworkDatas; }
     public Dictionary<int, CollectArtData> CollectArtDatas { get => _collectArtDatas; set => _collectArtDatas = value; }
     public Dictionary<int, ArtData> ArtDatas { get => _artDatas; set => _artDatas = value; }
+
+    public float CurrentProgress { get => _currentProgress; set => _currentProgress = value; }
 }

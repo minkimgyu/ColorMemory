@@ -14,6 +14,12 @@ public class ChallengeStageUIModel
         _bgmRatio = 0;
         _sfxRatio = 0;
 
+        _oneColorHintActive = true;
+        _oneZoneHintActive = true;
+
+        _oneColorHintCost = 0;
+        _oneZoneHintCost = 0;
+
         _stageCount = 0;
 
         _activePlayPanel = false;
@@ -29,6 +35,19 @@ public class ChallengeStageUIModel
         _activeGameResultPanel = false;
         _goldCount = 0;
     }
+
+    bool _oneColorHintActive;
+    public bool OneColorHintActive { get => _oneColorHintActive; set => _oneColorHintActive = value; }
+
+    bool _oneZoneHintActive;
+    public bool OneZoneHintActive { get => _oneZoneHintActive; set => _oneZoneHintActive = value; }
+
+
+    int _oneColorHintCost;
+    public int OneColorHintCost { get => _oneColorHintCost; set => _oneColorHintCost = value; }
+
+    int _oneZoneHintCost;
+    public int OneZoneHintCost { get => _oneZoneHintCost; set => _oneZoneHintCost = value; }
 
     bool _activePausePanel;
 

@@ -17,6 +17,12 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: 5a7f48876edeba14ba42787231547410
   m_SerializeEntries:
+  - m_GUID: 57f81f6a2846e494fb7e743adbdb87d3
+    m_Address: ShopBundleUI
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - SpawnableUI
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a32b13f9239c8ef4daa2716d710b99ad
     m_Address: ClearPatternUI
     m_ReadOnly: 0

@@ -166,9 +166,9 @@ public class CollectStageUIViewer
         _playPanel.SetActive(active);
     }
 
-    public void ChangeTitle(string title)
+    public void ChangeTitle(string title, string comment)
     {
-        _titleText.text = title;
+        _titleText.text = $"<color=#1a1817>{title}</color>{comment}";
     }
 
     public void ChangeHintInfoText(string infoText)

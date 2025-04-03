@@ -15,7 +15,14 @@ public class SideSheetUI : MonoBehaviour, IDragHandler, IEndDragHandler
     private float dragSpeed = 0f;
     public float closeSpeedThreshold = 300f; // 빠르게 드래그할 때 즉시 닫히는 속도
 
-    void Start()
+    public System.Action<bool> OnPanelActivated { get; set; }
+
+    public void InjectActivateEvent(System.Action<bool> OnPanelActivated)
+    {
+        this.OnPanelActivated = OnPanelActivated;
+    }
+
+    public virtual void Initialize()
     {
         float panelWidth = panel.rect.width;
         hiddenPosition = new Vector2(panelWidth, 0);
@@ -39,19 +46,19 @@ public class SideSheetUI : MonoBehaviour, IDragHandler, IEndDragHandler
     private void OpenPanel()
     {
         panel.DOAnchorPos(visiblePosition, slideDuration);
+        OnPanelActivated?.Invoke(true);
     }
 
     private void ClosePanel()
     {
         panel.DOAnchorPos(hiddenPosition, slideDuration);
+        OnPanelActivated?.Invoke(false);
     }
 
     public void OnDrag(PointerEventData eventData)
     {
         // 드래그 속도 계산
         dragSpeed = eventData.delta.x / Time.deltaTime;
-
-        
 
         // 사용자가 오른쪽으로 드래그하여 닫을 경우
         float newX = panel.anchoredPosition.x + eventData.delta.x;

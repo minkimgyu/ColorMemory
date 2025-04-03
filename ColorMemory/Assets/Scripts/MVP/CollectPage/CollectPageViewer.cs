@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -74,10 +74,17 @@ public class CollectPageViewer
         ActiveContent(false);
     }
 
+    public void ChangeCurrentProgress(float currentProgress, float totalProgress = 100)
+    {
+        _leftCompleteText.text = $"{Mathf.RoundToInt(currentProgress)}%";
+        _totalCompleteText.text = $"{Mathf.RoundToInt(totalProgress)}%";
+        _completeSlider.fillAmount = currentProgress / totalProgress;
+    }
+
     public void ChangeStageDetails(int hintCount, int wrongCount)
     {
-        _stageHintUseCount.text = hintCount.ToString();
-        _stageWrongCount.text = wrongCount.ToString();
+        _stageHintUseCount.text = $"{hintCount}회";
+        _stageWrongCount.text = $"{wrongCount}회";
     }
 
     public void ChangeArtDescription(string title, string description)
@@ -106,13 +113,13 @@ public class CollectPageViewer
         _content.SetActive(active);
     }
 
-    public void SelectStage(Vector2Int index)
+    public void SelectStage(int index)
     {
         int childCount = _stageUIContent.childCount;
         for (int i = 0; i < childCount; i++)
         {
             StageUI stageUI = _stageUIContent.GetChild(i).GetComponent<StageUI>();
-            if(stageUI.Index == index)
+            if(i == index)
             {
                 _stageUIContent.GetChild(i).GetComponent<StageUI>().ChangeSelect(true);
             }

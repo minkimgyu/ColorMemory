@@ -39,59 +39,51 @@ public class RankingPageState : BaseState<HomePage.InnerPageState>
         _fsm.SetState(HomePage.InnerPageState.Main);
     }
 
-    //RankingData GetRankingData()
-    //{
-    //    List<PersonalRankingData> topRankingDatas = new List<PersonalRankingData>();
-    //    string[] names = { "Alice", "Bob", "Charlie", "David", "Eve", "Frank", "Grace", "Hank", "Ivy", "Jack" };
+    async Task<Tuple<List<PlayerScoreDTO>, PlayerScoreDTO, int>> GetRankingDataFromServer()
+    {
+        ScoreManager scoreManager = new ScoreManager();
+        List<PlayerScoreDTO> otherScores;
+        PlayerScoreDTO myScore;
+        int ranking = 0;
 
-    //    int count = 10; // 생성할 데이터 개수
-    //    for (int i = 0; i < count; i++)
-    //    {
-    //        RankingIconName iconName = (RankingIconName)UnityEngine.Random.Range(0, Enum.GetValues(typeof(RankingIconName)).Length);
-    //        string name = names[i];
-    //        int score = UnityEngine.Random.Range(0, 100000000);
-    //        int rank = i + 1; // 1부터 시작하는 순위
+        try
+        {
+            otherScores = await scoreManager.GetTopWeeklyScoresAsync(10);
+            myScore = await scoreManager.GetPlayerWeeklyScoreAsDTOAsync("testId1");
+            ranking = await scoreManager.GetPlayerWeeklyRankingAsync("testId1");
+        }
+        catch (System.Exception e)
+        {
+            Debug.Log(e);
+            Debug.Log("서버로부터 데이터를 받아오지 못함");
+            return null;
+        }
 
-    //        topRankingDatas.Add(new PersonalRankingData(iconName, name, score, rank));
-    //    }
-
-    //    // 생성시켜주기
-    //    PersonalRankingData myRankingData = new PersonalRankingData((RankingIconName)1, "Meal", 10000000, 15);
-
-    //    RankingData rankingData = new RankingData(topRankingDatas, myRankingData);
-    //    return rankingData;
-    //}
+        return new Tuple<List<PlayerScoreDTO>, PlayerScoreDTO, int>(otherScores, myScore, ranking);
+    }
 
     public override async void OnStateEnter()
     {
-        ScoreManager scoreManager = new ScoreManager();
-
+        Tuple<List<PlayerScoreDTO>, PlayerScoreDTO, int> rankingData = await GetRankingDataFromServer();
+        if (rankingData == null) return;
 
         List<PersonalRankingData> topRankingDatas = new List<PersonalRankingData>();
 
-        List<PlayerScoreDTO> scores = await scoreManager.GetTopWeeklyScoresAsync(10);
-        for (int i = 0; i < scores.Count; i++)
+        for (int i = 0; i < rankingData.Item1.Count; i++)
         {
-            topRankingDatas.Add(new PersonalRankingData(RankingIconName.Icon5, scores[i].Name, scores[i].Score, i + 1));
+            topRankingDatas.Add(new PersonalRankingData(1, rankingData.Item1[i].Name, rankingData.Item1[i].Score, i + 1));
         }
 
-        //PlayerManager playerManager = new PlayerManager();
-        //playerManager.getpla();
+        PlayerScoreDTO playerScoreDTO = rankingData.Item2;
+        PersonalRankingData myRankingData = new PersonalRankingData(1, playerScoreDTO.Name, playerScoreDTO.Score, rankingData.Item3);
 
-        PlayerScoreDTO playerScoreDTO = await scoreManager.GetPlayerWeeklyScoreAsDTOAsync("testId1");
-        int ranking = await scoreManager.GetPlayerWeeklyRankingAsync("testId1");
-        PersonalRankingData myRankingData = new PersonalRankingData(RankingIconName.Icon5, playerScoreDTO.Name, playerScoreDTO.Score, ranking);
-
-        // 생성시켜주기
-        RankingData rankingData = new RankingData(topRankingDatas, myRankingData);
-
-        for (int i = 0; i < rankingData.OtherRankingDatas.Count; i++)
+        for (int i = 0; i < topRankingDatas.Count; i++)
         {
-            SpawnableUI rankingUI = _rankingUIFactory.Create(rankingData.OtherRankingDatas[i]);
+            SpawnableUI rankingUI = _rankingUIFactory.Create(topRankingDatas[i]);
             _rankingPagePresenter.AddRakingItems(rankingUI);
         }
 
-        SpawnableUI myRankingUI = _rankingUIFactory.Create(rankingData.MyRankingData);
+        SpawnableUI myRankingUI = _rankingUIFactory.Create(myRankingData);
         _rankingPagePresenter.AddMyRaking(myRankingUI);
         _rankingPagePresenter.ActiveContent(true); // home 닫아주기
     }

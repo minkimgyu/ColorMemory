@@ -49,11 +49,13 @@ namespace Collect
 
             Vector2Int changedIndex;
             int nextIndex = data.SelectedArtworkSectionIndex.y + 1;
-            if (nextIndex >= col) changedIndex = new Vector2Int(data.SelectedArtworkSectionIndex.x + 1, 0);
+            if (nextIndex >= col) changedIndex = new Vector2Int(data.SelectedArtworkSectionIndex.x + 1, data.SelectedArtworkSectionIndex.y);
             else changedIndex = new Vector2Int(data.SelectedArtworkSectionIndex.x, data.SelectedArtworkSectionIndex.y + 1);
-            ServiceLocater.ReturnSaveManager().SelectArtwork(changedIndex);
 
-            _fsm.SetState(CollectMode.State.Initialize, changedIndex);
+            ServiceLocater.ReturnSaveManager().SelectArtworkSection(changedIndex);
+
+            SaveData newData = ServiceLocater.ReturnSaveManager().GetSaveData();
+            _fsm.SetState(CollectMode.State.Initialize);
         }
 
         public override void OnStateEnter()

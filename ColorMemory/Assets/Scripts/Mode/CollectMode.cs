@@ -75,6 +75,7 @@ namespace Collect
 
         public class Data
         {
+            string _title;
             float _memorizeDuration;
             int _myScore;
 
@@ -85,10 +86,51 @@ namespace Collect
             int[,] _goBackCount; // 힌트 사용 개수
             int[,] _wrongCount; // 틀린 개수
 
-            public Data(Vector2Int sectionSize, int memorizeDuration, int myScore = 0)
+            public int TotalGoBackCount
+            {
+                get
+                {
+                    int result = 0;
+                    int row = _goBackCount.GetLength(0);
+                    int col = _goBackCount.GetLength(1);
+
+                    for (int i = 0; i < row; i++)
+                    {
+                        for (int j = 0; j < col; j++)
+                        {
+                            result += _goBackCount[i, j];
+                        }
+                    }
+
+                    return result;
+                }
+            }
+
+            public int TotalWrongCount
+            {
+                get
+                {
+                    int result = 0;
+                    int row = _wrongCount.GetLength(0);
+                    int col = _wrongCount.GetLength(1);
+
+                    for (int i = 0; i < row; i++)
+                    {
+                        for (int j = 0; j < col; j++)
+                        {
+                            result += _wrongCount[i, j];
+                        }
+                    }
+
+                    return result;
+                }
+            }
+
+            public Data(Vector2Int sectionSize, int memorizeDuration, string title, int myScore = 0)
             {
                 _myScore = myScore;
                 _memorizeDuration = memorizeDuration;
+                _title = title;
 
                 _pickColors = new Color[3];
                 _isPlayed = new bool[sectionSize.x, sectionSize.y];
@@ -103,6 +145,7 @@ namespace Collect
             public int[,] WrongCount { get => _wrongCount; set => _wrongCount = value; }
 
             public Color[] PickColors { get => _pickColors; set => _pickColors = value; }
+            public string Title { get => _title; set => _title = value; }
         }
 
         CollectMode.Data _modeData;
@@ -175,19 +218,15 @@ namespace Collect
             SaveData saveData = ServiceLocater.ReturnSaveManager().GetSaveData();
 
             int artworkIndex = saveData.SelectedArtworkKey;
-            Vector2Int sectionIndex = saveData.SelectedArtworkSectionIndex;
-
             CollectArtData artData = addressableHandler.CollectiveArtJsonAsserts[artworkIndex];
 
-            _section = artData.Sections[sectionIndex.x][sectionIndex.y];
+            _section = artData.Sections[saveData.SelectedArtworkSectionIndex.x][saveData.SelectedArtworkSectionIndex.y];
 
             Vector2Int index = new Vector2Int(_section.Blocks.Count, _section.Blocks[0].Count);
-            _modeData = new Data(index, 5);
-
+            _modeData = new Data(index, 5, addressableHandler.ArtworkJsonAsset.Data[artworkIndex].Title);
 
             CollectStageUIModel model = new CollectStageUIModel();
             CollectStageUIPresenter presenter = new CollectStageUIPresenter(model);
-
             CollectStageUIViewer viewer = new CollectStageUIViewer(
                 _playPanel,
                 _titleText,
@@ -255,10 +294,10 @@ namespace Collect
                 { State.Memorize, new MemorizeState(_fsm, _modeData, presenter, GetLevelData) },
                 { State.Paint, new PaintState(_fsm, _modeData, presenter, GetLevelData) },
                 { State.Clear, new ClearState(_fsm, _modeData, artData, presenter, GetLevelData, DestroyDots) },
-                { State.Result, new GameResultState(_fsm, presenter, _modeData) }
+                { State.Result, new ResultState(_fsm, presenter, _modeData) }
             };
 
-            _fsm.Initialize(states, State.Initialize, sectionIndex);
+            _fsm.Initialize(states, State.Initialize);
         }
     }
 }

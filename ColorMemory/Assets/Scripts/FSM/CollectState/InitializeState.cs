@@ -56,18 +56,17 @@ namespace Collect
             this.SetLevelData = SetLevelData;
         }
 
-        public override void OnStateEnter(Vector2Int sectionIndex)
+        public override void OnStateEnter()
         {
             _collectStageUIPresenter.ActivatePlayPanel(true);
 
             SaveData saveData = ServiceLocater.ReturnSaveManager().GetSaveData();
 
-            int progress = saveData.SelectedArtworkSectionIndex.x * 4 + saveData.SelectedArtworkSectionIndex.y;
-            float ratio = (progress / 16f);
+            float ratio = saveData.SelectedArtworkProgress;
             _collectStageUIPresenter.ChangeProgressText((int)(ratio * 100));
             _collectStageUIPresenter.ChangeHintInfoText("힌트를 사용할수록 높은 랭크를 받을 확률이 떨어져요!");
 
-            CreateLevel(sectionIndex);
+            CreateLevel(saveData.SelectedArtworkSectionIndex);
             _fsm.SetState(CollectMode.State.Memorize);
         }
 
@@ -85,9 +84,7 @@ namespace Collect
             if (customLevelGenerator.CanGenerateLevelData() == false) return;
 
             MapData mapData = customLevelGenerator.GenerateLevelData();
-
-            int index = ServiceLocater.ReturnSaveManager().GetSaveData().SelectedArtworkKey;
-            _collectStageUIPresenter.ChangeTitle(index.ToString());
+            _collectStageUIPresenter.ChangeTitle(_modeData.Title, " 를 선택했어요");
 
             int row = mapData.DotColor.GetLength(0);
             int col = mapData.DotColor.GetLength(1);
