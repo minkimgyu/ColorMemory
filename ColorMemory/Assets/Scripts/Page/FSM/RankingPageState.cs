@@ -39,11 +39,11 @@ public class RankingPageState : BaseState<HomePage.InnerPageState>
         _fsm.SetState(HomePage.InnerPageState.Main);
     }
 
-    async Task<Tuple<List<PlayerScoreDTO>, PlayerScoreDTO, int>> GetRankingDataFromServer()
+    async Task<Tuple<List<PlayerRankingDTO>, PlayerRankingDTO, int>> GetRankingDataFromServer()
     {
         ScoreManager scoreManager = new ScoreManager();
-        List<PlayerScoreDTO> otherScores;
-        PlayerScoreDTO myScore;
+        List<PlayerRankingDTO> otherScores;
+        PlayerRankingDTO myScore;
         int ranking = 0;
 
         try
@@ -59,12 +59,12 @@ public class RankingPageState : BaseState<HomePage.InnerPageState>
             return null;
         }
 
-        return new Tuple<List<PlayerScoreDTO>, PlayerScoreDTO, int>(otherScores, myScore, ranking);
+        return new Tuple<List<PlayerRankingDTO>, PlayerRankingDTO, int>(otherScores, myScore, ranking);
     }
 
     public override async void OnStateEnter()
     {
-        Tuple<List<PlayerScoreDTO>, PlayerScoreDTO, int> rankingData = await GetRankingDataFromServer();
+        Tuple<List<PlayerRankingDTO>, PlayerRankingDTO, int> rankingData = await GetRankingDataFromServer();
         if (rankingData == null) return;
 
         List<PersonalRankingData> topRankingDatas = new List<PersonalRankingData>();
@@ -74,7 +74,7 @@ public class RankingPageState : BaseState<HomePage.InnerPageState>
             topRankingDatas.Add(new PersonalRankingData(1, rankingData.Item1[i].Name, rankingData.Item1[i].Score, i + 1));
         }
 
-        PlayerScoreDTO playerScoreDTO = rankingData.Item2;
+        PlayerRankingDTO playerScoreDTO = rankingData.Item2;
         PersonalRankingData myRankingData = new PersonalRankingData(1, playerScoreDTO.Name, playerScoreDTO.Score, rankingData.Item3);
 
         for (int i = 0; i < topRankingDatas.Count; i++)

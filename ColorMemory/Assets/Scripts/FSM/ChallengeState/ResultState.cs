@@ -63,10 +63,10 @@ namespace Challenge
             return true;
         }
 
-        async Task<List<PlayerScoreDTO>> GetRankingDataFromServer()
+        async Task<List<PlayerRankingDTO>> GetRankingDataFromServer()
         {
             ScoreManager scoreManager = new ScoreManager();
-            List<PlayerScoreDTO> playerScoreDTOs = new List<PlayerScoreDTO>();
+            List<PlayerRankingDTO> playerScoreDTOs = new List<PlayerRankingDTO>();
 
             try
             {
@@ -88,7 +88,7 @@ namespace Challenge
             bool isSuccess = await SendDataToServer();
             if (isSuccess == false) return;
 
-            List<PlayerScoreDTO> playerScoreDTOs = await GetRankingDataFromServer();
+            List<PlayerRankingDTO> playerScoreDTOs = await GetRankingDataFromServer();
             if (playerScoreDTOs == null) return;
 
             _challengeStageUIPresenter.ActivateGameResultPanel(true);

@@ -69,12 +69,12 @@ public class SettingPagePresenter
         _settingPageViewer.ChangeProfileImg(_settingPageModel.ProfileSprites[_settingPageModel.ProfileIndex]);
     }
 
-    public async void ChangeProfileImgFromServer()
-    {
-        //int index = await GetPlayerIconFromServer();
-        //_settingPageModel.ProfileIndex = index;
-        //_settingPageViewer.ChangeProfileImg(_settingPageModel.ProfileSprites[_settingPageModel.ProfileIndex]);
-    }
+    //public async void ChangeProfileImgFromServer()
+    //{
+    //    int index = await GetPlayerIconFromServer();
+    //    _settingPageModel.ProfileIndex = index;
+    //    _settingPageViewer.ChangeProfileImg(_settingPageModel.ProfileSprites[_settingPageModel.ProfileIndex]);
+    //}
 
     //async Task<bool> GetPlayerIconFromServer()
     //{
