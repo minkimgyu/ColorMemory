@@ -64,6 +64,14 @@ public class HomePage : MonoBehaviour
 
     [SerializeField] ArtworkScrollUI _artworkScrollUI;
 
+    [SerializeField] FilterUI _filterScrollUI;
+    [SerializeField] Button _filterOpenBtn;
+    [SerializeField] Button _filterExitBtn;
+    [SerializeField] GameObject _filterContent;
+    [SerializeField] TMP_Text _collectionRatioText;
+    [SerializeField] Toggle[] _rankToggles;
+    [SerializeField] Toggle[] _dateToggles;
+
     [Header("Ranking")]
     [SerializeField] GameObject _rankingContent;
     [SerializeField] Transform _rankingScrollContent;
@@ -87,8 +95,10 @@ public class HomePage : MonoBehaviour
 
         try
         {
-            ownedArtworkDTOs = await artworkManager.GetOwnedArtworksAsync("testId1");
-            unownedArtworkDTOs = await artworkManager.GetUnownedArtworksAsync("testId1");
+            string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
+
+            ownedArtworkDTOs = await artworkManager.GetOwnedArtworksAsync(userId);
+            unownedArtworkDTOs = await artworkManager.GetUnownedArtworksAsync(userId);
         }
         catch (System.Exception e)
         {
@@ -155,6 +165,16 @@ public class HomePage : MonoBehaviour
             addressableHandler.SpawnableUIAssets[SpawnableUI.Name.ShopBundleUI]
         );
 
+        FilteredArtworkFactory filteredArtworkFactory = new FilteredArtworkFactory(
+            addressableHandler.SpawnableUIAssets[SpawnableUI.Name.FilteredArtworkUI],
+            addressableHandler.ArtSpriteAsserts
+        );
+
+        FilterItemFactory filterItemFactory = new FilterItemFactory(
+            addressableHandler.SpawnableUIAssets[SpawnableUI.Name.FilterItemUI],
+            addressableHandler.RankIconAssets
+        );
+
         _shopBtn.onClick.AddListener(() => { _pageFsm.OnClickShopBtn(); });
         _homeBtn.onClick.AddListener(() => { _pageFsm.OnClickHomeBtn(); });
         _rankingBtn.onClick.AddListener(() => { _pageFsm.OnClickRankingBtn(); });
@@ -165,14 +185,15 @@ public class HomePage : MonoBehaviour
         TopElementViewer topElementViewer = new TopElementViewer(_goldTxt);
         _topElementPresenter = new TopElementPresenter(topElementViewer, topElementModel);
 
+        SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
 
         MoneyManager moneyManager = new MoneyManager();
-        int money = await moneyManager.GetMoneyAsync("testId1");
+        int money = await moneyManager.GetMoneyAsync(data.UserId);
         _topElementPresenter.ChangeGoldCount(money);
 
-        _settingPage.Initialize(addressableHandler.ProfileIconAssets);
-
-        SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
+        _settingPage.Initialize(addressableHandler.ProfileIconAssets, () => { _pageFsm.SetState(InnerPageState.Main); });
+        _filterScrollUI.Initialize();
+        _filterScrollUI.Activate(false);
 
         _pageFsm = new FSM<InnerPageState>();
         _pageFsm.Initialize(new Dictionary<InnerPageState, BaseState<InnerPageState>>
@@ -207,9 +228,23 @@ public class HomePage : MonoBehaviour
                 _stageDetailContent,
                 _stageUsedHintUseCount,
                 _stageWrongCount,
+
+
+                _filterScrollUI,
+                _filterOpenBtn,
+                _filterExitBtn,
+                _filterContent,
+                _collectionRatioText,
+                _rankToggles,
+                _dateToggles,
+
                 _artworkScrollUI,
+
                 artWorkUIFactory,
                 stageUIFactory,
+                filteredArtworkFactory,
+                filterItemFactory,
+
                 artDatas,
                 addressableHandler.ArtworkJsonAsset.Data,
                 addressableHandler.CollectiveArtJsonAsserts,

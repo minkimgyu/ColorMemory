@@ -26,6 +26,14 @@ public class CollectPageViewer
     TMP_Text _stageHintUseCount;
     TMP_Text _stageWrongCount;
 
+    FilterUI _filterScrollUI;
+    Button _filterOpenBtn;
+    Button _filterExitBtn;
+    GameObject _filterContent;
+    TMP_Text _collectionRatioText;
+    Toggle[] _rankToggles;
+    Toggle[] _dateToggles;
+
     CollectPagePresenter _collectPagePresenter;
 
     public CollectPageViewer(
@@ -48,6 +56,14 @@ public class CollectPageViewer
         TMP_Text stageHintUseCount,
         TMP_Text stageWrongCount,
 
+        FilterUI filterScrollUI,
+        Button filterOpenBtn,
+        Button filterExitBtn,
+        GameObject filterContent,
+        TMP_Text collectionRatioText,
+        Toggle[] rankToggles,
+        Toggle[] dateToggles,
+
         CollectPagePresenter collectPagePresenter)
     {
         _content = content;
@@ -69,13 +85,69 @@ public class CollectPageViewer
         _stageHintUseCount = stageHintUseCount;
         _stageWrongCount = stageWrongCount;
 
+        _filterScrollUI = filterScrollUI;
+        _filterOpenBtn = filterOpenBtn;
+        _filterExitBtn = filterExitBtn;
+        _filterContent = filterContent;
+        _collectionRatioText = collectionRatioText;
+        _rankToggles = rankToggles; // 이벤트 걸기
+        _dateToggles = dateToggles; // 이벤트 걸기
+
         _collectPagePresenter = collectPagePresenter;
+
+        _filterExitBtn.onClick.AddListener(() => { collectPagePresenter.ActivateFilterContent(false); });
+        _filterOpenBtn.onClick.AddListener(() => { collectPagePresenter.ActivateFilterContent(true); });
+
+        // 기본 필터를 제외한 나머지 필터 경우
+        for (int i = 0; i < _rankToggles.Length; i++)
+        {
+            int rankIndex = i + 1;
+            _rankToggles[i].onValueChanged.AddListener((on) => { if(on) collectPagePresenter.OnClickRankToggle((FilterUI.RankFilter)rankIndex); });
+        }
+
+        for (int i = 0; i < _dateToggles.Length; i++)
+        {
+            int dateIndex = i + 1;
+            _dateToggles[i].onValueChanged.AddListener((on) => { if (on) collectPagePresenter.OnClickDateToggle((FilterUI.DateFilter)dateIndex); });
+        }
 
         _exitBtn.onClick.AddListener(() => { collectPagePresenter.ActiveSelectStageContent(false); });
         _playBtn.onClick.AddListener(() => { collectPagePresenter.PlayCollectMode(); });
         artworkScrollUI.OnDragEnd += collectPagePresenter.ChangeArtworkDescription;
         ActiveContent(false);
     }
+
+    public void ActivateFilterScrollUI(bool active)
+    {
+        _filterScrollUI.Activate(active);
+    }
+
+    public void ActivateFilterBottomSheet(bool active)
+    {
+        _filterScrollUI.ActivateBottomSheet(active);
+    }
+
+    public void AddFilteredArtwork(SpawnableUI spawnableUI)
+    {
+        _filterScrollUI.AddFilteredArtwork(spawnableUI);
+    }
+
+    public void AddFilterItem(SpawnableUI spawnableUI)
+    {
+        _filterScrollUI.AddFilterItem(spawnableUI);
+    }
+
+    public void DestroyFilteredArtwork()
+    {
+        _filterScrollUI.DestroyFilteredArtwork();
+    }
+
+
+    public void ActiveFilterContent(bool active)
+    {
+        _filterContent.SetActive(active);
+    }
+
 
     public void ActiveStageDetailContent(bool active)
     {
@@ -114,7 +186,7 @@ public class CollectPageViewer
         _artworkScrollUI.AddItem(artwork.transform);
     }
 
-    public void RemoveAllArtwork()
+    public void DestroyAllArtwork()
     {
         _artworkScrollUI.DestroyItems();
     }
@@ -144,6 +216,7 @@ public class CollectPageViewer
     public void AddStage(SpawnableUI spawnableUI)
     {
         spawnableUI.transform.SetParent(_stageUIContent);
+        spawnableUI.transform.localScale = Vector3.one;
     }
 
     public void RemoveAllStage()

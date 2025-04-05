@@ -14,19 +14,26 @@ public class SettingPage : MonoBehaviour
     [SerializeField] Image _miniProfileImg;
     [SerializeField] TMP_Text _nameText;
 
+    [SerializeField] Button _homeBtn;
+
     [SerializeField] Image _profileImg;
     [SerializeField] Toggle[] _profileSelectBtns;
     [SerializeField] Button _doneBtn;
-    [SerializeField] Slider _bgmSlider;
-    [SerializeField] Slider _sfxSlider;
+    [SerializeField] CustomSlider _bgmSlider;
+    [SerializeField] CustomSlider _sfxSlider;
 
     public void TogglePanel()
     {
         _sideSheetUI.TogglePanel();
     }
 
-    public void Initialize(Dictionary<int, Sprite> profileSprites)
+    System.Action OnClickHomeBtn;
+
+    public void Initialize(Dictionary<int, Sprite> profileSprites, System.Action OnClickHomeBtn)
     {
+        this.OnClickHomeBtn = OnClickHomeBtn;
+        _homeBtn.onClick.AddListener(() => { TogglePanel(); OnClickHomeBtn?.Invoke();  });
+
         _sideSheetUI.Initialize();
         SettingPageModel model = new SettingPageModel(profileSprites);
         SettingPagePresenter presenter = new SettingPagePresenter(model);

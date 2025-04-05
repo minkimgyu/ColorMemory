@@ -782,7 +782,7 @@ GameObject:
   - component: {fileID: 6763913031176379390}
   - component: {fileID: 341046377795605633}
   m_Layer: 0
-  m_Name: Group 180 [544:1992]
+  m_Name: DayGroup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -800,8 +800,8 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1892235732939304286}
   - {fileID: 3180921473218764952}
+  - {fileID: 1892235732939304286}
   m_Father: {fileID: 908978071503912282}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
@@ -1055,9 +1055,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 59571455606125933}
-  - component: {fileID: 6295885293258390097}
+  - component: {fileID: 7255143709628797420}
   m_Layer: 0
-  m_Name: Group 182 [544:1994]
+  m_Name: RankGroup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1075,11 +1075,11 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 3589463583006159613}
-  - {fileID: 7407467690672409943}
-  - {fileID: 2182904369485870076}
   - {fileID: 1999598897515161348}
   - {fileID: 1399023660160454168}
+  - {fileID: 2182904369485870076}
+  - {fileID: 7407467690672409943}
+  - {fileID: 3589463583006159613}
   m_Father: {fileID: 7782264988454611042}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
@@ -1087,7 +1087,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -106.5}
   m_SizeDelta: {x: 768, y: 198}
   m_Pivot: {x: 0, y: 1}
---- !u!114 &6295885293258390097
+--- !u!114 &7255143709628797420
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1191,7 +1191,7 @@ PrefabInstance:
     - target: {fileID: 1657763174912053957, guid: b5b3ebe7983b8614c9e1bde83af08a15, type: 3}
       propertyPath: m_Group
       value: 
-      objectReference: {fileID: 6295885293258390097}
+      objectReference: {fileID: 7255143709628797420}
     - target: {fileID: 6741368270660648345, guid: b5b3ebe7983b8614c9e1bde83af08a15, type: 3}
       propertyPath: m_Name
       value: AllToggleBtn
@@ -1327,7 +1327,7 @@ PrefabInstance:
     - target: {fileID: 2808491174006419526, guid: 193e1aea85fe23543927e398105c828a, type: 3}
       propertyPath: m_Group
       value: 
-      objectReference: {fileID: 6295885293258390097}
+      objectReference: {fileID: 7255143709628797420}
     - target: {fileID: 4445770123935028764, guid: 193e1aea85fe23543927e398105c828a, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1513,7 +1513,7 @@ PrefabInstance:
     - target: {fileID: 8494263351321983257, guid: c1fadf06a973c7546960d8658b2dfc33, type: 3}
       propertyPath: m_Group
       value: 
-      objectReference: {fileID: 6295885293258390097}
+      objectReference: {fileID: 7255143709628797420}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1637,7 +1637,7 @@ PrefabInstance:
     - target: {fileID: 956268349902143518, guid: fa2a2828a1379eb4296450bfa55e40d7, type: 3}
       propertyPath: m_Group
       value: 
-      objectReference: {fileID: 6295885293258390097}
+      objectReference: {fileID: 7255143709628797420}
     - target: {fileID: 1757630396051250822, guid: fa2a2828a1379eb4296450bfa55e40d7, type: 3}
       propertyPath: m_Name
       value: GoldToggleBtn
@@ -1827,7 +1827,7 @@ PrefabInstance:
     - target: {fileID: 9053144542089656355, guid: 61f83be8bf7e6334a96ccd25a1b7c999, type: 3}
       propertyPath: m_Group
       value: 
-      objectReference: {fileID: 6295885293258390097}
+      objectReference: {fileID: 7255143709628797420}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

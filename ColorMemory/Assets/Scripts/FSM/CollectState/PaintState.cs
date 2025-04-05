@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Collect
 {
@@ -156,6 +157,7 @@ namespace Collect
             else
             {
                 _selectedColorIndex = _mapData.PickColors[0];
+                _penDots[0].SeletDotToggle();
 
                 _visit = new int[_levelSize.x, _levelSize.y];
 
@@ -207,6 +209,7 @@ namespace Collect
 
             if (_selectedColorIndex != _mapData.DotColor[index.x, index.y])
             {
+                _dots[index.x, index.y].XSlide(Color.red);
                 _modeData.WrongCount += 1;
                 return;
             }

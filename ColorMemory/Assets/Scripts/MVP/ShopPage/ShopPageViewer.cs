@@ -33,5 +33,6 @@ public class ShopPageViewer
     public void AddShopItem(SpawnableUI rankingUI)
     {
         rankingUI.transform.SetParent(_scrollContent);
+        rankingUI.transform.localScale = Vector3.one;
     }
 }

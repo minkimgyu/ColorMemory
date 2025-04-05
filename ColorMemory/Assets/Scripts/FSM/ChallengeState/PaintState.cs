@@ -3,7 +3,7 @@ using System;
 using UnityEngine;
 using DG.Tweening;
 using Random = UnityEngine.Random;
-using NetworkService.Manager;
+using UnityEngine.UI;
 
 namespace Challenge
 {
@@ -145,15 +145,6 @@ namespace Challenge
             }
         }
 
-        //async void UpdateMoney()
-        //{
-        //    _challengeStageUIPresenter.ActiveGoldPanel(true);
-
-        //    MoneyManager moneyManager = new MoneyManager();
-        //    int money = await moneyManager.GetMoneyAsync("testId1");
-        //    _challengeStageUIPresenter.ChangeCoinCount(money);
-        //}
-
         public override void OnStateEnter()
         {
             // 초기화 진행
@@ -164,6 +155,7 @@ namespace Challenge
             _levelSize = new Vector2Int(_dots.GetLength(0), _dots.GetLength(1));
 
             _selectedColorIndex = _mapData.PickColors[0];
+            _penDots[0].SeletDotToggle();
 
             for (int i = 0; i < _penDots.Length; i++)
             {
@@ -227,6 +219,7 @@ namespace Challenge
             {
                 // 틀린 경우
                 // 시간 감소시키기
+                _dots[index.x, index.y].XSlide(Color.red);
                 _timer.DecreaseDuration(_modeData.DecreaseDurationOnMiss);
                 return;
             }

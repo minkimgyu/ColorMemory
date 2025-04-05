@@ -41,7 +41,7 @@ public class DotEffectComponent : MonoBehaviour
     //    );
     //}
 
-    public void Expand(float endScale, Color endColor, float duration, Action OnComplete)
+    public void Expand(float endScale, Color endColor, float duration)
     {
         Color originColor = _dotImage.color;
         ChangeColor(new Color(0, 0, 0, 0));
@@ -73,7 +73,7 @@ public class DotEffectComponent : MonoBehaviour
         fadeEffect.transform.SetAsLastSibling();
 
         fadeEffect.transform.position = transform.position;
-        fadeEffect.transform.localScale = 1f * Vector3.one;
+        fadeEffect.transform.localScale = Vector3.one;
 
         fadeEffect.ChangeSize(_dotTransform.sizeDelta);
         fadeEffect.ChangeColor(originColor);
@@ -81,7 +81,6 @@ public class DotEffectComponent : MonoBehaviour
         fadeEffect.Color(new Color(originColor.r, originColor.g, originColor.b, 0), duration,
             () =>
             {
-                OnComplete?.Invoke();
                 ChangeColor(endColor);
                 Destroy(fadeEffect.gameObject);
             }
@@ -101,6 +100,7 @@ public class DotEffectComponent : MonoBehaviour
         diffuseEffect.transform.position = _dotTransform.position;
 
         diffuseEffect.ChangeSize(_dotTransform.sizeDelta);
+        diffuseEffect.ChangeScale(Vector3.one);
 
         diffuseEffect.Scale(1.75f, duration);
         diffuseEffect.Color(new Color(endColor.r * 0.7f, endColor.g * 0.7f, endColor.b * 0.7f, 0), duration,
@@ -119,10 +119,58 @@ public class DotEffectComponent : MonoBehaviour
         fadeEffect.transform.position = transform.position;
 
         fadeEffect.ChangeSize(_dotTransform.sizeDelta);
+        fadeEffect.ChangeScale(Vector3.one);
+
         fadeEffect.Fade(transform.localScale, duration, Image.FillMethod.Horizontal,
             () =>
             {
                 Destroy(fadeEffect.gameObject);
+            }
+        );
+    }
+
+    public void XSlide(Color endColor, float duration)
+    {
+        //ChangeColor(endColor);
+
+        Effect diffuseEffect = _effectFactory.Create(Effect.Name.CircleEffect);
+        diffuseEffect.name = "diffuseEffect";
+
+        diffuseEffect.transform.SetParent(_dotTransform);
+        diffuseEffect.transform.SetAsFirstSibling();
+
+        diffuseEffect.transform.position = _dotTransform.position;
+
+        diffuseEffect.ChangeSize(_dotTransform.sizeDelta);
+        diffuseEffect.ChangeScale(Vector3.one);
+
+        diffuseEffect.Scale(1.75f, duration);
+        diffuseEffect.Color(new Color(endColor.r * 0.7f, endColor.g * 0.7f, endColor.b * 0.7f, 0), duration,
+            () =>
+            {
+                Destroy(diffuseEffect.gameObject);
+            }
+        );
+
+        Effect fadeEffect = _effectFactory.Create(Effect.Name.XEffect);
+        fadeEffect.name = "fadeEffect";
+
+        fadeEffect.transform.SetParent(transform);
+        fadeEffect.transform.SetAsLastSibling();
+
+        fadeEffect.transform.position = transform.position;
+
+        fadeEffect.ChangeSize(_dotTransform.sizeDelta);
+        fadeEffect.ChangeScale(Vector3.zero);
+        fadeEffect.Scale(1, duration,
+            () =>
+            {
+                fadeEffect.Scale(0, duration,
+                    () =>
+                    {
+                        Destroy(fadeEffect.gameObject);
+                    }
+                );
             }
         );
     }

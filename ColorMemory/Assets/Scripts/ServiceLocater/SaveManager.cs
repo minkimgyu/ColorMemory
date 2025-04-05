@@ -6,7 +6,6 @@ using System;
 using System.Linq;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json;
-using System.Runtime.InteropServices;
 
 public interface ISaveable
 {
@@ -43,6 +42,8 @@ public class PlayerArtwork
 
 public struct SaveData
 {
+    [JsonProperty] string _userId;
+    [JsonProperty] string _userName;
     [JsonProperty] bool _muteBGM;
     [JsonProperty] bool _muteSFX;
 
@@ -53,8 +54,11 @@ public struct SaveData
     [JsonProperty] int _selectedArtworkKey;
     [JsonProperty] Vector2Int _selectedArtworkSectionIndex;
 
-    public SaveData(string name)
+    public SaveData(string id, string name)
     {
+        _userId = id;
+        _userName = name;
+
         _muteBGM = false;
         _muteSFX = false;
 
@@ -82,23 +86,10 @@ public struct SaveData
     }
 
     [JsonIgnore] public float SelectedArtworkProgress { get => (float)((_selectedArtworkSectionIndex.x * ArtworkSize) + _selectedArtworkSectionIndex.y) / (float)(ArtworkSize * ArtworkSize);  }
+    [JsonIgnore] public string UserId { get => _userId; set => _userId = value; }
+    [JsonIgnore] public string UserName { get => _userName; set => _userName = value; }
 
     [JsonIgnore] const int ArtworkSize = 4;
-
-    //[JsonIgnore] public Vector2Int SelectedArtworkSectionIndex 
-    //{
-    //    get
-    //    {
-    //        int mod = 4;
-    //        int x = SelectedArtworkSectionIndex % mod;
-    //        int y = SelectedArtworkSectionIndex / mod;
-    //        return new Vector2Int(y, x);
-    //    }
-    //    set
-    //    {
-    //        _selectedArtworkSectionIndex = value.y * 4 + value.x;
-    //    }
-    //}
 }
 
 public class SaveManager : ISaveable
@@ -195,6 +186,13 @@ public class SaveManager : ISaveable
     {
         string json = _parser.ObjectToJson(_saveData);
         File.WriteAllText(_filePath, json);
+    }
+
+    public void ChangeUserData(string id, string name)
+    {
+        _saveData.UserId = id;
+        _saveData.UserName = name;
+        Save();
     }
 
     public void ChangeBGMMute(bool nowMute)

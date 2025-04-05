@@ -20,6 +20,12 @@ public class ColorPenDot : Dot
         _toggle = GetComponent<Toggle>();
     }
 
+    public override void SeletDotToggle() 
+    {
+        _toggle.isOn = true;
+    }
+
+
     public override void ChangeColorCount(int colorCount) 
     {
         _colorCountTxt.text = colorCount.ToString();

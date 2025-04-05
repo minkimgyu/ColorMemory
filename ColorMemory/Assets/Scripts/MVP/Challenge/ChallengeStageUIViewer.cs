@@ -51,8 +51,12 @@ public class ChallengeStageUIViewer
     Button _pauseBtn;
     Button _pauseExitBtn;
     Button _gameExitBtn;
-    Slider _bgmSlider;
-    Slider _sfxSlider;
+
+    CustomSlider _bgmSlider;
+    Image _bgmSliderHandle;
+
+    CustomSlider _sfxSlider;
+    Image _sfxSliderHandle;
 
     public ChallengeStageUIViewer(
         GameObject playPanel,
@@ -92,8 +96,8 @@ public class ChallengeStageUIViewer
         Button pauseBtn,
         Button pauseExitBtn,
         Button gameExitBtn,
-        Slider bgmSlider,
-        Slider sfxSlider,
+        CustomSlider bgmSlider,
+        CustomSlider sfxSlider,
         ChallengeStageUIPresenter presenter)
     {
         _playPanel = playPanel;
@@ -135,8 +139,15 @@ public class ChallengeStageUIViewer
         _pauseBtn = pauseBtn;
         _gameExitBtn = gameExitBtn;
         _pauseExitBtn = pauseExitBtn;
+
         _bgmSlider = bgmSlider;
+        _bgmSliderHandle = bgmSlider.handleRect.GetComponent<Image>();
+
         _sfxSlider = sfxSlider;
+        _sfxSliderHandle = sfxSlider.handleRect.GetComponent<Image>();
+
+        _bgmSlider.onHandlePointerUp += ((ratio) => { presenter.SaveBGMValue(); });
+        _sfxSlider.onHandlePointerUp += ((ratio) => { presenter.SaveSFXValue(); });
 
         _gameExitBtn.onClick.AddListener(() => { presenter.OnClickGameExitBtn(); });
         _pauseBtn.onClick.AddListener(() => { presenter.ActivatePausePanel(true); });
@@ -160,14 +171,28 @@ public class ChallengeStageUIViewer
         LayoutRebuilder.ForceRebuildLayoutImmediate(_oneZoneHintCostText.transform.parent.GetComponent<RectTransform>());
     }
 
-    public void ChangeBGMSliderValue(float ratio)
+    public void ChangeBGMSliderValue(float ratio, Color nomalColor, Color colorOnZeroValue)
     {
         _bgmSlider.value = ratio;
+        ChangeBGMSliderHandleColor(ratio, nomalColor, colorOnZeroValue);
     }
 
-    public void ChangeSFXSliderValue(float ratio)
+    public void ChangeSFXSliderValue(float ratio, Color nomalColor, Color colorOnZeroValue)
     {
         _sfxSlider.value = ratio;
+        ChangeSFXSliderHandleColor(ratio, nomalColor, colorOnZeroValue);
+    }
+
+    public void ChangeBGMSliderHandleColor(float ratio, Color nomalColor, Color colorOnZeroValue)
+    {
+        if (ratio == 0) _bgmSliderHandle.color = colorOnZeroValue;
+        else _bgmSliderHandle.color = nomalColor;
+    }
+
+    public void ChangeSFXSliderHandleColor(float ratio, Color nomalColor, Color colorOnZeroValue)
+    {
+        if (ratio == 0) _sfxSliderHandle.color = colorOnZeroValue;
+        else _sfxSliderHandle.color = nomalColor;
     }
 
     public void ActivatePausePanel(bool active)
@@ -275,6 +300,7 @@ public class ChallengeStageUIViewer
     public void AddClearPattern(SpawnableUI patternUI)
     {
         patternUI.transform.SetParent(_clearStageContent);
+        patternUI.transform.localScale = Vector3.one;
     }
 
     public void RemoveClearPattern()
@@ -298,10 +324,12 @@ public class ChallengeStageUIViewer
         _goldCount.text = $"{goldCount} ÄÚÀÎ È¹µæ!";
     }
 
-    public void AddRanking(SpawnableUI ranking, bool setToMiddle = false)
+    public void AddRanking(SpawnableUI ranking, Vector3 size)
     {
         ranking.transform.SetParent(_rankingContent);
-        if(setToMiddle == true) ranking.transform.SetSiblingIndex(_rankingContent.childCount / 2);
+        ranking.transform.localScale = size;
+
+        //if (setToMiddle == true) ranking.transform.SetSiblingIndex(_rankingContent.childCount / 2);
     }
 
     public void RemoveAllRanking()

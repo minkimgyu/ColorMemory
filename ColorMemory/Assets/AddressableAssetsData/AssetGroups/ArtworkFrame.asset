@@ -23,6 +23,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - ArtworkFrame
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 84b4c9463426add46bfb50b75c5645e7
+    m_Address: NONE
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - ArtworkFrame
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 95d8278459c0b1744808f07e19d1a660
     m_Address: SILVER
     m_ReadOnly: 0

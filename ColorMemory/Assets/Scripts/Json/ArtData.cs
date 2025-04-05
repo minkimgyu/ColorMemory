@@ -58,7 +58,11 @@ public struct StageData
     int _incorrectCnt;
     bool _isLock;
 
-    public StageData(Rank rank, int hintUsage, int incorrectCnt, bool isLock)
+    public StageData(
+        Rank rank,
+        int hintUsage,
+        int incorrectCnt,
+        bool isLock)
     {
         _rank = rank;
         _hintUsage = hintUsage;

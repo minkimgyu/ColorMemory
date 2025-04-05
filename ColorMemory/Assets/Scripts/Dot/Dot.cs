@@ -25,6 +25,11 @@ abstract public class Dot : MonoBehaviour, IPointerDownHandler
     public virtual void Inject(EffectFactory effectFactory, Vector2Int index, Action<Vector2Int> OnClick) { }
     public virtual void Inject(EffectFactory effectFactory, ToggleGroup toggleGroup, int index, Action<int> OnClick) { }
 
+    /// <summary>
+    /// 현재 ColorPenDot 토글을 선택함
+    /// </summary>
+    public virtual void SeletDotToggle() { }
+
 
     public virtual void ChangeColorCount(int colorCount) { }
 
@@ -48,9 +53,9 @@ abstract public class Dot : MonoBehaviour, IPointerDownHandler
         _dotEffectComponent.Scale(1f, duration);
     }
 
-    public void Expand(Color endColor, float duration, Action OnComplete = null)
+    public void Expand(Color endColor, float duration)
     {
-        _dotEffectComponent.Expand(1f, endColor, duration, OnComplete);
+        _dotEffectComponent.Expand(1f, endColor, duration);
     }
 
     //public void Fade(Color color, Image.FillMethod method, float duration)
@@ -61,6 +66,11 @@ abstract public class Dot : MonoBehaviour, IPointerDownHandler
     public void Pop(Color changeColor)
     {
         _dotEffectComponent.Pop(changeColor, 0.5f);
+    }
+
+    public void XSlide(Color changeColor)
+    {
+        _dotEffectComponent.XSlide(changeColor, 0.5f);
     }
 
     public abstract void OnPointerDown(PointerEventData eventData);

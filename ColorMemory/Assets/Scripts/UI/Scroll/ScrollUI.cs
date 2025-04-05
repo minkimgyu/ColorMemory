@@ -22,6 +22,7 @@ abstract public class ScrollUI : MonoBehaviour, IBeginDragHandler, IDragHandler,
     public virtual void AddItem(Transform item)
     {
         item.SetParent(_content);
+        item.transform.localScale = Vector3.one;
     }
 
     public virtual void DestroyItems()

@@ -45,13 +45,16 @@ namespace Challenge
 
             try
             {
-                await scoreManager.UpdatePlayerWeeklyScoreAsync("testId1", _modeData.MyScore);
+                string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
 
-                int currentMoneyInServer = await moneyManager.GetMoneyAsync("testId1");
+
+                await scoreManager.UpdatePlayerWeeklyScoreAsync(userId, _modeData.MyScore);
+
+                int currentMoneyInServer = await moneyManager.GetMoneyAsync(userId);
                 int useMoney = currentMoneyInServer - _modeData.GoldCount;
 
-                await moneyManager.PayPlayerMoneyAsync("testId1", useMoney);
-                await moneyManager.EarnPlayerMoneyAsync("testId1", _modeData.MyScore);
+                await moneyManager.PayPlayerMoneyAsync(userId, useMoney);
+                await moneyManager.EarnPlayerMoneyAsync(userId, _modeData.MyScore);
             }
             catch (Exception e)
             {
@@ -70,8 +73,8 @@ namespace Challenge
 
             try
             {
-                playerScoreDTOs = await scoreManager.GetSurroundingWeeklyRankingAsync("testId1", 2);
-
+                string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
+                playerScoreDTOs = await scoreManager.GetSurroundingWeeklyRankingAsync(userId, 2);
             }
             catch (Exception e)
             {
@@ -94,11 +97,13 @@ namespace Challenge
             _challengeStageUIPresenter.ActivateGameResultPanel(true);
             _challengeStageUIPresenter.ChangeResultGoldCount(_modeData.MyScore);
 
+            string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
+
             int myRankingIndex = -1;
             List<PersonalRankingData> rankingDatas = new List<PersonalRankingData>();
             for (int i = 0; i < playerScoreDTOs.Count; i++)
             {
-                if(playerScoreDTOs[i].PlayerId == "testId1") myRankingIndex = i;
+                if(playerScoreDTOs[i].PlayerId == userId) myRankingIndex = i;
                 rankingDatas.Add(new PersonalRankingData(1, playerScoreDTOs[i].Name, playerScoreDTOs[i].Score, i + 1));
             }
 
@@ -106,15 +111,19 @@ namespace Challenge
             {
                 SpawnableUI rankingUI = _rankingUIFactory.Create(rankingDatas[i]);
                 rankingUI.ChangeSelect(false);
-                rankingUI.ChangeScale(Vector3.one * 0.8f);
+                Vector3 size;
 
                 if(i == myRankingIndex)
                 {
                     rankingUI.ChangeSelect(true);
-                    rankingUI.ChangeScale(Vector3.one);
+                    size = Vector3.one;
+                }
+                else
+                {
+                    size = Vector3.one * 0.8f;
                 }
 
-                _challengeStageUIPresenter.AddRanking(rankingUI);
+                _challengeStageUIPresenter.AddRanking(rankingUI, size);
             }
 
             int totalCount = rankingDatas.Count; // 5°³

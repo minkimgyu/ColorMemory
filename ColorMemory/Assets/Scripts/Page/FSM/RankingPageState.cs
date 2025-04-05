@@ -44,13 +44,13 @@ public class RankingPageState : BaseState<HomePage.InnerPageState>
         ScoreManager scoreManager = new ScoreManager();
         List<PlayerRankingDTO> otherScores;
         PlayerRankingDTO myScore;
-        //int ranking = 0;
 
         try
         {
+            string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
+
             otherScores = await scoreManager.GetTopWeeklyScoresAsync(10);
-            myScore = await scoreManager.GetPlayerWeeklyScoreAsDTOAsync("testId1");
-            //ranking = await scoreManager.GetPlayerWeeklyRankingAsync("testId1");
+            myScore = await scoreManager.GetPlayerWeeklyScoreAsDTOAsync(userId);
         }
         catch (System.Exception e)
         {

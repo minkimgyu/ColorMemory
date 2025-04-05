@@ -22,12 +22,13 @@ public class ChallengeModeStageDataBuilder : SheetDataBuilder
         {
             string[] columns = row[i].Split('\t');
 
-            int mapSize, colorCount, randomPointCount = 0;
+            int mapSize, colorCount, randomPointCount, memorizeDuration = 0;
             mapSize = int.Parse(columns[1]);
             colorCount = int.Parse(columns[2]);
             randomPointCount = int.Parse(columns[3]);
+            memorizeDuration = int.Parse(columns[4]);
 
-            ChallengeMode.StageData stageData = new ChallengeMode.StageData(mapSize, colorCount, randomPointCount);
+            ChallengeMode.StageData stageData = new ChallengeMode.StageData(mapSize, colorCount, randomPointCount, memorizeDuration);
             stageDatas.Add(stageData);
         }
 

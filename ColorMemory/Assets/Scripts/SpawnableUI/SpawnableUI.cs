@@ -10,12 +10,19 @@ abstract public class SpawnableUI : MonoBehaviour
         ClearPatternUI,
         RankingUI,
         StageSelectBtnUI,
-        ShopBundleUI
+        ShopBundleUI,
+        FilteredArtworkUI,
+        FilterItemUI
     }
 
     public virtual void Initialize(string title, string description, int reward, int price) { }
     public virtual void Initialize(Sprite profileSprite, string title, int score, int rank) { }
-    public virtual void Initialize(Sprite artSprite, Sprite artFrameSprite) { }
+
+    public virtual void Initialize(Sprite artSprite, string description) { }
+    public virtual void Initialize(string description) { }
+
+    public virtual void Initialize(Sprite artSprite, string title, bool hasIt = true) { }
+    public virtual void Initialize(Sprite artSprite, Sprite artFrameSprite, bool hasIt = true) { }
     public virtual void Initialize(int currentStageCount, int totalStageCount, MapData data, Color[] pickColors) { }
     public virtual void Initialize(int currentStageCount, MapData data, Color[] pickColors) { }
     public virtual void Initialize() { }

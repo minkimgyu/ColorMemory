@@ -21,11 +21,15 @@ public class CollectStageUIModel
         _activeGameResultPanel = false;
         _goldCount = 0;
 
+        _activeNextStageBtn = false;
+
         _activePausePanel = false;
         _bgmRatio = 0;
         _sfxRatio = 0;
 
-
+        _colorOnZeroValue = new Color(118f / 255f, 113f / 255f, 111f / 255f);
+        _colorOnBgmHandle = new Color(113f / 255f, 191f / 255f, 255f / 255f);
+        _colorOnSfxHandle = new Color(255f / 255f, 154f / 255f, 145f / 255f);
     }
 
     Sprite _artSprite;
@@ -37,6 +41,18 @@ public class CollectStageUIModel
     Color _rankColor;
     Sprite _rankIcon;
     string _rankName;
+
+    bool _activeNextStageBtn;
+    public bool ActiveNextStageBtn { get => _activeNextStageBtn; set => _activeNextStageBtn = value; }
+
+    Color _colorOnZeroValue;
+
+    Color _colorOnBgmHandle;
+    Color _colorOnSfxHandle;
+
+    public Color ColorOnZeroValue { get => _colorOnZeroValue; }
+    public Color ColorOnBgmHandle { get => _colorOnBgmHandle; }
+    public Color ColorOnSfxHandle { get => _colorOnSfxHandle; }
 
 
     public Sprite ArtSprite { get => _artSprite; set => _artSprite = value; }

@@ -3,16 +3,16 @@ using UnityEngine.UI;
 
 public class ArtworkUI : SpawnableUI
 {
-    [SerializeField] Image _artImg;
-
     Image _artFrameImage;
     Button _artFrameBtn;
 
+    [SerializeField] Image _artImg;
     [SerializeField] RectTransform _artFrame;
+    [SerializeField] GameObject _lockPanel;
     // 크기는 500 ~ 700 사이로 맞춰야함
 
-    const int minSize = 500;
-    const int maxSize = 700;
+    [SerializeField] int minSize = 500;
+    [SerializeField] int maxSize = 700;
 
     public Vector2Int ResizeSprite(Sprite sprite)
     {
@@ -54,8 +54,10 @@ public class ArtworkUI : SpawnableUI
         return new Vector2Int(targetWidth, targetHeight);
     }
 
-    public override void Initialize(Sprite artSprite, Sprite artFrameSprite)
+    public override void Initialize(Sprite artSprite, Sprite artFrameSprite, bool hasIt = true)
     {
+        _lockPanel.SetActive(!hasIt);
+
         Vector2Int size = ResizeSprite(artSprite);
         _artFrame.sizeDelta = size;
         _artImg.sprite = artSprite;

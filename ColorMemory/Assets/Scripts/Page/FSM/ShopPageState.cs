@@ -46,9 +46,11 @@ public class ShopPageState : BaseState<HomePage.InnerPageState>
     {
         bool canEarn = false;
 
+        string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
+
         try
         {
-            canEarn = await _moneyManager.EarnPlayerMoneyAsync("testId1", earnMoney);
+            canEarn = await _moneyManager.EarnPlayerMoneyAsync(userId, earnMoney);
         }
         catch (System.Exception e)
         {
@@ -62,7 +64,7 @@ public class ShopPageState : BaseState<HomePage.InnerPageState>
 
         try
         {
-            money = await _moneyManager.GetMoneyAsync("testId1");
+            money = await _moneyManager.GetMoneyAsync(userId);
         }
         catch (System.Exception e)
         {

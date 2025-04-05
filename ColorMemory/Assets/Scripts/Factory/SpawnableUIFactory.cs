@@ -1,7 +1,9 @@
+using NetworkService.DTO;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using UnityEngine;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class RankingCreater : SpawnableUICreater
 {
@@ -64,13 +66,59 @@ public class ArtworkCreater : SpawnableUICreater
         _artworkFrameSprites = artworkFrameSprites;
     }
 
-    public override SpawnableUI Create(int artworkIndex, NetworkService.DTO.Rank frameType)
+    public override SpawnableUI Create(int artworkIndex, NetworkService.DTO.Rank frameType, bool hasIt)
     {
         SpawnableUI artwork = Object.Instantiate(_prefab);
-        artwork.Initialize(_artSprites[artworkIndex], _artworkFrameSprites[frameType]);
+        artwork.Initialize(_artSprites[artworkIndex], _artworkFrameSprites[frameType], hasIt);
         return artwork;
     }
 }
+
+public class FilteredArtworkCreater : SpawnableUICreater
+{
+    Dictionary<int, Sprite> _artSprites;
+
+    public FilteredArtworkCreater(
+        SpawnableUI prefab,
+        Dictionary<int, Sprite> artSprites) : base(prefab)
+    {
+        _artSprites = artSprites;
+    }
+
+    public override SpawnableUI Create(int artworkIndex, string title, bool hasIt)
+    {
+        SpawnableUI artwork = Object.Instantiate(_prefab);
+        artwork.Initialize(_artSprites[artworkIndex], title, hasIt);
+        return artwork;
+    }
+}
+
+public class FilterItemCreater : SpawnableUICreater
+{
+    Dictionary<NetworkService.DTO.Rank, Sprite> _iconSprites;
+
+    public FilterItemCreater(
+        SpawnableUI prefab,
+        Dictionary<NetworkService.DTO.Rank, Sprite> artSprites) : base(prefab)
+    {
+        _iconSprites = artSprites;
+    }
+
+    public override SpawnableUI Create(NetworkService.DTO.Rank rank, string description)
+    {
+        SpawnableUI artwork = Object.Instantiate(_prefab);
+        artwork.Initialize(_iconSprites[rank], description);
+        return artwork;
+    }
+
+    public override SpawnableUI Create(string description)
+    {
+        SpawnableUI artwork = Object.Instantiate(_prefab);
+        artwork.Initialize(description);
+        return artwork;
+    }
+}
+
 
 public class ShopBundleCreater : SpawnableUICreater
 {
@@ -96,8 +144,16 @@ abstract public class SpawnableUICreater
         _prefab = prefab;
     }
 
+
+
+    public virtual SpawnableUI Create(NetworkService.DTO.Rank rank, string description) { return default; }
+    public virtual SpawnableUI Create(string description) { return default; }
+
+
+
+    public virtual SpawnableUI Create(int artworkIndex, string title, bool hasIt) { return default; }
     public virtual SpawnableUI Create(string name, string description, int reward, int price) { return default; }
-    public virtual SpawnableUI Create(int artworkIndex, NetworkService.DTO.Rank frameType) { return default; }
+    public virtual SpawnableUI Create(int artworkIndex, NetworkService.DTO.Rank frameType, bool hasIt) { return default; }
     public virtual SpawnableUI Create(int currentStageCount, int totalStageCount, MapData data, Color[] pickColors) { return default; }
     public virtual SpawnableUI Create() { return default; }
     public virtual SpawnableUI Create(PersonalRankingData data) { return default; }
@@ -179,8 +235,47 @@ public class ArtworkUIFactory : BaseFactory
         _artworkUICreater = new ArtworkCreater(artworkUIPrefab, artSprites, artworkFrameSprites);
     }
 
-    public override SpawnableUI Create(int artworkIndex, NetworkService.DTO.Rank frameType)
+    public override SpawnableUI Create(int artworkIndex, NetworkService.DTO.Rank frameType, bool hasIt)
     {
-        return _artworkUICreater.Create(artworkIndex, frameType);
+        return _artworkUICreater.Create(artworkIndex, frameType, hasIt);
+    }
+}
+
+public class FilteredArtworkFactory : BaseFactory
+{
+    FilteredArtworkCreater _filterItemCreater;
+
+    public FilteredArtworkFactory(
+        SpawnableUI prefab,
+        Dictionary<int, Sprite> artSprites)
+    {
+        _filterItemCreater = new FilteredArtworkCreater(prefab, artSprites);
+    }
+
+    public override SpawnableUI Create(int artworkIndex, string title, bool hasIt)
+    {
+        return _filterItemCreater.Create(artworkIndex, title, hasIt);
+    }
+}
+
+public class FilterItemFactory : BaseFactory
+{
+    FilterItemCreater _filterItemCreater;
+
+    public FilterItemFactory(
+        SpawnableUI prefab,
+        Dictionary<NetworkService.DTO.Rank, Sprite> artSprites)
+    {
+        _filterItemCreater = new FilterItemCreater(prefab, artSprites);
+    }
+
+    public override SpawnableUI Create(NetworkService.DTO.Rank rank, string description)
+    {
+        return _filterItemCreater.Create(rank, description);
+    }
+
+    public override SpawnableUI Create(string description)
+    {
+        return _filterItemCreater.Create(description);
     }
 }

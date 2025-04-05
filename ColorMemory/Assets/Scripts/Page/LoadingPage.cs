@@ -1,18 +1,19 @@
-using DG.Tweening.Core.Easing;
-using System.Collections;
+using NetworkService.DTO;
+using NetworkService.Manager;
+using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using NetworkService.Manager;
-using NetworkService.DTO;
-using System.Threading.Tasks;
-using DG.Tweening;
 
 public class LoadingPage : MonoBehaviour
 {
     [SerializeField] Image _loadingPregressBar;
     [SerializeField] TMP_Text _loadingPregressTxt;
+
+    string _userId;
+    string _userName;
 
     // Start is called before the first frame update
     void Start()
@@ -27,7 +28,7 @@ public class LoadingPage : MonoBehaviour
 
         try
         {
-            canLogin = await playerManager.AddPlayerAsync("testId1", "meal");
+            canLogin = await playerManager.AddPlayerAsync(_userId, _userName);
         }
         catch (System.Exception e)
         {
@@ -39,8 +40,25 @@ public class LoadingPage : MonoBehaviour
         return canLogin;
     }
 
+    void SetUserData()
+    {
+#if UNITY_STANDALONE
+        _userId = "testId1";
+        _userName = "meal";
+#elif UNITY_ANDROID
+    // gpgs ID 받아오기
+    Debug.Log("Android 버전 실행 중");
+#elif UNITY_IOS
+    Debug.Log("iOS 버전 실행 중");
+#else
+    Debug.Log("기타 플랫폼");
+#endif
+    }
+
     async void SetUp()
     {
+        SetUserData();
+
         bool canLogin = await SendDataToServer();
         if (canLogin == false) return;
 
@@ -54,12 +72,9 @@ public class LoadingPage : MonoBehaviour
 
     void Initialize(AddressableHandler addressableHandler)
     {
-
         TimeController timeController = new TimeController();
         SceneController sceneController = new SceneController();
-        SaveManager saveManager = new SaveManager(new SaveData("meal"));
-
-
+        SaveManager saveManager = new SaveManager(new SaveData(_userId, _userName));
 
         //SoundPlayer soundPlayer = FindObjectOfType<SoundPlayer>();
         //soundPlayer.Initialize(addressableHandler.SoundAsset);

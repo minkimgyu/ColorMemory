@@ -18,8 +18,11 @@ public class SettingPageViewer
     Toggle[] _profileSelectBtns;
     Button _doneBtn;
 
-    Slider _bgmSlider;
-    Slider _sfxSlider;
+    CustomSlider _bgmSlider;
+    Image _bgmSliderHandle;
+
+    CustomSlider _sfxSlider;
+    Image _sfxSliderHandle;
 
     public SettingPageViewer(
         SideSheetUI sideSheetUI,
@@ -32,8 +35,8 @@ public class SettingPageViewer
         Image profileImg,
         Toggle[] profileSelectBtns,
         Button doneBtn,
-        Slider bgmSlider,
-        Slider sfxSlider,
+        CustomSlider bgmSlider,
+        CustomSlider sfxSlider,
         SettingPagePresenter presenter)
     {
         _sideSheetUI = sideSheetUI;
@@ -48,7 +51,10 @@ public class SettingPageViewer
         _profileSelectBtns = profileSelectBtns;
         _doneBtn = doneBtn;
         _bgmSlider = bgmSlider;
+        _bgmSliderHandle = bgmSlider.handleRect.GetComponent<Image>();
+
         _sfxSlider = sfxSlider;
+        _sfxSliderHandle = sfxSlider.handleRect.GetComponent<Image>();
 
         _doneBtn.onClick.AddListener(() => { presenter.OnProfileDone(); });
 
@@ -66,19 +72,38 @@ public class SettingPageViewer
             _toggles[i].onValueChanged.AddListener((on) => { presenter.ActivateTogglePanel(index); });
         }
 
+        _bgmSlider.onHandlePointerUp += ((ratio) => { presenter.SaveBGMValue(); });
+        _sfxSlider.onHandlePointerUp += ((ratio) => { presenter.SaveSFXValue(); });
+
         _bgmSlider.onValueChanged.AddListener((ratio) => { presenter.OnBGMSliderValeChanged(ratio); });
         _sfxSlider.onValueChanged.AddListener((ratio) => { presenter.OnSFXSliderValeChanged(ratio); });
     }
 
-    public void ChangeBGMSliderValue(float ratio)
+    public void ChangeBGMSliderValue(float ratio, Color nomalColor, Color colorOnZeroValue)
     {
         _bgmSlider.value = ratio;
+        ChangeBGMSliderHandleColor(ratio, nomalColor, colorOnZeroValue);
     }
 
-    public void ChangeSFXSliderValue(float ratio)
+    public void ChangeSFXSliderValue(float ratio, Color nomalColor, Color colorOnZeroValue)
     {
         _sfxSlider.value = ratio;
+        ChangeSFXSliderHandleColor(ratio, nomalColor, colorOnZeroValue);
     }
+
+    // 핸들 이벤트에 들어가는 코드 -> _sfxSlider.value를 직접 변경하면 안 됨
+    public void ChangeBGMSliderHandleColor(float ratio, Color nomalColor, Color colorOnZeroValue)
+    {
+        if (ratio == 0) _bgmSliderHandle.color = colorOnZeroValue;
+        else _bgmSliderHandle.color = nomalColor;
+    }
+
+    public void ChangeSFXSliderHandleColor(float ratio, Color nomalColor, Color colorOnZeroValue)
+    {
+        if (ratio == 0) _sfxSliderHandle.color = colorOnZeroValue;
+        else _sfxSliderHandle.color = nomalColor;
+    }
+
 
     public void ChangeProfileToggle(int index)
     {

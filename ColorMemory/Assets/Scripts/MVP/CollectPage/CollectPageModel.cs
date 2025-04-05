@@ -1,6 +1,8 @@
+using NetworkService.DTO;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static FilterUI;
 
 public class CollectPageModel
 {
@@ -13,6 +15,7 @@ public class CollectPageModel
     Dictionary<int, ArtworkData> _artworkDatas;
     Dictionary<int, CollectArtData> _collectArtDatas;
     Dictionary<int, ArtData> _artDatas;
+    List<KeyValuePair<int, ArtData>> _filteredArtDatas;
 
     int _artworkIndex;
     int _selectedSectionIndex;
@@ -22,6 +25,12 @@ public class CollectPageModel
     bool _activeStageDetailContent;
     int _usedHintCount;
     int _wrongCount;
+
+    bool _activeFilterBottomSheet;
+    bool _activeFilterContent;
+    float _collectRatio;
+    RankFilter _rankFilter;
+    DateFilter _dateFilter;
 
     public CollectPageModel(Dictionary<int, ArtData> artDatas, Dictionary<int, ArtworkData> artworkDatas, Dictionary<int, CollectArtData> collectArtDatas)
     {
@@ -38,7 +47,14 @@ public class CollectPageModel
         _usedHintCount = 0;
         _wrongCount = 0;
 
+        _activeFilterBottomSheet = false;
+        _activeFilterContent = false;
+        _collectRatio = 0;
+        _rankFilter = RankFilter.None;
+        _dateFilter = DateFilter.None;
+
         _artDatas = artDatas;
+        _filteredArtDatas = new List<KeyValuePair<int, ArtData>>(_artDatas);
         _artworkDatas = artworkDatas;
         _collectArtDatas = collectArtDatas;
     }
@@ -61,4 +77,13 @@ public class CollectPageModel
     public Dictionary<int, ArtData> ArtDatas { get => _artDatas; set => _artDatas = value; }
 
     public int CurrentProgress { get => _currentProgress; set => _currentProgress = value; }
+
+
+
+    public float CollectRatio { get => _collectRatio; set => _collectRatio = value; }
+    public RankFilter RankFilter { get => _rankFilter; set => _rankFilter = value; }
+    public DateFilter DateFilter { get => _dateFilter; set => _dateFilter = value; }
+    public bool ActiveFilterContent { get => _activeFilterContent; set => _activeFilterContent = value; }
+    public List<KeyValuePair<int, ArtData>> FilteredArtDatas { get => _filteredArtDatas; set => _filteredArtDatas = value; }
+    public bool ActiveFilterBottomSheet { get => _activeFilterBottomSheet; set => _activeFilterBottomSheet = value; }
 }

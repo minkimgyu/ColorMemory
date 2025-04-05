@@ -32,14 +32,14 @@ public class SettingPagePresenter
         if(active == true)
         {
             SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
-            OnBGMSliderValeChanged(data.BgmVolume);
-            OnSFXSliderValeChanged(data.SfxVolume);
+            _settingPageViewer.ChangeBGMSliderValue(data.BgmVolume, _settingPageModel.ColorOnBgmHandle, _settingPageModel.ColorOnZeroValue);
+            _settingPageViewer.ChangeSFXSliderValue(data.SfxVolume, _settingPageModel.ColorOnSfxHandle, _settingPageModel.ColorOnZeroValue);
         }
-        else
-        {
-            ServiceLocater.ReturnSaveManager().ChangeBGMVolume(_settingPageModel.BgmRatio);
-            ServiceLocater.ReturnSaveManager().ChangeSFXVolume(_settingPageModel.SfxRatio);
-        }
+        //else
+        //{
+        //    ServiceLocater.ReturnSaveManager().ChangeBGMVolume(_settingPageModel.BgmRatio);
+        //    ServiceLocater.ReturnSaveManager().ChangeSFXVolume(_settingPageModel.SfxRatio);
+        //}
     }
 
     public void ActivateTogglePanel(int index)
@@ -48,17 +48,27 @@ public class SettingPagePresenter
         _settingPageViewer.ActivateTogglePanel(_settingPageModel.CurrentToggleIndex);
     }
 
+    public void SaveBGMValue()
+    {
+        ServiceLocater.ReturnSaveManager().ChangeBGMVolume(_settingPageModel.BgmRatio);
+    }
+
+    public void SaveSFXValue()
+    {
+        ServiceLocater.ReturnSaveManager().ChangeSFXVolume(_settingPageModel.SfxRatio);
+    }
+
     public void OnBGMSliderValeChanged(float ratio)
     {
         _settingPageModel.BgmRatio = ratio;
-        _settingPageViewer.ChangeBGMSliderValue(_settingPageModel.BgmRatio);
+        _settingPageViewer.ChangeBGMSliderHandleColor(_settingPageModel.BgmRatio, _settingPageModel.ColorOnBgmHandle, _settingPageModel.ColorOnZeroValue);
         ServiceLocater.ReturnSoundPlayer().SetBGMVolume(ratio);
     }
 
     public void OnSFXSliderValeChanged(float ratio)
     {
         _settingPageModel.SfxRatio = ratio;
-        _settingPageViewer.ChangeSFXSliderValue(_settingPageModel.SfxRatio);
+        _settingPageViewer.ChangeSFXSliderHandleColor(_settingPageModel.SfxRatio, _settingPageModel.ColorOnSfxHandle, _settingPageModel.ColorOnZeroValue);
         ServiceLocater.ReturnSoundPlayer().SetSFXVolume(ratio);
     }
 
@@ -86,7 +96,8 @@ public class SettingPagePresenter
 
         try
         {
-            iconIndex = await playerManager.GetPlayerIconIdAsync("testId1");
+            string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
+            iconIndex = await playerManager.GetPlayerIconIdAsync(userId);
         }
         catch (Exception e)
         {
@@ -105,7 +116,8 @@ public class SettingPagePresenter
 
         try
         {
-            isSuccess = await playerManager.SetPlayerIconIdAsync("testId1", "meal", _settingPageModel.ProfileIndex);
+            SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
+            isSuccess = await playerManager.SetPlayerIconIdAsync(data.UserId, data.UserName, _settingPageModel.ProfileIndex);
         }
         catch (Exception e)
         {

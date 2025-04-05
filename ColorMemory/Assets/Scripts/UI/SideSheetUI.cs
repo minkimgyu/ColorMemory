@@ -24,7 +24,8 @@ public class SideSheetUI : MonoBehaviour, IDragHandler, IEndDragHandler
 
     public virtual void Initialize()
     {
-        float panelWidth = panel.rect.width;
+        Canvas canvas = GetComponentInParent<Canvas>();
+        float panelWidth = canvas.GetComponent<RectTransform>().sizeDelta.x;
         hiddenPosition = new Vector2(panelWidth, 0);
         visiblePosition = Vector2.zero;
         panel.anchoredPosition = hiddenPosition;

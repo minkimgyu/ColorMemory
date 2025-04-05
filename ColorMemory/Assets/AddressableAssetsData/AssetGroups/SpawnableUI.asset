@@ -17,8 +17,20 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: 5a7f48876edeba14ba42787231547410
   m_SerializeEntries:
+  - m_GUID: 3795925ac3293f847ae2ab85eba22dab
+    m_Address: FilteredArtworkUI
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - SpawnableUI
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 57f81f6a2846e494fb7e743adbdb87d3
     m_Address: ShopBundleUI
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - SpawnableUI
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 74f48a30eb735e84d89e2ddd7942b885
+    m_Address: FilterItemUI
     m_ReadOnly: 0
     m_SerializedLabels:
     - SpawnableUI

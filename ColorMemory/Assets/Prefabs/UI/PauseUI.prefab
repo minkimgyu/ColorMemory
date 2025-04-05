@@ -570,7 +570,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2471181682693022798}
-  - component: {fileID: 2884606950239754223}
+  - component: {fileID: 6327425968532100593}
   m_Layer: 0
   m_Name: Slider (1)
   m_TagString: Untagged
@@ -600,7 +600,7 @@ RectTransform:
   m_AnchoredPosition: {x: 1.5, y: -14}
   m_SizeDelta: {x: 765, y: 24}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &2884606950239754223
+--- !u!114 &6327425968532100593
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -609,7 +609,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3006329025150250190}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Script: {fileID: 11500000, guid: 0109233fdd4394d4ba3fd0622e46c3ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
@@ -647,7 +647,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 0.335
+  m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -965,7 +965,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8510947672704563387}
-  - component: {fileID: 8307434548140287108}
+  - component: {fileID: 4476061678568709335}
   m_Layer: 0
   m_Name: Slider
   m_TagString: Untagged
@@ -995,7 +995,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -14}
   m_SizeDelta: {x: 765, y: 24}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &8307434548140287108
+--- !u!114 &4476061678568709335
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1004,7 +1004,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5039933811925456631}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Script: {fileID: 11500000, guid: 0109233fdd4394d4ba3fd0622e46c3ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
@@ -1042,7 +1042,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 0.235
+  m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -1758,7 +1758,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: e667fa1309cd6d546902fd70d14d8f67, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e08a8762ff8193540bad120a2839c2f0, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

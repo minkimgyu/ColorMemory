@@ -116,6 +116,7 @@ public class MainPageState : BaseState<HomePage.InnerPageState>
                 dot.Inject(_effectFactory, new Vector2Int(i, j), (v2) => { dot.Pop(_pickColors[Random.Range(0, _pickColors.Length)]); });
 
                 dot.transform.SetParent(_dotParent);
+                dot.transform.localScale = Vector2.one;
 
                 dots[i, j] = dot;
             }

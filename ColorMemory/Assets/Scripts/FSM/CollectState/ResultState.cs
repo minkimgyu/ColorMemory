@@ -56,8 +56,9 @@ namespace Collect
 
             try
             {
-                ownedArtworkDTOs = await artworkManager.GetOwnedArtworksAsync("testId1");
-                unownedArtworkDTOs = await artworkManager.GetUnownedArtworksAsync("testId1");
+                string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
+                ownedArtworkDTOs = await artworkManager.GetOwnedArtworksAsync(userId);
+                unownedArtworkDTOs = await artworkManager.GetUnownedArtworksAsync(userId);
             }
             catch (System.Exception e)
             {
@@ -92,6 +93,7 @@ namespace Collect
             }
 
             artworkDTO.HasIt = true;  // HasIt 機等檜お
+            // artworkDTO.ObtainedDate = DateTime.Now; // �僱� 陳瞼 機等檜お
             Rank? getRank = await UpdateArtworkToServer(artworkDTO);
             if (getRank == null) return;
 

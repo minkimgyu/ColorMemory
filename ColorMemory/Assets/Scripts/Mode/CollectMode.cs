@@ -34,8 +34,8 @@ namespace Collect
         [SerializeField] GameObject _pausePanel;
         [SerializeField] Button _pauseExitBtn;
         [SerializeField] Button _gameExitBtn;
-        [SerializeField] Slider _bgmSlider;
-        [SerializeField] Slider _sfxSlider;
+        [SerializeField] CustomSlider _bgmSlider;
+        [SerializeField] CustomSlider _sfxSlider;
 
         [Header("ModeData")]
         //[SerializeField] Color[] _pickColors;
@@ -67,6 +67,9 @@ namespace Collect
         [SerializeField] Image _totalCollectRatio;
         [SerializeField] TMP_Text _totalCollectText;
         [SerializeField] Button _nextBtn;
+
+        [SerializeField] Canvas _canvas;
+        [SerializeField] RectTransform _nextPanel;
 
         CollectArtData.Section _section;
         MapData _mapData;
@@ -171,6 +174,9 @@ namespace Collect
             AddressableHandler addressableHandler = FindObjectOfType<AddressableHandler>();
             if (addressableHandler == null) return;
 
+            Vector2 size = _canvas.gameObject.GetComponent<RectTransform>().sizeDelta;
+            _nextPanel.sizeDelta = new Vector2(size.x, _nextPanel.sizeDelta.y); // 사이즈 맞춰주기
+
             SaveData saveData = ServiceLocater.ReturnSaveManager().GetSaveData();
 
             int artworkIndex = saveData.SelectedArtworkKey;
@@ -197,6 +203,7 @@ namespace Collect
 
                 _gameClearPanel,
                 _cropArtworkImg,
+                _nextStageBtn,
 
                 _pausePanel,
                 _pauseBtn,

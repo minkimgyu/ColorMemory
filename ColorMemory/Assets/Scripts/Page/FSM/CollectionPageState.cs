@@ -30,18 +30,40 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
         TMP_Text stageUsedHintUseCount,
         TMP_Text stageWrongCount,
 
+        FilterUI filterScrollUI,
+        Button filterOpenBtn,
+        Button filterExitBtn,
+        GameObject filterContent,
+        TMP_Text collectionRatioText,
+        Toggle[] rankToggles,
+        Toggle[] dateToggles,
+
         ArtworkScrollUI artworkScrollUI,
 
         ArtworkUIFactory artworkFactory,
         StageUIFactory stageUIFactory,
+
+        FilteredArtworkFactory filteredArtworkFactory,
+        FilterItemFactory filterItemFactory,
 
         Dictionary<int, ArtData> artDatas,
         Dictionary<int, ArtworkData> artworkDatas,
         Dictionary<int, CollectArtData> collectArtDatas,
         FSM<HomePage.InnerPageState> fsm) : base(fsm)
     {
-        CollectPageModel collectPageModel = new CollectPageModel(artDatas, artworkDatas, collectArtDatas);
-        _collectPagePresenter = new CollectPagePresenter(collectPageModel, artworkFactory, stageUIFactory, GoToCollectMode);
+        CollectPageModel collectPageModel = new CollectPageModel(
+            artDatas,
+            artworkDatas,
+            collectArtDatas);
+
+        _collectPagePresenter = new CollectPagePresenter(
+            collectPageModel,
+            artworkFactory,
+            stageUIFactory,
+            filteredArtworkFactory,
+            filterItemFactory,
+            GoToCollectMode);
+
         CollectPageViewer collectPageViewer = new CollectPageViewer(
             collectionContent,
             titleTxt,
@@ -57,6 +79,13 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
             stageDetailContent,
             stageUsedHintUseCount,
             stageWrongCount,
+            filterScrollUI,
+            filterOpenBtn,
+            filterExitBtn,
+            filterContent,
+            collectionRatioText,
+            rankToggles,
+            dateToggles,
             _collectPagePresenter);
 
         _collectPagePresenter.InjectViewer(collectPageViewer);
@@ -85,6 +114,7 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
 
     public override void OnStateEnter()
     {
+        _collectPagePresenter.ActivateFilterScrollUI(true);
         _collectPagePresenter.ChangeArtworkDescription(0);
         _collectPagePresenter.FillArtwork();
         _collectPagePresenter.ActiveContent(true); // home ╢щ╬фаж╠Б
@@ -92,7 +122,8 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
 
     public override void OnStateExit()
     {
-        _collectPagePresenter.RemoveAllArtwork();
+        _collectPagePresenter.DestroyAllArtwork();
+        _collectPagePresenter.ActivateFilterScrollUI(false);
         _collectPagePresenter.ActiveContent(false); // home ╢щ╬фаж╠Б
     }
 }

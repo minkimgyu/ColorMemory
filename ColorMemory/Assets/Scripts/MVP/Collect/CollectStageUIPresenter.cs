@@ -4,6 +4,7 @@ using TMPro;
 using DG.Tweening;
 using System;
 using Unity.VisualScripting;
+using UnityEditor.TreeViewExamples;
 
 public class CollectStageUIPresenter
 {
@@ -20,6 +21,12 @@ public class CollectStageUIPresenter
         _viewer = viewer;
     }
 
+
+    public void ActivateNextStageBtn(bool active)
+    {
+        _model.ActiveNextStageBtn = active;
+        _viewer.ActivateNextStageBtn(_model.ActiveNextStageBtn);
+    }
 
 
     public void ChangeArtwork(Sprite artSprite, Sprite artFrameSprite)
@@ -69,32 +76,45 @@ public class CollectStageUIPresenter
 
             // 데이터 불러와서 반영
             SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
-            _viewer.ChangeBGMSliderValue(data.BgmVolume);
-            _viewer.ChangeSFXSliderValue(data.SfxVolume);
+            _viewer.ChangeBGMSliderValue(data.BgmVolume, _model.ColorOnBgmHandle, _model.ColorOnZeroValue);
+            _viewer.ChangeSFXSliderValue(data.SfxVolume, _model.ColorOnSfxHandle, _model.ColorOnZeroValue);
         }
         else
         {
             ServiceLocater.ReturnTimeController().Start();
 
-            // 데이터 저장
-            ServiceLocater.ReturnSaveManager().ChangeBGMVolume(_model.BgmRatio);
-            ServiceLocater.ReturnSaveManager().ChangeSFXVolume(_model.SfxRatio);
+            //// 데이터 저장
+            //ServiceLocater.ReturnSaveManager().ChangeBGMVolume(_model.BgmRatio);
+            //ServiceLocater.ReturnSaveManager().ChangeSFXVolume(_model.SfxRatio);
         }
 
         _model.ActivePausePanel = active;
         _viewer.ActivatePausePanel(_model.ActivePausePanel);
     }
 
+    public void SaveBGMValue()
+    {
+        ServiceLocater.ReturnSaveManager().ChangeBGMVolume(_model.BgmRatio);
+    }
+
+    public void SaveSFXValue()
+    {
+        ServiceLocater.ReturnSaveManager().ChangeSFXVolume(_model.SfxRatio);
+    }
+
+
     public void OnBGMSliderValeChanged(float ratio)
     {
         _model.BgmRatio = ratio;
-        ServiceLocater.ReturnSoundPlayer().SetBGMVolume(ratio);
+        _viewer.ChangeBGMSliderHandleColor(_model.BgmRatio, _model.ColorOnBgmHandle, _model.ColorOnZeroValue);
+        ServiceLocater.ReturnSoundPlayer().SetBGMVolume(_model.BgmRatio);
     }
 
     public void OnSFXSliderValeChanged(float ratio)
     {
         _model.SfxRatio = ratio;
-        ServiceLocater.ReturnSoundPlayer().SetSFXVolume(ratio);
+        _viewer.ChangeSFXSliderHandleColor(_model.SfxRatio, _model.ColorOnSfxHandle, _model.ColorOnZeroValue);
+        ServiceLocater.ReturnSoundPlayer().SetSFXVolume(_model.SfxRatio);
     }
 
     public void ActivatePlayPanel(bool active)
@@ -115,10 +135,10 @@ public class CollectStageUIPresenter
         _viewer.ChangeProgressText(_model.Progress);
     }
 
-    public void ChangeTitle(string title, string comment)
+    public void ChangeTitle(string title)
     {
         _model.Title = title;
-        _viewer.ChangeTitle(_model.Title, comment);
+        _viewer.ChangeTitle(_model.Title);
     }
 
     public void FillTimeSlider(float duration)

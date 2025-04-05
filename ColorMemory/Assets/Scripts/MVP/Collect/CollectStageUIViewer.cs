@@ -31,8 +31,12 @@ public class CollectStageUIViewer
     Button _pauseBtn;
     Button _pauseExitBtn;
     Button _gameExitBtn;
-    Slider _bgmSlider;
-    Slider _sfxSlider;
+
+    CustomSlider _bgmSlider;
+    Image _bgmSliderHandle;
+
+    CustomSlider _sfxSlider;
+    Image _sfxSliderHandle;
 
     GameObject _gameResultPanel;
     ArtworkUI _artworkUI;
@@ -62,13 +66,14 @@ public class CollectStageUIViewer
 
         GameObject gameClearPanel,
         Image cropArtworkImg,
+        Button nextStageBtn,
 
         GameObject pausePanel,
         Button pauseBtn,
         Button pauseExitBtn,
         Button gameExitBtn,
-        Slider bgmSlider,
-        Slider sfxSlider,
+        CustomSlider bgmSlider,
+        CustomSlider sfxSlider,
 
         GameObject gameResultPanel,
         ArtworkUI artworkUI,
@@ -99,13 +104,12 @@ public class CollectStageUIViewer
 
         _gameClearPanel = gameClearPanel;
         _cropArtworkImg = cropArtworkImg;
+        _nextStageBtn = nextStageBtn;
 
         _pausePanel = pausePanel;
         _pauseBtn = pauseBtn;
         _gameExitBtn = gameExitBtn;
         _pauseExitBtn = pauseExitBtn;
-        _bgmSlider = bgmSlider;
-        _sfxSlider = sfxSlider;
 
         _gameResultPanel = gameResultPanel;
         _artworkUI = artworkUI;
@@ -117,11 +121,25 @@ public class CollectStageUIViewer
         _totalCollectRatio = totalCollectRatio;
         _totalCollectText = totalCollectText;
 
+        _bgmSlider = bgmSlider;
+        _bgmSliderHandle = bgmSlider.handleRect.GetComponent<Image>();
+
+        _sfxSlider = sfxSlider;
+        _sfxSliderHandle = sfxSlider.handleRect.GetComponent<Image>();
+
+        _bgmSlider.onHandlePointerUp += ((ratio) => { presenter.SaveBGMValue(); });
+        _sfxSlider.onHandlePointerUp += ((ratio) => { presenter.SaveSFXValue(); });
+
         _gameExitBtn.onClick.AddListener(() => { presenter.OnClickGameExitBtn(); });
         _pauseBtn.onClick.AddListener(() => { presenter.ActivatePausePanel(true); });
         _pauseExitBtn.onClick.AddListener(() => { presenter.ActivatePausePanel(false); });
         _bgmSlider.onValueChanged.AddListener((ratio) => { presenter.OnBGMSliderValeChanged(ratio); });
         _sfxSlider.onValueChanged.AddListener((ratio) => { presenter.OnSFXSliderValeChanged(ratio); });
+    }
+
+    public void ActivateNextStageBtn(bool active)
+    {
+        _nextStageBtn.gameObject.SetActive(active);
     }
 
     public void ChangeArtwork(Sprite artSprite, Sprite artFrameSprite)
@@ -159,9 +177,9 @@ public class CollectStageUIViewer
         _playPanel.SetActive(active);
     }
 
-    public void ChangeTitle(string title, string comment)
+    public void ChangeTitle(string title)
     {
-        _titleText.text = $"<color=#1a1817>{title}</color>{comment}";
+        _titleText.text = title;
     }
 
     public void ChangeHintInfoText(string infoText)
@@ -227,13 +245,27 @@ public class CollectStageUIViewer
         _gameResultPanel.SetActive(active);
     }
 
-    public void ChangeBGMSliderValue(float ratio)
+    public void ChangeBGMSliderValue(float ratio, Color nomalColor, Color colorOnZeroValue)
     {
         _bgmSlider.value = ratio;
+        ChangeBGMSliderHandleColor(ratio, nomalColor, colorOnZeroValue);
     }
 
-    public void ChangeSFXSliderValue(float ratio)
+    public void ChangeSFXSliderValue(float ratio, Color nomalColor, Color colorOnZeroValue)
     {
         _sfxSlider.value = ratio;
+        ChangeSFXSliderHandleColor(ratio, nomalColor, colorOnZeroValue);
+    }
+
+    public void ChangeBGMSliderHandleColor(float ratio, Color nomalColor, Color colorOnZeroValue)
+    {
+        if (ratio == 0) _bgmSliderHandle.color = colorOnZeroValue;
+        else _bgmSliderHandle.color = nomalColor;
+    }
+
+    public void ChangeSFXSliderHandleColor(float ratio, Color nomalColor, Color colorOnZeroValue)
+    {
+        if (ratio == 0) _sfxSliderHandle.color = colorOnZeroValue;
+        else _sfxSliderHandle.color = nomalColor;
     }
 }

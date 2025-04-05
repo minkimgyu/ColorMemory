@@ -36,8 +36,8 @@ namespace Challenge
         [SerializeField] GameObject _pausePanel;
         [SerializeField] Button _pauseExitBtn;
         [SerializeField] Button _gameExitBtn;
-        [SerializeField] Slider _bgmSlider;
-        [SerializeField] Slider _sfxSlider;
+        [SerializeField] CustomSlider _bgmSlider;
+        [SerializeField] CustomSlider _sfxSlider;
 
         [Header("Preview")]
         [SerializeField] GameObject _stageOverPreviewPanel;
@@ -126,17 +126,20 @@ namespace Challenge
             [Newtonsoft.Json.JsonProperty] int _mapSize;
             [Newtonsoft.Json.JsonProperty] int _colorCount;
             [Newtonsoft.Json.JsonProperty] int _randomPointCount;
+            [Newtonsoft.Json.JsonProperty] float _memorizeDuration;
 
-            public StageData(int mapSize, int colorCount, int randomPointCount)
+            public StageData(int mapSize, int colorCount, int randomPointCount, float memorizeDuration)
             {
                 _mapSize = mapSize;
                 _colorCount = colorCount;
                 _randomPointCount = randomPointCount;
+                _memorizeDuration = memorizeDuration;
             }
 
             [Newtonsoft.Json.JsonIgnore] public int MapSize { get => _mapSize; }
             [Newtonsoft.Json.JsonIgnore] public int ColorCount { get => _colorCount; }
             [Newtonsoft.Json.JsonIgnore] public int RandomPointCount { get => _randomPointCount; }
+            [Newtonsoft.Json.JsonIgnore] public float MemorizeDuration { get => _memorizeDuration; }
         }
 
         public struct StageDataWrapper
@@ -157,7 +160,6 @@ namespace Challenge
             int _oneColorHintCost;
             int _oneZoneHintCost;
 
-            float _memorizeDuration;
             float _playDuration;
 
             float _passedDuration; // 플레이하면서 지나간 시간
@@ -187,7 +189,6 @@ namespace Challenge
                 _oneZoneHintCost = oneZoneHintCost;
                 _maxScore = maxScore;
 
-                _memorizeDuration = memorizeDuration;
                 _playDuration = leftDuration;
                 _decreaseDurationOnMiss = decreaseDurationOnMiss;
                 _increaseDurationOnClear = increaseDurationOnClear;
@@ -202,7 +203,6 @@ namespace Challenge
             public int StageCount { get => _stageCount; set => _stageCount = value; }
             public int ClearStageCount { get => _clearStageCount; set => _clearStageCount = value; }
             public List<MapData> StageData { get => _stageData; set => _stageData = value; }
-            public float MemorizeDuration { get => _memorizeDuration; set => _memorizeDuration = value; }
             public float PlayDuration { get => _playDuration; set => _playDuration = value; }
             public float DecreaseDurationOnMiss { get => _decreaseDurationOnMiss; set => _decreaseDurationOnMiss = value; }
             public float IncreaseDurationOnClear { get => _increaseDurationOnClear; set => _increaseDurationOnClear = value; }
@@ -269,10 +269,12 @@ namespace Challenge
 
             try
             {
-                money = await moneyManager.GetMoneyAsync("testId1");
+                string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
+
+                money = await moneyManager.GetMoneyAsync(userId);
                 oneColorHintCost = await hintManager.GetHintPriceAsync(NetworkService.DTO.HintType.OneColorHint);
                 oneZoneHintCost = await hintManager.GetHintPriceAsync(NetworkService.DTO.HintType.OneZoneHint);
-                maxScore = await scoreManager.GetPlayerWeeklyScoreAsIntAsync("testId1");
+                maxScore = await scoreManager.GetPlayerWeeklyScoreAsIntAsync(userId);
             }
             catch (Exception e)
             {
@@ -390,7 +392,7 @@ namespace Challenge
                     )
                 },
 
-                { State.Memorize, new MemorizeState(_fsm, _pickColors, _modeData, presenter, GetStage) },
+                { State.Memorize, new MemorizeState(_fsm, _pickColors, _modeData, addressableHandler.ChallengeStageDataWrapper.StageDatas, presenter, GetStage) },
                 { State.Paint, new PaintState(_fsm, _pickColors, _modeData, presenter, GetStage) },
                 { State.StageClear, new ClearState(_fsm, presenter, _modeData, GetStage, DestroyDots) },
                 { State.GameOver, new EndState(_fsm, presenter, _pickColors, clearPatternUIFactory, _modeData) },

@@ -34,7 +34,21 @@ public class ChallengeStageUIModel
         _clearStageCount = 0;
         _activeGameResultPanel = false;
         _goldCount = 0;
+
+        _colorOnZeroValue = new Color(118f / 255f, 113f / 255f, 111f / 255f);
+        _colorOnBgmHandle = new Color(113f / 255f, 191f / 255f, 255f / 255f);
+        _colorOnSfxHandle = new Color(255f / 255f, 154f / 255f, 145f / 255f);
     }
+
+    Color _colorOnZeroValue;
+
+    Color _colorOnBgmHandle;
+    Color _colorOnSfxHandle;
+
+    public Color ColorOnZeroValue { get => _colorOnZeroValue; }
+    public Color ColorOnBgmHandle { get => _colorOnBgmHandle; }
+    public Color ColorOnSfxHandle { get => _colorOnSfxHandle; }
+
 
     bool _oneColorHintActive;
     public bool OneColorHintActive { get => _oneColorHintActive; set => _oneColorHintActive = value; }

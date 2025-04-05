@@ -9,6 +9,7 @@ abstract public class Effect : MonoBehaviour
     {
         CircleEffect,
         RectEffect,
+        XEffect,
     }
 
     public abstract void Initialize();

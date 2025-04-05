@@ -87,7 +87,7 @@ namespace Collect
             if (customLevelGenerator.CanGenerateLevelData() == false) return;
 
             MapData mapData = customLevelGenerator.GenerateLevelData();
-            _collectStageUIPresenter.ChangeTitle(_modeData.Title, " 를 선택했어요");
+            _collectStageUIPresenter.ChangeTitle(_modeData.Title);
 
             int row = mapData.DotColor.GetLength(0);
             int col = mapData.DotColor.GetLength(1);
@@ -102,6 +102,7 @@ namespace Collect
 
                     dot.Inject(_effectFactory, new Vector2Int(i, j), (index) => { _fsm.OnClickDot(index); });
                     dot.transform.SetParent(_dotGridContent.transform);
+                    dot.transform.localScale = Vector3.one;
 
                     dots[i, j] = dot;
                 }
@@ -116,6 +117,7 @@ namespace Collect
 
                 colorPenDot.Inject(_effectFactory, _penToggleGroup, mapData.PickColors[i], (index) => { _fsm.OnClickDot(index); });
                 colorPenDot.transform.SetParent(_penContent);
+                colorPenDot.transform.localScale = Vector3.one;
 
                 colorPenDot.Minimize();
                 colorPenDots[i] = colorPenDot;
