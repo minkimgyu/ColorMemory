@@ -821,7 +821,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fafe2cfe61f6974895a912c3755e8f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_AllowSwitchOff: 0
+  m_AllowSwitchOff: 1
 --- !u!1 &5359351686875119217
 GameObject:
   m_ObjectHideFlags: 0
@@ -1099,7 +1099,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fafe2cfe61f6974895a912c3755e8f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_AllowSwitchOff: 0
+  m_AllowSwitchOff: 1
 --- !u!1001 &2082985638292436697
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1191,10 +1191,14 @@ PrefabInstance:
     - target: {fileID: 1657763174912053957, guid: b5b3ebe7983b8614c9e1bde83af08a15, type: 3}
       propertyPath: m_Group
       value: 
-      objectReference: {fileID: 7255143709628797420}
+      objectReference: {fileID: 0}
     - target: {fileID: 6741368270660648345, guid: b5b3ebe7983b8614c9e1bde83af08a15, type: 3}
       propertyPath: m_Name
       value: AllToggleBtn
+      objectReference: {fileID: 0}
+    - target: {fileID: 6741368270660648345, guid: b5b3ebe7983b8614c9e1bde83af08a15, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1390,7 +1394,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4445770123935028764, guid: 193e1aea85fe23543927e398105c828a, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -79.5
+      value: -253
       objectReference: {fileID: 0}
     - target: {fileID: 4445770123935028764, guid: 193e1aea85fe23543927e398105c828a, type: 3}
       propertyPath: m_AnchoredPosition.y

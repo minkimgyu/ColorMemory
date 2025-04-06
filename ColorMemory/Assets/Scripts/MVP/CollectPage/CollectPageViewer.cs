@@ -117,6 +117,27 @@ public class CollectPageViewer
         ActiveContent(false);
     }
 
+    public void UnableAllToggles(FilterUI.FilterType type)
+    {
+        switch (type)
+        {
+            case FilterUI.FilterType.Rank:
+                for (int i = 0; i < _rankToggles.Length; i++)
+                {
+                    _rankToggles[i].isOn = false;
+                }
+                break;
+            case FilterUI.FilterType.Date:
+                for (int i = 0; i < _dateToggles.Length; i++)
+                {
+                    _dateToggles[i].isOn = false;
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
     public void ActivateFilterScrollUI(bool active)
     {
         _filterScrollUI.Activate(active);
@@ -178,7 +199,12 @@ public class CollectPageViewer
 
     public void SetUpArtworkScroll(int itemCount)
     {
-        _artworkScrollUI.SetUp(itemCount);
+        _artworkScrollUI.Setup();
+    }
+
+    public void SetArtworkScrollIndex(int index)
+    {
+        _artworkScrollUI.ScrollTo(index);
     }
 
     public void AddArtwork(SpawnableUI artwork)

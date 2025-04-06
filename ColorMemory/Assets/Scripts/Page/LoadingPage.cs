@@ -45,8 +45,12 @@ public class LoadingPage : MonoBehaviour
 #if UNITY_STANDALONE
         _userId = "testId1";
         _userName = "meal";
+        Debug.Log("Standalone 버전 실행 중");
+#elif UNITY_EDITOR
+        _userId = "testId1";
+        _userName = "meal";
+        Debug.Log("Editor 버전 실행 중");
 #elif UNITY_ANDROID
-    // gpgs ID 받아오기
     Debug.Log("Android 버전 실행 중");
 #elif UNITY_IOS
     Debug.Log("iOS 버전 실행 중");
@@ -70,20 +74,58 @@ public class LoadingPage : MonoBehaviour
         addressableHandler.Load(() => { Initialize(addressableHandler); });
     }
 
-    void Initialize(AddressableHandler addressableHandler)
+    void InitializeOnAndroid()
+    {
+        Application.targetFrameRate = 60;
+
+        TimeController timeController = new TimeController();
+        SceneController sceneController = new SceneController();
+        GPGSManager gPGSManager = new GPGSManager();
+
+        ServiceLocater.Provide(timeController);
+        ServiceLocater.Provide(sceneController);
+        ServiceLocater.Provide(gPGSManager);
+
+        gPGSManager.Login((isLogin, id, name) =>
+        {
+            if (isLogin == false)
+            {
+                // 만약 gpgs 로그인 안 될 경우 리턴
+                Debug.Log("GPGS 로그인 실패");
+                return;
+            }
+
+            SaveManager saveManager = new SaveManager(new SaveData(_userId, _userName));
+            ServiceLocater.Provide(saveManager);
+            ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.HomeScene);
+        });
+    }
+
+    void InitializeOnEditor()
     {
         TimeController timeController = new TimeController();
         SceneController sceneController = new SceneController();
+
         SaveManager saveManager = new SaveManager(new SaveData(_userId, _userName));
 
-        //SoundPlayer soundPlayer = FindObjectOfType<SoundPlayer>();
-        //soundPlayer.Initialize(addressableHandler.SoundAsset);
         ServiceLocater.Provide(timeController);
         ServiceLocater.Provide(sceneController);
         ServiceLocater.Provide(saveManager);
-        //ServiceLocater.Provide(soundPlayer);
 
         ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.HomeScene);
+    }
+
+    void Initialize(AddressableHandler addressableHandler)
+    {
+#if UNITY_STANDALONE
+       InitializeOnEditor();
+#elif UNITY_EDITOR
+        InitializeOnEditor();
+#elif UNITY_ANDROID
+       InitializeOnAndroid();
+#elif UNITY_IOS
+#else
+#endif
     }
 
     AddressableHandler CreateAddressableHandler()

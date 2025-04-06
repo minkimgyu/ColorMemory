@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class ScrollUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class NewScrollUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     [SerializeField] private ScrollRect _scrollRect;
     [SerializeField] private Scrollbar _scrollbar;
@@ -17,21 +17,12 @@ public class ScrollUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
 
     public System.Action<int> OnDragEnd;
 
-    public virtual void AddItem(Transform item)
+    private void Start()
     {
-        item.SetParent(_content);
-        item.transform.localScale = Vector3.one;
+        Setup();
     }
 
-    public virtual void DestroyItems()
-    {
-        for (int i = _content.childCount - 1; i >= 0; i--)
-        {
-            _content.GetChild(i).GetComponent<SpawnableUI>().DestroyObject();
-        }
-    }
-
-    public virtual void Setup()
+    public void Setup()
     {
         _itemCount = _content.childCount;
         if (_itemCount == 0) return;
@@ -105,16 +96,12 @@ public class ScrollUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
         }
     }
 
-    public void ScrollTo(int index, bool immediate = false)
+    public void ScrollTo(int index)
     {
         if (index < 0 || index >= _itemCount) return;
         _targetIndex = index;
         _targetPos = _itemCenters[index];
-
-        if (immediate)
-        {
-            _scrollbar.value = _targetPos;
-        }
+        _scrollbar.value = _targetPos;
     }
 
     private void Update()

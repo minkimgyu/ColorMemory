@@ -91,14 +91,12 @@ public class HomePage : MonoBehaviour
     async Task<Dictionary<int, ArtData>> GetArtDataFromServer()
     {
         ArtworkManager artworkManager = new ArtworkManager();
-        List<PlayerArtworkDTO> ownedArtworkDTOs, unownedArtworkDTOs;
+        List<PlayerArtworkDTO> artworkDTOs;
 
         try
         {
             string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
-
-            ownedArtworkDTOs = await artworkManager.GetOwnedArtworksAsync(userId);
-            unownedArtworkDTOs = await artworkManager.GetUnownedArtworksAsync(userId);
+            artworkDTOs = await artworkManager.GetWholePlayerArtworksAsync(userId);
         }
         catch (System.Exception e)
         {
@@ -107,29 +105,28 @@ public class HomePage : MonoBehaviour
             return null;
         }
 
-        unownedArtworkDTOs.AddRange(ownedArtworkDTOs);
-        unownedArtworkDTOs.Sort((a, b) => a.ArtworkId.CompareTo(b.ArtworkId));
+        artworkDTOs.Sort((a, b) => a.ArtworkId.CompareTo(b.ArtworkId));
 
         Dictionary<int, ArtData> artDatas = new Dictionary<int, ArtData>();
 
-        for (int i = 0; i < unownedArtworkDTOs.Count; i++)
+        for (int i = 0; i < artworkDTOs.Count; i++)
         {
             Dictionary<int, StageData> stageDatas = new Dictionary<int, StageData>();
 
-            foreach (var dto in unownedArtworkDTOs[i].Stages)
+            foreach (var dto in artworkDTOs[i].Stages)
             {
                 StageData stageData = new StageData(dto.Value.Rank, dto.Value.HintUsage, dto.Value.IncorrectCnt, dto.Value.IsLock);
                 stageDatas.Add(dto.Key, stageData);
             }
 
             ArtData artData = new ArtData(
-                unownedArtworkDTOs[i].Rank,
-                unownedArtworkDTOs[i].HasIt,
+                artworkDTOs[i].Rank,
+                artworkDTOs[i].HasIt,
                 stageDatas,
-                unownedArtworkDTOs[i].TotalMistakesAndHints,
-                unownedArtworkDTOs[i].ObtainedDate);
+                artworkDTOs[i].TotalMistakesAndHints,
+                artworkDTOs[i].ObtainedDate);
 
-            artDatas.Add(unownedArtworkDTOs[i].ArtworkId, artData);
+            artDatas.Add(artworkDTOs[i].ArtworkId, artData);
         }
 
         return artDatas;

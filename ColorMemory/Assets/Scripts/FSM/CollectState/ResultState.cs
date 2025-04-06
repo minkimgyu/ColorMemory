@@ -57,8 +57,8 @@ namespace Collect
             try
             {
                 string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
-                ownedArtworkDTOs = await artworkManager.GetOwnedArtworksAsync(userId);
-                unownedArtworkDTOs = await artworkManager.GetUnownedArtworksAsync(userId);
+                ownedArtworkDTOs = await artworkManager.GetPlayerArtworksAsync(userId, true);
+                unownedArtworkDTOs = await artworkManager.GetPlayerArtworksAsync(userId, false);
             }
             catch (System.Exception e)
             {

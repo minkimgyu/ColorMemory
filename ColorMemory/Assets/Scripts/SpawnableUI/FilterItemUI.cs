@@ -30,7 +30,6 @@ public class FilterItemUI : SpawnableUI
         OnClickRequested = OnClick;
         _xButton.onClick.AddListener(() => { 
             OnClickRequested?.Invoke();
-            Destroy(gameObject);
         });
     }
 }

@@ -16,12 +16,16 @@ public static class ServiceLocater
     static ISaveable _saveManager;
     static NullSaveManager _nullSaveManager;
 
+    static IGPGS _gpgsManager;
+    static NullGPGSManager _nullGpgsManager;
+
     static ServiceLocater()
     {
         _nullSoundPlayer = new NullSoundPlayer();
         _nullSceneController = new NullSceneController();
         _nullSaveManager = new NullSaveManager();
-        _timeController = new NullTimeController();
+        _nullTimeController = new NullTimeController();
+        _nullGpgsManager = new NullGPGSManager();
     }
 
     public static void Provide(ISoundPlayable soundPlayer)
@@ -42,6 +46,11 @@ public static class ServiceLocater
     public static void Provide(ISaveable saveable)
     {
         _saveManager = saveable;
+    }
+
+    public static void Provide(IGPGS gpgs)
+    {
+        _gpgsManager = gpgs;
     }
 
     public static ISoundPlayable ReturnSoundPlayer()
@@ -66,5 +75,11 @@ public static class ServiceLocater
     {
         if (_saveManager == null) return _nullSaveManager;
         return _saveManager;
+    }
+
+    public static IGPGS ReturnGPGSManager()
+    {
+        if (_gpgsManager == null) return _nullGpgsManager;
+        return _gpgsManager;
     }
 }

@@ -43,13 +43,12 @@ namespace Collect
         async Task<List<PlayerArtworkDTO>> GetArtDataFromServer()
         {
             ArtworkManager artworkManager = new ArtworkManager();
-            List<PlayerArtworkDTO> ownedArtworkDTOs, unownedArtworkDTOs;
+            List<PlayerArtworkDTO> artworkDTOs;
 
             try
             {
                 string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
-                ownedArtworkDTOs = await artworkManager.GetOwnedArtworksAsync(userId);
-                unownedArtworkDTOs = await artworkManager.GetUnownedArtworksAsync(userId);
+                artworkDTOs = await artworkManager.GetWholePlayerArtworksAsync(userId);
             }
             catch (System.Exception e)
             {
@@ -58,8 +57,7 @@ namespace Collect
                 return null;
             }
 
-            ownedArtworkDTOs.AddRange(unownedArtworkDTOs); // list1에 list2 요소 추가
-            return ownedArtworkDTOs;
+            return artworkDTOs;
         }
 
         async Task<Rank?> UpdateArtDataToServer(PlayerArtworkDTO artworkDTO)
