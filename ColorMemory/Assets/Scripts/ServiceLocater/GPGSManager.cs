@@ -42,6 +42,7 @@ public class GPGSManager : IGPGS
         }
         else
         {
+            Debug.Log(status);
             Debug.Log("로그인 실패");
             OnLoginComplete?.Invoke(false, "", "");
         }

@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using static Challenge.ChallengeMode;
 
 namespace Challenge
 {

@@ -3,8 +3,6 @@ using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
 using System;
-using Unity.VisualScripting;
-using UnityEditor.TreeViewExamples;
 
 public class CollectStageUIPresenter
 {

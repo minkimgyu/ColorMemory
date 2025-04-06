@@ -115,7 +115,7 @@ public class HomePage : MonoBehaviour
 
             foreach (var dto in artworkDTOs[i].Stages)
             {
-                StageData stageData = new StageData(dto.Value.Rank, dto.Value.HintUsage, dto.Value.IncorrectCnt, dto.Value.IsLock);
+                StageData stageData = new StageData(dto.Value.Rank, dto.Value.HintUsage, dto.Value.IncorrectCnt, dto.Value.Status);
                 stageDatas.Add(dto.Key, stageData);
             }
 

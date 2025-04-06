@@ -265,7 +265,7 @@ public class CollectPagePresenter
         _collectPageModel.SelectedSectionIndex = index;
         _collectPageViewer.SelectStage(_collectPageModel.SelectedSectionIndex);
 
-        if (stageData.IsPlayed == false) ActiveStageDetailContent(false);
+        if (stageData.Stauts != StageStauts.Clear) ActiveStageDetailContent(false);
         else ActiveStageDetailContent(true);
 
         ChangeStageDetails(stageData.HintUsage, stageData.IncorrectCnt);
@@ -359,8 +359,9 @@ public class CollectPagePresenter
         foreach (var data in artData.StageDatas)
         {
             StageData stageData = artData.StageDatas[data.Key];
-            if (stageData.IsLock == false && stageData.IsPlayed == true) // 잠겨있지 않고 이전에 플레이 한 경우만 진행도로 친다
+            if (stageData.Stauts == StageStauts.Clear) 
             {
+                // 이전에 플레이 한 경우만 진행도로 친다
                 progressCount++;
             }
         }
@@ -378,16 +379,34 @@ public class CollectPagePresenter
                 SelectStage(index - 1, data.Value);
             });
 
-            if (data.Value.IsLock == true)
+            switch (data.Value.Stauts)
             {
-                spawnableUI.SetState(StageUI.State.Lock);
+                case StageStauts.Lock:
+                    spawnableUI.SetState(StageUI.State.Lock);
+                    break;
+                case StageStauts.Open:
+                    spawnableUI.SetState(StageUI.State.Open);
+                    _openIndex = data.Key;
+                    break;
+                case StageStauts.Clear:
+                    spawnableUI.SetState(StageUI.State.Open);
+                    spawnableUI.SetRank(data.Value.Rank); // 한번 플레이 한 경우만 랭크 표시
+                    break;
+                default:
+                    break;
             }
-            else
-            {
-                spawnableUI.SetState(StageUI.State.Open);
-                if(data.Value.IsPlayed == true) spawnableUI.SetRank(data.Value.Rank); // 한번 플레이 한 경우만 랭크 표시
-                else _openIndex = data.Key;
-            }
+
+            //if (data.Value.Stauts == true)
+            //{
+            //    spawnableUI.SetState(StageUI.State.Lock);
+            //}
+            //else
+            //{
+            //    spawnableUI.SetState(StageUI.State.Open);
+            //    if(data.Value.IsPlayed == true) spawnableUI.SetRank(data.Value.Rank); // 한번 플레이 한 경우만 랭크 표시
+            //    else _openIndex = data.Key;
+            //}
+
             _collectPageViewer.AddStage(spawnableUI);
         }
 

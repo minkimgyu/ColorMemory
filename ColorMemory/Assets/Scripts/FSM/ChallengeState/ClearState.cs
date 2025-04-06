@@ -1,7 +1,6 @@
 using UnityEngine;
 using System;
 using DG.Tweening;
-using static UnityEditor.Timeline.TimelinePlaybackControls;
 
 namespace Challenge
 {

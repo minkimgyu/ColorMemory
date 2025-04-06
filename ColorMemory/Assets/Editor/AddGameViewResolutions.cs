@@ -1,4 +1,4 @@
-﻿#if UNITY_EDITOR
+﻿//#if UNITY_EDITOR
 using UnityEditor;
 using UnityEngine;
 using System;
@@ -73,4 +73,4 @@ public static class AddGameViewResolutions
         Debug.Log($"✅ Added GameView resolution: {label} ({width}x{height})");
     }
 }
-#endif
+//#endif

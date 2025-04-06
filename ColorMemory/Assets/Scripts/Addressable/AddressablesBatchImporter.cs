@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System.IO;
 using System.Linq;
 using UnityEditor;
@@ -44,3 +45,4 @@ public class AddressablesBatchImporter
         Debug.Log("Addressables 등록 완료");
     }
 }
+#endif
