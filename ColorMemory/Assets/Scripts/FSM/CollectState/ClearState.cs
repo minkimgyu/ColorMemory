@@ -95,7 +95,10 @@ namespace Collect
             int lastIndex = _artworkDTO.Stages.Count; // 스테이지 개수
             if(lastIndex >= data.SelectedArtworkSectionIntIndex + 2) // lastIndex 보다 작거나 같은 경우만 진행
             {
-                _artworkDTO.Stages[data.SelectedArtworkSectionIntIndex + 2].Status = StageStauts.Open;
+                if(_artworkDTO.Stages[data.SelectedArtworkSectionIntIndex + 2].Status == StageStauts.Lock)
+                {
+                    _artworkDTO.Stages[data.SelectedArtworkSectionIntIndex + 2].Status = StageStauts.Open;
+                }
             }
 
             _artworkDTO.Stages[data.SelectedArtworkSectionIntIndex + 1].IncorrectCnt = _modeData.WrongCount; // index + 1 해서 찾기 -> 1-indexed임

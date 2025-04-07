@@ -301,7 +301,7 @@ namespace Challenge
 
             RankingUIFactory rankingFactory = new RankingUIFactory(
                 addressableHandler.SpawnableUIAssets[SpawnableUI.Name.RankingUI],
-                addressableHandler.ProfileIconAssets);
+                addressableHandler.RectProfileIconAssets);
 
             ChallengeStageUIModel model = new ChallengeStageUIModel();
             ChallengeStageUIPresenter presenter = new ChallengeStageUIPresenter(model);

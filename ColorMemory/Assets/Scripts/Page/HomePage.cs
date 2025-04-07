@@ -155,7 +155,7 @@ public class HomePage : MonoBehaviour
 
         RankingUIFactory rankingUIFactory = new RankingUIFactory(
             addressableHandler.SpawnableUIAssets[SpawnableUI.Name.RankingUI],
-            addressableHandler.ProfileIconAssets
+            addressableHandler.RectProfileIconAssets
         );
 
         ShopBundleUIFactory shopBundleUIFactory = new ShopBundleUIFactory(
@@ -188,7 +188,7 @@ public class HomePage : MonoBehaviour
         int money = await moneyManager.GetMoneyAsync(data.UserId);
         _topElementPresenter.ChangeGoldCount(money);
 
-        _settingPage.Initialize(addressableHandler.ProfileIconAssets, () => { _pageFsm.SetState(InnerPageState.Main); });
+        _settingPage.Initialize(addressableHandler.CircleProfileIconAssets, () => { _pageFsm.SetState(InnerPageState.Main); });
         _filterScrollUI.Initialize();
         _filterScrollUI.Activate(false);
 

@@ -55,6 +55,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 6447756bad477244397f56ce3842659b, type: 2}
   - {fileID: 11400000, guid: 12ed57960fd08844d9fd53a9d08781a6, type: 2}
   - {fileID: 11400000, guid: 25b2d9a1c897edf4bb88ff0636f876c2, type: 2}
+  - {fileID: 11400000, guid: 4e3932fcb95d5814fa33a20cd487197f, type: 2}
   m_BuildSettings:
     m_CompileScriptsInVirtualMode: 0
     m_CleanupStreamingAssetsAfterBuilds: 1
@@ -106,6 +107,8 @@ MonoBehaviour:
     - ProfileIcon
     - SpawnableUI
     - ChallengeModeStageData
+    - RectProfileIcon
+    - CircleProfileIcon
     - RankIcon
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
