@@ -113,7 +113,7 @@ public class CollectPageViewer
 
         _exitBtn.onClick.AddListener(() => { collectPagePresenter.ActiveSelectStageContent(false); });
         _playBtn.onClick.AddListener(() => { collectPagePresenter.PlayCollectMode(); });
-        artworkScrollUI.OnDragEnd += collectPagePresenter.ChangeArtworkDescription;
+        artworkScrollUI.OnDragEnd += collectPagePresenter.ChangeArtworkDescription; // -> 이거 수정해서 맞는 인덱스 적용해주기
         ActiveContent(false);
     }
 

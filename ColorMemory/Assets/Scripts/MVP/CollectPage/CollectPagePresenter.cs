@@ -438,6 +438,7 @@ public class CollectPagePresenter
         UpdateArtInfo();
     }
 
+    //
     public void ChangeArtworkDescription(int index)
     {
         _collectPageModel.ArtworkIndex = index + 1; // -> 1 추가해서 받기

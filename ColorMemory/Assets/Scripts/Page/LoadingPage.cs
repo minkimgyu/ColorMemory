@@ -6,17 +6,48 @@ using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Video;
 
 public class LoadingPage : MonoBehaviour
 {
+    [SerializeField] GameObject _loadingObj;
     [SerializeField] Image _loadingPregressBar;
     [SerializeField] TMP_Text _loadingPregressTxt;
+
+    [SerializeField] UnityEngine.Video.VideoPlayer _videoPlayer;
+    [SerializeField] RenderTexture _renderTexture;
 
     string _userId;
     string _userName;
 
+    void ClearRenderTextureToWhite(RenderTexture rt)
+    {
+        RenderTexture activeRT = RenderTexture.active;
+        RenderTexture.active = rt;
+
+        GL.Clear(true, true, Color.white);
+
+        RenderTexture.active = activeRT;
+    }
+
+    private void Awake()
+    {
+        ClearRenderTextureToWhite(_renderTexture);
+        _loadingObj.SetActive(false);
+
+        _videoPlayer.loopPointReached += (source) => { _loadingObj.SetActive(true); SetUserData(); };
+
+        _videoPlayer.Prepare();
+        _videoPlayer.prepareCompleted += (vp) => { vp.Play(); };
+    }
+
     // Start is called before the first frame update
     void Start()
+    {
+        _videoPlayer.Play();
+    }
+
+    void SetUserData()
     {
 #if UNITY_STANDALONE
         Debug.Log("Standalone 버전 실행 중");
@@ -32,6 +63,7 @@ public class LoadingPage : MonoBehaviour
         SetUp();
 #elif UNITY_ANDROID
         Debug.Log("Android 버전 실행 중");
+        Application.targetFrameRate = 60;
 
         GPGSManager gPGSManager = new GPGSManager();
         ServiceLocater.Provide(gPGSManager);
@@ -88,7 +120,11 @@ public class LoadingPage : MonoBehaviour
         _loadingPregressTxt.text = $"{0} %";
 
         AddressableHandler addressableHandler = CreateAddressableHandler();
-        addressableHandler.AddProgressEvent((value) => { _loadingPregressBar.fillAmount = value; _loadingPregressTxt.text = $"{value * 100} %"; });
+        addressableHandler.AddProgressEvent((value) => {
+            _loadingPregressBar.fillAmount = value;
+            _loadingPregressTxt.text = $"{(value * 100f).ToString("F2")} %";
+        });
+
         addressableHandler.Load(() => { Initialize(addressableHandler); });
     }
 
