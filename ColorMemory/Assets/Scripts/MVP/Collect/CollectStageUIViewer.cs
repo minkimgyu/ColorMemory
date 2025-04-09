@@ -19,11 +19,16 @@ public class CollectStageUIViewer
 
     TMP_Text _progressText;
 
+    GameObject _detailContent;
+    TMP_Text _hintUsageText;
+    TMP_Text _wrongCountText;
+
     GameObject _rememberPanel;
     TMP_Text _hintInfoText;
 
     GameObject _gameClearPanel;
-    Image _cropArtworkImg;
+    TMP_Text _clearTitleText;
+    TMP_Text _clearContentText;
     Button _nextStageBtn;
     Button _gameClearExitBtn;
 
@@ -61,12 +66,18 @@ public class CollectStageUIViewer
 
         TMP_Text progressText,
 
+        GameObject detailContent,
+        TMP_Text hintUsageText,
+        TMP_Text wrongCountText,
+
         GameObject rememberPanel,
         TMP_Text hintInfoText,
 
         GameObject gameClearPanel,
-        Image cropArtworkImg,
+        TMP_Text clearTitleText,
+        TMP_Text clearContentText,
         Button nextStageBtn,
+        Button clearExitBtn,
 
         GameObject pausePanel,
         Button pauseBtn,
@@ -99,12 +110,18 @@ public class CollectStageUIViewer
 
         _progressText = progressText;
 
+        _detailContent = detailContent;
+        _hintUsageText = hintUsageText;
+        _wrongCountText = wrongCountText;
+
         _rememberPanel = rememberPanel;
         _hintInfoText = hintInfoText;
 
         _gameClearPanel = gameClearPanel;
-        _cropArtworkImg = cropArtworkImg;
+        _clearTitleText = clearTitleText;
+        _clearContentText = clearContentText;
         _nextStageBtn = nextStageBtn;
+        _gameClearExitBtn = clearExitBtn;
 
         _pausePanel = pausePanel;
         _pauseBtn = pauseBtn;
@@ -137,14 +154,54 @@ public class CollectStageUIViewer
         _sfxSlider.onValueChanged.AddListener((ratio) => { presenter.OnSFXSliderValeChanged(ratio); });
     }
 
+
+    public void ActivateGameClearPanel(bool active)
+    {
+        _gameClearPanel.SetActive(active);
+    }
+
+    public void ChangeClearTitleText(string title)
+    {
+        _clearTitleText.text = title;
+    }
+
+    public void ChangeClearContentInfo(string content)
+    {
+        _clearContentText.text = content;
+    }
+
     public void ActivateNextStageBtn(bool active)
     {
         _nextStageBtn.gameObject.SetActive(active);
     }
 
-    public void ChangeArtwork(Sprite artSprite, Sprite artFrameSprite)
+    public void ActivateClearExitBtn(bool active)
     {
-        _artworkUI.Initialize(artSprite, artFrameSprite);
+        _gameClearExitBtn.gameObject.SetActive(active);
+    }
+
+
+    public void ActivateDetailContent(bool active)
+    {
+        _detailContent.SetActive(active);
+    }
+
+    public void ChangeCurrentHintUsage(int usage)
+    {
+        _hintUsageText.text = $"{usage}ȸ";
+    }
+
+    public void ChangeCurrentWrongCount(int wrongCount)
+    {
+        _wrongCountText.text = $"{wrongCount}ȸ";
+    }
+
+
+
+
+    public void ChangeArtwork(Sprite artSprite, Sprite artFrameSprite, Sprite rankDecorationIcon)
+    {
+        _artworkUI.Initialize(artSprite, artFrameSprite, rankDecorationIcon);
     }
 
     public void ChangeRank(Sprite rankIcon, string rankName)
@@ -230,15 +287,7 @@ public class CollectStageUIViewer
         _rememberPanel.SetActive(active);
     }
 
-    public void ActivateGameClearPanel(bool active)
-    {
-        _gameClearPanel.SetActive(active);
-    }
-
-    public void ChangeCropArtworkImg(Sprite artSprite)
-    {
-        _cropArtworkImg.sprite = artSprite;
-    }
+  
 
     public void ActivateGameResultPanel(bool active)
     {

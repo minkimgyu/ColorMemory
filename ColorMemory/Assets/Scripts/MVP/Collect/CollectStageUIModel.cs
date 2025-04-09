@@ -27,13 +27,28 @@ public class CollectStageUIModel
         _bgmRatio = 0;
         _sfxRatio = 0;
 
+        _activeDetailContent = false;
+        _currentHintUsage = 0;
+        _currentWrongCount = 0;
+
         _colorOnZeroValue = new Color(118f / 255f, 113f / 255f, 111f / 255f);
         _colorOnBgmHandle = new Color(113f / 255f, 191f / 255f, 255f / 255f);
         _colorOnSfxHandle = new Color(255f / 255f, 154f / 255f, 145f / 255f);
     }
 
+    bool _activeDetailContent;
+    int _currentHintUsage;
+    int _currentWrongCount;
+
+    public bool ActiveDetailContent { get => _activeDetailContent; set => _activeDetailContent = value; }
+    public int CurrentHintUsage { get => _currentHintUsage; set => _currentHintUsage = value; }
+    public int CurrentWrongCount { get => _currentWrongCount; set => _currentWrongCount = value; }
+
     Sprite _artSprite;
     Sprite _artFrameSprite;
+    Sprite _rankDecorationIconSprite;
+
+
     int _hintUseCount; 
     int _wrongCount;
     float _totalCollectRatio;
@@ -42,8 +57,7 @@ public class CollectStageUIModel
     Sprite _rankIcon;
     string _rankName;
 
-    bool _activeNextStageBtn;
-    public bool ActiveNextStageBtn { get => _activeNextStageBtn; set => _activeNextStageBtn = value; }
+   
 
     Color _colorOnZeroValue;
 
@@ -57,6 +71,9 @@ public class CollectStageUIModel
 
     public Sprite ArtSprite { get => _artSprite; set => _artSprite = value; }
     public Sprite ArtFrameSprite { get => _artFrameSprite; set => _artFrameSprite = value; }
+    public Sprite RankDecorationIconSprite { get => _rankDecorationIconSprite; set => _rankDecorationIconSprite = value; }
+
+
     public int HintUseCount { get => _hintUseCount; set => _hintUseCount = value; }
     public int WrongCount { get => _wrongCount; set => _wrongCount = value; }
     public float TotalCollectRatio { get => _totalCollectRatio; set => _totalCollectRatio = value; }
@@ -169,6 +186,8 @@ public class CollectStageUIModel
         set => _activeHintPanel = value;
     }
 
+
+
     bool _activeGameClearPanel;
 
     public bool ActiveGameClearPanel
@@ -176,6 +195,38 @@ public class CollectStageUIModel
         get => _activeGameClearPanel;
         set => _activeGameClearPanel = value;
     }
+
+    string _clearTitleInfo;
+    public string ClearTitleInfo
+    {
+        get => _clearTitleInfo;
+        set => _clearTitleInfo = value;
+    }
+
+    string _clearContentInfo;
+    public string ClearContentInfo
+    {
+        get => _clearContentInfo;
+        set => _clearContentInfo = value;
+    }
+
+
+    bool _activeNextStageBtn;
+    public bool ActiveNextStageBtn 
+    { 
+        get => _activeNextStageBtn; 
+        set => _activeNextStageBtn = value; 
+    }
+
+    bool _activeClearExitBtn;
+    public bool ActiveClearExitBtn
+    {
+        get => _activeClearExitBtn;
+        set => _activeClearExitBtn = value;
+    }
+
+
+
 
     int _clearStageCount;
     public int ClearStageCount

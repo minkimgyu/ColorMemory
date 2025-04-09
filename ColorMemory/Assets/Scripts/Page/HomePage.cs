@@ -132,10 +132,33 @@ public class HomePage : MonoBehaviour
         return artDatas;
     }
 
+    async Task<int> GetMoneyFromServer()
+    {
+        MoneyManager moneyManager = new MoneyManager();
+        int money = 0;
+
+        try
+        {
+            string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
+            money = await moneyManager.GetMoneyAsync(userId);
+        }
+        catch (System.Exception e)
+        {
+            Debug.Log(e);
+            Debug.Log("서버로부터 데이터를 받아오지 못함");
+            return -1;
+        }
+        
+        return money;
+    }
+
     private async void Start()
     {
         Dictionary<int, ArtData> artDatas = await GetArtDataFromServer();
         if (artDatas == null) return;
+
+        int money = await GetMoneyFromServer();
+        if (money == -1) return;
 
         AddressableHandler addressableHandler = FindObjectOfType<AddressableHandler>();
         if (addressableHandler == null) return;
@@ -144,13 +167,15 @@ public class HomePage : MonoBehaviour
         _dotFactory = new DotFactory(addressableHandler.DotAssets);
 
         StageUIFactory stageUIFactory = new StageUIFactory(
-           addressableHandler.SpawnableUIAssets[SpawnableUI.Name.StageSelectBtnUI]
+           addressableHandler.SpawnableUIAssets[SpawnableUI.Name.StageSelectBtnUI],
+            addressableHandler.StageRankIconAssets
        );
 
         ArtworkUIFactory artWorkUIFactory = new ArtworkUIFactory(
             addressableHandler.SpawnableUIAssets[SpawnableUI.Name.ArtworkUI],
             addressableHandler.ArtSpriteAsserts,
-            addressableHandler.ArtworkFrameAsserts
+            addressableHandler.ArtworkFrameAsserts,
+            addressableHandler.RankDecorationIconAssets
         );
 
         RankingUIFactory rankingUIFactory = new RankingUIFactory(
@@ -169,7 +194,7 @@ public class HomePage : MonoBehaviour
 
         FilterItemFactory filterItemFactory = new FilterItemFactory(
             addressableHandler.SpawnableUIAssets[SpawnableUI.Name.FilterItemUI],
-            addressableHandler.RankIconAssets
+            addressableHandler.RankBadgeIconAssets
         );
 
         _shopBtn.onClick.AddListener(() => { _pageFsm.OnClickShopBtn(); });
@@ -182,13 +207,10 @@ public class HomePage : MonoBehaviour
         TopElementViewer topElementViewer = new TopElementViewer(_goldTxt);
         _topElementPresenter = new TopElementPresenter(topElementViewer, topElementModel);
 
-        SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
-
-        MoneyManager moneyManager = new MoneyManager();
-        int money = await moneyManager.GetMoneyAsync(data.UserId);
         _topElementPresenter.ChangeGoldCount(money);
 
-        _settingPage.Initialize(addressableHandler.CircleProfileIconAssets, () => { _pageFsm.SetState(InnerPageState.Main); });
+        SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
+        _settingPage.Initialize(data.UserName, addressableHandler.CircleProfileIconAssets, () => { _pageFsm.SetState(InnerPageState.Main); });
         _filterScrollUI.Initialize();
         _filterScrollUI.Activate(false);
 

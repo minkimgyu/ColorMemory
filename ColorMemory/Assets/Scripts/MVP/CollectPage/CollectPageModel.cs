@@ -26,6 +26,8 @@ public class CollectPageModel
     int _usedHintCount;
     int _wrongCount;
 
+    float _collectionRatio;
+
     bool _activeFilterBottomSheet;
     bool _activeFilterContent;
     float _collectRatio;
@@ -41,6 +43,8 @@ public class CollectPageModel
         _description = "";
         _artworkIndex = 1;
         _selectedSectionIndex = 1;
+
+        _collectionRatio = 0;
 
         _currentProgress = 0;
 
@@ -58,6 +62,10 @@ public class CollectPageModel
         _artworkDatas = artworkDatas;
         _collectArtDatas = collectArtDatas;
     }
+
+    public float CollectionRatio { get => _collectionRatio; set => _collectionRatio = value; }
+
+
 
     public bool ActiveContent { get => _activeContent; set => _activeContent = value; }
     public bool ActiveSelectStageContent { get => _activeSelectStageContent; set => _activeSelectStageContent = value; }

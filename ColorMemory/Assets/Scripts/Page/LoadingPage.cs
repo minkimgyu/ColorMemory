@@ -30,12 +30,22 @@ public class LoadingPage : MonoBehaviour
         RenderTexture.active = activeRT;
     }
 
+    bool _loopOnce = false;
+
     private void Awake()
     {
         ClearRenderTextureToWhite(_renderTexture);
         _loadingObj.SetActive(false);
 
-        _videoPlayer.loopPointReached += (source) => { _loadingObj.SetActive(true); SetUserData(); };
+        _videoPlayer.isLooping = true;
+        _videoPlayer.loopPointReached += (source) => 
+        {
+            if (_loopOnce == true) return;
+
+            _loopOnce = true;
+            _loadingObj.SetActive(true); 
+            SetUserData(); 
+        };
 
         _videoPlayer.Prepare();
         _videoPlayer.prepareCompleted += (vp) => { vp.Play(); };
@@ -53,13 +63,13 @@ public class LoadingPage : MonoBehaviour
         Debug.Log("Standalone 버전 실행 중");
 
         _userId = "testId1";
-        _userName = "meal";
+        _userName = "testMeal";
         SetUp();
 #elif UNITY_EDITOR
         Debug.Log("Editor 버전 실행 중");
 
         _userId = "testId1";
-        _userName = "meal";
+        _userName = "testMeal";
         SetUp();
 #elif UNITY_ANDROID
         Debug.Log("Android 버전 실행 중");

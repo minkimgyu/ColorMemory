@@ -42,6 +42,20 @@ public class CollectPagePresenter
         this.OnClickPlayBtn = OnClickPlayBtn;
     }
 
+    public void ChangeCollectionRatioInfo()
+    {
+        int hasCount = 0;
+        int maxCount = _collectPageModel.ArtDatas.Count;
+        foreach (var item in _collectPageModel.ArtDatas)
+        {
+            if (item.Value.HasIt == true) hasCount++;
+        }
+
+        float ratio = hasCount / maxCount;
+        _collectPageModel.CollectionRatio = Mathf.RoundToInt(ratio * 100);
+        _collectPageViewer.ChangeCollectionRatioInfo(_collectPageModel.CollectionRatio);
+    }
+
     public void InjectViewer(CollectPageViewer collectPageViewer)
     {
         _collectPageViewer = collectPageViewer;

@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
 using System;
+using Unity.VisualScripting;
 
 public class CollectStageUIPresenter
 {
@@ -20,18 +21,68 @@ public class CollectStageUIPresenter
     }
 
 
+
+    public void ActivateGameClearPanel(bool active)
+    {
+        _model.ActiveGameClearPanel = active;
+        _viewer.ActivateGameClearPanel(_model.ActiveGameClearPanel);
+    }
+
+    public void ChangeClearTitleInfo(string title)
+    {
+        _model.ClearTitleInfo = title;
+        _viewer.ChangeClearTitleText(_model.ClearTitleInfo);
+    }
+
+    public void ChangeClearContentInfo(string title)
+    {
+        _model.ClearContentInfo = title;
+        _viewer.ChangeClearContentInfo(_model.ClearContentInfo);
+    }
+
     public void ActivateNextStageBtn(bool active)
     {
         _model.ActiveNextStageBtn = active;
         _viewer.ActivateNextStageBtn(_model.ActiveNextStageBtn);
     }
 
+    public void ActivateClearExitBtn(bool active)
+    {
+        _model.ActiveClearExitBtn = active;
+        _viewer.ActivateClearExitBtn(_model.ActiveClearExitBtn);
+    }
 
-    public void ChangeArtwork(Sprite artSprite, Sprite artFrameSprite)
+
+
+
+    public void ActivateDetailContent(bool active)
+    {
+        _model.ActiveDetailContent = active;
+        _viewer.ActivateDetailContent(_model.ActiveDetailContent);
+    }
+
+    public void ChangeCurrentHintUsage(int usage)
+    {
+        _model.CurrentHintUsage = usage;
+        _viewer.ChangeCurrentHintUsage(_model.CurrentHintUsage);
+    }
+
+    public void ChangeCurrentWrongCount(int wrongCount)
+    {
+        _model.CurrentWrongCount = wrongCount;
+        _viewer.ChangeCurrentWrongCount(_model.CurrentWrongCount);
+    }
+
+
+
+
+
+    public void ChangeArtwork(Sprite artSprite, Sprite artFrameSprite, Sprite rankDecorationIcon)
     {
         _model.ArtSprite = artSprite;
         _model.ArtFrameSprite = artFrameSprite;
-        _viewer.ChangeArtwork(_model.ArtSprite, _model.ArtFrameSprite);
+        _model.RankDecorationIconSprite = rankDecorationIcon;
+        _viewer.ChangeArtwork(_model.ArtSprite, _model.ArtFrameSprite, _model.RankDecorationIconSprite);
     }
 
     public void ChangeRank(Sprite rankIcon, string rankName)
@@ -176,11 +227,7 @@ public class CollectStageUIPresenter
         _viewer.ActivateRememberPanel(_model.ActiveRememberPanel);
     }
 
-    public void ActivateGameClearPanel(bool active)
-    {
-        _model.ActiveGameClearPanel = active;
-        _viewer.ActivateGameClearPanel(_model.ActiveGameClearPanel);
-    }
+   
 
     public void ActivateGameResultPanel(bool active)
     {

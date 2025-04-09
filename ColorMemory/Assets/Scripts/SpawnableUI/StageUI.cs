@@ -9,9 +9,9 @@ public class StageUI : SpawnableUI
 {
     const int maxSize = 5;
     [SerializeField] GameObject _outline;
-    [SerializeField] Image _outlineImg;
-
+    [SerializeField] Image _rankIconImg;
     [SerializeField] Image _selectBtnImg;
+
     [SerializeField] Button _selectBtn;
 
     public Action OnClickRequested;
@@ -19,9 +19,9 @@ public class StageUI : SpawnableUI
     readonly Color _lockColor = new Color(236/255f, 232/255f, 232/255f);
     readonly Color _openColor = new Color(113/255f, 196/255f, 255/255f);
 
-    readonly Color _copperColor = new Color(208 / 255f, 148 / 255f, 107 / 255f);
-    readonly Color _silverColor = new Color(205 / 255f, 205 / 255f, 205 / 255f);
-    readonly Color _goleColor = new Color(249 / 255f, 210 / 255f, 56 / 255f);
+    //readonly Color _copperColor = new Color(208 / 255f, 148 / 255f, 107 / 255f);
+    //readonly Color _silverColor = new Color(205 / 255f, 205 / 255f, 205 / 255f);
+    //readonly Color _goleColor = new Color(249 / 255f, 210 / 255f, 56 / 255f);
 
     public enum State
     {
@@ -45,8 +45,13 @@ public class StageUI : SpawnableUI
 
     void ChangeColor(Color color)
     {
-        _outlineImg.color = color;
         _selectBtnImg.color = color;
+    }
+
+    void ChangeSprite(NetworkService.DTO.Rank rank)
+    {
+        _rankIconImg.gameObject.SetActive(true);
+        _rankIconImg.sprite = _stageRankIconAssets[rank];
     }
 
     public override void SetRank(NetworkService.DTO.Rank rank)
@@ -56,16 +61,8 @@ public class StageUI : SpawnableUI
         {
             case NetworkService.DTO.Rank.NONE:
                 break;
-            case NetworkService.DTO.Rank.COPPER:
-                ChangeColor(_copperColor);
-                break;
-            case NetworkService.DTO.Rank.SILVER:
-                ChangeColor(_silverColor);
-                break;
-            case NetworkService.DTO.Rank.GOLD:
-                ChangeColor(_goleColor);
-                break;
             default:
+                ChangeSprite(_rank);
                 break;
         }
     }
@@ -88,8 +85,11 @@ public class StageUI : SpawnableUI
         }
     }
 
-    public override void Initialize()
+    Dictionary<NetworkService.DTO.Rank, Sprite> _stageRankIconAssets;
+
+    public override void Initialize(Dictionary<NetworkService.DTO.Rank, Sprite> StageRankIconAssets)
     {
+        _stageRankIconAssets = StageRankIconAssets;
         ChangeSelect(false);
 
         _selectBtn.onClick.AddListener(() => 

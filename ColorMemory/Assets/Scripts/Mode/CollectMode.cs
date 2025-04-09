@@ -23,6 +23,10 @@ namespace Collect
 
         [SerializeField] TMP_Text _progressText;
 
+        [SerializeField] GameObject _detailContent;
+        [SerializeField] TMP_Text _hintUsageText;
+        [SerializeField] TMP_Text _wrongCountText;
+
         [Header("Middle")]
         [SerializeField] GridLayoutGroup _dotGridContent;
 
@@ -50,9 +54,10 @@ namespace Collect
 
         [Header("Clear")]
         [SerializeField] GameObject _gameClearPanel;
-        [SerializeField] Image _cropArtworkImg;
+        [SerializeField] TMP_Text _clearTitleText;
+        [SerializeField] TMP_Text _clearContentText;
         [SerializeField] Button _nextStageBtn;
-        [SerializeField] Button _gameClearExitBtn;
+        [SerializeField] Button _clearExitBtn;
 
         [Header("Result")]
         [SerializeField] GameObject _gameResultPanel;
@@ -198,12 +203,18 @@ namespace Collect
                 _totalTimeText,
                 _progressText,
 
+                _detailContent,
+                _hintUsageText,
+                _wrongCountText,
+
                 _rememberPanel,
                 _hintInfoText,
 
                 _gameClearPanel,
-                _cropArtworkImg,
+                _clearTitleText,
+                _clearContentText,
                 _nextStageBtn,
+                _clearExitBtn,
 
                 _pausePanel,
                 _pauseBtn,
@@ -229,7 +240,7 @@ namespace Collect
 
             _nextBtn.onClick.AddListener(() => { _fsm.OnClickNextBtn(); });
 
-            _gameClearExitBtn.onClick.AddListener(() => { _fsm.OnClickExitBtn(); });
+            _clearExitBtn.onClick.AddListener(() => { _fsm.OnClickExitBtn(); });
             _nextStageBtn.onClick.AddListener(() => { _fsm.OnClickNextStageBtn(); });
 
             _goBackBtn.onClick.AddListener(() => { _fsm.OnClickGoBackHint(); });

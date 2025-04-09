@@ -172,18 +172,34 @@ namespace Collect
                     // 다음 스테이지로 갈 것인지 판단하는 UI 띄우기
                     _collectStageUIPresenter.ActivateGameClearPanel(true);
                     _collectStageUIPresenter.ActivateNextStageBtn(true);
+                    _collectStageUIPresenter.ActivateClearExitBtn(true);
 
                     SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
                     int row = _artData.Sections.Count;
                     int col = _artData.Sections[0].Count;
 
-                    if (data.SelectedArtworkSectionIndex.x == row - 1
-                    && data.SelectedArtworkSectionIndex.y == col - 1
-                    && _artworkDTO.HasIt == true) // 이미 아트워크를 보유한 경우 && 마지막 스테이지의 경우
+                    if(data.SelectedArtworkSectionIndex.x == row - 1
+                    && data.SelectedArtworkSectionIndex.y == col - 1) // 마지막 스테이지의 경우
                     {
-                        // next 버튼 없애주기
-                        _collectStageUIPresenter.ActivateNextStageBtn(false);
-                        // exit만 가능하게 만들어준다.
+                        _collectStageUIPresenter.ChangeClearTitleInfo("명화를 완성했어요!");
+                        _collectStageUIPresenter.ChangeClearContentInfo("축하해요! 마지막 패턴까지 완성했어요!");
+
+                        if (_artworkDTO.HasIt == true) // 이미 아트워크를 보유한 경우
+                        {
+                            // next 버튼 없애주기
+                            _collectStageUIPresenter.ActivateNextStageBtn(false);
+                            // exit만 가능하게 만들어준다.
+                        }
+                        else // 보유하지 않은 경우
+                        {
+                            _collectStageUIPresenter.ActivateClearExitBtn(false);
+                            // next만 가능하게 만들어준다.
+                        }
+                    }
+                    else
+                    {
+                        _collectStageUIPresenter.ChangeClearTitleInfo("조각을 완성했어요!");
+                        _collectStageUIPresenter.ChangeClearContentInfo("Next 버튼을 눌러 명화를 완성해보세요!");
                     }
                 });
             });
@@ -195,7 +211,9 @@ namespace Collect
         {
             _artworkDTO = null;
             _modeData.MyScore += clearPoint;
+            _collectStageUIPresenter.ActivateDetailContent(false);
             _collectStageUIPresenter.ActivateGameClearPanel(false);
+
             //_collectStageUIPresenter.ChangeNowScore(data.MyScore);
             //_challengeStageUIPresenter.ChangeBestScore(data.MyScore);
         }

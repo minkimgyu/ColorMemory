@@ -8,7 +8,8 @@ public class ArtworkUI : SpawnableUI
 
     [SerializeField] Image _artImg;
     [SerializeField] RectTransform _artFrame;
-    [SerializeField] GameObject _lockPanel;
+    [SerializeField] GameObject _lockObj;
+    [SerializeField] Image _rankIcon;
     // 크기는 500 ~ 700 사이로 맞춰야함
 
     [SerializeField] int minSize = 500;
@@ -54,9 +55,9 @@ public class ArtworkUI : SpawnableUI
         return new Vector2Int(targetWidth, targetHeight);
     }
 
-    public override void Initialize(Sprite artSprite, Sprite artFrameSprite, bool hasIt = true)
+    public override void Initialize(Sprite artSprite, Sprite artFrameSprite, Sprite rankIconSprite, bool hasIt = true)
     {
-        _lockPanel.SetActive(!hasIt);
+        _lockObj.SetActive(!hasIt);
 
         Vector2Int size = ResizeSprite(artSprite);
         _artFrame.sizeDelta = size;
@@ -65,6 +66,8 @@ public class ArtworkUI : SpawnableUI
         _artFrameImage = _artFrame.gameObject.GetComponent<Image>();
         _artFrameBtn = _artFrame.gameObject.GetComponent<Button>();
         _artFrameImage.sprite = artFrameSprite;
+
+        _rankIcon.sprite = rankIconSprite;
     }
 
     System.Action OnClickRequested;

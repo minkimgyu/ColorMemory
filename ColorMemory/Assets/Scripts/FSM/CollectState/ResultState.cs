@@ -105,12 +105,13 @@ namespace Collect
 
             Sprite artworkSprite = addressableHandler.ArtSpriteAsserts[saveData.SelectedArtworkKey];
             Sprite rankFrameSprite = addressableHandler.ArtworkFrameAsserts[getRank.Value];
-            Sprite rankIconSprite = addressableHandler.RankIconAssets[getRank.Value];
+            Sprite rankDecorationIconSprite = addressableHandler.RankDecorationIconAssets[getRank.Value];
+            Sprite rankBadgeIconSprite = addressableHandler.RankBadgeIconAssets[getRank.Value];
 
             float ratio = (float)artDatas.Item2 / (artDatas.Item2 + artDatas.Item3);
 
-            _collectStageUIPresenter.ChangeRank(rankIconSprite, _rankString[getRank.Value]);
-            _collectStageUIPresenter.ChangeArtwork(artworkSprite, rankFrameSprite);
+            _collectStageUIPresenter.ChangeRank(rankBadgeIconSprite, _rankString[getRank.Value]);
+            _collectStageUIPresenter.ChangeArtwork(artworkSprite, rankFrameSprite, rankDecorationIconSprite);
             _collectStageUIPresenter.ChangeGetRank(totalGoBackCount, totalWrongCount);
             _collectStageUIPresenter.ChangeCollectionRatio(ratio);
         }

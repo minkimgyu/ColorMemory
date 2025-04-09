@@ -114,6 +114,7 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
 
     public override void OnStateEnter()
     {
+        _collectPagePresenter.ChangeCollectionRatioInfo();
         _collectPagePresenter.ActivateFilterScrollUI(true);
         _collectPagePresenter.ChangeArtworkDescription(0);
         _collectPagePresenter.FillArtwork();

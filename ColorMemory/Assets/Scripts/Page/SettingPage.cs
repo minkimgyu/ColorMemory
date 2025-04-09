@@ -29,7 +29,7 @@ public class SettingPage : MonoBehaviour
 
     System.Action OnClickHomeBtn;
 
-    public void Initialize(Dictionary<int, Sprite> profileSprites, System.Action OnClickHomeBtn)
+    public void Initialize(string myName, Dictionary<int, Sprite> profileSprites, System.Action OnClickHomeBtn)
     {
         this.OnClickHomeBtn = OnClickHomeBtn;
         _homeBtn.onClick.AddListener(() => { TogglePanel(); OnClickHomeBtn?.Invoke();  });
@@ -53,6 +53,6 @@ public class SettingPage : MonoBehaviour
         presenter.InjectViewer(viewer);
 
         presenter.ChangeProfileImgFromServer();
-        presenter.ChangeName("meal");
+        presenter.ChangeName(myName);
     }
 }

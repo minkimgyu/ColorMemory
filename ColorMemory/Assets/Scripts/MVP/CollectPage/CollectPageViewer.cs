@@ -117,6 +117,11 @@ public class CollectPageViewer
         ActiveContent(false);
     }
 
+    public void ChangeCollectionRatioInfo(float ratio)
+    {
+        _collectionRatioText.text = $"현재 전체 명화의 {ratio}%를 수집했어요!";
+    }
+
     public void UnableAllToggles(FilterUI.FilterType type)
     {
         switch (type)
