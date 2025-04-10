@@ -36,7 +36,6 @@ public class EffectFactory : BaseFactory
         _effectCreater = new Dictionary<Effect.Name, EffectCreater>();
         _effectCreater.Add(Effect.Name.CircleEffect, new DotEffectCreater(effectPrefab[Effect.Name.CircleEffect]));
         _effectCreater.Add(Effect.Name.RectEffect, new DotEffectCreater(effectPrefab[Effect.Name.RectEffect]));
-        _effectCreater.Add(Effect.Name.XEffect, new DotEffectCreater(effectPrefab[Effect.Name.XEffect]));
     }
 
     public override Effect Create(Effect.Name name)

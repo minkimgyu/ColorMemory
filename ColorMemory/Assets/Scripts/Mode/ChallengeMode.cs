@@ -1,7 +1,5 @@
-using NetworkService.Manager;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,17 +8,14 @@ namespace Challenge
 {
     public class ChallengeMode : GameMode
     {
-        [Header("Play")]
-        [SerializeField] GameObject _playPanel;
-
         [Header("Top")]
         [SerializeField] TMP_Text _bestScoreText;
         [SerializeField] TMP_Text _nowScoreText;
-        [SerializeField] Button _pauseBtn;
 
         [SerializeField] Image _timerSlider;
         [SerializeField] TMP_Text _leftTimeText;
         [SerializeField] TMP_Text _totalTimeText;
+
 
         [SerializeField] TMP_Text _stageText;
 
@@ -31,19 +26,6 @@ namespace Challenge
         [SerializeField] ToggleGroup _penToggleGroup;
         [SerializeField] RectTransform _penContent;
 
-        [Header("Setting")]
-        [SerializeField] GameObject _pausePanel;
-        [SerializeField] Button _pauseExitBtn;
-        [SerializeField] Button _gameExitBtn;
-        [SerializeField] CustomSlider _bgmSlider;
-        [SerializeField] CustomSlider _sfxSlider;
-
-        [Header("Preview")]
-        [SerializeField] GameObject _stageOverPreviewPanel;
-        [SerializeField] ClearPatternUI _lastStagePattern;
-        [SerializeField] TMP_Text _stageOverInfoText;
-        [SerializeField] Button _goToGameOverBtn;
-
         [Header("ModeData")]
         [SerializeField] Color[] _pickColors;
         [SerializeField] Vector2 _spacing;
@@ -51,16 +33,10 @@ namespace Challenge
         //[SerializeField] Vector2Int _levelSize = new Vector2Int(5, 5); // row, col
 
         [Header("Hint")]
-        [SerializeField] Button _oneZoneHintBtn;
-        [SerializeField] Button _oneColorHintBtn;
-
-        [SerializeField] TMP_Text _oneZoneHintCostText;
-        [SerializeField] TMP_Text _oneColorHintCostText;
-
+        [SerializeField] Button _randomHintBtn;
+        [SerializeField] Button _revealSameColorHintBtn;
         [SerializeField] GameObject _hintPanel;
         [SerializeField] GameObject _rememberPanel;
-        [SerializeField] GameObject _coinPanel;
-        [SerializeField] TMP_Text _coinTxt;
 
         [Header("GameOver")]
         [SerializeField] GameObject _gameOverPanel;
@@ -73,8 +49,7 @@ namespace Challenge
         //[SerializeField] TMP_Text _resultScore;
         [SerializeField] TMP_Text _goldCount;
 
-        [SerializeField] Transform _rankingContent;
-        [SerializeField] ScrollRect _rankingScrollRect;
+        [SerializeField] RankingScrollUI _rankingScrollUI;
         [SerializeField] Button _tryAgainBtn;
         [SerializeField] Button _exitBtn;
 
@@ -125,20 +100,17 @@ namespace Challenge
             [Newtonsoft.Json.JsonProperty] int _mapSize;
             [Newtonsoft.Json.JsonProperty] int _colorCount;
             [Newtonsoft.Json.JsonProperty] int _randomPointCount;
-            [Newtonsoft.Json.JsonProperty] float _memorizeDuration;
 
-            public StageData(int mapSize, int colorCount, int randomPointCount, float memorizeDuration)
+            public StageData(int mapSize, int colorCount, int randomPointCount)
             {
                 _mapSize = mapSize;
                 _colorCount = colorCount;
                 _randomPointCount = randomPointCount;
-                _memorizeDuration = memorizeDuration;
             }
 
             [Newtonsoft.Json.JsonIgnore] public int MapSize { get => _mapSize; }
             [Newtonsoft.Json.JsonIgnore] public int ColorCount { get => _colorCount; }
             [Newtonsoft.Json.JsonIgnore] public int RandomPointCount { get => _randomPointCount; }
-            [Newtonsoft.Json.JsonIgnore] public float MemorizeDuration { get => _memorizeDuration; }
         }
 
         public struct StageDataWrapper
@@ -155,10 +127,7 @@ namespace Challenge
 
         public class ModeData
         {
-            int _goldCount;
-            int _oneColorHintCost;
-            int _oneZoneHintCost;
-
+            float _memorizeDuration;
             float _playDuration;
 
             float _passedDuration; // 플레이하면서 지나간 시간
@@ -168,26 +137,12 @@ namespace Challenge
 
             int _stageCount;
             int _myScore;
-            int _maxScore;
             int _clearStageCount;
             List<MapData> _stageData;
 
-            public ModeData(
-                int goldCount,
-                int oneColorHintCost,
-                int oneZoneHintCost,
-                int maxScore,
-
-                float memorizeDuration = 0,
-                float leftDuration = 0,
-                float decreaseDurationOnMiss = 0,
-                float increaseDurationOnClear = 0)
+            public ModeData(float memorizeDuration = 0, float leftDuration = 0, float decreaseDurationOnMiss = 0, float increaseDurationOnClear = 0)
             {
-                _goldCount = goldCount;
-                _oneColorHintCost = oneColorHintCost;
-                _oneZoneHintCost = oneZoneHintCost;
-                _maxScore = maxScore;
-
+                _memorizeDuration = memorizeDuration;
                 _playDuration = leftDuration;
                 _decreaseDurationOnMiss = decreaseDurationOnMiss;
                 _increaseDurationOnClear = increaseDurationOnClear;
@@ -198,29 +153,15 @@ namespace Challenge
                 _stageData = new List<MapData>();
             }
 
-            public int GoldCount { get => _goldCount; set => _goldCount = value; }
             public int StageCount { get => _stageCount; set => _stageCount = value; }
+            public int MyScore { get => _myScore; set => _myScore = value; }
             public int ClearStageCount { get => _clearStageCount; set => _clearStageCount = value; }
             public List<MapData> StageData { get => _stageData; set => _stageData = value; }
+            public float MemorizeDuration { get => _memorizeDuration; set => _memorizeDuration = value; }
             public float PlayDuration { get => _playDuration; set => _playDuration = value; }
             public float DecreaseDurationOnMiss { get => _decreaseDurationOnMiss; set => _decreaseDurationOnMiss = value; }
             public float IncreaseDurationOnClear { get => _increaseDurationOnClear; set => _increaseDurationOnClear = value; }
             public float PassedDuration { get => _passedDuration; set => _passedDuration = value; }
-
-
-            public int OneColorHintCost { get => _oneColorHintCost; }
-            public int OneZoneHintCost { get => _oneZoneHintCost; }
-
-            public int MyScore { get => _myScore; set => _myScore = value; } // 현재 내 점수
-            public int MaxScore { get => _maxScore; set => _maxScore = value; } // 서버에서 불러온 최대 점수
-
-            public int BestScore // 위 둘을 비교했을 때 최대 점수
-            {
-                get
-                {
-                    return Mathf.Max(MyScore, MaxScore);
-                }
-            }
         }
 
         ModeData _modeData;
@@ -243,116 +184,52 @@ namespace Challenge
             Memorize,
             Paint,
             StageClear,
-            StageOverPreview,
             GameOver,
             Result,
         }
 
         FSM<State> _fsm;
-        bool _nowInitialized = false;
-        bool _errorOnInitializeData = false;
 
         private void Update()
         {
-            if (_nowInitialized == false) return;
             _fsm.OnUpdate();
         }
 
-        async Task<ModeData> GetDataFromServer()
+        public override void Initialize()
         {
-            MoneyManager moneyManager = new MoneyManager();
-            HintManager hintManager = new HintManager();
-            ScoreManager scoreManager = new ScoreManager();
-
-            int money, oneColorHintCost, oneZoneHintCost, maxScore;
-
-            try
-            {
-                string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
-
-                money = await moneyManager.GetMoneyAsync(userId);
-                oneColorHintCost = await hintManager.GetHintPriceAsync(NetworkService.DTO.HintType.OneColorHint);
-                oneZoneHintCost = await hintManager.GetHintPriceAsync(NetworkService.DTO.HintType.OneZoneHint);
-                maxScore = await scoreManager.GetPlayerWeeklyScoreAsIntAsync(userId);
-            }
-            catch (Exception e)
-            {
-                _errorOnInitializeData = true;
-                Debug.Log(e);
-                Debug.Log("서버에서 데이터를 받아오지 못 함");
-                return null;
-            }
-
-            return new ModeData(money, oneColorHintCost, oneZoneHintCost, maxScore, 5, 10, 1, 3);
-        }
-
-        public override async void Initialize()
-        {
-            _modeData = await GetDataFromServer();
-            if (_errorOnInitializeData == true) return;
-
             AddressableHandler addressableHandler = FindObjectOfType<AddressableHandler>();
             if (addressableHandler == null) return;
 
             RandomLevelGenerator randomLevelGenerator = new RandomLevelGenerator(addressableHandler.ChallengeStageDataWrapper.StageDatas);
+
 
             ClearPatternUIFactory clearPatternUIFactory = new ClearPatternUIFactory(
                 addressableHandler.SpawnableUIAssets[SpawnableUI.Name.ClearPatternUI]);
 
             RankingUIFactory rankingFactory = new RankingUIFactory(
                 addressableHandler.SpawnableUIAssets[SpawnableUI.Name.RankingUI],
-                addressableHandler.RectProfileIconAssets);
+                addressableHandler.RankingIconAssets);
+
+            _modeData = new ModeData(5, 10, 1, 3);
 
             ChallengeStageUIModel model = new ChallengeStageUIModel();
-            ChallengeStageUIPresenter presenter = new ChallengeStageUIPresenter(model);
-
             ChallengeStageUIViewer viewer = new ChallengeStageUIViewer(
-                _playPanel,
                 _bestScoreText,
                 _nowScoreText,
                 _timerSlider,
                 _leftTimeText,
                 _totalTimeText,
                 _stageText,
-
-                _oneZoneHintBtn,
-                _oneColorHintBtn,
-
-                _oneZoneHintCostText,
-                _oneColorHintCostText,
-
                 _hintPanel,
                 _rememberPanel,
-
-                _coinPanel,
-                _coinTxt,
-
                 _gameOverPanel,
                 _clearStageCount,
                 _clearStageContent,
                 _gameResultPanel,
                 _goldCount,
-                _rankingContent,
-                _rankingScrollRect,
-                
-                _stageOverPreviewPanel,
-                _lastStagePattern,
-                _stageOverInfoText,
-                
-                _pausePanel,
-                _pauseBtn,
-                _pauseExitBtn,
-                _gameExitBtn,
-                _bgmSlider,
-                _sfxSlider,
-                presenter);
+                _rankingScrollUI);
 
-            presenter.InjectViewer(viewer);
-
-            _goToGameOverBtn.onClick.AddListener(() =>
-            {
-                _fsm.OnClickGoToGameOver();
-            });
+            ChallengeStageUIPresenter presenter = new ChallengeStageUIPresenter(model, viewer);
 
             _nextBtn.onClick.AddListener(() => 
             { 
@@ -362,13 +239,9 @@ namespace Challenge
             _tryAgainBtn.onClick.AddListener(() => { _fsm.OnClickRetryBtn(); });
             _exitBtn.onClick.AddListener(() => { _fsm.OnClickExitBtn(); });
 
-            _oneZoneHintBtn.onClick.AddListener(() => { _fsm.OnClickOneZoneHint(); });
-            _oneColorHintBtn.onClick.AddListener(() => { _fsm.OnClickOneColorHint(); });
+            _randomHintBtn.onClick.AddListener(() => { _fsm.OnClickRandomFillHint(); });
+            _revealSameColorHintBtn.onClick.AddListener(() => { _fsm.OnClickRevealSameColorHint(); });
 
-            presenter.ActivatePlayPanel(true);
-            presenter.ChangeHintCost(_modeData.OneColorHintCost, _modeData.OneZoneHintCost);
-            presenter.ChangeNowScore(_modeData.MyScore);
-            presenter.ChangeBestScore(_modeData.MaxScore);
 
             _fsm = new FSM<State>();
             Dictionary<State, BaseState<State>> states = new Dictionary<State, BaseState<State>>()
@@ -391,15 +264,14 @@ namespace Challenge
                     )
                 },
 
-                { State.Memorize, new MemorizeState(_fsm, _pickColors, _modeData, addressableHandler.ChallengeStageDataWrapper.StageDatas, presenter, GetStage) },
+                { State.Memorize, new MemorizeState(_fsm, _pickColors, _modeData, presenter, GetStage) },
                 { State.Paint, new PaintState(_fsm, _pickColors, _modeData, presenter, GetStage) },
-                { State.StageClear, new ClearState(_fsm, presenter, _modeData, GetStage, DestroyDots) },
-                { State.GameOver, new EndState(_fsm, presenter, _pickColors, clearPatternUIFactory, _modeData) },
+                { State.StageClear, new StageClearState(_fsm, presenter, _modeData, GetStage, DestroyDots) },
+                { State.GameOver, new GameOverState(_fsm, presenter, _pickColors, clearPatternUIFactory, _modeData) },
                 { State.Result, new ResultState(_fsm, rankingFactory, presenter, _modeData) }
             };
 
             _fsm.Initialize(states, State.Initialize);
-            _nowInitialized = true;
         }
     }
 }

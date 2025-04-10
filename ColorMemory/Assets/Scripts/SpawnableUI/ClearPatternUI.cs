@@ -12,21 +12,10 @@ public class ClearPatternUI : SpawnableUI
     [SerializeField] GridLayoutGroup _gridLayoutGroup;
     GameObject[,] _dots;
 
-    public override void Initialize(int currentStageCount, MapData data, Color[] pickColors) 
-    {
-        _stageTxt.text = currentStageCount.ToString();
-        ChangePattern(data, pickColors);
-    }
-
-
     public override void Initialize(int currentStageCount, int totalStageCount, MapData data, Color[] pickColors)
     {
         _stageTxt.text = $"{currentStageCount}/{totalStageCount}";
-        ChangePattern(data, pickColors);
-    }
 
-    void ChangePattern(MapData data, Color[] pickColors)
-    {
         _dots = new GameObject[maxSize, maxSize];
         for (int i = 0; i < maxSize * maxSize; i++)
         {

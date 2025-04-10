@@ -9,7 +9,6 @@ namespace Collect
     public class MemorizeState : BaseState<CollectMode.State>
     {
         Dot[,] _dots;
-        Dot[] _penDots;
         Vector2Int _levelSize;
         MapData _mapData;
 
@@ -49,7 +48,6 @@ namespace Collect
             // 초기화 진행
             Tuple<Dot[,], Dot[], MapData> levelData = GetLevelData();
             _dots = levelData.Item1;
-            _penDots = levelData.Item2;
             _mapData = levelData.Item3;
             _levelSize = new Vector2Int(_dots.GetLength(0), _dots.GetLength(1));
 
@@ -92,9 +90,13 @@ namespace Collect
                 {
                     for (int j = 0; j < _levelSize.y; j++)
                     {
-                        _dots[i, j].Expand(_fadeColor, 1.5f);
+                        Image.FillMethod fillMethod = (Image.FillMethod)Random.Range(0, 5);
+                        float duration = Random.Range(0, 1.5f);
+
+                        _dots[i, j].Fade(_fadeColor, fillMethod, duration);
                     }
                 }
+
 
                 _timer.Reset(); // 타이머 리셋
 

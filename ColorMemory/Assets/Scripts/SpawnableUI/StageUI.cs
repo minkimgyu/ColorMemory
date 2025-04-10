@@ -3,25 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
-using System.Reflection;
 
 public class StageUI : SpawnableUI
 {
     const int maxSize = 5;
+    [SerializeField] Transform _content;
     [SerializeField] GameObject _outline;
-    [SerializeField] Image _rankIconImg;
-    [SerializeField] Image _selectBtnImg;
-
+    [SerializeField] Image _coverImg;
     [SerializeField] Button _selectBtn;
 
-    public Action OnClickRequested;
+    public Action<Vector2Int> OnClickRequested;
 
-    readonly Color _lockColor = new Color(236/255f, 232/255f, 232/255f);
-    readonly Color _openColor = new Color(113/255f, 196/255f, 255/255f);
+    readonly Color _lockColor = new Color(43/255f, 43/255f, 43/255f);
+    readonly Color _openColor = new Color(255/255f, 255/255f, 255/255f);
 
-    //readonly Color _copperColor = new Color(208 / 255f, 148 / 255f, 107 / 255f);
-    //readonly Color _silverColor = new Color(205 / 255f, 205 / 255f, 205 / 255f);
-    //readonly Color _goleColor = new Color(249 / 255f, 210 / 255f, 56 / 255f);
+    GameObject[,] _dots;
 
     public enum State
     {
@@ -31,40 +27,23 @@ public class StageUI : SpawnableUI
     }
 
     State _state;
-    NetworkService.DTO.Rank _rank;
 
-    public override void InjectClickEvent(System.Action OnClick)
+    public override void InjectClickEvent(System.Action<Vector2Int> OnClick)
     {
         this.OnClickRequested = OnClick;
+    }
+
+    Vector2Int _index;
+    public Vector2Int Index { get => _index; }
+
+    public override void ChangeIndex(Vector2Int index)
+    {
+        _index = index;
     }
 
     public override void ChangeSelect(bool select) 
     {
         _outline.SetActive(select);
-    }
-
-    void ChangeColor(Color color)
-    {
-        _selectBtnImg.color = color;
-    }
-
-    void ChangeSprite(NetworkService.DTO.Rank rank)
-    {
-        _rankIconImg.gameObject.SetActive(true);
-        _rankIconImg.sprite = _stageRankIconAssets[rank];
-    }
-
-    public override void SetRank(NetworkService.DTO.Rank rank)
-    {
-        _rank = rank;
-        switch (_rank)
-        {
-            case NetworkService.DTO.Rank.NONE:
-                break;
-            default:
-                ChangeSprite(_rank);
-                break;
-        }
     }
 
     public override void SetState(State state)
@@ -73,24 +52,50 @@ public class StageUI : SpawnableUI
         switch (_state)
         {
             case State.Lock:
-                ChangeColor(_lockColor);
+                _coverImg.gameObject.SetActive(true);
+                _coverImg.color = _lockColor;
+
                 break;
             case State.Open:
-                ChangeColor(_openColor);
+                _coverImg.gameObject.SetActive(true);
+                _coverImg.color = _openColor;
+
                 break;
             case State.Clear:
+                _coverImg.gameObject.SetActive(false);
                 break;
             default:
                 break;
         }
     }
 
-    Dictionary<NetworkService.DTO.Rank, Sprite> _stageRankIconAssets;
-
-    public override void Initialize(Dictionary<NetworkService.DTO.Rank, Sprite> StageRankIconAssets)
+    public override void Initialize(
+        List<List<CollectiveArtData.Block>> blocks, 
+        List<List<CollectiveArtData.Color>> usedColors)
     {
-        _stageRankIconAssets = StageRankIconAssets;
         ChangeSelect(false);
+
+        _dots = new GameObject[maxSize, maxSize];
+        for (int i = 0; i < maxSize * maxSize; i++)
+        {
+            Transform child = _content.GetChild(i);
+            int maxCol = i % maxSize;
+            int maxRow = i / maxSize;
+            _dots[maxRow, maxCol] = child.gameObject;
+            child.gameObject.SetActive(false);
+        }
+
+        int row = blocks.Count;
+        int height = blocks[0].Count;
+
+        for (int i = 0; i < row; i++)
+        {
+            for (int j = 0; j < height; j++)
+            {
+                _dots[i, j].gameObject.SetActive(true);
+                _dots[i, j].GetComponent<Image>().color = blocks[i][j].Color.GetColor();
+            }
+        }
 
         _selectBtn.onClick.AddListener(() => 
         {
@@ -99,10 +104,10 @@ public class StageUI : SpawnableUI
                 case State.Lock:
                     break;
                 case State.Open:
-                    OnClickRequested?.Invoke();
+                    OnClickRequested?.Invoke(_index);
                     break;
                 case State.Clear:
-                    OnClickRequested?.Invoke();
+                    OnClickRequested?.Invoke(_index);
                     break;
                 default:
                     break;

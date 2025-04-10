@@ -1,5 +1,3 @@
-using DG.Tweening;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,8 +9,6 @@ public class MainPageViewer
     Image _titleImg;
 
     Button _playBtn;
-    TMPro.TMP_Text _playBtnTxt;
-
     Image _playBtnImg;
     ToggleBtn _toggleBtn;
     Dot[,] _dots;
@@ -23,8 +19,6 @@ public class MainPageViewer
         GameObject content,
         Image titleImg,
         Button playBtn,
-        TMPro.TMP_Text playBtnTxt,
-
         Image playBtnImg,
         ToggleBtn toggleBtn,
         Dot[,] dots,
@@ -35,7 +29,6 @@ public class MainPageViewer
         _playBtn = playBtn;
         _playBtn.onClick.AddListener(() => { homePagePresenter.OnClickPlayBtn(); });
 
-        _playBtnTxt = playBtnTxt;
 
         _playBtnImg = playBtnImg;
         _dots = dots;
@@ -71,63 +64,12 @@ public class MainPageViewer
     {
         int size = _dots.GetLength(0);
 
-        ToWhite();
-        DOVirtual.DelayedCall(0.5f, () =>
+        for (int i = 0; i < size; i++)
         {
-            ToColor(colors);
-        }).SetLink(_content);
-    }
-
-    void ToColor(Color[,] colors)
-    {
-        int gridSize = 6;
-        float delay = 0;
-
-        for (int d = 0; d < gridSize * 2 - 1; d++)
-        {
-            delay += 0.1f;
-            int startX = Mathf.Max(0, d - (gridSize - 1));
-            int startY = Mathf.Min(d, gridSize - 1);
-
-            while (startX < gridSize && startY >= 0)
+            for (int j = 0; j < size; j++)
             {
-                DelayCall(delay, startX, startY, colors[startX, startY]);
-                startX++;
-                startY--;
+                _dots[i, j].Fade(colors[i, j], UnityEngine.UI.Image.FillMethod.Horizontal, 0.3f);
             }
         }
-    }
-
-    void ToWhite()
-    {
-        int gridSize = 6;
-        float delay = 0;
-
-        for (int d = 0; d < gridSize * 2 - 1; d++)
-        {
-            delay += 0.1f;
-            int startX = Mathf.Max(0, d - (gridSize - 1));
-            int startY = Mathf.Min(d, gridSize - 1);
-
-            while (startX < gridSize && startY >= 0)
-            {
-                DelayCall(delay, startX, startY, Color.white);
-                startX++;
-                startY--;
-            }
-        }
-    }
-
-    void DelayCall(float delay, int i, int j, Color color)
-    {
-        DOVirtual.DelayedCall(delay, () =>
-        {
-            _dots[i, j].Expand(color, 0.5f);
-        }).SetLink(_content);
-    }
-
-    public void ChangePlayBtnTxt(string btnTxt)
-    {
-        _playBtnTxt.text = btnTxt;
     }
 }

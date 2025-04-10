@@ -10,7 +10,7 @@ namespace Collect
     {
         // 스테이지 생성 후 다른 State로 레벨 데이터 뿌리기
 
-        CollectArtData _artData;
+        CollectiveArtData _artData;
         CollectMode.Data _modeData;
 
         EffectFactory _effectFactory;
@@ -22,6 +22,7 @@ namespace Collect
 
         Action<Dot[,], Dot[], MapData> SetLevelData;
         CollectStageUIPresenter _collectStageUIPresenter;
+        int _level = 0;
 
         public InitializeState(
             FSM<CollectMode.State> fsm,
@@ -35,7 +36,7 @@ namespace Collect
             RectTransform penContent,
             ToggleGroup penToggleGroup,
 
-            CollectArtData artData,
+            CollectiveArtData artData,
             CollectStageUIPresenter collectStageUIPresenter,
 
             Action<Dot[,], Dot[], MapData> SetLevelData
@@ -55,17 +56,9 @@ namespace Collect
             this.SetLevelData = SetLevelData;
         }
 
-        public override void OnStateEnter()
+        public override void OnStateEnter(Vector2Int sectionIndex)
         {
-            _collectStageUIPresenter.ActivatePlayPanel(true);
-
-            SaveData saveData = ServiceLocater.ReturnSaveManager().GetSaveData();
-
-            float ratio = saveData.SelectedArtworkProgress;
-            _collectStageUIPresenter.ChangeProgressText((int)(ratio * 100));
-            _collectStageUIPresenter.ChangeHintInfoText("힌트를 사용할수록 높은 랭크를 받을 확률이 떨어져요!");
-
-            CreateLevel(saveData.SelectedArtworkSectionIndex);
+            CreateLevel(sectionIndex);
             _fsm.SetState(CollectMode.State.Memorize);
         }
 
@@ -73,10 +66,6 @@ namespace Collect
         {
             int colorCount = _artData.Sections[sectionIndex.x][sectionIndex.y].UsedColors[0].Count;
             _modeData.PickColors = new Color[colorCount];
-
-            // 진입 전에 초기화
-            _modeData.GoBackCount = 0;
-            _modeData.WrongCount = 0;
 
             for (int i = 0; i < colorCount; i++)
             {
@@ -87,7 +76,9 @@ namespace Collect
             if (customLevelGenerator.CanGenerateLevelData() == false) return;
 
             MapData mapData = customLevelGenerator.GenerateLevelData();
-            _collectStageUIPresenter.ChangeTitle(_modeData.Title);
+
+            string title = ServiceLocater.ReturnSaveManager().GetSaveData().SelectedArtworkName;
+            _collectStageUIPresenter.ChangeTitle(title);
 
             int row = mapData.DotColor.GetLength(0);
             int col = mapData.DotColor.GetLength(1);
@@ -102,7 +93,6 @@ namespace Collect
 
                     dot.Inject(_effectFactory, new Vector2Int(i, j), (index) => { _fsm.OnClickDot(index); });
                     dot.transform.SetParent(_dotGridContent.transform);
-                    dot.transform.localScale = Vector3.one;
 
                     dots[i, j] = dot;
                 }
@@ -117,7 +107,6 @@ namespace Collect
 
                 colorPenDot.Inject(_effectFactory, _penToggleGroup, mapData.PickColors[i], (index) => { _fsm.OnClickDot(index); });
                 colorPenDot.transform.SetParent(_penContent);
-                colorPenDot.transform.localScale = Vector3.one;
 
                 colorPenDot.Minimize();
                 colorPenDots[i] = colorPenDot;

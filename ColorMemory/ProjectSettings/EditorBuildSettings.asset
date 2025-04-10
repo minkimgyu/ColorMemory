@@ -12,10 +12,16 @@ EditorBuildSettings:
     path: Assets/Scenes/HomeScene.unity
     guid: f580b7d9e574d694b92e9cb58cb95edd
   - enabled: 1
-    path: Assets/Scenes/Play/ChallengeScene.unity
+    path: Assets/Scenes/TestScene.unity
+    guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 0
+    path: Assets/Scenes/StartScene.unity
+    guid: d1775ba1bb68e7d47a45b88dd169b881
+  - enabled: 1
+    path: Assets/Scenes/ChallengeScene.unity
     guid: d7e23349111b6bd4a9d0a8a8973351c6
   - enabled: 1
-    path: Assets/Scenes/Play/CollectScene.unity
+    path: Assets/Scenes/CollectScene.unity
     guid: 6344fc1a279331a4badfa15658ebc46f
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: e7311d6a9817a5a49912cf7e461003ac, type: 2}

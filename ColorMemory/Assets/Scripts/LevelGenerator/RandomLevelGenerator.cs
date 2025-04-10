@@ -5,7 +5,7 @@ using Random = UnityEngine.Random;
 
 public class RandomLevelGenerator : LevelGenerator
 {
-    int _pickPointCount;
+    int _pickCount;
     Vector2Int _levelSize = new Vector2Int(5, 5); // row, col
     Vector2Int[] _closePoints;
     int _pickColorSize;
@@ -33,7 +33,7 @@ public class RandomLevelGenerator : LevelGenerator
     {
         List<int> randomColorIndexes = new List<int>();
 
-        while (randomColorIndexes.Count < _pickColorSize) 
+        while (randomColorIndexes.Count < _pickCount) 
         {
             int randomIndex = Random.Range(0, _pickColorSize);
             if (randomColorIndexes.Contains(randomIndex)) continue;
@@ -48,7 +48,7 @@ public class RandomLevelGenerator : LevelGenerator
     {
         List<Vector2Int> randomPoints = new List<Vector2Int>();
 
-        while (randomPoints.Count < _pickPointCount)
+        while (randomPoints.Count < _pickCount)
         {
             int x = Random.Range(0, _levelSize.x);
             int y = Random.Range(0, _levelSize.y);
@@ -84,7 +84,7 @@ public class RandomLevelGenerator : LevelGenerator
 
     public bool CanGenerateLevelData()
     {
-        if (_pickColorSize < _pickPointCount) return false;
+        if (_pickColorSize < _pickCount) return false;
         return true;
     }
 
@@ -96,7 +96,7 @@ public class RandomLevelGenerator : LevelGenerator
         else stageData = _stageDatas[currentStageIndex];
 
         _pickColorSize = stageData.ColorCount;
-        _pickPointCount = stageData.RandomPointCount;
+        _pickCount = stageData.RandomPointCount;
         _levelSize = new Vector2Int(stageData.MapSize, stageData.MapSize);
 
         int[,] levelMap = new int[_levelSize.x, _levelSize.y];

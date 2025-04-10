@@ -24,27 +24,17 @@ public class ToggleBtn : MonoBehaviour
     readonly Vector2 _onPoint = new Vector2(40, 0);
     const float _iconMoveDuration = 0.3f;
 
-    public void Initialize(float delayTime)
+    public void Initialize()
     {
         _iconImage = _toggleIcon.gameObject.GetComponent<Image>();
         _iconImage.color = _offColor;
-
-        _timer = new Timer();
-        _delayTime = delayTime;
 
         _btn = GetComponent<Button>();
         _btn.onClick.AddListener(ChangeState);
     }
 
-    float _delayTime;
-    Timer _timer;
-
     void ChangeState()
     {
-        if (_timer.CurrentState == Timer.State.Running) return;
-        _timer.Reset();
-        _timer.Start(_delayTime);
-
         _isOn = !_isOn;
         UpdateIcon();
         OnClick?.Invoke(_isOn);
@@ -52,10 +42,6 @@ public class ToggleBtn : MonoBehaviour
 
     public void ChangeState(bool isOn)
     {
-        if (_timer.CurrentState == Timer.State.Running) return;
-        _timer.Reset();
-        _timer.Start(_delayTime);
-
         _isOn = isOn;
         UpdateIcon();
         OnClick?.Invoke(_isOn);

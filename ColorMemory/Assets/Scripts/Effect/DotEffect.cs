@@ -43,16 +43,11 @@ public class DotEffect : Effect
 
     public override void Scale(float endScale, float duration, Action OnComplete = null)
     {
-        _rectTransform.DOScale(endScale, duration).SetLink(gameObject).onComplete = () => { OnComplete?.Invoke(); };
+        _rectTransform.DOScale(endScale, duration).SetLink(gameObject);
     }
 
     public override void Color(Color endColor, float duration, Action OnComplete = null)
     {
         _image.DOColor(endColor, duration).SetLink(gameObject).onComplete = () => { OnComplete?.Invoke(); };
-    }
-
-    public override void Alpha(float endAlpha, float duration, Action OnComplete = null)
-    {
-        _image.DOFade(endAlpha, duration).SetLink(gameObject).onComplete = () => { OnComplete?.Invoke(); };
     }
 }

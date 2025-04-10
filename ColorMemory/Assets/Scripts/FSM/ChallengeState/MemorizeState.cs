@@ -1,9 +1,7 @@
 using DG.Tweening;
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using static Challenge.ChallengeMode;
 using Random = UnityEngine.Random;
 
 namespace Challenge
@@ -20,7 +18,6 @@ namespace Challenge
 
         Timer _timer;
         ChallengeMode.ModeData _modeData;
-        List<ChallengeMode.StageData> _stageDatas;
 
         Func<Tuple<Dot[,], Dot[], MapData>> GetStage;
 
@@ -30,7 +27,6 @@ namespace Challenge
             FSM<ChallengeMode.State> fsm,
             Color[] pickColors,
             ChallengeMode.ModeData modeData,
-            List<ChallengeMode.StageData> stageDatas,
 
             ChallengeStageUIPresenter challengeStageUIPresenter,
             Func<Tuple<Dot[,], Dot[], MapData>> GetStage
@@ -38,7 +34,6 @@ namespace Challenge
         {
             _pickColors = pickColors;
             _modeData = modeData;
-            _stageDatas = stageDatas;
             _timer = new Timer();
 
             _challengeStageUIPresenter = challengeStageUIPresenter;
@@ -78,12 +73,9 @@ namespace Challenge
                 }
             }
 
-            int index = Mathf.Clamp(_modeData.StageCount - 1, 0, _stageDatas.Count - 1);
-            float memorizeDuration = _stageDatas[index].MemorizeDuration;
-
             _challengeStageUIPresenter.ActivateRememberPanel(true);
-            _challengeStageUIPresenter.ChangeTotalTime(memorizeDuration);
-            _timer.Start(memorizeDuration);
+            _challengeStageUIPresenter.ChangeTotalTime(_modeData.MemorizeDuration);
+            _timer.Start(_modeData.MemorizeDuration);
         }
 
         public override void OnStateUpdate()
@@ -99,9 +91,13 @@ namespace Challenge
                 {
                     for (int j = 0; j < _levelSize.y; j++)
                     {
-                        _dots[i, j].Expand(_fadeColor, 1.5f);
+                        Image.FillMethod fillMethod = (Image.FillMethod)Random.Range(0, 5);
+                        float duration = Random.Range(0, 1.5f);
+
+                        _dots[i, j].Fade(_fadeColor, fillMethod, duration);
                     }
                 }
+
 
                 _timer.Reset(); // 타이머 리셋
 

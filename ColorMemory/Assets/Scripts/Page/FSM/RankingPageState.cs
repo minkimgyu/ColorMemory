@@ -1,9 +1,6 @@
-using NetworkService.DTO;
-using NetworkService.Manager;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 
@@ -39,51 +36,41 @@ public class RankingPageState : BaseState<HomePage.InnerPageState>
         _fsm.SetState(HomePage.InnerPageState.Main);
     }
 
-    async Task<Tuple<List<PlayerRankingDTO>, PlayerRankingDTO>> GetRankingDataFromServer()
+    RankingData GetRankingData()
     {
-        ScoreManager scoreManager = new ScoreManager();
-        List<PlayerRankingDTO> otherScores;
-        PlayerRankingDTO myScore;
+        List<PersonalRankingData> topRankingDatas = new List<PersonalRankingData>();
+        string[] names = { "Alice", "Bob", "Charlie", "David", "Eve", "Frank", "Grace", "Hank", "Ivy", "Jack" };
 
-        try
+        int count = 10; // 생성할 데이터 개수
+        for (int i = 0; i < count; i++)
         {
-            string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
+            RankingIconName iconName = (RankingIconName)UnityEngine.Random.Range(0, Enum.GetValues(typeof(RankingIconName)).Length);
+            string name = names[i];
+            int score = UnityEngine.Random.Range(0, 100000000);
+            int rank = i + 1; // 1부터 시작하는 순위
 
-            otherScores = await scoreManager.GetTopWeeklyScoresAsync(10);
-            myScore = await scoreManager.GetPlayerWeeklyScoreAsDTOAsync(userId);
-        }
-        catch (System.Exception e)
-        {
-            Debug.Log(e);
-            Debug.Log("서버로부터 데이터를 받아오지 못함");
-            return null;
+            topRankingDatas.Add(new PersonalRankingData(iconName, name, score, rank));
         }
 
-        return new Tuple<List<PlayerRankingDTO>, PlayerRankingDTO>(otherScores, myScore);
+        // 생성시켜주기
+        PersonalRankingData myRankingData = new PersonalRankingData((RankingIconName)1, "Meal", 10000000, 15);
+
+        RankingData rankingData = new RankingData(topRankingDatas, myRankingData);
+        return rankingData;
     }
 
-    public override async void OnStateEnter()
+    public override void OnStateEnter()
     {
-        Tuple<List<PlayerRankingDTO>, PlayerRankingDTO> rankingData = await GetRankingDataFromServer();
-        if (rankingData == null) return;
+        // 생성시켜주기
+        RankingData rankingData = GetRankingData();
 
-        List<PersonalRankingData> topRankingDatas = new List<PersonalRankingData>();
-
-        for (int i = 0; i < rankingData.Item1.Count; i++)
+        for (int i = 0; i < rankingData.OtherRankingDatas.Count; i++)
         {
-            topRankingDatas.Add(new PersonalRankingData(rankingData.Item1[i].IconId, rankingData.Item1[i].Name, rankingData.Item1[i].Score, rankingData.Item1[i].Ranking));
-        }
-
-        PlayerRankingDTO playerScoreDTO = rankingData.Item2;
-        PersonalRankingData myRankingData = new PersonalRankingData(playerScoreDTO.IconId, playerScoreDTO.Name, playerScoreDTO.Score, playerScoreDTO.Ranking);
-
-        for (int i = 0; i < topRankingDatas.Count; i++)
-        {
-            SpawnableUI rankingUI = _rankingUIFactory.Create(topRankingDatas[i]);
+            SpawnableUI rankingUI = _rankingUIFactory.Create(rankingData.OtherRankingDatas[i]);
             _rankingPagePresenter.AddRakingItems(rankingUI);
         }
 
-        SpawnableUI myRankingUI = _rankingUIFactory.Create(myRankingData);
+        SpawnableUI myRankingUI = _rankingUIFactory.Create(rankingData.MyRankingData);
         _rankingPagePresenter.AddMyRaking(myRankingUI);
         _rankingPagePresenter.ActiveContent(true); // home 닫아주기
     }

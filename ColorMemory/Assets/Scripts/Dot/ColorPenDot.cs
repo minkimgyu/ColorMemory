@@ -12,7 +12,6 @@ public class ColorPenDot : Dot
 
     Toggle _toggle;
     [SerializeField] TMP_Text _colorCountTxt;
-    [SerializeField] Image _outlineImg;
 
     public override void Initialize()
     {
@@ -20,22 +19,9 @@ public class ColorPenDot : Dot
         _toggle = GetComponent<Toggle>();
     }
 
-    public override void SeletDotToggle() 
-    {
-        _toggle.isOn = true;
-    }
-
-
     public override void ChangeColorCount(int colorCount) 
     {
         _colorCountTxt.text = colorCount.ToString();
-    }
-
-    public override void ChangeColor(Color color)
-    {
-        base.ChangeColor(color);
-        Color darkerColor = Color.Lerp(color, Color.black, 0.2f); // 20% ¾îµÓ°Ô
-        _outlineImg.color = darkerColor;
     }
 
     public override void Inject(EffectFactory effectFactory, ToggleGroup toggleGroup, int index, Action<int> OnClick)
