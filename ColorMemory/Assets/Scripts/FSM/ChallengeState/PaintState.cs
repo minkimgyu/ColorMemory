@@ -3,6 +3,7 @@ using System;
 using UnityEngine;
 using DG.Tweening;
 using Random = UnityEngine.Random;
+using UnityEngine.UI;
 
 namespace Challenge
 {
@@ -44,16 +45,16 @@ namespace Challenge
         ) : base(fsm)
         {
             _pickColors = pickColors;
-            _closePoints = new Vector2Int[8]
+            _closePoints = new Vector2Int[4]
             {
-            new Vector2Int(-1, 0), // ↑
-            new Vector2Int(0, 1), // →
-            new Vector2Int(1, 0), // ↓
-            new Vector2Int(0, -1), // ←
-            new Vector2Int(-1, 1), // ↗
-            new Vector2Int(1, 1), // ↘
-            new Vector2Int(1, -1), // ↙
-            new Vector2Int(-1, -1), // ↖
+                new Vector2Int(-1, 0), // ↑
+                new Vector2Int(0, 1), // →
+                new Vector2Int(1, 0), // ↓
+                new Vector2Int(0, -1), // ←
+                //new Vector2Int(-1, 1), // ↗
+                //new Vector2Int(1, 1), // ↘
+                //new Vector2Int(1, -1), // ↙
+                //new Vector2Int(-1, -1), // ↖
             };
 
             _modeData = modeData;
@@ -93,9 +94,20 @@ namespace Challenge
                 _modeData.PassedDuration += _timer.PassedTime;
 
                 _timer.Reset(); // 타이머 리셋
-                _fsm.SetState(ChallengeMode.State.GameOver);
+
+                _challengeStageUIPresenter.ActivateStageOverPreviewPanel(true);
+
+                int lastStageIndex = _modeData.StageData.Count - 1;
+                _challengeStageUIPresenter.ChangeLastStagePattern(_modeData.StageData[lastStageIndex], _pickColors);
+                _challengeStageUIPresenter.ChangeStageOverInfo();
                 return;
             }
+        }
+
+        public override void OnClickGoToGameOver() 
+        {
+            _challengeStageUIPresenter.ActivateStageOverPreviewPanel(false);
+            _fsm.SetState(ChallengeMode.State.GameOver);
         }
 
         void ChangePenDotColorCount()
@@ -143,6 +155,7 @@ namespace Challenge
             _levelSize = new Vector2Int(_dots.GetLength(0), _dots.GetLength(1));
 
             _selectedColorIndex = _mapData.PickColors[0];
+            _penDots[0].SeletDotToggle();
 
             for (int i = 0; i < _penDots.Length; i++)
             {
@@ -160,6 +173,10 @@ namespace Challenge
             }
 
             ChangePenDotColorCount();
+            ActivateHint();
+
+            _challengeStageUIPresenter.ChangeCoinCount(_modeData.GoldCount);
+            _challengeStageUIPresenter.ActiveGoldPanel(true);
 
             _challengeStageUIPresenter.ChangeTotalTime(_modeData.PlayDuration);
 
@@ -202,6 +219,7 @@ namespace Challenge
             {
                 // 틀린 경우
                 // 시간 감소시키기
+                _dots[index.x, index.y].XSlide(Color.red);
                 _timer.DecreaseDuration(_modeData.DecreaseDurationOnMiss);
                 return;
             }
@@ -261,27 +279,46 @@ namespace Challenge
 
         RevealSameColorHintState _state = RevealSameColorHintState.Idle;
 
-        public override void OnClickRevealSameColorHint()
+        bool CanBuyHint(int cost)
         {
+            int leftGold = _modeData.GoldCount - cost;
+            return leftGold >= 0;
+        }
+
+        void ChangeGold(int cost)
+        {
+            _modeData.GoldCount -= cost;
+            _challengeStageUIPresenter.ChangeCoinCount(_modeData.GoldCount);
+        }
+
+        void ActivateHint()
+        {
+            bool activeOneColorHint = CanBuyHint(_modeData.OneColorHintCost);
+            bool activeOneZoneHint = CanBuyHint(_modeData.OneZoneHintCost);
+            _challengeStageUIPresenter.ActivateHint(activeOneColorHint, activeOneZoneHint);
+        }
+
+        // 같은 색 채워주는 힌트
+        public override void OnClickOneColorHint()
+        {
+            bool canBuy = CanBuyHint(_modeData.OneColorHintCost);
+            if (canBuy == false) return;
+
+            ChangeGold(_modeData.OneColorHintCost);
+
             Time.timeScale = 0;
             _state = RevealSameColorHintState.SelectColor;
             _challengeStageUIPresenter.ActivateHintPanel(true); // active panel 적용해주기
         }
 
-        void GoToClearStage()
+        // 랜덤 포인트를 채워주는 힌트
+        public override void OnClickOneZoneHint()
         {
-            float leftRatio = _timer.Ratio;
-            _timer.Reset(); // 타이머 리셋
-            _fsm.SetState(ChallengeMode.State.StageClear, new PaintState.Data(leftRatio));
-        }
+            bool canBuy = CanBuyHint(_modeData.OneZoneHintCost);
+            if (canBuy == false) return;
 
-        public override void OnClickRandomFillHint()
-        {
-            RandomFindHint();
-        }
+            ChangeGold(_modeData.OneZoneHintCost);
 
-        void RandomFindHint()
-        {
             while (true)
             {
                 int randomRow = Random.Range(0, _levelSize.x);
@@ -292,6 +329,15 @@ namespace Challenge
                 SpreadColor(new Vector2Int(randomRow, randomCol));
                 break;
             }
+        }
+
+        void GoToClearStage()
+        {
+            _challengeStageUIPresenter.ActiveGoldPanel(false);
+
+            float leftRatio = _timer.Ratio;
+            _timer.Reset(); // 타이머 리셋
+            _fsm.SetState(ChallengeMode.State.StageClear, new PaintState.Data(leftRatio));
         }
 
         // 색 같은 거끼리 bfs 돌려서 확인해줌

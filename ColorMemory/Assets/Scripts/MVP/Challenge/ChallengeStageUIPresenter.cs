@@ -3,27 +3,122 @@ using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
 using System;
+using Unity.VisualScripting;
 
 public class ChallengeStageUIPresenter
 {
     ChallengeStageUIModel _model;
     ChallengeStageUIViewer _viewer;
 
-    public ChallengeStageUIPresenter(ChallengeStageUIModel model, ChallengeStageUIViewer viewer)
+    public ChallengeStageUIPresenter(ChallengeStageUIModel model)
     {
         _model = model;
+    }
+
+    public void InjectViewer(ChallengeStageUIViewer viewer)
+    {
         _viewer = viewer;
     }
 
-    public void FillTimeSlider(float duration)
+    public void ChangeHintCost(int oneColorHintCost, int oneZoneHintCost)
     {
-        DOVirtual.Float(_model.TimeRatio, 1, duration, 
-            ((ratio) => 
-            { 
-                _model.TimeRatio = ratio; 
-                _viewer.FillTimeSlider(_model.TimeRatio);
-            }
-        ));
+        _model.OneColorHintCost = oneColorHintCost;
+        _model.OneZoneHintCost = oneZoneHintCost;
+        _viewer.ChangeHintCost(oneColorHintCost, oneZoneHintCost);
+    }
+
+    public void ActivateHint(bool oneColorHintActive, bool oneZoneHintActive)
+    {
+        _model.OneColorHintActive = oneColorHintActive;
+        _model.OneZoneHintActive = oneZoneHintActive;
+        _viewer.ActivateHint(_model.OneColorHintActive, _model.OneZoneHintActive);
+    }
+
+    public void OnClickGameExitBtn()
+    {
+        // 데이터 저장
+        ServiceLocater.ReturnSaveManager().ChangeBGMVolume(_model.BgmRatio);
+        ServiceLocater.ReturnSaveManager().ChangeSFXVolume(_model.SfxRatio);
+
+        ServiceLocater.ReturnTimeController().Start();
+        ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.HomeScene);
+    }
+
+    public void ActivatePausePanel(bool active)
+    {
+        if(active)
+        {
+            ServiceLocater.ReturnTimeController().Stop();
+
+            // 데이터 불러와서 반영
+            SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
+            _viewer.ChangeBGMSliderValue(data.BgmVolume, _model.ColorOnBgmHandle, _model.ColorOnZeroValue);
+            _viewer.ChangeSFXSliderValue(data.SfxVolume, _model.ColorOnSfxHandle, _model.ColorOnZeroValue);
+        }
+        else
+        {
+            ServiceLocater.ReturnTimeController().Start();
+
+            //// 데이터 저장
+            //ServiceLocater.ReturnSaveManager().ChangeBGMVolume(_model.BgmRatio);
+            //ServiceLocater.ReturnSaveManager().ChangeSFXVolume(_model.SfxRatio);
+        }
+
+        _model.ActivePausePanel = active;
+        _viewer.ActivatePausePanel(_model.ActivePausePanel);
+    }
+
+    public void SaveBGMValue()
+    {
+        ServiceLocater.ReturnSaveManager().ChangeBGMVolume(_model.BgmRatio);
+    }
+
+    public void SaveSFXValue()
+    {
+        ServiceLocater.ReturnSaveManager().ChangeSFXVolume(_model.SfxRatio);
+    }
+
+
+    public void OnBGMSliderValeChanged(float ratio)
+    {
+        _model.BgmRatio = ratio;
+        _viewer.ChangeBGMSliderHandleColor(_model.BgmRatio, _model.ColorOnBgmHandle, _model.ColorOnZeroValue);
+        ServiceLocater.ReturnSoundPlayer().SetBGMVolume(_model.BgmRatio);
+    }
+
+    public void OnSFXSliderValeChanged(float ratio)
+    {
+        _model.SfxRatio = ratio;
+        _viewer.ChangeSFXSliderHandleColor(_model.SfxRatio, _model.ColorOnSfxHandle, _model.ColorOnZeroValue);
+        ServiceLocater.ReturnSoundPlayer().SetSFXVolume(_model.SfxRatio);
+    }
+
+
+    public void ActivateStageOverPreviewPanel(bool active)
+    {
+        _model.ActiveStageOverPreviewPanel = active;
+        _viewer.ActivateStageOverPreviewPanel(_model.ActiveStageOverPreviewPanel);
+    }
+
+    public void ChangeLastStagePattern(MapData data, Color[] pickColors)
+    {
+        _model.MapData = data;
+        _model.PickColors = pickColors;
+        _viewer.ChangeLastStagePattern(_model.StageCount, _model.MapData, _model.PickColors);
+    }
+
+    public void ChangeStageOverInfo()
+    {
+        _viewer.ChangeStageOverInfo(_model.StageCount);
+    }
+
+
+
+
+    public void ActivatePlayPanel(bool active)
+    {
+        _model.ActivePlayPanel = active;
+        _viewer.ActivatePlayPanel(_model.ActivePlayPanel);
     }
 
     public void ChangeBestScore(int bestScore)
@@ -70,6 +165,20 @@ public class ChallengeStageUIPresenter
         _viewer.ActivateHintPanel(_model.ActiveHintPanel);
     }
 
+
+    public void ActiveGoldPanel(bool active)
+    {
+        _model.ActiveCoinPanel = active;
+        _viewer.ActivateCoinPanel(_model.ActiveCoinPanel);
+    }
+
+    public void ChangeCoinCount(int coinCount)
+    {
+        _model.CoinCount = coinCount;
+        _viewer.ChangeCoinCount(coinCount);
+    }
+
+
     public void ActivateGameOverPanel(bool active)
     {
         _model.ActiveGameOverPanel = active;
@@ -99,15 +208,15 @@ public class ChallengeStageUIPresenter
         _viewer.ActivateGameResultPanel(_model.ActiveGameResultPanel);
     }
 
-    public void ChangeGoldCount(int goldCount)
+    public void ChangeResultGoldCount(int goldCount)
     {
         _model.GoldCount = goldCount;
-        _viewer.ChangeGoldCount(_model.GoldCount);
+        _viewer.ChangeResultGoldCount(_model.GoldCount);
     }
 
-    public void AddRanking(SpawnableUI ranking, bool setToMiddle = false)
+    public void AddRanking(SpawnableUI ranking, Vector3 size)
     {
-        _viewer.AddRanking(ranking, setToMiddle);
+        _viewer.AddRanking(ranking, size);
     }
 
     public void RemoveAllRanking()
@@ -119,6 +228,6 @@ public class ChallengeStageUIPresenter
     {
         _model.MenuCount = menuCount;
         _model.ScrollIndex = index;
-        _viewer.ChangeRankingScrollValue(_model.MenuCount, _model.ScrollIndex);
+        //_viewer.ChangeRankingScrollValue(_model.MenuCount);
     }
 }

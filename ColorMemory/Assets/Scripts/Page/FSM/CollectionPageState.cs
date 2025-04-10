@@ -8,7 +8,6 @@ using UnityEngine.UI;
 public class CollectionPageState : BaseState<HomePage.InnerPageState>
 {
     ArtworkUIFactory _artworkFactory;
-
     CollectPagePresenter _collectPagePresenter;
 
     public CollectionPageState(
@@ -26,23 +25,45 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
         Button exitBtn,
         Button playBtn,
 
+        GameObject stageDetailContent,
+
+        TMP_Text stageUsedHintUseCount,
+        TMP_Text stageWrongCount,
+
+        FilterUI filterScrollUI,
+        Button filterOpenBtn,
+        Button filterExitBtn,
+        GameObject filterContent,
+        TMP_Text collectionRatioText,
+        Toggle[] rankToggles,
+        Toggle[] dateToggles,
+
         ArtworkScrollUI artworkScrollUI,
 
         ArtworkUIFactory artworkFactory,
         StageUIFactory stageUIFactory,
 
-        Dictionary<ArtName, ArtData> artworkDatas,
-        Dictionary<ArtName, CollectiveArtData> artDatas,
+        FilteredArtworkFactory filteredArtworkFactory,
+        FilterItemFactory filterItemFactory,
+
+        Dictionary<int, ArtData> artDatas,
+        Dictionary<int, ArtworkData> artworkDatas,
+        Dictionary<int, CollectArtData> collectArtDatas,
         FSM<HomePage.InnerPageState> fsm) : base(fsm)
     {
-        int artDataCount = Enum.GetValues(typeof(ArtName)).Length;
-        artworkScrollUI.SetUp(artDataCount);
+        CollectPageModel collectPageModel = new CollectPageModel(
+            artDatas,
+            artworkDatas,
+            collectArtDatas);
 
-        List<ArtName> artNames = new List<ArtName>();
-        for (int i = 0; i < artworkDatas.Count; i++) artNames.Add((ArtName)i);
+        _collectPagePresenter = new CollectPagePresenter(
+            collectPageModel,
+            artworkFactory,
+            stageUIFactory,
+            filteredArtworkFactory,
+            filterItemFactory,
+            GoToCollectMode);
 
-        CollectPageModel collectPageModel = new CollectPageModel(artNames, artworkDatas, artDatas);
-        _collectPagePresenter = new CollectPagePresenter(collectPageModel, artworkFactory, stageUIFactory, GoToCollectMode);
         CollectPageViewer collectPageViewer = new CollectPageViewer(
             collectionContent,
             titleTxt,
@@ -55,6 +76,16 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
             stageUIContent,
             exitBtn,
             playBtn,
+            stageDetailContent,
+            stageUsedHintUseCount,
+            stageWrongCount,
+            filterScrollUI,
+            filterOpenBtn,
+            filterExitBtn,
+            filterContent,
+            collectionRatioText,
+            rankToggles,
+            dateToggles,
             _collectPagePresenter);
 
         _collectPagePresenter.InjectViewer(collectPageViewer);
@@ -83,13 +114,17 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
 
     public override void OnStateEnter()
     {
+        _collectPagePresenter.ChangeCollectionRatioInfo();
+        _collectPagePresenter.ActivateFilterScrollUI(true);
+        _collectPagePresenter.ChangeArtworkDescription(0);
         _collectPagePresenter.FillArtwork();
         _collectPagePresenter.ActiveContent(true); // home ╢щ╬фаж╠Б
     }
 
     public override void OnStateExit()
     {
-        _collectPagePresenter.RemoveAllArtwork();
+        _collectPagePresenter.DestroyAllArtwork();
+        _collectPagePresenter.ActivateFilterScrollUI(false);
         _collectPagePresenter.ActiveContent(false); // home ╢щ╬фаж╠Б
     }
 }
