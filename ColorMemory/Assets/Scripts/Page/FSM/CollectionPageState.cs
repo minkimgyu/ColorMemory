@@ -13,6 +13,10 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
     public CollectionPageState(
         Button homeBtn,
         GameObject collectionContent,
+
+        GameObject artworkInfoContent,
+        GameObject artworkCompleteRatioContent,
+
         TMP_Text titleTxt,
         TMP_Text descriptionTxt,
 
@@ -66,6 +70,10 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
 
         CollectPageViewer collectPageViewer = new CollectPageViewer(
             collectionContent,
+
+            artworkInfoContent,
+            artworkCompleteRatioContent,
+
             titleTxt,
             descriptionTxt,
             artworkScrollUI,

@@ -9,6 +9,8 @@ public class CollectPageModel
     bool _activeContent;
     bool _activeSelectStageContent;
 
+
+    bool _activeArtworkInfoContent;
     string _title;
     string _description;
 
@@ -39,6 +41,8 @@ public class CollectPageModel
         _activeContent = false;
         _activeSelectStageContent = false;
         _activeStageDetailContent = false;
+
+        _activeArtworkInfoContent = true;
         _title = "";
         _description = "";
         _artworkIndex = 1;
@@ -70,6 +74,10 @@ public class CollectPageModel
     public bool ActiveContent { get => _activeContent; set => _activeContent = value; }
     public bool ActiveSelectStageContent { get => _activeSelectStageContent; set => _activeSelectStageContent = value; }
     public bool ActiveStageDetailContent { get => _activeStageDetailContent; set => _activeStageDetailContent = value; }
+
+
+    public bool ActiveArtworkInfoContent { get => _activeArtworkInfoContent; set => _activeArtworkInfoContent = value; }
+
 
     public string Title { get => _title; set => _title = value; }
     public string Description { get => _description; set => _description = value; }

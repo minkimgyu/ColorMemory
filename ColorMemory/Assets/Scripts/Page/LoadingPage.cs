@@ -30,22 +30,14 @@ public class LoadingPage : MonoBehaviour
         RenderTexture.active = activeRT;
     }
 
-    bool _loopOnce = false;
-
     private void Awake()
     {
         ClearRenderTextureToWhite(_renderTexture);
         _loadingObj.SetActive(false);
 
         _videoPlayer.isLooping = true;
-        _videoPlayer.loopPointReached += (source) => 
-        {
-            if (_loopOnce == true) return;
-
-            _loopOnce = true;
-            _loadingObj.SetActive(true); 
-            SetUserData(); 
-        };
+        _loadingObj.SetActive(true);
+        SetUserData();
 
         _videoPlayer.Prepare();
         _videoPlayer.prepareCompleted += (vp) => { vp.Play(); };

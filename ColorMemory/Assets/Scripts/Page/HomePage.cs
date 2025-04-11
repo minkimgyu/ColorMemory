@@ -49,6 +49,9 @@ public class HomePage : MonoBehaviour
     [SerializeField] GameObject _selectStageContent;
     [SerializeField] Transform _stageUIContent;
 
+    [SerializeField] GameObject _artworkInfoContent;
+    [SerializeField] GameObject _artworkCompleteRatioContent;
+
     [SerializeField] TMP_Text _titleTxt;
     [SerializeField] TMP_Text _descriptionTxt;
 
@@ -235,6 +238,8 @@ public class HomePage : MonoBehaviour
                 InnerPageState.Collection, new CollectionPageState(
                 _homeBtn,
                 _collectionContent,
+                _artworkInfoContent,
+                _artworkCompleteRatioContent,
                 _titleTxt,
                 _descriptionTxt,
                 _completeSlider,

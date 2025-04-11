@@ -7,6 +7,13 @@ using TMPro;
 public class CollectPageViewer
 {
     GameObject _content;
+
+    GameObject _artworkInfoContent;
+    GameObject _artworkCompleteRatioContent;
+
+    Button _artworkInfoBtn;
+    Button _artworkCompleteRatioBtn;
+
     TMP_Text _titleTxt;
     TMP_Text _descriptionTxt;
 
@@ -38,6 +45,10 @@ public class CollectPageViewer
 
     public CollectPageViewer(
         GameObject content,
+
+        GameObject artworkInfoContent,
+        GameObject artworkCompleteRatioContent,
+
         TMP_Text titleTxt,
         TMP_Text descriptionTxt,
 
@@ -67,6 +78,19 @@ public class CollectPageViewer
         CollectPagePresenter collectPagePresenter)
     {
         _content = content;
+
+        _artworkInfoContent = artworkInfoContent;
+        _artworkInfoContent.SetActive(true);
+
+        _artworkCompleteRatioContent = artworkCompleteRatioContent;
+        _artworkCompleteRatioContent.SetActive(false);
+
+        _artworkInfoBtn = _artworkInfoContent.GetComponent<Button>();
+        _artworkCompleteRatioBtn = _artworkCompleteRatioContent.GetComponent<Button>();
+
+        _artworkInfoBtn.onClick.AddListener(() => { collectPagePresenter.SwitchArtworkInfoContent(false); });
+        _artworkCompleteRatioBtn.onClick.AddListener(() => { collectPagePresenter.SwitchArtworkInfoContent(true); });
+
         _titleTxt = titleTxt;
         _descriptionTxt = descriptionTxt;
         _artworkScrollUI = artworkScrollUI;
@@ -140,6 +164,20 @@ public class CollectPageViewer
                 break;
             default:
                 break;
+        }
+    }
+
+    public void SwitchArtworkInfoContent(bool active)
+    {
+        if(active == true)
+        {
+            _artworkInfoContent.SetActive(true);
+            _artworkCompleteRatioContent.SetActive(false);
+        }
+        else
+        {
+            _artworkInfoContent.SetActive(false);
+            _artworkCompleteRatioContent.SetActive(true);
         }
     }
 

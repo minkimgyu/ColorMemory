@@ -42,6 +42,12 @@ public class CollectPagePresenter
         this.OnClickPlayBtn = OnClickPlayBtn;
     }
 
+    public void SwitchArtworkInfoContent(bool active)
+    {
+        _collectPageModel.ActiveArtworkInfoContent = active;
+        _collectPageViewer.SwitchArtworkInfoContent(_collectPageModel.ActiveArtworkInfoContent);
+    }
+
     public void ChangeCollectionRatioInfo()
     {
         int hasCount = 0;
