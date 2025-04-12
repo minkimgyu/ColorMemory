@@ -60,5 +60,6 @@ public class MainPagePresenter
         _mainPageViewer.ChangeTitleImage(_mainPageModel.TitleImages[_mainPageModel.ModeType]);
         _mainPageViewer.ChangeDotColors(_mainPageModel.DotColors[_mainPageModel.ModeType]);
         _mainPageViewer.ChangePlayBtnColor(_mainPageModel.PlayBtnColors[_mainPageModel.ModeType]);
+        _mainPageViewer.ChangePlayBtnTxt(_mainPageModel.PlayBtnTxt[_mainPageModel.ModeType]);
     }
 }

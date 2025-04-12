@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using Newtonsoft.Json;
-using static UnityEngine.GraphicsBuffer;
 
-public enum RankingIconName
+public enum ProfileIconName
 {
     Icon1,
     Icon2,
@@ -32,23 +30,23 @@ public struct RankingData
 
 public struct PersonalRankingData
 {
-    RankingIconName _iconName;
+    int _profileIconIndex;
     string _name; // key
     int _score;
-    int _rank;
+    int _ranking;
 
-    public PersonalRankingData(RankingIconName iconName, string name, int score, int rank)
+    public PersonalRankingData(int profileIconIndex, string name, int score, int ranking)
     {
-        _iconName = iconName;
+        _profileIconIndex = profileIconIndex;
         _name = name;
         _score = score;
-        _rank = rank;
+        _ranking = ranking;
     }
 
-    public RankingIconName IconName { get => _iconName; }
+    public int ProfileIconIndex { get => _profileIconIndex; }
     public string Name { get => _name; }
     public int Score { get => _score; }
-    public int Rank { get => _rank; }
+    public int Rank { get => _ranking; }
 }
 
 public class RankingUI : SpawnableUI
@@ -69,9 +67,9 @@ public class RankingUI : SpawnableUI
         else _backgroundImg.color = Color.white;
     }
 
-    public override void ChangeScale(Vector3 scale, float ratio)
+    public override void ChangeScale(Vector3 scale)
     {
-        transform.localScale = Vector3.Lerp(transform.localScale, scale, ratio);
+        transform.localScale = scale;
     }
 
     public override void ResetPosition()

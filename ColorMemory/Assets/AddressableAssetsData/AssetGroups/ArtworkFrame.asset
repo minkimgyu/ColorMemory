@@ -17,20 +17,26 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: 2b57536b8fac4214198b348499a0012f
   m_SerializeEntries:
-  - m_GUID: 48c127411a0310e419878646f75abfe7
+  - m_GUID: 2b247d0403d2d414d9a0090b4980b89f
+    m_Address: COPPER
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - ArtworkFrame
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 70776d867cc427943a2ab4caf65d304d
+    m_Address: NONE
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - ArtworkFrame
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: aadbddd1d838b874fbbef76f8b9f54e7
     m_Address: GOLD
     m_ReadOnly: 0
     m_SerializedLabels:
     - ArtworkFrame
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 95d8278459c0b1744808f07e19d1a660
+  - m_GUID: eeef62510fd55fb479ff880fa14a5e2f
     m_Address: SILVER
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - ArtworkFrame
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c9e2dcb4692175e4ca0e562bd65a908e
-    m_Address: COPPER
     m_ReadOnly: 0
     m_SerializedLabels:
     - ArtworkFrame

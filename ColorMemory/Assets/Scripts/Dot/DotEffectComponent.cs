@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
-using System.Collections.Generic;
+using System;
 
 public class DotEffectComponent : MonoBehaviour
 {
@@ -19,23 +19,69 @@ public class DotEffectComponent : MonoBehaviour
         _effectFactory = effectFactory;
     }
 
-    public void Fade(Color endColor, Image.FillMethod method, float duration)
+    //public void Fade(Color endColor, Image.FillMethod method, float duration)
+    //{
+    //    Effect fadeEffect = _effectFactory.Create(Effect.Name.CircleEffect);
+
+    //    fadeEffect.transform.SetParent(transform);
+    //    fadeEffect.transform.SetAsLastSibling();
+
+    //    fadeEffect.transform.position = transform.position;
+
+    //    fadeEffect.ChangeSize(_dotTransform.sizeDelta);
+    //    fadeEffect.ChangeColor(_dotImage.color);
+
+    //    ChangeColor(endColor); // 본인 색 바꾸기
+
+    //    fadeEffect.Fade(transform.localScale, duration, method,
+    //        () =>
+    //        {
+    //            Destroy(fadeEffect.gameObject);
+    //        }
+    //    );
+    //}
+
+    public void Expand(float endScale, Color endColor, float duration)
     {
+        Color originColor = _dotImage.color;
+        ChangeColor(new Color(0, 0, 0, 0));
+
+        Effect expendEffect = _effectFactory.Create(Effect.Name.CircleEffect);
+        expendEffect.name = "expendEffect";
+
+        expendEffect.transform.SetParent(transform);
+        expendEffect.transform.SetAsLastSibling();
+
+        expendEffect.transform.position = transform.position;
+        expendEffect.transform.localScale = Vector3.zero;
+
+        expendEffect.ChangeSize(_dotTransform.sizeDelta);
+        expendEffect.ChangeColor(endColor);
+
+        expendEffect.Scale(endScale, duration,
+            () =>
+            {
+                Destroy(expendEffect.gameObject);
+            }
+        );
+
+
         Effect fadeEffect = _effectFactory.Create(Effect.Name.CircleEffect);
+        fadeEffect.name = "fadeEffect";
 
         fadeEffect.transform.SetParent(transform);
         fadeEffect.transform.SetAsLastSibling();
 
         fadeEffect.transform.position = transform.position;
+        fadeEffect.transform.localScale = Vector3.one;
 
         fadeEffect.ChangeSize(_dotTransform.sizeDelta);
-        fadeEffect.ChangeColor(_dotImage.color);
+        fadeEffect.ChangeColor(originColor);
 
-        ChangeColor(endColor); // 본인 색 바꾸기
-
-        fadeEffect.Fade(transform.localScale, duration, method,
+        fadeEffect.Color(new Color(originColor.r, originColor.g, originColor.b, 0), duration,
             () =>
             {
+                ChangeColor(endColor);
                 Destroy(fadeEffect.gameObject);
             }
         );
@@ -46,6 +92,7 @@ public class DotEffectComponent : MonoBehaviour
         ChangeColor(endColor);
 
         Effect diffuseEffect = _effectFactory.Create(Effect.Name.CircleEffect);
+        diffuseEffect.name = "diffuseEffect";
 
         diffuseEffect.transform.SetParent(_dotTransform);
         diffuseEffect.transform.SetAsFirstSibling();
@@ -53,6 +100,7 @@ public class DotEffectComponent : MonoBehaviour
         diffuseEffect.transform.position = _dotTransform.position;
 
         diffuseEffect.ChangeSize(_dotTransform.sizeDelta);
+        diffuseEffect.ChangeScale(Vector3.one);
 
         diffuseEffect.Scale(1.75f, duration);
         diffuseEffect.Color(new Color(endColor.r * 0.7f, endColor.g * 0.7f, endColor.b * 0.7f, 0), duration,
@@ -63,6 +111,7 @@ public class DotEffectComponent : MonoBehaviour
         );
 
         Effect fadeEffect = _effectFactory.Create(Effect.Name.CircleEffect);
+        fadeEffect.name = "fadeEffect";
 
         fadeEffect.transform.SetParent(transform);
         fadeEffect.transform.SetAsLastSibling();
@@ -70,6 +119,7 @@ public class DotEffectComponent : MonoBehaviour
         fadeEffect.transform.position = transform.position;
 
         fadeEffect.ChangeSize(_dotTransform.sizeDelta);
+        fadeEffect.ChangeScale(Vector3.one);
 
         fadeEffect.Fade(transform.localScale, duration, Image.FillMethod.Horizontal,
             () =>
@@ -79,24 +129,48 @@ public class DotEffectComponent : MonoBehaviour
         );
     }
 
-    public void Fill(Color endColor, float duration)
+    public void XSlide(Color endColor, float duration)
     {
-        ChangeColor(endColor);
+        //ChangeColor(endColor);
 
-        Effect rectEffect = _effectFactory.Create(Effect.Name.RectEffect);
+        Effect diffuseEffect = _effectFactory.Create(Effect.Name.CircleEffect);
+        diffuseEffect.name = "diffuseEffect";
 
-        rectEffect.transform.SetParent(transform);
-        rectEffect.transform.SetAsLastSibling();
+        diffuseEffect.transform.SetParent(_dotTransform);
+        diffuseEffect.transform.SetAsFirstSibling();
 
-        rectEffect.transform.position = transform.position;
+        diffuseEffect.transform.position = _dotTransform.position;
 
-        rectEffect.ChangeSize(_dotTransform.sizeDelta);
-        rectEffect.ChangeColor(endColor);
+        diffuseEffect.ChangeSize(_dotTransform.sizeDelta);
+        diffuseEffect.ChangeScale(Vector3.one);
 
-        rectEffect.Scale(1 + 0.07f, duration,
+        diffuseEffect.Scale(1.75f, duration);
+        diffuseEffect.Color(new Color(endColor.r * 0.7f, endColor.g * 0.7f, endColor.b * 0.7f, 0), duration,
             () =>
             {
-                Destroy(rectEffect.gameObject);
+                Destroy(diffuseEffect.gameObject);
+            }
+        );
+
+        Effect fadeEffect = _effectFactory.Create(Effect.Name.XEffect);
+        fadeEffect.name = "fadeEffect";
+
+        fadeEffect.transform.SetParent(transform);
+        fadeEffect.transform.SetAsLastSibling();
+
+        fadeEffect.transform.position = transform.position;
+
+        fadeEffect.ChangeSize(_dotTransform.sizeDelta);
+        fadeEffect.ChangeScale(Vector3.zero);
+        fadeEffect.Scale(1, duration,
+            () =>
+            {
+                fadeEffect.Scale(0, duration,
+                    () =>
+                    {
+                        Destroy(fadeEffect.gameObject);
+                    }
+                );
             }
         );
     }

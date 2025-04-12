@@ -1,0 +1,115 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: CircleProfileIcons
+  m_EditorClassIdentifier: 
+  m_GroupName: CircleProfileIcons
+  m_Data:
+    m_SerializedData: []
+  m_GUID: ef4402a0eb05bd94083a84f51cba2251
+  m_SerializeEntries:
+  - m_GUID: 0683b95f580c6c74991507550bc69488
+    m_Address: 7
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - CircleProfileIcon
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0cf779b618ab8bb4bb2f0bfd43447bdb
+    m_Address: 3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - CircleProfileIcon
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0e60688e0452df54892a66875315f31b
+    m_Address: 12
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - CircleProfileIcon
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 122dcdbf5e5a7c34091f5a3e2d8c6bcc
+    m_Address: 9
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - CircleProfileIcon
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 20100a83faf02ea46b768e76234ce04c
+    m_Address: 8
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - CircleProfileIcon
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 47d7dac4c3d2a5f4cab55a20a8c1ed1a
+    m_Address: 1
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - CircleProfileIcon
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 55dfb2925039ea44e94519b7ea111380
+    m_Address: 2
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - CircleProfileIcon
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5cee1bd0a90f6b24e976cbceaf9e32ef
+    m_Address: 11
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - CircleProfileIcon
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 68a92ae91fc19344693a5a1f46704a8b
+    m_Address: 4
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - CircleProfileIcon
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 859d9a24f131c204b96f4ccff91ca271
+    m_Address: 6
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - CircleProfileIcon
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a71707b2de25921428e896c6aa5af0e9
+    m_Address: 14
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - CircleProfileIcon
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c1d3ec5373fcf254d8bae9e7fd6cfb31
+    m_Address: 5
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - CircleProfileIcon
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dbd6b8117ebd6124a9a3763a546d2d79
+    m_Address: 13
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - CircleProfileIcon
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ebf7f8b3faa539d4eb5a6e5b0fa54ca0
+    m_Address: 10
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - CircleProfileIcon
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eef78248b7a8a85438523aa3f94249c2
+    m_Address: 0
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - CircleProfileIcon
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 5736eef86fbab2943992749ebee4f1e0, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 00380d9b1e159264c88fc2a9d1d60019, type: 2}
+    - {fileID: 11400000, guid: 96381ec46fb51dd45b3a4ba33cbd7e10, type: 2}
