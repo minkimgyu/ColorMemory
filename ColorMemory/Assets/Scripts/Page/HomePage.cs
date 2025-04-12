@@ -223,6 +223,15 @@ public class HomePage : MonoBehaviour
         _filterScrollUI.Initialize();
         _filterScrollUI.Activate(false);
 
+
+        InnerPageState startState = InnerPageState.Main;
+        if (data.GoToCollectPage == true)
+        {
+            startState = InnerPageState.Collection;
+            ServiceLocater.ReturnSaveManager().ChangeGoToCollectPage(false);
+        }
+       
+
         _pageFsm = new FSM<InnerPageState>();
         _pageFsm.Initialize(new Dictionary<InnerPageState, BaseState<InnerPageState>>
         {
@@ -303,6 +312,6 @@ public class HomePage : MonoBehaviour
                 _topElementPresenter,
                 _pageFsm)
             },
-        }, InnerPageState.Main);
+        }, startState);
     }
 }

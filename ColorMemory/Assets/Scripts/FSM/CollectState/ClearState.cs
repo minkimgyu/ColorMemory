@@ -37,7 +37,8 @@ namespace Collect
 
         public override void OnClickExitBtn()
         {
-            ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.HomeScene);
+            _fsm.SetState(CollectMode.State.Result);
+            //ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.HomeScene);
         }
 
         async Task<List<PlayerArtworkDTO>> GetArtDataFromServer()

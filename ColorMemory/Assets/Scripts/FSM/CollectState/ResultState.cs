@@ -27,6 +27,7 @@ namespace Collect
 
         public override void OnClickNextBtn()
         {
+            ServiceLocater.ReturnSaveManager().ChangeGoToCollectPage(true);
             ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.HomeScene);
         }
 

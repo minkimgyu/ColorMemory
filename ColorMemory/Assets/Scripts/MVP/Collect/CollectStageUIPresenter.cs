@@ -148,37 +148,7 @@ public class CollectStageUIPresenter
         //ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.HomeScene);
     }
 
-    readonly Color _colorOnZeroValue = new Color(118f / 255f, 113f / 255f, 111f / 255f);
-    readonly Color _colorOnBgmHandle = new Color(113f / 255f, 191f / 255f, 255f / 255f);
-    readonly Color _colorOnSfxHandle = new Color(255f / 255f, 154f / 255f, 145f / 255f);
-
-    void ChangeBGMModel(float volumn)
-    {
-        if (volumn == 0)
-        {
-            _model.BgmleftTextInfo = "음소거";
-            _model.ColorOnBgmHandle = _colorOnZeroValue;
-        }
-        else
-        {
-            _model.BgmleftTextInfo = "작게";
-            _model.ColorOnBgmHandle = _colorOnBgmHandle;
-        }
-    }
-
-    void ChangeSFXModel(float volumn)
-    {
-        if (volumn == 0)
-        {
-            _model.SfxleftTextInfo = "음소거";
-            _model.ColorOnSfxHandle = _colorOnZeroValue;
-        }
-        else
-        {
-            _model.SfxleftTextInfo = "작게";
-            _model.ColorOnSfxHandle = _colorOnSfxHandle;
-        }
-    }
+    
 
     public void ActivatePausePanel(bool active)
     {
@@ -212,6 +182,38 @@ public class CollectStageUIPresenter
     public void SaveSFXValue()
     {
         ServiceLocater.ReturnSaveManager().ChangeSFXVolume(_model.SfxRatio);
+    }
+
+    readonly Color _colorOnZeroValue = new Color(118f / 255f, 113f / 255f, 111f / 255f);
+    readonly Color _colorOnBgmHandle = new Color(113f / 255f, 191f / 255f, 255f / 255f);
+    readonly Color _colorOnSfxHandle = new Color(255f / 255f, 154f / 255f, 145f / 255f);
+
+    void ChangeBGMModel(float volumn)
+    {
+        if (volumn == 0)
+        {
+            _model.BgmleftTextInfo = "음소거";
+            _model.ColorOnBgmHandle = _colorOnZeroValue;
+        }
+        else
+        {
+            _model.BgmleftTextInfo = "작게";
+            _model.ColorOnBgmHandle = _colorOnBgmHandle;
+        }
+    }
+
+    void ChangeSFXModel(float volumn)
+    {
+        if (volumn == 0)
+        {
+            _model.SfxleftTextInfo = "음소거";
+            _model.ColorOnSfxHandle = _colorOnZeroValue;
+        }
+        else
+        {
+            _model.SfxleftTextInfo = "작게";
+            _model.ColorOnSfxHandle = _colorOnSfxHandle;
+        }
     }
 
     public void OnBGMSliderValeChanged(float ratio)

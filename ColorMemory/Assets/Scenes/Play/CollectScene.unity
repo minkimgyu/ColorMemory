@@ -1889,6 +1889,10 @@ PrefabInstance:
       propertyPath: m_text
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 4339347626096715540, guid: 3c1c234e926fb8643ae47455b49db66a, type: 3}
+      propertyPath: m_HorizontalAlignment
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 4441218996643110378, guid: 3c1c234e926fb8643ae47455b49db66a, type: 3}
       propertyPath: m_text
       value: 

@@ -7,6 +7,7 @@ using NetworkService.Manager;
 using NetworkService.DTO;
 using System.Reflection;
 using DG.Tweening;
+using static UnityEditor.Progress;
 
 public class CollectPagePresenter
 {
@@ -371,6 +372,7 @@ public class CollectPagePresenter
 
 
 
+
     public void FillStage()
     {
         int artworkIndex = _collectPageModel.ArtworkIndex;
@@ -418,17 +420,6 @@ public class CollectPagePresenter
                     break;
             }
 
-            //if (data.Value.Stauts == true)
-            //{
-            //    spawnableUI.SetState(StageUI.State.Lock);
-            //}
-            //else
-            //{
-            //    spawnableUI.SetState(StageUI.State.Open);
-            //    if(data.Value.IsPlayed == true) spawnableUI.SetRank(data.Value.Rank); // 한번 플레이 한 경우만 랭크 표시
-            //    else _openIndex = data.Key;
-            //}
-
             _collectPageViewer.AddStage(spawnableUI);
         }
 
@@ -468,5 +459,13 @@ public class CollectPagePresenter
     {
         _collectPageModel.ArtworkIndex = artworkIndex; // -> 1 추가해서 받기
         UpdateArtInfo(_collectPageModel.ArtworkIndex);
+    }
+
+    public void ScrollArtworkToIndex(int artworkIndex)
+    {
+        OnArtworkScrollChanged(artworkIndex);
+
+        int scrollIndex = _collectPageModel.FilteredArtDatas.FindIndex(x => x.Key == artworkIndex);
+        _collectPageViewer.SetArtworkScrollIndex(scrollIndex);
     }
 }

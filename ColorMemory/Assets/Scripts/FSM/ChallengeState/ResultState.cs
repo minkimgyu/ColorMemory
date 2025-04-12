@@ -74,7 +74,7 @@ namespace Challenge
             try
             {
                 string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
-                playerScoreDTOs = await scoreManager.GetSurroundingWeeklyRankingAsync(userId, 2);
+                playerScoreDTOs = await scoreManager.GetSurroundingWeeklyRankingByIdAsync(userId, 2);
             }
             catch (Exception e)
             {

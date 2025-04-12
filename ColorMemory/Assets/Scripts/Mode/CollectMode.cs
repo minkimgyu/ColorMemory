@@ -175,11 +175,6 @@ namespace Collect
             return _modeData;
         }
 
-        void OnClickExitBtn()
-        {
-            ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.HomeScene);
-        }
-
         private void Update()
         {
             _fsm.OnUpdate();

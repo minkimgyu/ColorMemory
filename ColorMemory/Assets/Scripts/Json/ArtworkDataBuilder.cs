@@ -24,7 +24,7 @@ public class ArtworkDataBuilder : SheetDataBuilder
             description = columns[3];
 
             ArtworkData artworkData = new ArtworkData(artist, title, description);
-            artworkDates.Add(i, artworkData);
+            artworkDates.Add(i - 1, artworkData);
         }
 
         return artworkDates;

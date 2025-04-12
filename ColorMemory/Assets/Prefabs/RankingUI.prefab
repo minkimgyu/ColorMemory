@@ -525,7 +525,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _backgroundImg: {fileID: 7850559169767470862}
-  _profileImg: {fileID: 3256214116429314108}
+  _profileImg: {fileID: 7922175387192144054}
   _nameTxt: {fileID: 117743315202843355}
   _scoreTxt: {fileID: 4537108523802244697}
   _rankTxt: {fileID: 6470566408715956589}

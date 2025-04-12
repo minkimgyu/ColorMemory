@@ -37,8 +37,12 @@ namespace Challenge
         [SerializeField] GameObject _pausePanel;
         [SerializeField] Button _pauseExitBtn;
         [SerializeField] Button _gameExitBtn;
+
         [SerializeField] CustomSlider _bgmSlider;
+        [SerializeField] TMP_Text _bgmLeftText;
+
         [SerializeField] CustomSlider _sfxSlider;
+        [SerializeField] TMP_Text _sfxLeftText;
 
         [Header("Preview")]
         [SerializeField] GameObject _stageOverPreviewPanel;
@@ -248,7 +252,6 @@ namespace Challenge
             Memorize,
             Paint,
             StageClear,
-            StageOverPreview,
             GameOver,
             Result,
         }
@@ -309,7 +312,7 @@ namespace Challenge
                 addressableHandler.RectProfileIconAssets);
 
             ChallengeStageUIModel model = new ChallengeStageUIModel();
-            ChallengeStageUIPresenter presenter = new ChallengeStageUIPresenter(model);
+            ChallengeStageUIPresenter presenter = new ChallengeStageUIPresenter(model, () => { _fsm.SetState(ChallengeMode.State.GameOver); });
 
             ChallengeStageUIViewer viewer = new ChallengeStageUIViewer(
                 _playPanel,
@@ -336,8 +339,8 @@ namespace Challenge
                 _coinTxt,
 
                 _gameOverPanel,
-                _clearStageCount,
                 _resultScore,
+                _clearStageCount,
 
                 _clearStageContent,
                 _gameResultPanel,
@@ -354,7 +357,9 @@ namespace Challenge
                 _pauseExitBtn,
                 _gameExitBtn,
                 _bgmSlider,
+                _bgmLeftText,
                 _sfxSlider,
+                _sfxLeftText,
                 presenter);
 
             presenter.InjectViewer(viewer);

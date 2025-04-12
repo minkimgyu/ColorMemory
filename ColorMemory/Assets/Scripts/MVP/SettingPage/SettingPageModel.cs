@@ -20,11 +20,6 @@ public class SettingPageModel
 
     string _name;
 
-    Color _colorOnZeroValue;
-
-    Color _colorOnBgmHandle;
-    Color _colorOnSfxHandle;
-
     public bool ActiveContent { get => _activeContent; set => _activeContent = value; }
 
     public int CurrentToggleIndex { get => _toggleIndex; set => _toggleIndex = value; }
@@ -35,16 +30,21 @@ public class SettingPageModel
     public float SfxRatio { get => _sfxRatio; set => _sfxRatio = value; }
     public Dictionary<int, Sprite> ProfileSprites { get => _profileSprites; set => _profileSprites = value; }
     public string Name { get => _name; set => _name = value; }
-    public Color ColorOnZeroValue { get => _colorOnZeroValue; }
-    public Color ColorOnBgmHandle { get => _colorOnBgmHandle; }
-    public Color ColorOnSfxHandle { get => _colorOnSfxHandle; }
+
+    Color _colorOnBgmHandle;
+    Color _colorOnSfxHandle;
+
+    public Color ColorOnBgmHandle { get => _colorOnBgmHandle; set => _colorOnBgmHandle = value; }
+    public Color ColorOnSfxHandle { get => _colorOnSfxHandle; set => _colorOnSfxHandle = value; }
+
+    string _bgmleftTextInfo;
+    public string BgmleftTextInfo { get => _bgmleftTextInfo; set => _bgmleftTextInfo = value; }
+
+    string _sfxleftTextInfo;
+    public string SfxleftTextInfo { get => _sfxleftTextInfo; set => _sfxleftTextInfo = value; }
 
     public SettingPageModel(Dictionary<int, Sprite> profileSprites)
     {
-        _colorOnZeroValue = new Color(118f / 255f, 113f / 255f, 111f / 255f);
-        _colorOnBgmHandle = new Color(113f / 255f, 191f / 255f, 255f / 255f);
-        _colorOnSfxHandle = new Color(255f / 255f, 154f / 255f, 145f / 255f);
-
         _name = "";
         _activeContent = false;
         _toggleIndex = 0;

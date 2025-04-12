@@ -17,6 +17,8 @@ public interface ISaveable
 
     void Load() { }
 
+    void ChangeGoToCollectPage(bool goToCollectPage) { }
+
     void ChangeBGMMute(bool nowMute) { }
     void ChangeSFXMute(bool nowMute) { }
 
@@ -53,6 +55,7 @@ public struct SaveData
 
     [JsonProperty] int _selectedArtworkKey;
     [JsonProperty] Vector2Int _selectedArtworkSectionIndex;
+    [JsonProperty] bool _goToCollectPage;
 
     public SaveData(string id, string name)
     {
@@ -68,6 +71,7 @@ public struct SaveData
         _selectedType = GameMode.Type.Collect;
         _selectedArtworkKey = 0;
         _selectedArtworkSectionIndex = Vector2Int.zero;
+        _goToCollectPage = false;
     }
 
     [JsonIgnore] public bool MuteBGM { get => _muteBGM; set => _muteBGM = value; }
@@ -88,6 +92,7 @@ public struct SaveData
     [JsonIgnore] public float SelectedArtworkProgress { get => (float)((_selectedArtworkSectionIndex.x * ArtworkSize) + _selectedArtworkSectionIndex.y) / (float)(ArtworkSize * ArtworkSize);  }
     [JsonIgnore] public string UserId { get => _userId; set => _userId = value; }
     [JsonIgnore] public string UserName { get => _userName; set => _userName = value; }
+    [JsonIgnore] public bool GoToCollectPage { get => _goToCollectPage; set => _goToCollectPage = value; }
 
     [JsonIgnore] const int ArtworkSize = 4;
 }
@@ -186,6 +191,12 @@ public class SaveManager : ISaveable
     {
         string json = _parser.ObjectToJson(_saveData);
         File.WriteAllText(_filePath, json);
+    }
+
+    public void ChangeGoToCollectPage(bool goToCollectPage)
+    {
+        _saveData.GoToCollectPage = goToCollectPage;
+        Save();
     }
 
     public void ChangeUserData(string id, string name)

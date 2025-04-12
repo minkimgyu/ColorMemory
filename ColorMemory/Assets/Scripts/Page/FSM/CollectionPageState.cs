@@ -143,12 +143,9 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
         // content 열어주기
         _collectPagePresenter.ActiveContent(true);
 
-
-
-
         // 저장된 값 불러와서 적용하기
         SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
-        _collectPagePresenter.OnArtworkScrollChanged(data.SelectedArtworkKey);
+        _collectPagePresenter.ScrollArtworkToIndex(data.SelectedArtworkKey);
     }
 
     public override void OnStateExit()

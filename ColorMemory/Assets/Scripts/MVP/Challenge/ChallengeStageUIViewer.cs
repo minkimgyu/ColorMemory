@@ -61,9 +61,11 @@ public class ChallengeStageUIViewer
 
     CustomSlider _bgmSlider;
     Image _bgmSliderHandle;
+    TMP_Text _bgmMuteText;
 
     CustomSlider _sfxSlider;
     Image _sfxSliderHandle;
+    TMP_Text _sfxMuteText;
 
     public ChallengeStageUIViewer(
         GameObject playPanel,
@@ -108,7 +110,11 @@ public class ChallengeStageUIViewer
         Button pauseExitBtn,
         Button gameExitBtn,
         CustomSlider bgmSlider,
+        TMP_Text bgmMuteText,
+
         CustomSlider sfxSlider,
+        TMP_Text sfxMuteText,
+
         ChallengeStageUIPresenter presenter)
     {
         _playPanel = playPanel;
@@ -157,14 +163,16 @@ public class ChallengeStageUIViewer
 
         _bgmSlider = bgmSlider;
         _bgmSliderHandle = bgmSlider.handleRect.GetComponent<Image>();
+        _bgmMuteText = bgmMuteText;
 
         _sfxSlider = sfxSlider;
         _sfxSliderHandle = sfxSlider.handleRect.GetComponent<Image>();
+        _sfxMuteText = sfxMuteText;
 
         _bgmSlider.onHandlePointerUp += ((ratio) => { presenter.SaveBGMValue(); });
         _sfxSlider.onHandlePointerUp += ((ratio) => { presenter.SaveSFXValue(); });
 
-        _gameExitBtn.onClick.AddListener(() => { presenter.OnClickGameExitBtn(); });
+        _gameExitBtn.onClick.AddListener(() => { presenter.OnClickGameExitBtn(); presenter.GoToEndState?.Invoke(); });
         _pauseBtn.onClick.AddListener(() => { presenter.ActivatePausePanel(true); });
         _pauseExitBtn.onClick.AddListener(() => { presenter.ActivatePausePanel(false); });
         _bgmSlider.onValueChanged.AddListener((ratio) => { presenter.OnBGMSliderValeChanged(ratio); });
@@ -196,28 +204,28 @@ public class ChallengeStageUIViewer
         LayoutRebuilder.ForceRebuildLayoutImmediate(_oneZoneHintCostText.transform.parent.GetComponent<RectTransform>());
     }
 
-    public void ChangeBGMSliderValue(float ratio, Color nomalColor, Color colorOnZeroValue)
+    public void ChangeBGMSliderValue(float ratio, string leftSmallTxt, Color handleColor)
     {
         _bgmSlider.value = ratio;
-        ChangeBGMSliderHandleColor(ratio, nomalColor, colorOnZeroValue);
+        ChangeBGMSliderHandleColor(leftSmallTxt, handleColor);
     }
 
-    public void ChangeSFXSliderValue(float ratio, Color nomalColor, Color colorOnZeroValue)
+    public void ChangeSFXSliderValue(float ratio, string leftSmallTxt, Color handleColor)
     {
         _sfxSlider.value = ratio;
-        ChangeSFXSliderHandleColor(ratio, nomalColor, colorOnZeroValue);
+        ChangeSFXSliderHandleColor(leftSmallTxt, handleColor);
     }
 
-    public void ChangeBGMSliderHandleColor(float ratio, Color nomalColor, Color colorOnZeroValue)
+    public void ChangeBGMSliderHandleColor(string leftSmallTxt, Color handleColor)
     {
-        if (ratio == 0) _bgmSliderHandle.color = colorOnZeroValue;
-        else _bgmSliderHandle.color = nomalColor;
+        _bgmSliderHandle.color = handleColor;
+        _bgmMuteText.text = leftSmallTxt;
     }
 
-    public void ChangeSFXSliderHandleColor(float ratio, Color nomalColor, Color colorOnZeroValue)
+    public void ChangeSFXSliderHandleColor(string leftSmallTxt, Color handleColor)
     {
-        if (ratio == 0) _sfxSliderHandle.color = colorOnZeroValue;
-        else _sfxSliderHandle.color = nomalColor;
+        _sfxSliderHandle.color = handleColor;
+        _sfxMuteText.text = leftSmallTxt;
     }
 
     public void ActivatePausePanel(bool active)

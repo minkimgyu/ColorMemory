@@ -16,7 +16,7 @@ Shader "UI/Blur/UIBlurHQ" {
     [HideInInspector]
     _StencilReadMask ("Stencil Read Mask", Float) = 255
     [HideInInspector]
-    _ColorMask ("Color Mask", Color) = (1, 1, 1, 0.2)
+    _ColorMask ("Color Mask", Float) = 15
 
   }
  
@@ -533,4 +533,3 @@ Shader "UI/Blur/UIBlurHQ" {
     }
   }
 }
-출처: https://knightk.tistory.com/62 [KnightK:티스토리]
