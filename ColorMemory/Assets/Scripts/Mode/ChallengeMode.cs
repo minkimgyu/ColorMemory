@@ -29,7 +29,9 @@ namespace Challenge
 
         [Header("Bottom")]
         [SerializeField] ToggleGroup _penToggleGroup;
+        [SerializeField] RectTransform _bottomContent;
         [SerializeField] RectTransform _penContent;
+        [SerializeField] Button _skipBtn;
 
         [Header("Setting")]
         [SerializeField] GameObject _pausePanel;
@@ -64,13 +66,16 @@ namespace Challenge
 
         [Header("GameOver")]
         [SerializeField] GameObject _gameOverPanel;
+
         [SerializeField] TMP_Text _clearStageCount;
+        [SerializeField] TMP_Text _resultScore;
+
         [SerializeField] Transform _clearStageContent;
         [SerializeField] Button _nextBtn;
 
         [Header("GameResult")]
         [SerializeField] GameObject _gameResultPanel;
-        //[SerializeField] TMP_Text _resultScore;
+        
         [SerializeField] TMP_Text _goldCount;
 
         [SerializeField] Transform _rankingContent;
@@ -321,6 +326,9 @@ namespace Challenge
                 _oneZoneHintCostText,
                 _oneColorHintCostText,
 
+                _bottomContent,
+                _skipBtn,
+
                 _hintPanel,
                 _rememberPanel,
 
@@ -329,6 +337,8 @@ namespace Challenge
 
                 _gameOverPanel,
                 _clearStageCount,
+                _resultScore,
+
                 _clearStageContent,
                 _gameResultPanel,
                 _goldCount,
@@ -358,6 +368,8 @@ namespace Challenge
             { 
                 _fsm.OnClickNextBtn(); 
             });
+
+            _skipBtn.onClick.AddListener(() => { _fsm.OnClickSkipBtn(); });
 
             _tryAgainBtn.onClick.AddListener(() => { _fsm.OnClickRetryBtn(); });
             _exitBtn.onClick.AddListener(() => { _fsm.OnClickExitBtn(); });

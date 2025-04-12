@@ -10,9 +10,12 @@ public class CollectStageUIPresenter
     CollectStageUIModel _model;
     CollectStageUIViewer _viewer;
 
-    public CollectStageUIPresenter(CollectStageUIModel model)
+    public Action GoToResultState { get; private set; }
+
+    public CollectStageUIPresenter(CollectStageUIModel model, Action GoToResultState)
     {
         _model = model;
+        this.GoToResultState = GoToResultState;
     }
 
     public void InjectViewer(CollectStageUIViewer viewer)
@@ -20,6 +23,32 @@ public class CollectStageUIPresenter
         _viewer = viewer;
     }
 
+    public void ChangeGameResultTitle(bool hasIt)
+    {
+        if (hasIt)
+        {
+            _model.GameResultTitle = "축하해요! 새로운 명화를 획득했어요!";
+        }
+        else
+        {
+            _model.GameResultTitle = "아직 명화를 획득하지 못했어요";
+        }
+
+        _viewer.ChangeGameResultTitle(_model.GameResultTitle);
+    }
+
+
+    public void ActivateBottomContent(bool active)
+    {
+        _model.ActiveBottomContent = active;
+        _viewer.ActivateBottomContent(_model.ActiveBottomContent);
+    }
+
+    public void ActivateSkipBtn(bool active)
+    {
+        _model.ActiveSkipBtn = active;
+        _viewer.ActivateSkipBtn(_model.ActiveSkipBtn);
+    }
 
 
     public void ActivateGameClearPanel(bool active)
@@ -77,20 +106,22 @@ public class CollectStageUIPresenter
 
 
 
-    public void ChangeArtwork(Sprite artSprite, Sprite artFrameSprite, Sprite rankDecorationIcon)
+    public void ChangeArtwork(Sprite artSprite, Sprite artFrameSprite, Sprite rankDecorationIcon, bool hasIt)
     {
         _model.ArtSprite = artSprite;
         _model.ArtFrameSprite = artFrameSprite;
         _model.RankDecorationIconSprite = rankDecorationIcon;
-        _viewer.ChangeArtwork(_model.ArtSprite, _model.ArtFrameSprite, _model.RankDecorationIconSprite);
+        _model.HasIt = hasIt;
+        _viewer.ChangeArtwork(_model.ArtSprite, _model.ArtFrameSprite, _model.RankDecorationIconSprite, _model.HasIt);
     }
 
-    public void ChangeRank(Sprite rankIcon, string rankName)
+    public void ChangeRank(Sprite rankIcon, bool activeIcon, string rankName, Color rankBackgroundColor)
     {
         _model.RankIcon = rankIcon;
+        _model.ActiveIcon = activeIcon;
         _model.RankName = rankName;
-
-        _viewer.ChangeRank(_model.RankIcon, _model.RankName);
+        _model.RankBackgroundColor = rankBackgroundColor;
+        _viewer.ChangeRank(_model.RankIcon, _model.ActiveIcon, _model.RankName, _model.RankBackgroundColor);
     }
 
     public void ChangeGetRank(int hintUseCount, int wrongCount)
@@ -101,10 +132,11 @@ public class CollectStageUIPresenter
         _viewer.ChangeGetRank(_model.HintUseCount, _model.WrongCount);
     }
 
-    public void ChangeCollectionRatio(float totalCollectRatio)
+    public void ChangeCollectionRatio(float currentCollectRatio, float totalCollectRatio)
     {
+        _model.CurrentCollectRatio = currentCollectRatio;
         _model.TotalCollectRatio = totalCollectRatio;
-        _viewer.ChangeCollectionRatio(_model.TotalCollectRatio);
+        _viewer.ChangeCollectionRatio(_model.CurrentCollectRatio, _model.TotalCollectRatio);
     }
 
     public void OnClickGameExitBtn()
@@ -112,9 +144,40 @@ public class CollectStageUIPresenter
         // 데이터 저장
         ServiceLocater.ReturnSaveManager().ChangeBGMVolume(_model.BgmRatio);
         ServiceLocater.ReturnSaveManager().ChangeSFXVolume(_model.SfxRatio);
+        ActivatePausePanel(false);
+        //ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.HomeScene);
+    }
 
-        ServiceLocater.ReturnTimeController().Start();
-        ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.HomeScene);
+    readonly Color _colorOnZeroValue = new Color(118f / 255f, 113f / 255f, 111f / 255f);
+    readonly Color _colorOnBgmHandle = new Color(113f / 255f, 191f / 255f, 255f / 255f);
+    readonly Color _colorOnSfxHandle = new Color(255f / 255f, 154f / 255f, 145f / 255f);
+
+    void ChangeBGMModel(float volumn)
+    {
+        if (volumn == 0)
+        {
+            _model.BgmleftTextInfo = "음소거";
+            _model.ColorOnBgmHandle = _colorOnZeroValue;
+        }
+        else
+        {
+            _model.BgmleftTextInfo = "작게";
+            _model.ColorOnBgmHandle = _colorOnBgmHandle;
+        }
+    }
+
+    void ChangeSFXModel(float volumn)
+    {
+        if (volumn == 0)
+        {
+            _model.SfxleftTextInfo = "음소거";
+            _model.ColorOnSfxHandle = _colorOnZeroValue;
+        }
+        else
+        {
+            _model.SfxleftTextInfo = "작게";
+            _model.ColorOnSfxHandle = _colorOnSfxHandle;
+        }
     }
 
     public void ActivatePausePanel(bool active)
@@ -125,16 +188,16 @@ public class CollectStageUIPresenter
 
             // 데이터 불러와서 반영
             SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
-            _viewer.ChangeBGMSliderValue(data.BgmVolume, _model.ColorOnBgmHandle, _model.ColorOnZeroValue);
-            _viewer.ChangeSFXSliderValue(data.SfxVolume, _model.ColorOnSfxHandle, _model.ColorOnZeroValue);
+
+            ChangeBGMModel(data.BgmVolume);
+            _viewer.ChangeBGMSliderValue(data.BgmVolume, _model.BgmleftTextInfo, _model.ColorOnBgmHandle);
+
+            ChangeSFXModel(data.SfxVolume);
+            _viewer.ChangeSFXSliderValue(data.SfxVolume, _model.SfxleftTextInfo, _model.ColorOnSfxHandle);
         }
         else
         {
             ServiceLocater.ReturnTimeController().Start();
-
-            //// 데이터 저장
-            //ServiceLocater.ReturnSaveManager().ChangeBGMVolume(_model.BgmRatio);
-            //ServiceLocater.ReturnSaveManager().ChangeSFXVolume(_model.SfxRatio);
         }
 
         _model.ActivePausePanel = active;
@@ -151,18 +214,21 @@ public class CollectStageUIPresenter
         ServiceLocater.ReturnSaveManager().ChangeSFXVolume(_model.SfxRatio);
     }
 
-
     public void OnBGMSliderValeChanged(float ratio)
     {
         _model.BgmRatio = ratio;
-        _viewer.ChangeBGMSliderHandleColor(_model.BgmRatio, _model.ColorOnBgmHandle, _model.ColorOnZeroValue);
+
+        ChangeBGMModel(_model.BgmRatio);
+        _viewer.ChangeBGMSliderHandleColor(_model.BgmleftTextInfo, _model.ColorOnBgmHandle);
         ServiceLocater.ReturnSoundPlayer().SetBGMVolume(_model.BgmRatio);
     }
 
     public void OnSFXSliderValeChanged(float ratio)
     {
         _model.SfxRatio = ratio;
-        _viewer.ChangeSFXSliderHandleColor(_model.SfxRatio, _model.ColorOnSfxHandle, _model.ColorOnZeroValue);
+
+        ChangeSFXModel(_model.SfxRatio);
+        _viewer.ChangeSFXSliderHandleColor(_model.SfxleftTextInfo, _model.ColorOnSfxHandle);
         ServiceLocater.ReturnSoundPlayer().SetSFXVolume(_model.SfxRatio);
     }
 

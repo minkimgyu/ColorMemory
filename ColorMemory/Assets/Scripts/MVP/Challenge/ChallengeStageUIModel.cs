@@ -17,6 +17,9 @@ public class ChallengeStageUIModel
         _oneColorHintActive = true;
         _oneZoneHintActive = true;
 
+        _activePenContent = false;
+        _activeSkipBtn = false;
+
         _oneColorHintCost = 0;
         _oneZoneHintCost = 0;
 
@@ -55,6 +58,16 @@ public class ChallengeStageUIModel
 
     bool _oneZoneHintActive;
     public bool OneZoneHintActive { get => _oneZoneHintActive; set => _oneZoneHintActive = value; }
+
+
+
+    bool _activePenContent;
+    public bool ActiveBottomContent { get => _activePenContent; set => _activePenContent = value; }
+
+    bool _activeSkipBtn;
+    public bool ActiveSkipBtn { get => _activeSkipBtn; set => _activeSkipBtn = value; }
+
+
 
 
     int _oneColorHintCost;
@@ -163,6 +176,8 @@ public class ChallengeStageUIModel
         set => _stageCount = value;
     }
 
+
+
     bool _activeRememberPanel;
     public bool ActiveRememberPanel
     {
@@ -206,11 +221,11 @@ public class ChallengeStageUIModel
         set => _activeGameOverPanel = value;
     }
 
-    int _passedDuration;
-    public int PassedDuration
+    int _resultScore;
+    public int ResultScore
     {
-        get => _passedDuration;
-        set => _passedDuration = value;
+        get => _resultScore;
+        set => _resultScore = value;
     }
 
     int _clearStageCount;

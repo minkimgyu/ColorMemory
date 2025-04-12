@@ -66,7 +66,7 @@ public struct SaveData
         _sfxVolume = 0.5f;
 
         _selectedType = GameMode.Type.Collect;
-        _selectedArtworkKey = 1;
+        _selectedArtworkKey = 0;
         _selectedArtworkSectionIndex = Vector2Int.zero;
     }
 

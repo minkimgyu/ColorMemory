@@ -17,6 +17,12 @@ public class CollectPageViewer
     TMP_Text _titleTxt;
     TMP_Text _descriptionTxt;
 
+    Image _currentComplete;
+    TMP_Text _currentCompleteRatio;
+
+    Image _totalComplete;
+    TMP_Text _totalCompleteRatio;
+
     ArtworkScrollUI _artworkScrollUI;
 
     Image _completeSlider;
@@ -51,6 +57,12 @@ public class CollectPageViewer
 
         TMP_Text titleTxt,
         TMP_Text descriptionTxt,
+
+        Image currentComplete,
+        TMP_Text currentCompleteRatio,
+
+        Image totalComplete,
+        TMP_Text totalCompleteRatio,
 
         ArtworkScrollUI artworkScrollUI,
 
@@ -91,8 +103,17 @@ public class CollectPageViewer
         _artworkInfoBtn.onClick.AddListener(() => { collectPagePresenter.SwitchArtworkInfoContent(false); });
         _artworkCompleteRatioBtn.onClick.AddListener(() => { collectPagePresenter.SwitchArtworkInfoContent(true); });
 
+
+        _currentComplete = currentComplete;
+        _currentCompleteRatio = currentCompleteRatio;
+
+        _totalComplete = totalComplete;
+        _totalCompleteRatio = totalCompleteRatio;
+
+
         _titleTxt = titleTxt;
         _descriptionTxt = descriptionTxt;
+
         _artworkScrollUI = artworkScrollUI;
 
         _completeSlider = completeSlider;
@@ -137,7 +158,7 @@ public class CollectPageViewer
 
         _exitBtn.onClick.AddListener(() => { collectPagePresenter.ActiveSelectStageContent(false); });
         _playBtn.onClick.AddListener(() => { collectPagePresenter.PlayCollectMode(); });
-        artworkScrollUI.OnDragEnd += collectPagePresenter.ChangeArtworkDescription; // -> 이거 수정해서 맞는 인덱스 적용해주기
+        artworkScrollUI.OnDragEnd += collectPagePresenter.OnArtworkScrollChanged; // -> 이거 수정해서 맞는 인덱스 적용해주기
         ActiveContent(false);
     }
 
@@ -240,14 +261,23 @@ public class CollectPageViewer
         _descriptionTxt.text = description;
     }
 
+    public void ChangeArtCompleteRatio(float currentRatio, float totalRatio)
+    {
+        _currentComplete.fillAmount = currentRatio;
+        _currentCompleteRatio.text = $"{Mathf.RoundToInt(currentRatio * 100)}%";
+
+        _totalComplete.fillAmount = totalRatio;
+        _totalCompleteRatio.text = $"{Mathf.RoundToInt(totalRatio * 100)}%";
+    }
+
     public void SetUpArtworkScroll(int itemCount)
     {
         _artworkScrollUI.Setup();
     }
 
-    public void SetArtworkScrollIndex(int index)
+    public void SetArtworkScrollIndex(int scrollIndex)
     {
-        _artworkScrollUI.ScrollTo(index);
+        _artworkScrollUI.ScrollTo(scrollIndex);
     }
 
     public void AddArtwork(SpawnableUI artwork)

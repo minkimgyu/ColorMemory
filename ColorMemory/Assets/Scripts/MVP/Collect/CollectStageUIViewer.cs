@@ -23,6 +23,9 @@ public class CollectStageUIViewer
     TMP_Text _hintUsageText;
     TMP_Text _wrongCountText;
 
+    RectTransform _bottomContent;
+    Button _skipBtn;
+
     GameObject _rememberPanel;
     TMP_Text _hintInfoText;
 
@@ -39,11 +42,15 @@ public class CollectStageUIViewer
 
     CustomSlider _bgmSlider;
     Image _bgmSliderHandle;
+    TMP_Text _bgmMuteText;
 
     CustomSlider _sfxSlider;
     Image _sfxSliderHandle;
+    TMP_Text _sfxMuteText;
 
     GameObject _gameResultPanel;
+    TMP_Text _gameResultTitle;
+
     ArtworkUI _artworkUI;
     TMP_Text _hintUseCount;
     TMP_Text _wrongCount;
@@ -52,9 +59,11 @@ public class CollectStageUIViewer
     Image _rankIcon;
     TMP_Text _rankText;
 
+    Image _currentCollectRatio;
+    TMP_Text _currentCollectText;
+
     Image _totalCollectRatio;
     TMP_Text _totalCollectText;
-
 
     public CollectStageUIViewer(
          GameObject playPanel,
@@ -70,6 +79,9 @@ public class CollectStageUIViewer
         TMP_Text hintUsageText,
         TMP_Text wrongCountText,
 
+        RectTransform bottomContent,
+        Button skipBtn,
+
         GameObject rememberPanel,
         TMP_Text hintInfoText,
 
@@ -83,10 +95,16 @@ public class CollectStageUIViewer
         Button pauseBtn,
         Button pauseExitBtn,
         Button gameExitBtn,
+
         CustomSlider bgmSlider,
+        TMP_Text bgmMuteText,
+
         CustomSlider sfxSlider,
+        TMP_Text sfxMuteText,
 
         GameObject gameResultPanel,
+        TMP_Text gameResultTitle,
+
         ArtworkUI artworkUI,
         TMP_Text hintUseCount,
         TMP_Text wrongCount,
@@ -94,6 +112,9 @@ public class CollectStageUIViewer
         Image rankBackground,
         Image rankIcon,
         TMP_Text rankText,
+
+        Image currentCollectRatio,
+        TMP_Text currentCollectText,
 
         Image totalCollectRatio,
         TMP_Text totalCollectText,
@@ -114,6 +135,9 @@ public class CollectStageUIViewer
         _hintUsageText = hintUsageText;
         _wrongCountText = wrongCountText;
 
+        _bottomContent = bottomContent;
+        _skipBtn = skipBtn;
+
         _rememberPanel = rememberPanel;
         _hintInfoText = hintInfoText;
 
@@ -129,31 +153,53 @@ public class CollectStageUIViewer
         _pauseExitBtn = pauseExitBtn;
 
         _gameResultPanel = gameResultPanel;
+        _gameResultTitle = gameResultTitle;
+
         _artworkUI = artworkUI;
         _hintUseCount = hintUseCount;
         _wrongCount = wrongCount;
         _rankBackground = rankBackground;
         _rankIcon = rankIcon;
         _rankText = rankText;
+
+        _currentCollectRatio = currentCollectRatio;
+        _currentCollectText = currentCollectText;
+
         _totalCollectRatio = totalCollectRatio;
         _totalCollectText = totalCollectText;
 
         _bgmSlider = bgmSlider;
+        _bgmMuteText = bgmMuteText;
         _bgmSliderHandle = bgmSlider.handleRect.GetComponent<Image>();
 
         _sfxSlider = sfxSlider;
+        _sfxMuteText = sfxMuteText;
         _sfxSliderHandle = sfxSlider.handleRect.GetComponent<Image>();
 
         _bgmSlider.onHandlePointerUp += ((ratio) => { presenter.SaveBGMValue(); });
         _sfxSlider.onHandlePointerUp += ((ratio) => { presenter.SaveSFXValue(); });
 
-        _gameExitBtn.onClick.AddListener(() => { presenter.OnClickGameExitBtn(); });
+        _gameExitBtn.onClick.AddListener(() => { presenter.OnClickGameExitBtn(); presenter.GoToResultState?.Invoke(); });
         _pauseBtn.onClick.AddListener(() => { presenter.ActivatePausePanel(true); });
         _pauseExitBtn.onClick.AddListener(() => { presenter.ActivatePausePanel(false); });
         _bgmSlider.onValueChanged.AddListener((ratio) => { presenter.OnBGMSliderValeChanged(ratio); });
         _sfxSlider.onValueChanged.AddListener((ratio) => { presenter.OnSFXSliderValeChanged(ratio); });
     }
 
+    public void ChangeGameResultTitle(string comment)
+    {
+        _gameResultTitle.text = comment; // "축하해요! 새로운 명화를 획득했어요!";
+    }
+
+    public void ActivateBottomContent(bool active)
+    {
+        _bottomContent.gameObject.SetActive(active);
+    }
+
+    public void ActivateSkipBtn(bool active)
+    {
+        _skipBtn.gameObject.SetActive(active);
+    }
 
     public void ActivateGameClearPanel(bool active)
     {
@@ -199,15 +245,17 @@ public class CollectStageUIViewer
 
 
 
-    public void ChangeArtwork(Sprite artSprite, Sprite artFrameSprite, Sprite rankDecorationIcon)
+    public void ChangeArtwork(Sprite artSprite, Sprite artFrameSprite, Sprite rankDecorationIcon, bool hasIt)
     {
-        _artworkUI.Initialize(artSprite, artFrameSprite, rankDecorationIcon);
+        _artworkUI.Initialize(artSprite, artFrameSprite, rankDecorationIcon, hasIt);
     }
 
-    public void ChangeRank(Sprite rankIcon, string rankName)
+    public void ChangeRank(Sprite rankIcon, bool activeIcon, string rankName, Color rankBackgroundColor)
     {
+        _rankIcon.gameObject.SetActive(activeIcon);
         _rankIcon.sprite = rankIcon;
         _rankText.text = rankName;
+        _rankBackground.color = rankBackgroundColor;
     }
 
     public void ChangeGetRank(int hintUseCount, int wrongCount)
@@ -216,10 +264,13 @@ public class CollectStageUIViewer
         _wrongCount.text = wrongCount.ToString();
     }
 
-    public void ChangeCollectionRatio(float totalCollectRatio)
+    public void ChangeCollectionRatio(float currentCollectRatio, float totalCollectRatio)
     {
+        _currentCollectRatio.fillAmount = currentCollectRatio;
+        _currentCollectText.text = $"{Mathf.RoundToInt(currentCollectRatio * 100)}%";
+
         _totalCollectRatio.fillAmount = totalCollectRatio;
-        _totalCollectText.text = $"{(totalCollectRatio * 100).ToString("F2")}%";
+        _totalCollectText.text = $"{Mathf.RoundToInt(totalCollectRatio * 100)}%";
     }
 
 
@@ -294,27 +345,27 @@ public class CollectStageUIViewer
         _gameResultPanel.SetActive(active);
     }
 
-    public void ChangeBGMSliderValue(float ratio, Color nomalColor, Color colorOnZeroValue)
+    public void ChangeBGMSliderValue(float ratio, string leftSmallTxt, Color handleColor)
     {
         _bgmSlider.value = ratio;
-        ChangeBGMSliderHandleColor(ratio, nomalColor, colorOnZeroValue);
+        ChangeBGMSliderHandleColor(leftSmallTxt, handleColor);
     }
 
-    public void ChangeSFXSliderValue(float ratio, Color nomalColor, Color colorOnZeroValue)
+    public void ChangeSFXSliderValue(float ratio, string leftSmallTxt, Color handleColor)
     {
         _sfxSlider.value = ratio;
-        ChangeSFXSliderHandleColor(ratio, nomalColor, colorOnZeroValue);
+        ChangeSFXSliderHandleColor(leftSmallTxt, handleColor);
     }
 
-    public void ChangeBGMSliderHandleColor(float ratio, Color nomalColor, Color colorOnZeroValue)
+    public void ChangeBGMSliderHandleColor(string leftSmallTxt, Color handleColor)
     {
-        if (ratio == 0) _bgmSliderHandle.color = colorOnZeroValue;
-        else _bgmSliderHandle.color = nomalColor;
+        _bgmSliderHandle.color = handleColor;
+        _bgmMuteText.text = leftSmallTxt;
     }
 
-    public void ChangeSFXSliderHandleColor(float ratio, Color nomalColor, Color colorOnZeroValue)
+    public void ChangeSFXSliderHandleColor(string leftSmallTxt, Color handleColor)
     {
-        if (ratio == 0) _sfxSliderHandle.color = colorOnZeroValue;
-        else _sfxSliderHandle.color = nomalColor;
+        _sfxSliderHandle.color = handleColor;
+        _sfxMuteText.text = leftSmallTxt;
     }
 }

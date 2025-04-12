@@ -50,6 +50,11 @@ namespace Challenge
             return _pickColors[_mapData.DotColor[row, col]];
         }
 
+        public override void OnClickSkipBtn()
+        {
+            GoToPaintState();
+        }
+
         public override void OnStateEnter()
         {
             // 초기화 진행
@@ -81,9 +86,37 @@ namespace Challenge
             int index = Mathf.Clamp(_modeData.StageCount - 1, 0, _stageDatas.Count - 1);
             float memorizeDuration = _stageDatas[index].MemorizeDuration;
 
+            _challengeStageUIPresenter.ActivateBottomContent(false);
+            _challengeStageUIPresenter.ActivateSkipBtn(true);
+
             _challengeStageUIPresenter.ActivateRememberPanel(true);
             _challengeStageUIPresenter.ChangeTotalTime(memorizeDuration);
             _timer.Start(memorizeDuration);
+        }
+
+        void GoToPaintState()
+        {
+            _challengeStageUIPresenter.ActivateBottomContent(true);
+            _challengeStageUIPresenter.ActivateSkipBtn(false);
+
+            _challengeStageUIPresenter.ActivateRememberPanel(false);
+
+            // dot 뒤집는 코드 추가
+            for (int i = 0; i < _levelSize.x; i++)
+            {
+                for (int j = 0; j < _levelSize.y; j++)
+                {
+                    _dots[i, j].Expand(_fadeColor, 1.5f);
+                }
+            }
+
+            _timer.Reset(); // 타이머 리셋
+
+            // 일정 시간 지나면 다음 State로 이동
+            DOVirtual.DelayedCall(1.5f, () =>
+            {
+                _fsm.SetState(ChallengeMode.State.Paint);
+            });
         }
 
         public override void OnStateUpdate()
@@ -92,24 +125,7 @@ namespace Challenge
 
             if (_timer.CurrentState == Timer.State.Finish)
             {
-                _challengeStageUIPresenter.ActivateRememberPanel(false);
-
-                // dot 뒤집는 코드 추가
-                for (int i = 0; i < _levelSize.x; i++)
-                {
-                    for (int j = 0; j < _levelSize.y; j++)
-                    {
-                        _dots[i, j].Expand(_fadeColor, 1.5f);
-                    }
-                }
-
-                _timer.Reset(); // 타이머 리셋
-
-                // 일정 시간 지나면 다음 State로 이동
-                DOVirtual.DelayedCall(1.5f, () =>
-                {
-                    _fsm.SetState(ChallengeMode.State.Paint);
-                });
+                GoToPaintState();
                 return;
             }
         }

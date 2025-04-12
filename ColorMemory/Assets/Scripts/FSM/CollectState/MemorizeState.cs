@@ -1,3 +1,4 @@
+using Challenge;
 using DG.Tweening;
 using System;
 using UnityEngine;
@@ -42,9 +43,13 @@ namespace Collect
             return _data.PickColors[_mapData.DotColor[row, col]];
         }
 
+        public override void OnClickSkipBtn()
+        {
+            GoToPaintState();
+        }
+
         public override void OnStateEnter()
         {
-            _collectStageUIPresenter.ActivateTimerContent(true);
 
             // 초기화 진행
             Tuple<Dot[,], Dot[], MapData> levelData = GetLevelData();
@@ -73,9 +78,39 @@ namespace Collect
                 }
             }
 
+            _collectStageUIPresenter.ActivateTimerContent(true);
+            _collectStageUIPresenter.ActivateBottomContent(false);
+            _collectStageUIPresenter.ActivateSkipBtn(true);
+
             _collectStageUIPresenter.ActivateRememberPanel(true);
             _collectStageUIPresenter.ChangeTotalTime(_data.MemorizeDuration);
             _timer.Start(_data.MemorizeDuration);
+        }
+
+        void GoToPaintState()
+        {
+            _collectStageUIPresenter.ActivateTimerContent(false);
+            _collectStageUIPresenter.ActivateBottomContent(true);
+            _collectStageUIPresenter.ActivateSkipBtn(false);
+
+            _collectStageUIPresenter.ActivateRememberPanel(false);
+
+            // dot 뒤집는 코드 추가
+            for (int i = 0; i < _levelSize.x; i++)
+            {
+                for (int j = 0; j < _levelSize.y; j++)
+                {
+                    _dots[i, j].Expand(_fadeColor, 1.5f);
+                }
+            }
+
+            _timer.Reset(); // 타이머 리셋
+
+            // 일정 시간 지나면 다음 State로 이동
+            DOVirtual.DelayedCall(1.5f, () =>
+            {
+                _fsm.SetState(CollectMode.State.Paint);
+            });
         }
 
         public override void OnStateUpdate()
@@ -84,25 +119,7 @@ namespace Collect
 
             if (_timer.CurrentState == Timer.State.Finish)
             {
-                _collectStageUIPresenter.ActivateRememberPanel(false);
-                _collectStageUIPresenter.ActivateTimerContent(false);
-
-                // dot 뒤집는 코드 추가
-                for (int i = 0; i < _levelSize.x; i++)
-                {
-                    for (int j = 0; j < _levelSize.y; j++)
-                    {
-                        _dots[i, j].Expand(_fadeColor, 1.5f);
-                    }
-                }
-
-                _timer.Reset(); // 타이머 리셋
-
-                // 일정 시간 지나면 다음 State로 이동
-                DOVirtual.DelayedCall(1.5f, () =>
-                {
-                    _fsm.SetState(CollectMode.State.Paint);
-                });
+                GoToPaintState();
                 return;
             }
         }

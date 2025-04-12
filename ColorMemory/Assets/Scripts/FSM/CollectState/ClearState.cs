@@ -90,19 +90,19 @@ namespace Collect
             // 데이터 업데이트
 
             // 다음 스테이지 해금해주는 코드
-            _artworkDTO.Stages[data.SelectedArtworkSectionIntIndex + 1].Status = StageStauts.Clear; // 현재 스테이지 클리어 적용
+            _artworkDTO.Stages[data.SelectedArtworkSectionIntIndex].Status = StageStauts.Clear; // 현재 스테이지 클리어 적용
 
             int lastIndex = _artworkDTO.Stages.Count; // 스테이지 개수
-            if(lastIndex >= data.SelectedArtworkSectionIntIndex + 2) // lastIndex 보다 작거나 같은 경우만 진행
+            if(lastIndex >= data.SelectedArtworkSectionIntIndex + 1) // lastIndex 보다 작거나 같은 경우만 진행
             {
-                if(_artworkDTO.Stages[data.SelectedArtworkSectionIntIndex + 2].Status == StageStauts.Lock)
+                if(_artworkDTO.Stages[data.SelectedArtworkSectionIntIndex + 1].Status == StageStauts.Lock)
                 {
-                    _artworkDTO.Stages[data.SelectedArtworkSectionIntIndex + 2].Status = StageStauts.Open;
+                    _artworkDTO.Stages[data.SelectedArtworkSectionIntIndex + 1].Status = StageStauts.Open;
                 }
             }
 
-            _artworkDTO.Stages[data.SelectedArtworkSectionIntIndex + 1].IncorrectCnt = _modeData.WrongCount; // index + 1 해서 찾기 -> 1-indexed임
-            _artworkDTO.Stages[data.SelectedArtworkSectionIntIndex + 1].HintUsage = _modeData.GoBackCount;
+            _artworkDTO.Stages[data.SelectedArtworkSectionIntIndex].IncorrectCnt = _modeData.WrongCount; // index + 1 해서 찾기 -> 1-indexed임
+            _artworkDTO.Stages[data.SelectedArtworkSectionIntIndex].HintUsage = _modeData.GoBackCount;
 
             Rank? rank = await UpdateArtDataToServer(_artworkDTO);
             if (rank == null) return null;
@@ -114,10 +114,6 @@ namespace Collect
 
         public override void OnClickNextStageBtn()
         {
-            //List<PlayerArtworkDTO> artDatas = await GetArtDataFromServer();
-            //if (artDatas == null) return;
-
-            //PlayerArtworkDTO artworkDTO = artDatas.Find(x => x.ArtworkId == data.SelectedArtworkKey);
             SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
 
             int row = _artData.Sections.Count;

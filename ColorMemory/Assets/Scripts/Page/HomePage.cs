@@ -52,6 +52,12 @@ public class HomePage : MonoBehaviour
     [SerializeField] GameObject _artworkInfoContent;
     [SerializeField] GameObject _artworkCompleteRatioContent;
 
+    [SerializeField] Image _currentComplete;
+    [SerializeField] TMP_Text _currentCompleteRatio;
+
+    [SerializeField] Image _totalComplete;
+    [SerializeField] TMP_Text _totalCompleteRatio;
+
     [SerializeField] TMP_Text _titleTxt;
     [SerializeField] TMP_Text _descriptionTxt;
 
@@ -240,6 +246,13 @@ public class HomePage : MonoBehaviour
                 _collectionContent,
                 _artworkInfoContent,
                 _artworkCompleteRatioContent,
+
+                _currentComplete,
+                _currentCompleteRatio,
+
+                _totalComplete,
+                _totalCompleteRatio,
+
                 _titleTxt,
                 _descriptionTxt,
                 _completeSlider,

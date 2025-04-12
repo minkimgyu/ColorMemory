@@ -21,6 +21,11 @@ public class CollectStageUIModel
         _activeGameResultPanel = false;
         _goldCount = 0;
 
+        _gameResultTitle = "";
+
+        _activePenContent = false;
+        _activeSkipBtn = false;
+
         _activeNextStageBtn = false;
 
         _activePausePanel = false;
@@ -31,10 +36,12 @@ public class CollectStageUIModel
         _currentHintUsage = 0;
         _currentWrongCount = 0;
 
-        _colorOnZeroValue = new Color(118f / 255f, 113f / 255f, 111f / 255f);
-        _colorOnBgmHandle = new Color(113f / 255f, 191f / 255f, 255f / 255f);
-        _colorOnSfxHandle = new Color(255f / 255f, 154f / 255f, 145f / 255f);
+        _colorOnBgmHandle = Color.white;
+        _colorOnSfxHandle = Color.white;
     }
+
+    string _gameResultTitle;
+    public string GameResultTitle { get => _gameResultTitle; set => _gameResultTitle = value; }
 
     bool _activeDetailContent;
     int _currentHintUsage;
@@ -44,40 +51,58 @@ public class CollectStageUIModel
     public int CurrentHintUsage { get => _currentHintUsage; set => _currentHintUsage = value; }
     public int CurrentWrongCount { get => _currentWrongCount; set => _currentWrongCount = value; }
 
+
+    bool _activePenContent;
+    public bool ActiveBottomContent { get => _activePenContent; set => _activePenContent = value; }
+
+    bool _activeSkipBtn;
+    public bool ActiveSkipBtn { get => _activeSkipBtn; set => _activeSkipBtn = value; }
+
+
     Sprite _artSprite;
     Sprite _artFrameSprite;
     Sprite _rankDecorationIconSprite;
-
+    bool _isLock;
 
     int _hintUseCount; 
     int _wrongCount;
+    float _currentCollectRatio;
     float _totalCollectRatio;
 
-    Color _rankColor;
+    Color _rankBackgroundColor;
     Sprite _rankIcon;
+    bool _activeIcon;
     string _rankName;
 
-   
+    public Color RankBackgroundColor { get => _rankBackgroundColor; set => _rankBackgroundColor = value; }
 
-    Color _colorOnZeroValue;
 
     Color _colorOnBgmHandle;
     Color _colorOnSfxHandle;
 
-    public Color ColorOnZeroValue { get => _colorOnZeroValue; }
-    public Color ColorOnBgmHandle { get => _colorOnBgmHandle; }
-    public Color ColorOnSfxHandle { get => _colorOnSfxHandle; }
+    string _bgmleftTextInfo;
+    public string BgmleftTextInfo { get => _bgmleftTextInfo; set => _bgmleftTextInfo = value; }
+
+    string _sfxleftTextInfo;
+    public string SfxleftTextInfo { get => _sfxleftTextInfo; set => _sfxleftTextInfo = value; }
+
+
+    public Color ColorOnBgmHandle { get => _colorOnBgmHandle; set => _colorOnBgmHandle = value; }
+    public Color ColorOnSfxHandle { get => _colorOnSfxHandle; set => _colorOnSfxHandle = value; }
 
 
     public Sprite ArtSprite { get => _artSprite; set => _artSprite = value; }
     public Sprite ArtFrameSprite { get => _artFrameSprite; set => _artFrameSprite = value; }
     public Sprite RankDecorationIconSprite { get => _rankDecorationIconSprite; set => _rankDecorationIconSprite = value; }
+    public bool HasIt { get => _isLock; set => _isLock = value; }
 
 
     public int HintUseCount { get => _hintUseCount; set => _hintUseCount = value; }
     public int WrongCount { get => _wrongCount; set => _wrongCount = value; }
+    public float CurrentCollectRatio { get => _currentCollectRatio; set => _currentCollectRatio = value; }
     public float TotalCollectRatio { get => _totalCollectRatio; set => _totalCollectRatio = value; }
     public Sprite RankIcon { get => _rankIcon; set => _rankIcon = value; }
+    public bool ActiveIcon { get => _activeIcon; set => _activeIcon = value; }
     public string RankName { get => _rankName; set => _rankName = value; }
 
 

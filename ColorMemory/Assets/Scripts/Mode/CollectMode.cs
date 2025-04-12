@@ -33,13 +33,19 @@ namespace Collect
         [Header("Bottom")]
         [SerializeField] ToggleGroup _penToggleGroup;
         [SerializeField] RectTransform _penContent;
+        [SerializeField] RectTransform _bottomContent;
+        [SerializeField] Button _skipBtn;
 
         [Header("Setting")]
         [SerializeField] GameObject _pausePanel;
         [SerializeField] Button _pauseExitBtn;
         [SerializeField] Button _gameExitBtn;
+
         [SerializeField] CustomSlider _bgmSlider;
+        [SerializeField] TMP_Text _bgmLeftText;
+
         [SerializeField] CustomSlider _sfxSlider;
+        [SerializeField] TMP_Text _sfxLeftText;
 
         [Header("ModeData")]
         //[SerializeField] Color[] _pickColors;
@@ -61,6 +67,8 @@ namespace Collect
 
         [Header("Result")]
         [SerializeField] GameObject _gameResultPanel;
+        [SerializeField] TMP_Text _gameResultTitle;
+
         [SerializeField] ArtworkUI _artworkUI;
         [SerializeField] TMP_Text _hintUseCount;
         [SerializeField] TMP_Text _wrongCount;
@@ -68,6 +76,9 @@ namespace Collect
         [SerializeField] Image _rankBackground;
         [SerializeField] Image _rankIcon;
         [SerializeField] TMP_Text _rankText;
+
+        [SerializeField] Image _currentCollectRatio;
+        [SerializeField] TMP_Text _currentCollectText;
 
         [SerializeField] Image _totalCollectRatio;
         [SerializeField] TMP_Text _totalCollectText;
@@ -193,7 +204,7 @@ namespace Collect
             _modeData = new Data(index, 5, addressableHandler.ArtworkJsonAsset.Data[artworkIndex].Title);
 
             CollectStageUIModel model = new CollectStageUIModel();
-            CollectStageUIPresenter presenter = new CollectStageUIPresenter(model);
+            CollectStageUIPresenter presenter = new CollectStageUIPresenter(model, () => { _fsm.SetState(State.Result); });
             CollectStageUIViewer viewer = new CollectStageUIViewer(
                 _playPanel,
                 _titleText,
@@ -206,6 +217,9 @@ namespace Collect
                 _detailContent,
                 _hintUsageText,
                 _wrongCountText,
+
+                _bottomContent,
+                _skipBtn,
 
                 _rememberPanel,
                 _hintInfoText,
@@ -220,10 +234,15 @@ namespace Collect
                 _pauseBtn,
                 _pauseExitBtn,
                 _gameExitBtn,
+
                 _bgmSlider,
+                _bgmLeftText,
+
                 _sfxSlider,
+                _sfxLeftText,
 
                 _gameResultPanel,
+                _gameResultTitle,
                 _artworkUI,
                 _hintUseCount,
                 _wrongCount,
@@ -232,11 +251,16 @@ namespace Collect
                 _rankIcon,
                 _rankText,
 
+                _currentCollectRatio,
+                _currentCollectText,
+
                 _totalCollectRatio,
                 _totalCollectText,
                 presenter);
 
             presenter.InjectViewer(viewer);
+
+            _skipBtn.onClick.AddListener(() => { _fsm.OnClickSkipBtn(); });
 
             _nextBtn.onClick.AddListener(() => { _fsm.OnClickNextBtn(); });
 

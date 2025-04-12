@@ -12,8 +12,8 @@ public class AddressablesBatchImporter
     [MenuItem("Tools/Add Files to Addressables")]
     public static void AddFilesToAddressables()
     {
-        string folderPath = "Assets/Sprites/Profile"; // 어드레서블에 추가할 폴더 경로
-        string groupName = "ProfileIcons"; // 추가할 어드레서블 그룹 이름
+        string folderPath = "Assets/Sprites/Art"; // 어드레서블에 추가할 폴더 경로
+        string groupName = "ArtSprites"; // 추가할 어드레서블 그룹 이름
 
         // 어드레서블 설정 가져오기
         AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
@@ -36,7 +36,7 @@ public class AddressablesBatchImporter
         {
             string assetPath = files[i].Replace("\\", "/"); // 윈도우 경로 처리
             AddressableAssetEntry entry = settings.CreateOrMoveEntry(AssetDatabase.AssetPathToGUID(assetPath), group);
-            entry.address = (i + 1).ToString(); // 1부터 시작하는 인덱스 부여
+            entry.address = (i).ToString(); // 1부터 시작하는 인덱스 부여
         }
 
         // 변경 사항 저장

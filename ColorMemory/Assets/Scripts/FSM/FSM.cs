@@ -44,6 +44,8 @@ public class FSM<State>
     public void OnClickNextBtn() => _states[_currentState].OnClickNextBtn();
     public void OnClickRetryBtn() => _states[_currentState].OnClickRetryBtn();
 
+    public void OnClickSkipBtn() => _states[_currentState].OnClickSkipBtn();
+
     public void OnClickNextStageBtn() => _states[_currentState].OnClickNextStageBtn();
     public void OnClickExitBtn() => _states[_currentState].OnClickExitBtn();
 

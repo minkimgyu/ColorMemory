@@ -26,6 +26,11 @@ public class ChallengeStageUIViewer
     TMP_Text _oneZoneHintCostText;
     TMP_Text _oneColorHintCostText;
 
+    RectTransform _bottomContent;
+    Button _skipBtn;
+
+
+
 
     GameObject _hintPanel;
     GameObject _rememberPanel;
@@ -35,6 +40,8 @@ public class ChallengeStageUIViewer
 
     GameObject _gameOverPanel;
     TMP_Text _clearStageCount;
+    TMP_Text _resultScore;
+
     Transform _clearStageContent;
 
     GameObject _gameResultPanel;
@@ -73,6 +80,9 @@ public class ChallengeStageUIViewer
         TMP_Text oneZoneHintCostText,
         TMP_Text oneColorHintCostText,
 
+        RectTransform bottomContent,
+        Button skipBtn,
+
         GameObject hintPanel,
         GameObject rememberPanel,
 
@@ -80,6 +90,7 @@ public class ChallengeStageUIViewer
         TMP_Text coinTxt,
 
         GameObject gameOverPanel,
+        TMP_Text resultScore,
         TMP_Text clearStageCount,
         Transform clearStageContent,
 
@@ -115,6 +126,9 @@ public class ChallengeStageUIViewer
         _oneColorHintCostText = oneColorHintCostText;
         _oneZoneHintCostText = oneZoneHintCostText;
 
+        _bottomContent = bottomContent;
+        _skipBtn = skipBtn;
+
         _hintPanel = hintPanel;
         _rememberPanel = rememberPanel;
 
@@ -123,6 +137,7 @@ public class ChallengeStageUIViewer
 
         _gameOverPanel = gameOverPanel;
         _clearStageCount = clearStageCount;
+        _resultScore = resultScore;
         _clearStageContent = clearStageContent;
 
         _gameResultPanel = gameResultPanel;
@@ -154,6 +169,16 @@ public class ChallengeStageUIViewer
         _pauseExitBtn.onClick.AddListener(() => { presenter.ActivatePausePanel(false); });
         _bgmSlider.onValueChanged.AddListener((ratio) => { presenter.OnBGMSliderValeChanged(ratio); });
         _sfxSlider.onValueChanged.AddListener((ratio) => { presenter.OnSFXSliderValeChanged(ratio); });
+    }
+
+    public void ActivateBottomContent(bool active)
+    {
+        _bottomContent.gameObject.SetActive(active);
+    }
+
+    public void ActivateSkipBtn(bool active)
+    {
+        _skipBtn.gameObject.SetActive(active);
     }
 
     public void ActivateHint(bool oneColorHintActive, bool oneZoneHintActive)
@@ -292,9 +317,10 @@ public class ChallengeStageUIViewer
         _gameOverPanel.SetActive(active);
     }
 
-    public void ChangeClearStageCount(int passedDuration, int stageCount)
+    public void ChangeClearStageCount(int clearStageCount, int resultScore)
     {
-        _clearStageCount.text = $"{passedDuration}초 동안 {stageCount}개의 패턴 클리어!";
+        _clearStageCount.text = clearStageCount.ToString("N0");
+        _resultScore.text = resultScore.ToString("N0");
     }
 
     public void AddClearPattern(SpawnableUI patternUI)

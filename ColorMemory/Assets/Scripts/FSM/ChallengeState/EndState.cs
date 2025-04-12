@@ -45,7 +45,7 @@ namespace Challenge
                 _challengeStageUIPresenter.AddClearPattern(patternUI);
             }
 
-            _challengeStageUIPresenter.ChangeClearStageCount((int)_modeData.PassedDuration, _modeData.ClearStageCount);
+            _challengeStageUIPresenter.ChangeClearStageCount(_modeData.ClearStageCount, _modeData.MyScore);
         }
 
         public override void OnStateExit()

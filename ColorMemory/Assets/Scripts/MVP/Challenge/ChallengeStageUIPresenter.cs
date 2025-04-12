@@ -20,6 +20,19 @@ public class ChallengeStageUIPresenter
         _viewer = viewer;
     }
 
+    public void ActivateBottomContent(bool active)
+    {
+        _model.ActiveBottomContent = active;
+        _viewer.ActivateBottomContent(_model.ActiveBottomContent);
+    }
+
+    public void ActivateSkipBtn(bool active)
+    {
+        _model.ActiveSkipBtn = active;
+        _viewer.ActivateSkipBtn(_model.ActiveSkipBtn);
+    }
+
+
     public void ChangeHintCost(int oneColorHintCost, int oneZoneHintCost)
     {
         _model.OneColorHintCost = oneColorHintCost;
@@ -185,11 +198,11 @@ public class ChallengeStageUIPresenter
         _viewer.ActivateGameOverPanel(_model.ActiveGameOverPanel);
     }
 
-    public void ChangeClearStageCount(int passedDuration, int clearStageCount)
+    public void ChangeClearStageCount(int clearStageCount, int resultScore)
     {
-        _model.PassedDuration = passedDuration;
         _model.ClearStageCount = clearStageCount;
-        _viewer.ChangeClearStageCount(_model.PassedDuration, _model.ClearStageCount);
+        _model.ResultScore = resultScore;
+        _viewer.ChangeClearStageCount(_model.ClearStageCount, _model.ResultScore);
     }
 
     public void AddClearPattern(SpawnableUI clearPattern)

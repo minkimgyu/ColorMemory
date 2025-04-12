@@ -39,7 +39,7 @@ public class ScrollUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
         CalculateContentWidth();
         ApplyEdgePadding();
         CalculateItemCenters();
-        ScrollTo(0);
+        //ScrollTo(0);
     }
 
     private void CalculateContentWidth()

@@ -329,24 +329,26 @@ public class CollectPagePresenter
     {
         foreach (var item in _collectPageModel.FilteredArtDatas)
         {
-            int keyIndex = item.Key; // ✅ 지역 변수로 캡처
+            int artworkIndex = item.Key; // ✅ 지역 변수로 캡처
 
-            SpawnableUI artwork = _artworkFactory.Create(keyIndex, item.Value.Rank, item.Value.HasIt);
+            SpawnableUI artwork = _artworkFactory.Create(artworkIndex, item.Value.Rank, item.Value.HasIt);
             artwork.InjectClickEvent(() => {
-                ServiceLocater.ReturnSaveManager().SelectArtwork(keyIndex);
+                ServiceLocater.ReturnSaveManager().SelectArtwork(artworkIndex);
                 ActiveSelectStageContent(true);
                 FillStage();
             });
 
             _collectPageViewer.AddArtwork(artwork);
 
-            ArtworkData artworkData = _collectPageModel.ArtworkDatas[keyIndex]; // ✅ keyIndex 사용
-            SpawnableUI filteredArtwork = _filteredArtworkFactory.Create(keyIndex, artworkData.Title, item.Value.HasIt);
+            ArtworkData artworkData = _collectPageModel.ArtworkDatas[artworkIndex]; // ✅ keyIndex 사용
+            int scrollIndex = _collectPageModel.FilteredArtDatas.FindIndex(x => x.Key == artworkIndex);
+
+            SpawnableUI filteredArtwork = _filteredArtworkFactory.Create(artworkIndex, artworkData.Title, item.Value.HasIt);
             filteredArtwork.InjectClickEvent(() => { // ✅ filteredArtwork에도 적용
 
                 _collectPageViewer.ActivateFilterBottomSheet(false);
-                _collectPageViewer.SetArtworkScrollIndex(keyIndex - 1);
-                ChangeArtworkDescription(keyIndex - 1);
+                _collectPageViewer.SetArtworkScrollIndex(scrollIndex);
+                OnArtworkScrollChanged(artworkIndex);
                 // ✅ 위 아트워크를 스크롤하는 코드 추가 필요
             });
 
@@ -388,7 +390,7 @@ public class CollectPagePresenter
 
         ChangeCurrentProgress(progressCount);
 
-        int _openIndex = 1;
+        int _openIndex = 0;
 
         foreach (var data in artData.StageDatas)
         {
@@ -396,7 +398,7 @@ public class CollectPagePresenter
             spawnableUI.InjectClickEvent(() =>
             {
                 int index = data.Key;
-                SelectStage(index - 1, data.Value);
+                SelectStage(index, data.Value);
             });
 
             switch (data.Value.Stauts)
@@ -431,7 +433,7 @@ public class CollectPagePresenter
         }
 
         // 열린 스테이지 Auto Select
-        SelectStage(_openIndex - 1, artData.StageDatas[_openIndex]);
+        SelectStage(_openIndex, artData.StageDatas[_openIndex]);
     }
 
     public void RemoveAllStage()
@@ -444,24 +446,27 @@ public class CollectPagePresenter
         OnClickPlayBtn?.Invoke();
     }
 
-    void UpdateArtInfo()
+    void UpdateArtInfo(int artworkIndex)
     {
-        int artIndex = _collectPageModel.ArtworkIndex;
-        ArtworkData artData = _collectPageModel.ArtworkDatas[artIndex];
-        _collectPageViewer.ChangeArtDescription(artData.Title, artData.Description);
-    }
+        ArtworkData artworkData = _collectPageModel.ArtworkDatas[artworkIndex];
+        _collectPageViewer.ChangeArtDescription(artworkData.Title, artworkData.Description);
 
-    public void ChangeArtworkList(List<int> currentArtNames)
-    {
-        //_collectPageModel.HaveArtworkIndexes = currentArtNames;
-        //_collectPageModel.ArtworkIndex = 0;
-        UpdateArtInfo();
+        ArtData artData = _collectPageModel.ArtDatas[artworkIndex];
+        int totalStageCount = artData.StageDatas.Count;
+        int clearStageCount = 0;
+        foreach (var data in artData.StageDatas)
+        {
+            if (data.Value.Stauts == StageStauts.Clear) clearStageCount++;
+        }
+
+        float currentCompleteRatio = (float)clearStageCount / totalStageCount;
+        _collectPageViewer.ChangeArtCompleteRatio(currentCompleteRatio, _collectPageModel.TotalCompleteRatio);
     }
 
     //
-    public void ChangeArtworkDescription(int index)
+    public void OnArtworkScrollChanged(int artworkIndex)
     {
-        _collectPageModel.ArtworkIndex = index + 1; // -> 1 추가해서 받기
-        UpdateArtInfo();
+        _collectPageModel.ArtworkIndex = artworkIndex; // -> 1 추가해서 받기
+        UpdateArtInfo(_collectPageModel.ArtworkIndex);
     }
 }

@@ -17,6 +17,12 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
         GameObject artworkInfoContent,
         GameObject artworkCompleteRatioContent,
 
+        Image currentComplete,
+        TMP_Text currentCompleteRatio,
+
+        Image totalComplete,
+        TMP_Text totalCompleteRatio,
+
         TMP_Text titleTxt,
         TMP_Text descriptionTxt,
 
@@ -76,6 +82,12 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
 
             titleTxt,
             descriptionTxt,
+
+            currentComplete,
+            currentCompleteRatio,
+            totalComplete,
+            totalCompleteRatio,
+
             artworkScrollUI,
             completeSlider,
             leftCompleteText,
@@ -124,9 +136,19 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
     {
         _collectPagePresenter.ChangeCollectionRatioInfo();
         _collectPagePresenter.ActivateFilterScrollUI(true);
-        _collectPagePresenter.ChangeArtworkDescription(0);
+
+        // 아트워크 채우기
         _collectPagePresenter.FillArtwork();
-        _collectPagePresenter.ActiveContent(true); // home 닫아주기
+
+        // content 열어주기
+        _collectPagePresenter.ActiveContent(true);
+
+
+
+
+        // 저장된 값 불러와서 적용하기
+        SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
+        _collectPagePresenter.OnArtworkScrollChanged(data.SelectedArtworkKey);
     }
 
     public override void OnStateExit()
