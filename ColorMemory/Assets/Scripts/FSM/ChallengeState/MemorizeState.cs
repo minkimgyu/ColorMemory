@@ -1,9 +1,7 @@
 using DG.Tweening;
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using static Challenge.ChallengeMode;
 using Random = UnityEngine.Random;
 
 namespace Challenge
@@ -20,7 +18,6 @@ namespace Challenge
 
         Timer _timer;
         ChallengeMode.ModeData _modeData;
-        List<ChallengeMode.StageData> _stageDatas;
 
         Func<Tuple<Dot[,], Dot[], MapData>> GetStage;
 
@@ -30,7 +27,6 @@ namespace Challenge
             FSM<ChallengeMode.State> fsm,
             Color[] pickColors,
             ChallengeMode.ModeData modeData,
-            List<ChallengeMode.StageData> stageDatas,
 
             ChallengeStageUIPresenter challengeStageUIPresenter,
             Func<Tuple<Dot[,], Dot[], MapData>> GetStage
@@ -38,7 +34,6 @@ namespace Challenge
         {
             _pickColors = pickColors;
             _modeData = modeData;
-            _stageDatas = stageDatas;
             _timer = new Timer();
 
             _challengeStageUIPresenter = challengeStageUIPresenter;
@@ -57,7 +52,7 @@ namespace Challenge
 
         public override void OnStateEnter()
         {
-            // ÃÊ±âÈ­ ÁøÇà
+            // ï¿½Ê±ï¿½È­ ï¿½ï¿½ï¿½ï¿½
             Tuple<Dot[,], Dot[], MapData> levelData = GetStage();
             _dots = levelData.Item1;
             _mapData = levelData.Item3;
@@ -75,10 +70,10 @@ namespace Challenge
             {
                 for (int j = 0; j < _levelSize.y; j++)
                 {
-                    // ¿ø·¡ ·¹º§ »öÀ¸·Î º¯°æÇØÁÖ±â
+                    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö±ï¿½
                     _dots[i, j].ChangeColor(GetDotColor(i, j));
 
-                    // ·£´ýÇÏ°Ô Å°¿ì±â
+                    // ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ Å°ï¿½ï¿½ï¿½
                     _dots[i, j].Maximize(1f);
                 }
             }
@@ -90,8 +85,8 @@ namespace Challenge
             _challengeStageUIPresenter.ActivateSkipBtn(true);
 
             _challengeStageUIPresenter.ActivateRememberPanel(true);
-            _challengeStageUIPresenter.ChangeTotalTime(memorizeDuration);
-            _timer.Start(memorizeDuration);
+            _challengeStageUIPresenter.ChangeTotalTime(_modeData.MemorizeDuration);
+            _timer.Start(_modeData.MemorizeDuration);
         }
 
         void GoToPaintState()
@@ -101,7 +96,7 @@ namespace Challenge
 
             _challengeStageUIPresenter.ActivateRememberPanel(false);
 
-            // dot µÚÁý´Â ÄÚµå Ãß°¡
+            // dot ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½ ï¿½ß°ï¿½
             for (int i = 0; i < _levelSize.x; i++)
             {
                 for (int j = 0; j < _levelSize.y; j++)
@@ -110,9 +105,9 @@ namespace Challenge
                 }
             }
 
-            _timer.Reset(); // Å¸ÀÌ¸Ó ¸®¼Â
+            _timer.Reset(); // Å¸ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½
 
-            // ÀÏÁ¤ ½Ã°£ Áö³ª¸é ´ÙÀ½ State·Î ÀÌµ¿
+            // ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Stateï¿½ï¿½ ï¿½Ìµï¿½
             DOVirtual.DelayedCall(1.5f, () =>
             {
                 _fsm.SetState(ChallengeMode.State.Paint);

@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -343,7 +343,7 @@ public class CollectPageViewer
         _artworkScrollUI.AddItem(artwork.transform);
     }
 
-    public void DestroyAllArtwork()
+    public void RemoveAllArtwork()
     {
         _artworkScrollUI.DestroyItems();
     }
@@ -353,13 +353,13 @@ public class CollectPageViewer
         _content.SetActive(active);
     }
 
-    public void SelectStage(int index)
+    public void SelectStage(Vector2Int index)
     {
         int childCount = _stageUIContent.childCount;
         for (int i = 0; i < childCount; i++)
         {
             StageUI stageUI = _stageUIContent.GetChild(i).GetComponent<StageUI>();
-            if(i == index)
+            if(stageUI.Index == index)
             {
                 _stageUIContent.GetChild(i).GetComponent<StageUI>().ChangeSelect(true);
             }
@@ -373,7 +373,6 @@ public class CollectPageViewer
     public void AddStage(SpawnableUI spawnableUI)
     {
         spawnableUI.transform.SetParent(_stageUIContent);
-        spawnableUI.transform.localScale = Vector3.one;
     }
 
     public void RemoveAllStage()

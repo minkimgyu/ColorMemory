@@ -7,6 +7,13 @@ public class FSM<State>
     Dictionary<State, BaseState<State>> _states;
     State _currentState;
 
+    public void Initialize(Dictionary<State, BaseState<State>> states, State currentState, Vector2Int sectionIndex)
+    {
+        _states = states;
+        _currentState = currentState;
+        _states[_currentState].OnStateEnter(sectionIndex);
+    }
+
     public void Initialize(Dictionary<State, BaseState<State>> states, State currentState)
     {
         _states = states;
@@ -33,13 +40,17 @@ public class FSM<State>
         _states[_currentState].OnStateEnter(data);
     }
 
+    public void SetState(State state, Vector2Int sectionIndex)
+    {
+        _states[_currentState].OnStateExit();
+        _currentState = state;
+        _states[_currentState].OnStateEnter(sectionIndex);
+    }
+
     public void OnClickHomeBtn() => _states[_currentState].OnClickHomeBtn();
     public void OnClickShopBtn() => _states[_currentState].OnClickShopBtn();
     public void OnClickRankingBtn() => _states[_currentState].OnClickRankingBtn();
     public void OnClickSettingBtn() => _states[_currentState].OnClickSettingBtn();
-
-    public void OnClickGoToGameOver() => _states[_currentState].OnClickGoToGameOver();
-    public void OnClickPauseBtn() => _states[_currentState].OnClickPauseBtn();
 
     public void OnClickNextBtn() => _states[_currentState].OnClickNextBtn();
     public void OnClickRetryBtn() => _states[_currentState].OnClickRetryBtn();
@@ -53,6 +64,6 @@ public class FSM<State>
     public void OnClickDot(int index) => _states[_currentState].OnClickDot(index);
 
     public void OnClickGoBackHint() => _states[_currentState].OnClickGoBackHint();
-    public void OnClickOneZoneHint() => _states[_currentState].OnClickOneZoneHint();
-    public void OnClickOneColorHint() => _states[_currentState].OnClickOneColorHint();
+    public void OnClickRandomFillHint() => _states[_currentState].OnClickRandomFillHint();
+    public void OnClickRevealSameColorHint() => _states[_currentState].OnClickRevealSameColorHint();
 }

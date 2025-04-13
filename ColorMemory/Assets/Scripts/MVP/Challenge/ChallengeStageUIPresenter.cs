@@ -39,9 +39,13 @@ public class ChallengeStageUIPresenter
 
     public void ChangeHintCost(int oneColorHintCost, int oneZoneHintCost)
     {
-        _model.OneColorHintCost = oneColorHintCost;
-        _model.OneZoneHintCost = oneZoneHintCost;
-        _viewer.ChangeHintCost(oneColorHintCost, oneZoneHintCost);
+        DOVirtual.Float(_model.TimeRatio, 1, duration, 
+            ((ratio) => 
+            { 
+                _model.TimeRatio = ratio; 
+                _viewer.FillTimeSlider(_model.TimeRatio);
+            }
+        ));
     }
 
     public void ActivateHint(bool oneColorHintActive, bool oneZoneHintActive)
@@ -55,7 +59,7 @@ public class ChallengeStageUIPresenter
     {
         ServiceLocater.ReturnTimeController().Start();
 
-        // ÀÏ½Ã Á¤Áö ²¨ÁÖ±â
+        // ï¿½Ï½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ö±ï¿½
         ActivatePausePanel(false); 
     }
 
@@ -65,7 +69,7 @@ public class ChallengeStageUIPresenter
         {
             ServiceLocater.ReturnTimeController().Stop();
 
-            // µ¥ÀÌÅÍ ºÒ·¯¿Í¼­ ¹Ý¿µ
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ò·ï¿½ï¿½Í¼ï¿½ ï¿½Ý¿ï¿½
             SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
 
             ChangeBGMModel(data.BgmVolume);
@@ -102,12 +106,12 @@ public class ChallengeStageUIPresenter
     {
         if (volumn == 0)
         {
-            _model.BgmleftTextInfo = "À½¼Ò°Å";
+            _model.BgmleftTextInfo = "ï¿½ï¿½ï¿½Ò°ï¿½";
             _model.ColorOnBgmHandle = _colorOnZeroValue;
         }
         else
         {
-            _model.BgmleftTextInfo = "ÀÛ°Ô";
+            _model.BgmleftTextInfo = "ï¿½Û°ï¿½";
             _model.ColorOnBgmHandle = _colorOnBgmHandle;
         }
     }
@@ -116,12 +120,12 @@ public class ChallengeStageUIPresenter
     {
         if (volumn == 0)
         {
-            _model.SfxleftTextInfo = "À½¼Ò°Å";
+            _model.SfxleftTextInfo = "ï¿½ï¿½ï¿½Ò°ï¿½";
             _model.ColorOnSfxHandle = _colorOnZeroValue;
         }
         else
         {
-            _model.SfxleftTextInfo = "ÀÛ°Ô";
+            _model.SfxleftTextInfo = "ï¿½Û°ï¿½";
             _model.ColorOnSfxHandle = _colorOnSfxHandle;
         }
     }
@@ -216,20 +220,6 @@ public class ChallengeStageUIPresenter
         _viewer.ActivateHintPanel(_model.ActiveHintPanel);
     }
 
-
-    public void ActiveGoldPanel(bool active)
-    {
-        _model.ActiveCoinPanel = active;
-        _viewer.ActivateCoinPanel(_model.ActiveCoinPanel);
-    }
-
-    public void ChangeCoinCount(int coinCount)
-    {
-        _model.CoinCount = coinCount;
-        _viewer.ChangeCoinCount(coinCount);
-    }
-
-
     public void ActivateGameOverPanel(bool active)
     {
         _model.ActiveGameOverPanel = active;
@@ -259,15 +249,15 @@ public class ChallengeStageUIPresenter
         _viewer.ActivateGameResultPanel(_model.ActiveGameResultPanel);
     }
 
-    public void ChangeResultGoldCount(int goldCount)
+    public void ChangeGoldCount(int goldCount)
     {
         _model.GoldCount = goldCount;
-        _viewer.ChangeResultGoldCount(_model.GoldCount);
+        _viewer.ChangeGoldCount(_model.GoldCount);
     }
 
-    public void AddRanking(SpawnableUI ranking, Vector3 size)
+    public void AddRanking(SpawnableUI ranking, bool setToMiddle = false)
     {
-        _viewer.AddRanking(ranking, size);
+        _viewer.AddRanking(ranking, setToMiddle);
     }
 
     public void RemoveAllRanking()
@@ -279,6 +269,6 @@ public class ChallengeStageUIPresenter
     {
         _model.MenuCount = menuCount;
         _model.ScrollIndex = index;
-        //_viewer.ChangeRankingScrollValue(_model.MenuCount);
+        _viewer.ChangeRankingScrollValue(_model.MenuCount, _model.ScrollIndex);
     }
 }

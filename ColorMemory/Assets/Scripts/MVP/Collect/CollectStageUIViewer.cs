@@ -1,5 +1,4 @@
 using DG.Tweening;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -8,8 +7,6 @@ using UnityEngine.UI;
 
 public class CollectStageUIViewer
 {
-    GameObject _playPanel;
-
     TMP_Text _titleText;
 
     GameObject _timerContent;
@@ -27,11 +24,9 @@ public class CollectStageUIViewer
     Button _skipBtn;
 
     GameObject _rememberPanel;
-    TMP_Text _hintInfoText;
 
     GameObject _gameClearPanel;
-    TMP_Text _clearTitleText;
-    TMP_Text _clearContentText;
+    Image _cropArtworkImg;
     Button _nextStageBtn;
     Button _gameClearExitBtn;
 
@@ -66,7 +61,6 @@ public class CollectStageUIViewer
     TMP_Text _totalCollectText;
 
     public CollectStageUIViewer(
-         GameObject playPanel,
         TMP_Text titleText,
         GameObject timerContent,
         Image timerSlider,
@@ -83,13 +77,9 @@ public class CollectStageUIViewer
         Button skipBtn,
 
         GameObject rememberPanel,
-        TMP_Text hintInfoText,
 
         GameObject gameClearPanel,
-        TMP_Text clearTitleText,
-        TMP_Text clearContentText,
-        Button nextStageBtn,
-        Button clearExitBtn,
+        Image cropArtworkImg,
 
         GameObject pausePanel,
         Button pauseBtn,
@@ -121,8 +111,6 @@ public class CollectStageUIViewer
 
         CollectStageUIPresenter presenter)
     {
-        _playPanel = playPanel;
-
         _titleText = titleText;
         _timerContent = timerContent;
         _timerSlider = timerSlider;
@@ -139,18 +127,9 @@ public class CollectStageUIViewer
         _skipBtn = skipBtn;
 
         _rememberPanel = rememberPanel;
-        _hintInfoText = hintInfoText;
 
         _gameClearPanel = gameClearPanel;
-        _clearTitleText = clearTitleText;
-        _clearContentText = clearContentText;
-        _nextStageBtn = nextStageBtn;
-        _gameClearExitBtn = clearExitBtn;
-
-        _pausePanel = pausePanel;
-        _pauseBtn = pauseBtn;
-        _gameExitBtn = gameExitBtn;
-        _pauseExitBtn = pauseExitBtn;
+        _cropArtworkImg = cropArtworkImg;
 
         _gameResultPanel = gameResultPanel;
         _gameResultTitle = gameResultTitle;
@@ -188,7 +167,7 @@ public class CollectStageUIViewer
 
     public void ChangeGameResultTitle(string comment)
     {
-        _gameResultTitle.text = comment; // "ÃàÇÏÇØ¿ä! »õ·Î¿î ¸íÈ­¸¦ È¹µæÇß¾î¿ä!";
+        _gameResultTitle.text = comment; // "ï¿½ï¿½ï¿½ï¿½ï¿½Ø¿ï¿½! ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½È­ï¿½ï¿½ È¹ï¿½ï¿½ï¿½ß¾ï¿½ï¿½!";
     }
 
     public void ActivateBottomContent(bool active)
@@ -290,16 +269,6 @@ public class CollectStageUIViewer
         _titleText.text = title;
     }
 
-    public void ChangeHintInfoText(string infoText)
-    {
-        _hintInfoText.text = infoText;
-    }
-
-    public void ChangeProgressText(int progress)
-    {
-        _progressText.text = $"{progress}%";
-    }
-
     public void FillTimeSlider(float ratio)
     {
         _timerSlider.fillAmount = ratio;
@@ -307,13 +276,13 @@ public class CollectStageUIViewer
 
     public void ChangeTotalTime(float totalTime)
     {
-        int intPart = (int)totalTime;      // Á¤¼ö ºÎºÐ
-        float decimalPart = totalTime % 1; // ¼Ò¼öÁ¡ ÀÌÇÏ
+        int intPart = (int)totalTime;      // ï¿½ï¿½ï¿½ï¿½ ï¿½Îºï¿½
+        float decimalPart = totalTime % 1; // ï¿½Ò¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
-        // Á¤¼ö ºÎºÐÀÌ 1ÀÚ¸®¸é D2·Î ¸ÂÃß°í, ±×·¸Áö ¾ÊÀ¸¸é ±×´ë·Î Ãâ·Â
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½Îºï¿½ï¿½ï¿½ 1ï¿½Ú¸ï¿½ï¿½ï¿½ D2ï¿½ï¿½ ï¿½ï¿½ï¿½ß°ï¿½, ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½×´ï¿½ï¿½ ï¿½ï¿½ï¿½
         string formattedIntPart = intPart < 10 ? $"{intPart:D2}" : $"{intPart}";
 
-        // ¼Ò¼öÁ¡ ÀÌÇÏ µÎ ÀÚ¸® À¯Áö
+        // ï¿½Ò¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½
         _totalTimeText.text = $"{formattedIntPart}.{(decimalPart * 100):00}";
     }
 
@@ -338,11 +307,9 @@ public class CollectStageUIViewer
         _rememberPanel.SetActive(active);
     }
 
-  
-
-    public void ActivateGameResultPanel(bool active)
+    public void ActivateHintPanel(bool active)
     {
-        _gameResultPanel.SetActive(active);
+        _hintPanel.SetActive(active);
     }
 
     public void ChangeBGMSliderValue(float ratio, string leftSmallTxt, Color handleColor)

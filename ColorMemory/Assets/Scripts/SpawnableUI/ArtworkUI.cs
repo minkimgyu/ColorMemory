@@ -11,7 +11,7 @@ public class ArtworkUI : SpawnableUI
 
     [SerializeField] GameObject _lockObj;
     [SerializeField] Image _rankIcon;
-    // Å©±â´Â 500 ~ 700 »çÀÌ·Î ¸ÂÃç¾ßÇÔ
+    // Å©ï¿½ï¿½ï¿½ 500 ~ 700 ï¿½ï¿½ï¿½Ì·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
     public override void Initialize(Sprite artSprite, Sprite artFrameSprite, Sprite rankIconSprite, bool hasIt = true)
     {

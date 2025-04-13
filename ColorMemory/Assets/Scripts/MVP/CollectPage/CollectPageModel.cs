@@ -1,8 +1,6 @@
-using NetworkService.DTO;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static FilterUI;
 
 public class CollectPageModel
 {
@@ -26,7 +24,7 @@ public class CollectPageModel
     int _scrollIndex;
     int _selectedSectionIndex;
 
-    int _currentProgress;
+    Vector2Int _selectedArtworkIndex;
 
     bool _activeStageDetailContent;
     int _usedHintCount;
@@ -82,16 +80,11 @@ public class CollectPageModel
 
         _filteredArtDatas = new List<KeyValuePair<int, ArtData>>(_artDatas);
         _artworkDatas = artworkDatas;
-        _collectArtDatas = collectArtDatas;
+        _artData = artData;
     }
-
-    public float CollectionRatio { get => _collectionRatio; set => _collectionRatio = value; }
-
-
 
     public bool ActiveContent { get => _activeContent; set => _activeContent = value; }
     public bool ActiveSelectStageContent { get => _activeSelectStageContent; set => _activeSelectStageContent = value; }
-    public bool ActiveStageDetailContent { get => _activeStageDetailContent; set => _activeStageDetailContent = value; }
 
 
     public bool ActiveArtworkInfoContent { get => _activeArtworkInfoContent; set => _activeArtworkInfoContent = value; }

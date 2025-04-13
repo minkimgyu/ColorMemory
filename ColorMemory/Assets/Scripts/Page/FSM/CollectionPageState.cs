@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class CollectionPageState : BaseState<HomePage.InnerPageState>
 {
     ArtworkUIFactory _artworkFactory;
+
     CollectPagePresenter _collectPagePresenter;
 
     public CollectionPageState(
@@ -55,27 +56,18 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
         ArtworkUIFactory artworkFactory,
         StageUIFactory stageUIFactory,
 
-        FilteredArtworkFactory filteredArtworkFactory,
-        FilterItemFactory filterItemFactory,
-
-        Dictionary<int, ArtData> artDatas,
-        Dictionary<int, ArtworkData> artworkDatas,
-        Dictionary<int, CollectArtData> collectArtDatas,
+        Dictionary<ArtName, ArtData> artworkDatas,
+        Dictionary<ArtName, CollectiveArtData> artDatas,
         FSM<HomePage.InnerPageState> fsm) : base(fsm)
     {
-        CollectPageModel collectPageModel = new CollectPageModel(
-            artDatas,
-            artworkDatas,
-            collectArtDatas);
+        int artDataCount = Enum.GetValues(typeof(ArtName)).Length;
+        artworkScrollUI.SetUp(artDataCount);
 
-        _collectPagePresenter = new CollectPagePresenter(
-            collectPageModel,
-            artworkFactory,
-            stageUIFactory,
-            filteredArtworkFactory,
-            filterItemFactory,
-            GoToCollectMode);
+        List<ArtName> artNames = new List<ArtName>();
+        for (int i = 0; i < artworkDatas.Count; i++) artNames.Add((ArtName)i);
 
+        CollectPageModel collectPageModel = new CollectPageModel(artNames, artworkDatas, artDatas);
+        _collectPagePresenter = new CollectPagePresenter(collectPageModel, artworkFactory, stageUIFactory, GoToCollectMode);
         CollectPageViewer collectPageViewer = new CollectPageViewer(
             collectionContent,
 
@@ -141,21 +133,20 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
         _collectPagePresenter.ChangeCollectionRatioInfo();
         _collectPagePresenter.ActivateFilterScrollUI(true);
 
-        // ¾ÆÆ®¿öÅ© Ã¤¿ì±â
+        // ï¿½ï¿½Æ®ï¿½ï¿½Å© Ã¤ï¿½ï¿½ï¿½
         _collectPagePresenter.FillArtwork();
 
-        // content ¿­¾îÁÖ±â
+        // content ï¿½ï¿½ï¿½ï¿½ï¿½Ö±ï¿½
         _collectPagePresenter.ActiveContent(true);
 
-        // ÀúÀåµÈ °ª ºÒ·¯¿Í¼­ Àû¿ëÇÏ±â
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ò·ï¿½ï¿½Í¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½
         SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
         _collectPagePresenter.ScrollArtworkToIndex(data.SelectedArtworkKey);
     }
 
     public override void OnStateExit()
     {
-        _collectPagePresenter.DestroyAllArtwork();
-        _collectPagePresenter.ActivateFilterScrollUI(false);
-        _collectPagePresenter.ActiveContent(false); // home ´Ý¾ÆÁÖ±â
+        _collectPagePresenter.RemoveAllArtwork();
+        _collectPagePresenter.ActiveContent(false); // home ï¿½Ý¾ï¿½ï¿½Ö±ï¿½
     }
 }

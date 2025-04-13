@@ -53,49 +53,16 @@ public class MultipleJsonAssetLoader<Key, Value> : MultipleAssetLoader<Key, Valu
     }
 }
 
-public class IntMultipleJsonAssetLoader<Key, Value> : MultipleAssetLoader<Key, Value, TextAsset>
+public class CollectiveArtJsonAssetLoader : MultipleJsonAssetLoader<ArtName, CollectiveArtData>
 {
-    JsonParser _parser;
-    public IntMultipleJsonAssetLoader(AddressableHandler.Label label, Action<Dictionary<Key, Value>, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
-    {
-        _parser = new JsonParser();
-    }
-
-    protected override void LoadAsset(IResourceLocation location, Dictionary<Key, Value> dictionary, Action OnComplete)
-    {
-        Addressables.LoadAssetAsync<TextAsset>(location).Completed +=
-        (handle) =>
-        {
-            switch (handle.Status)
-            {
-                case AsyncOperationStatus.Succeeded:
-                    Key key = (Key)(object)int.Parse(location.PrimaryKey);
-                    Value value = _parser.JsonToObject<Value>(handle.Result);
-
-                    dictionary.Add(key, value);
-                    OnComplete?.Invoke();
-                    break;
-
-                case AsyncOperationStatus.Failed:
-                    break;
-
-                default:
-                    break;
-            }
-        };
-    }
-}
-
-public class CollectiveArtJsonAssetLoader : IntMultipleJsonAssetLoader<int, CollectArtData>
-{
-    public CollectiveArtJsonAssetLoader(AddressableHandler.Label label, Action<Dictionary<int, CollectArtData>, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
+    public CollectiveArtJsonAssetLoader(AddressableHandler.Label label, Action<Dictionary<ArtName, CollectiveArtData>, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
     {
     }
 }
 
-public class ArtworkJsonAssetLoader : SingleJsonAssetLoader<ArtworkDateWrapper>
+public class ArtworkJsonAssetLoader : SingleJsonAssetLoader<ArtworkDataObject>
 {
-    public ArtworkJsonAssetLoader(AddressableHandler.Label label, Action<ArtworkDateWrapper, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
+    public ArtworkJsonAssetLoader(AddressableHandler.Label label, Action<ArtworkDataObject, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
     {
     }
 }

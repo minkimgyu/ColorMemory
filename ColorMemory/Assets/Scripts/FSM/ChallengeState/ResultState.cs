@@ -1,12 +1,7 @@
-using NetworkService.DTO;
-using NetworkService.Manager;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using static Challenge.ChallengeMode;
 
 namespace Challenge
 {
@@ -28,10 +23,10 @@ namespace Challenge
             _modeData = modeData;
         }
 
-        public override void OnClickRetryBtn()
+        RankingData GetRankingData()
         {
-            ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.ChallengeScene);
-        }
+            List<PersonalRankingData> topRankingDatas = new List<PersonalRankingData>();
+            string[] names = { "Alice", "Bob", "Charlie", "David", "Eve", "Frank", "Grace", "Hank", "Ivy", "Jack" };
 
         public override void OnClickExitBtn()
         {
@@ -52,7 +47,10 @@ namespace Challenge
 
             try
             {
-                string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
+                RankingIconName iconName = (RankingIconName)UnityEngine.Random.Range(0, Enum.GetValues(typeof(RankingIconName)).Length);
+                string name = names[i];
+                int score = UnityEngine.Random.Range(0, 100000000);
+                int rank = i + 1; // 1ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½
 
 
                 await scoreManager.UpdatePlayerWeeklyScoreAsync(userId, _modeData.MyScore);
@@ -64,17 +62,15 @@ namespace Challenge
                 await moneyManager.PayPlayerMoneyAsync(userId, useMoney);
                 await moneyManager.EarnPlayerMoneyAsync(userId, money);
             }
-            catch (Exception e)
-            {
-                Debug.Log(e);
-                Debug.Log("¼­¹ö·Î µ¥ÀÌÅÍ¸¦ Àü¼ÛÇÏÁö ¸ø ÇÔ");
-                return false;
-            }
 
-            return true;
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö±ï¿½
+            PersonalRankingData myRankingData = new PersonalRankingData((RankingIconName)1, "Meal", 10000000, 15);
+
+            RankingData rankingData = new RankingData(topRankingDatas, myRankingData);
+            return rankingData;
         }
 
-        async Task<List<PlayerRankingDTO>> GetRankingDataFromServer()
+        public override void OnClickRetryBtn()
         {
             ScoreManager scoreManager = new ScoreManager();
             List<PlayerRankingDTO> playerScoreDTOs = new List<PlayerRankingDTO>();
@@ -87,17 +83,17 @@ namespace Challenge
             catch (Exception e)
             {
                 Debug.Log(e);
-                Debug.Log("¼­¹ö·Î µ¥ÀÌÅÍ¸¦ Àü¼ÛÇÏÁö ¸ø ÇÔ");
+                Debug.Log("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½");
                 return null;
             }
 
             return playerScoreDTOs;
         }
 
-        public override async void OnStateEnter()
+        public override void OnClickExitBtn()
         {
-            bool isSuccess = await SendDataToServer();
-            if (isSuccess == false) return;
+            ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.HomeScene);
+        }
 
             List<PlayerRankingDTO> playerScoreDTOs = await GetRankingDataFromServer();
             if (playerScoreDTOs == null) return;
@@ -106,36 +102,19 @@ namespace Challenge
             _challengeStageUIPresenter.ActivateGameResultPanel(true);
             _challengeStageUIPresenter.ChangeResultGoldCount(money);
 
-            string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö±ï¿½
+            RankingData rankingData = GetRankingData();
 
-            int myRankingIndex = -1;
-            List<PersonalRankingData> rankingDatas = new List<PersonalRankingData>();
-            for (int i = 0; i < playerScoreDTOs.Count; i++)
+            for (int i = 0; i < rankingData.OtherRankingDatas.Count; i++)
             {
-                if(playerScoreDTOs[i].PlayerId == userId) myRankingIndex = i;
-                rankingDatas.Add(new PersonalRankingData(1, playerScoreDTOs[i].Name, playerScoreDTOs[i].Score, i + 1));
+                SpawnableUI rankingUI = _rankingUIFactory.Create(rankingData.OtherRankingDatas[i]);
+                _challengeStageUIPresenter.AddRanking(rankingUI);
             }
 
-            for (int i = 0; i < rankingDatas.Count; i++)
-            {
-                SpawnableUI rankingUI = _rankingUIFactory.Create(rankingDatas[i]);
-                rankingUI.ChangeSelect(false);
-                Vector3 size;
+            SpawnableUI myRankingUI = _rankingUIFactory.Create(rankingData.MyRankingData);
+            _challengeStageUIPresenter.AddRanking(myRankingUI, true);
 
-                if(i == myRankingIndex)
-                {
-                    rankingUI.ChangeSelect(true);
-                    size = Vector3.one;
-                }
-                else
-                {
-                    size = Vector3.one * 0.8f;
-                }
-
-                _challengeStageUIPresenter.AddRanking(rankingUI, size);
-            }
-
-            int totalCount = rankingDatas.Count; // 5°³
+            int totalCount = rankingData.OtherRankingDatas.Count + 1;
             int middleIndex = totalCount / 2;
             _challengeStageUIPresenter.SetUpRankingScroll(totalCount, middleIndex);
         }

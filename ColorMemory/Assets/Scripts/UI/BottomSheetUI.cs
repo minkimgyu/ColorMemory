@@ -17,7 +17,7 @@ public class BottomSheetUI : MonoBehaviour, IDragHandler, IEndDragHandler
     [SerializeField] float _hiddenPositionOffset = 522;
     [SerializeField] float _visiblePoistionOffset = 450;
 
-    public void Initialize()
+    void Start()
     {
         float panelHeight = panel.rect.height;
         hiddenPosition = new Vector2(0, -panelHeight + _hiddenPositionOffset); // È­¸é ¾Æ·¡·Î ¼û±è
@@ -38,20 +38,12 @@ public class BottomSheetUI : MonoBehaviour, IDragHandler, IEndDragHandler
         isOpen = !isOpen;
     }
 
-    public void ActivatePanel(bool active)
-    {
-        isOpen = active;
-
-        if (isOpen) OpenPanel();
-        else ClosePanel();
-    }
-
-    public void OpenPanel()
+    private void OpenPanel()
     {
         panel.DOAnchorPos(visiblePosition, slideDuration);
     }
 
-    public void ClosePanel()
+    private void ClosePanel()
     {
         panel.DOAnchorPos(hiddenPosition, slideDuration);
     }

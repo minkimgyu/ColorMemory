@@ -10,7 +10,6 @@ namespace Collect
     public class MemorizeState : BaseState<CollectMode.State>
     {
         Dot[,] _dots;
-        Dot[] _penDots;
         Vector2Int _levelSize;
         MapData _mapData;
 
@@ -51,10 +50,9 @@ namespace Collect
         public override void OnStateEnter()
         {
 
-            // ÃÊ±âÈ­ ÁøÇà
+            // ï¿½Ê±ï¿½È­ ï¿½ï¿½ï¿½ï¿½
             Tuple<Dot[,], Dot[], MapData> levelData = GetLevelData();
             _dots = levelData.Item1;
-            _penDots = levelData.Item2;
             _mapData = levelData.Item3;
             _levelSize = new Vector2Int(_dots.GetLength(0), _dots.GetLength(1));
 
@@ -70,10 +68,10 @@ namespace Collect
             {
                 for (int j = 0; j < _levelSize.y; j++)
                 {
-                    // ¿ø·¡ ·¹º§ »öÀ¸·Î º¯°æÇØÁÖ±â
+                    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö±ï¿½
                     _dots[i, j].ChangeColor(GetDotColor(i, j));
 
-                    // ·£´ýÇÏ°Ô Å°¿ì±â
+                    // ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ Å°ï¿½ï¿½ï¿½
                     _dots[i, j].Maximize(1f);
                 }
             }
@@ -95,7 +93,7 @@ namespace Collect
 
             _collectStageUIPresenter.ActivateRememberPanel(false);
 
-            // dot µÚÁý´Â ÄÚµå Ãß°¡
+            // dot ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½ ï¿½ß°ï¿½
             for (int i = 0; i < _levelSize.x; i++)
             {
                 for (int j = 0; j < _levelSize.y; j++)
@@ -104,9 +102,9 @@ namespace Collect
                 }
             }
 
-            _timer.Reset(); // Å¸ÀÌ¸Ó ¸®¼Â
+            _timer.Reset(); // Å¸ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½
 
-            // ÀÏÁ¤ ½Ã°£ Áö³ª¸é ´ÙÀ½ State·Î ÀÌµ¿
+            // ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Stateï¿½ï¿½ ï¿½Ìµï¿½
             DOVirtual.DelayedCall(1.5f, () =>
             {
                 _fsm.SetState(CollectMode.State.Paint);

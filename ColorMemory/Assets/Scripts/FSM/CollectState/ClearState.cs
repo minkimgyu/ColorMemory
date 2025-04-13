@@ -1,12 +1,6 @@
 using UnityEngine;
 using System;
 using DG.Tweening;
-using NetworkService.DTO;
-using NetworkService.Manager;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Collections;
-using static Challenge.ChallengeMode;
 
 namespace Collect
 {
@@ -14,7 +8,7 @@ namespace Collect
     {
         Action DestroyDots;
         CollectMode.Data _modeData;
-        CollectArtData _artData;
+        CollectiveArtData _artData;
 
         Func<Tuple<Dot[,], Dot[], MapData>> GetLevelData;
         CollectStageUIPresenter _collectStageUIPresenter;
@@ -22,7 +16,7 @@ namespace Collect
         public ClearState(
             FSM<CollectMode.State> fsm,
             CollectMode.Data modeData,
-            CollectArtData artData,
+            CollectiveArtData artData,
             CollectStageUIPresenter collectStageUIPresenter,
 
             Func<Tuple<Dot[,], Dot[], MapData>> GetLevelData,
@@ -54,7 +48,7 @@ namespace Collect
             catch (System.Exception e)
             {
                 Debug.Log(e);
-                Debug.Log("¼­¹ö·ÎºÎÅÍ µ¥ÀÌÅÍ¸¦ ¹Þ¾Æ¿ÀÁö ¸øÇÔ");
+                Debug.Log("ï¿½ï¿½ï¿½ï¿½ï¿½Îºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½Þ¾Æ¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½");
                 return null;
             }
 
@@ -73,7 +67,7 @@ namespace Collect
             catch (System.Exception e)
             {
                 Debug.Log(e);
-                Debug.Log("¼­¹ö·Î µ¥ÀÌÅÍ¸¦ ¾÷µ¥ÀÌÆ®ÇÏÁö ¸ø ÇÔ");
+                Debug.Log("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½");
                 return null;
             }
 
@@ -88,13 +82,13 @@ namespace Collect
             SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
             _artworkDTO = artDatas.Find(x => x.ArtworkId == data.SelectedArtworkKey);
 
-            // µ¥ÀÌÅÍ ¾÷µ¥ÀÌÆ®
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
 
-            // ´ÙÀ½ ½ºÅ×ÀÌÁö ÇØ±ÝÇØÁÖ´Â ÄÚµå
-            _artworkDTO.Stages[data.SelectedArtworkSectionIntIndex].Status = StageStauts.Clear; // ÇöÀç ½ºÅ×ÀÌÁö Å¬¸®¾î Àû¿ë
+            // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ø±ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ ï¿½Úµï¿½
+            _artworkDTO.Stages[data.SelectedArtworkSectionIntIndex].Status = StageStauts.Clear; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
-            int lastIndex = _artworkDTO.Stages.Count - 1; // ½ºÅ×ÀÌÁö °³¼ö - 1 -> 0ºÎÅÍ ½ÃÀÛÇÔ
-            if(lastIndex >= data.SelectedArtworkSectionIntIndex + 1) // ´ÙÀ½ ½ºÅ×ÀÌÁö ÀÎµ¦½º°¡ lastIndex º¸´Ù ÀÛ°Å³ª °°Àº °æ¿ì¸¸ ÁøÇà
+            int lastIndex = _artworkDTO.Stages.Count - 1; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ - 1 -> 0ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+            if(lastIndex >= data.SelectedArtworkSectionIntIndex + 1) // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Îµï¿½ï¿½ï¿½ï¿½ï¿½ lastIndex ï¿½ï¿½ï¿½ï¿½ ï¿½Û°Å³ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ì¸¸ ï¿½ï¿½ï¿½ï¿½
             {
                 if(_artworkDTO.Stages[data.SelectedArtworkSectionIntIndex + 1].Status == StageStauts.Lock)
                 {
@@ -102,7 +96,7 @@ namespace Collect
                 }
             }
 
-            _artworkDTO.Stages[data.SelectedArtworkSectionIntIndex].IncorrectCnt = _modeData.WrongCount; // index + 1 ÇØ¼­ Ã£±â -> 1-indexedÀÓ
+            _artworkDTO.Stages[data.SelectedArtworkSectionIntIndex].IncorrectCnt = _modeData.WrongCount; // index + 1 ï¿½Ø¼ï¿½ Ã£ï¿½ï¿½ -> 1-indexedï¿½ï¿½
             _artworkDTO.Stages[data.SelectedArtworkSectionIntIndex].HintUsage = _modeData.GoBackCount;
 
             Rank? rank = await UpdateArtDataToServer(_artworkDTO);
@@ -116,37 +110,27 @@ namespace Collect
         public override void OnClickNextStageBtn()
         {
             SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
-
             int row = _artData.Sections.Count;
             int col = _artData.Sections[0].Count;
 
             if (data.SelectedArtworkSectionIndex.x == row - 1
-            && data.SelectedArtworkSectionIndex.y == col - 1
-            && _artworkDTO.HasIt == false)
+            && data.SelectedArtworkSectionIndex.y == col - 1)
             {
-                _fsm.SetState(CollectMode.State.Result); 
-                // ÇöÀç ½ºÅ×ÀÌÁö°¡ ¸¶Áö¸·ÀÎ °æ¿ì ±×¸®°í º¸À¯ ÁßÀÌÁö ¾ÊÀº °æ¿ì
-                // ÀÌÈÄ ÇÃ·¹ÀÌ ½Ã ·©Å©°¡ ¹Ù²ð °æ¿ì Å×Åõ¸®°¡ º¯ÇÏ°Ô²û Àû¿ëÇÏÀÚ
+                _fsm.SetState(CollectMode.State.Result); // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
                 return;
             }
 
-            // 0, 0
-
             Vector2Int changedIndex;
             int nextIndex = data.SelectedArtworkSectionIndex.y + 1;
-            if (nextIndex == col) changedIndex = new Vector2Int(data.SelectedArtworkSectionIndex.x + 1, 0);
+            if (nextIndex >= col) changedIndex = new Vector2Int(data.SelectedArtworkSectionIndex.x + 1, 0);
             else changedIndex = new Vector2Int(data.SelectedArtworkSectionIndex.x, data.SelectedArtworkSectionIndex.y + 1);
+            ServiceLocater.ReturnSaveManager().SelectArtwork(changedIndex);
 
-            ServiceLocater.ReturnSaveManager().SelectArtworkSection(changedIndex);
-
-            SaveData newData = ServiceLocater.ReturnSaveManager().GetSaveData();
-            _fsm.SetState(CollectMode.State.Initialize);
+            _fsm.SetState(CollectMode.State.Initialize, changedIndex);
         }
 
-        public override async void OnStateEnter()
+        public override void OnStateEnter()
         {
-            await UpdateArtDataToServer();
-
             DOVirtual.DelayedCall(0.5f, () =>
             {
                 Tuple<Dot[,], Dot[], MapData> levelData = GetLevelData();
@@ -157,47 +141,19 @@ namespace Collect
                 {
                     for (int j = 0; j < levelSize.y; j++)
                     {
-                        // ·£´ýÇÏ°Ô ÁÙÀÌ±â
+                        // ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ Å°ï¿½ï¿½ï¿½
                         dots[i, j].Minimize(1f);
                     }
                 }
 
                 DOVirtual.DelayedCall(1.5f, () =>
                 {
-                    DestroyDots?.Invoke(); // ¸ðµç ´å Á¦°Å
+                    DestroyDots?.Invoke();
 
-                    // ´ÙÀ½ ½ºÅ×ÀÌÁö·Î °¥ °ÍÀÎÁö ÆÇ´ÜÇÏ´Â UI ¶ç¿ì±â
+                    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ç´ï¿½ï¿½Ï´ï¿½ UI ï¿½ï¿½ï¿½ï¿½
                     _collectStageUIPresenter.ActivateGameClearPanel(true);
-                    _collectStageUIPresenter.ActivateNextStageBtn(true);
-                    _collectStageUIPresenter.ActivateClearExitBtn(true);
 
-                    SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
-                    int row = _artData.Sections.Count;
-                    int col = _artData.Sections[0].Count;
-
-                    if(data.SelectedArtworkSectionIndex.x == row - 1
-                    && data.SelectedArtworkSectionIndex.y == col - 1) // ¸¶Áö¸· ½ºÅ×ÀÌÁöÀÇ °æ¿ì
-                    {
-                        _collectStageUIPresenter.ChangeClearTitleInfo("¸íÈ­¸¦ ¿Ï¼ºÇß¾î¿ä!");
-                        _collectStageUIPresenter.ChangeClearContentInfo("ÃàÇÏÇØ¿ä! ¸¶Áö¸· ÆÐÅÏ±îÁö ¿Ï¼ºÇß¾î¿ä!");
-
-                        if (_artworkDTO.HasIt == true) // ÀÌ¹Ì ¾ÆÆ®¿öÅ©¸¦ º¸À¯ÇÑ °æ¿ì
-                        {
-                            // next ¹öÆ° ¾ø¾ÖÁÖ±â
-                            _collectStageUIPresenter.ActivateNextStageBtn(false);
-                            // exit¸¸ °¡´ÉÇÏ°Ô ¸¸µé¾îÁØ´Ù.
-                        }
-                        else // º¸À¯ÇÏÁö ¾ÊÀº °æ¿ì
-                        {
-                            _collectStageUIPresenter.ActivateClearExitBtn(false);
-                            // next¸¸ °¡´ÉÇÏ°Ô ¸¸µé¾îÁØ´Ù.
-                        }
-                    }
-                    else
-                    {
-                        _collectStageUIPresenter.ChangeClearTitleInfo("Á¶°¢À» ¿Ï¼ºÇß¾î¿ä!");
-                        _collectStageUIPresenter.ChangeClearContentInfo("Next ¹öÆ°À» ´­·¯ ¸íÈ­¸¦ ¿Ï¼ºÇØº¸¼¼¿ä!");
-                    }
+                    //_fsm.SetState(CollectMode.State.Initialize);
                 });
             });
         }
@@ -206,11 +162,8 @@ namespace Collect
 
         public override void OnStateExit()
         {
-            _artworkDTO = null;
             _modeData.MyScore += clearPoint;
-            _collectStageUIPresenter.ActivateDetailContent(false);
             _collectStageUIPresenter.ActivateGameClearPanel(false);
-
             //_collectStageUIPresenter.ChangeNowScore(data.MyScore);
             //_challengeStageUIPresenter.ChangeBestScore(data.MyScore);
         }

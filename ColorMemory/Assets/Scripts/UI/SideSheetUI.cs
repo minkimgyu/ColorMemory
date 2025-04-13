@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using TMPro;
 
 public class SideSheetUI : MonoBehaviour, IDragHandler, IEndDragHandler
 {
@@ -16,17 +15,9 @@ public class SideSheetUI : MonoBehaviour, IDragHandler, IEndDragHandler
     private float dragSpeed = 0f;
     public float closeSpeedThreshold = 300f; // 빠르게 드래그할 때 즉시 닫히는 속도
 
-    public System.Action<bool> OnPanelActivated { get; set; }
-
-    public void InjectActivateEvent(System.Action<bool> OnPanelActivated)
+    void Start()
     {
-        this.OnPanelActivated = OnPanelActivated;
-    }
-
-    public virtual void Initialize()
-    {
-        Canvas canvas = GetComponentInParent<Canvas>();
-        float panelWidth = canvas.GetComponent<RectTransform>().sizeDelta.x;
+        float panelWidth = panel.rect.width;
         hiddenPosition = new Vector2(panelWidth, 0);
         visiblePosition = Vector2.zero;
         panel.anchoredPosition = hiddenPosition;
@@ -48,19 +39,19 @@ public class SideSheetUI : MonoBehaviour, IDragHandler, IEndDragHandler
     private void OpenPanel()
     {
         panel.DOAnchorPos(visiblePosition, slideDuration);
-        OnPanelActivated?.Invoke(true);
     }
 
     private void ClosePanel()
     {
         panel.DOAnchorPos(hiddenPosition, slideDuration);
-        OnPanelActivated?.Invoke(false);
     }
 
     public void OnDrag(PointerEventData eventData)
     {
         // 드래그 속도 계산
         dragSpeed = eventData.delta.x / Time.deltaTime;
+
+        
 
         // 사용자가 오른쪽으로 드래그하여 닫을 경우
         float newX = panel.anchoredPosition.x + eventData.delta.x;

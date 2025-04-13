@@ -5,10 +5,26 @@ using Newtonsoft.Json;
 using UnityEngine.Networking;
 using System;
 using Challenge;
-using System.Net;
 
-public class ChallengeModeStageDataBuilder : SheetDataBuilder
+public class ChallengeModeStageDataBuilder : MonoBehaviour
 {
+    const string URL = "https://docs.google.com/spreadsheets/d/1YMPCChQ5VHH_Gg7RgglN4P8YZzTqNt5HkDNI5ohNhj4/export?format=tsv";
+
+    IEnumerator Load(System.Action<string> OnComplete)
+    {
+        UnityWebRequest request = UnityWebRequest.Get(URL);
+        yield return request.SendWebRequest();
+
+        if(request.result == UnityWebRequest.Result.Success)
+        {
+            OnComplete?.Invoke(request.downloadHandler.text);
+        }
+        else
+        {
+            Debug.LogError(request.result);
+        }
+    }
+
     List<ChallengeMode.StageData> ParseTsv(string tsv)
     {
         List<ChallengeMode.StageData> stageDatas = new List<ChallengeMode.StageData>();
@@ -22,13 +38,12 @@ public class ChallengeModeStageDataBuilder : SheetDataBuilder
         {
             string[] columns = row[i].Split('\t');
 
-            int mapSize, colorCount, randomPointCount, memorizeDuration = 0;
+            int mapSize, colorCount, randomPointCount = 0;
             mapSize = int.Parse(columns[1]);
             colorCount = int.Parse(columns[2]);
             randomPointCount = int.Parse(columns[3]);
-            memorizeDuration = int.Parse(columns[4]);
 
-            ChallengeMode.StageData stageData = new ChallengeMode.StageData(mapSize, colorCount, randomPointCount, memorizeDuration);
+            ChallengeMode.StageData stageData = new ChallengeMode.StageData(mapSize, colorCount, randomPointCount);
             stageDatas.Add(stageData);
         }
 
@@ -36,16 +51,19 @@ public class ChallengeModeStageDataBuilder : SheetDataBuilder
     }
 
     [ContextMenu("CreateData")]
-    public override void CreateData()
+    public void CreateData()
     {
         FileIO fileIO = new FileIO(new JsonParser(), ".txt");
 
-        StartCoroutine(Load(_address, _sheetID, (string tsv) => {
+        string fileName = "ChallengeModeLevelDataAsset";
+        string fileLocation = "JsonDatas";
+
+        StartCoroutine(Load((string tsv) => {
 
             List<ChallengeMode.StageData> stageDatas = ParseTsv(tsv);
 
             ChallengeMode.StageDataWrapper stageDataWrapper = new ChallengeMode.StageDataWrapper(stageDatas);
-            fileIO.SaveData(stageDataWrapper, _fileLocation, _fileName, true);
+            fileIO.SaveData(stageDataWrapper, fileLocation, fileName, true);
         }));
     }
 }

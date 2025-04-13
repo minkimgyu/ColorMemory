@@ -6,9 +6,6 @@ public class CollectStageUIModel
 {
     public CollectStageUIModel()
     {
-        _activePlayPanel = false;
-        _hintInfo = "";
-        _progress = 0;
         _bestScore = 0;
         _nowScore = 0;
         _leftTime = 0;
@@ -211,8 +208,6 @@ public class CollectStageUIModel
         set => _activeHintPanel = value;
     }
 
-
-
     bool _activeGameClearPanel;
 
     public bool ActiveGameClearPanel
@@ -220,38 +215,6 @@ public class CollectStageUIModel
         get => _activeGameClearPanel;
         set => _activeGameClearPanel = value;
     }
-
-    string _clearTitleInfo;
-    public string ClearTitleInfo
-    {
-        get => _clearTitleInfo;
-        set => _clearTitleInfo = value;
-    }
-
-    string _clearContentInfo;
-    public string ClearContentInfo
-    {
-        get => _clearContentInfo;
-        set => _clearContentInfo = value;
-    }
-
-
-    bool _activeNextStageBtn;
-    public bool ActiveNextStageBtn 
-    { 
-        get => _activeNextStageBtn; 
-        set => _activeNextStageBtn = value; 
-    }
-
-    bool _activeClearExitBtn;
-    public bool ActiveClearExitBtn
-    {
-        get => _activeClearExitBtn;
-        set => _activeClearExitBtn = value;
-    }
-
-
-
 
     int _clearStageCount;
     public int ClearStageCount

@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System;
 public class CustomLevelGenerator : LevelGenerator
 {
-    CollectArtData.Section _section;
+    CollectiveArtData.Section _section;
 
-    public CustomLevelGenerator(CollectArtData.Section section)
+    public CustomLevelGenerator(CollectiveArtData.Section section)
     {
         _section = section;
     }
@@ -18,7 +18,7 @@ public class CustomLevelGenerator : LevelGenerator
 
     public MapData GenerateLevelData()
     {
-        List<CollectArtData.Color> colors = _section.UsedColors[0];
+        List<CollectiveArtData.Color> colors = _section.UsedColors[0];
 
         List<int> pickColorIndexes = new List<int>();
         for (int i = 0; i < colors.Count; i++)
