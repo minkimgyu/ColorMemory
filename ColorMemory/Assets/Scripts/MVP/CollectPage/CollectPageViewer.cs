@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using static FilterUI;
 
 public class CollectPageViewer
 {
@@ -44,6 +45,8 @@ public class CollectPageViewer
     Button _filterExitBtn;
     GameObject _filterContent;
     TMP_Text _collectionRatioText;
+
+    Toggle[] _ownToggles;
     Toggle[] _rankToggles;
     Toggle[] _dateToggles;
 
@@ -84,6 +87,8 @@ public class CollectPageViewer
         Button filterExitBtn,
         GameObject filterContent,
         TMP_Text collectionRatioText,
+
+        Toggle[] ownToggles,
         Toggle[] rankToggles,
         Toggle[] dateToggles,
 
@@ -135,6 +140,8 @@ public class CollectPageViewer
         _filterExitBtn = filterExitBtn;
         _filterContent = filterContent;
         _collectionRatioText = collectionRatioText;
+
+        _ownToggles = ownToggles;
         _rankToggles = rankToggles; // 이벤트 걸기
         _dateToggles = dateToggles; // 이벤트 걸기
 
@@ -143,17 +150,35 @@ public class CollectPageViewer
         _filterExitBtn.onClick.AddListener(() => { collectPagePresenter.ActivateFilterContent(false); });
         _filterOpenBtn.onClick.AddListener(() => { collectPagePresenter.ActivateFilterContent(true); });
 
+        for (int i = 0; i < _ownToggles.Length; i++)
+        {
+            int ownIndex = i;
+            _ownToggles[i].onValueChanged.AddListener((on) => 
+            { 
+                if (on) collectPagePresenter.OnClickOwnToggle((FilterUI.OwnFilter)ownIndex);
+                else collectPagePresenter.OnClickOwnToggle(FilterUI.OwnFilter.All);
+            });
+        }
+
         // 기본 필터를 제외한 나머지 필터 경우
         for (int i = 0; i < _rankToggles.Length; i++)
         {
             int rankIndex = i + 1;
-            _rankToggles[i].onValueChanged.AddListener((on) => { if(on) collectPagePresenter.OnClickRankToggle((FilterUI.RankFilter)rankIndex); });
+            _rankToggles[i].onValueChanged.AddListener((on) => 
+            { 
+                if(on) collectPagePresenter.OnClickRankToggle((FilterUI.RankFilter)rankIndex);
+                else collectPagePresenter.OnUnClickRankToggle((FilterUI.RankFilter)rankIndex);
+            });
         }
 
         for (int i = 0; i < _dateToggles.Length; i++)
         {
-            int dateIndex = i + 1;
-            _dateToggles[i].onValueChanged.AddListener((on) => { if (on) collectPagePresenter.OnClickDateToggle((FilterUI.DateFilter)dateIndex); });
+            int dateIndex = i;
+            _dateToggles[i].onValueChanged.AddListener((on) => 
+            { 
+                if (on) collectPagePresenter.OnClickDateToggle((FilterUI.DateFilter)dateIndex);
+                else collectPagePresenter.OnClickDateToggle(FilterUI.DateFilter.Old);
+            });
         }
 
         _exitBtn.onClick.AddListener(() => { collectPagePresenter.ActiveSelectStageContent(false); });
@@ -167,24 +192,51 @@ public class CollectPageViewer
         _collectionRatioText.text = $"현재 전체 명화의 {ratio}%를 수집했어요!";
     }
 
-    public void UnableAllToggles(FilterUI.FilterType type)
+    public void UpdateToggles(FilterUI.OwnFilter ownFilter, List<FilterUI.RankFilter> rankFilters, FilterUI.DateFilter dateFilter)
     {
-        switch (type)
+        for (int i = 0; i < _ownToggles.Length; i++)
         {
-            case FilterUI.FilterType.Rank:
-                for (int i = 0; i < _rankToggles.Length; i++)
-                {
-                    _rankToggles[i].isOn = false;
-                }
-                break;
-            case FilterUI.FilterType.Date:
-                for (int i = 0; i < _dateToggles.Length; i++)
-                {
-                    _dateToggles[i].isOn = false;
-                }
-                break;
-            default:
-                break;
+            if((int)ownFilter == i) _ownToggles[i].SetIsOnWithoutNotify(true);
+            else _ownToggles[i].SetIsOnWithoutNotify(false);
+        }
+
+        if(ownFilter != OwnFilter.Clear)
+        {
+            for (int i = 0; i < _rankToggles.Length; i++)
+            {
+                _rankToggles[i].interactable = false;
+                _rankToggles[i].SetIsOnWithoutNotify(false);
+            }
+
+            for (int i = 0; i < _dateToggles.Length; i++)
+            {
+                _dateToggles[i].interactable = false;
+                _dateToggles[i].SetIsOnWithoutNotify(false);
+            }
+        }
+        else
+        {
+            for (int i = 0; i < _rankToggles.Length; i++)
+            {
+                _rankToggles[i].interactable = true;
+            }
+
+            for (int i = 0; i < _dateToggles.Length; i++)
+            {
+                _dateToggles[i].interactable = true;
+            }
+
+            for (int i = 0; i < _rankToggles.Length; i++)
+            {
+                bool haveRank = rankFilters.Contains((FilterUI.RankFilter)(i + 1));
+                _rankToggles[i].SetIsOnWithoutNotify(haveRank);
+            }
+
+            for (int i = 0; i < _dateToggles.Length; i++)
+            {
+                if ((int)dateFilter == i) _dateToggles[i].SetIsOnWithoutNotify(true);
+                else _dateToggles[i].SetIsOnWithoutNotify(false);
+            }
         }
     }
 
@@ -217,14 +269,20 @@ public class CollectPageViewer
         _filterScrollUI.AddFilteredArtwork(spawnableUI);
     }
 
+    public void DestroyFilteredArtwork()
+    {
+        _filterScrollUI.DestroyFilteredArtwork();
+    }
+
+
     public void AddFilterItem(SpawnableUI spawnableUI)
     {
         _filterScrollUI.AddFilterItem(spawnableUI);
     }
 
-    public void DestroyFilteredArtwork()
+    public void DestroyFilterItems()
     {
-        _filterScrollUI.DestroyFilteredArtwork();
+        _filterScrollUI.DestroyFilterItem();
     }
 
 

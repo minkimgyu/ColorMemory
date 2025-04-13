@@ -45,6 +45,8 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
         Button filterExitBtn,
         GameObject filterContent,
         TMP_Text collectionRatioText,
+
+        Toggle[] ownToggles,
         Toggle[] rankToggles,
         Toggle[] dateToggles,
 
@@ -104,6 +106,8 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
             filterExitBtn,
             filterContent,
             collectionRatioText,
+
+            ownToggles,
             rankToggles,
             dateToggles,
             _collectPagePresenter);

@@ -93,8 +93,8 @@ namespace Collect
             // 다음 스테이지 해금해주는 코드
             _artworkDTO.Stages[data.SelectedArtworkSectionIntIndex].Status = StageStauts.Clear; // 현재 스테이지 클리어 적용
 
-            int lastIndex = _artworkDTO.Stages.Count; // 스테이지 개수
-            if(lastIndex >= data.SelectedArtworkSectionIntIndex + 1) // lastIndex 보다 작거나 같은 경우만 진행
+            int lastIndex = _artworkDTO.Stages.Count - 1; // 스테이지 개수 - 1 -> 0부터 시작함
+            if(lastIndex >= data.SelectedArtworkSectionIntIndex + 1) // 다음 스테이지 인덱스가 lastIndex 보다 작거나 같은 경우만 진행
             {
                 if(_artworkDTO.Stages[data.SelectedArtworkSectionIntIndex + 1].Status == StageStauts.Lock)
                 {

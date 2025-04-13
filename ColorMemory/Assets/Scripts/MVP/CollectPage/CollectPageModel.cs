@@ -37,8 +37,10 @@ public class CollectPageModel
     bool _activeFilterBottomSheet;
     bool _activeFilterContent;
     float _collectRatio;
-    RankFilter _rankFilter;
-    DateFilter _dateFilter;
+
+    FilterUI.OwnFilter _ownFilter;
+    List<FilterUI.RankFilter> _rankFilters;
+    FilterUI.DateFilter _dateFilter;
 
 
     public CollectPageModel(Dictionary<int, ArtData> artDatas, Dictionary<int, ArtworkData> artworkDatas, Dictionary<int, CollectArtData> collectArtDatas)
@@ -63,8 +65,10 @@ public class CollectPageModel
         _activeFilterBottomSheet = false;
         _activeFilterContent = false;
         _collectRatio = 0;
-        _rankFilter = RankFilter.None;
-        _dateFilter = DateFilter.None;
+
+        _ownFilter = FilterUI.OwnFilter.All;
+        _rankFilters = new List<FilterUI.RankFilter>();
+        _dateFilter = FilterUI.DateFilter.Old;
 
         _artDatas = artDatas;
 
@@ -109,12 +113,14 @@ public class CollectPageModel
     public int CurrentProgress { get => _currentProgress; set => _currentProgress = value; }
 
 
-
     public float CollectRatio { get => _collectRatio; set => _collectRatio = value; }
-    public RankFilter RankFilter { get => _rankFilter; set => _rankFilter = value; }
-    public DateFilter DateFilter { get => _dateFilter; set => _dateFilter = value; }
     public bool ActiveFilterContent { get => _activeFilterContent; set => _activeFilterContent = value; }
     public List<KeyValuePair<int, ArtData>> FilteredArtDatas { get => _filteredArtDatas; set => _filteredArtDatas = value; }
     public bool ActiveFilterBottomSheet { get => _activeFilterBottomSheet; set => _activeFilterBottomSheet = value; }
     public float TotalCompleteRatio { get => _totalCompleteRatio; set => _totalCompleteRatio = value; }
+    
+    
+    public FilterUI.OwnFilter OwnFilter { get => _ownFilter; set => _ownFilter = value; }
+    public List<FilterUI.RankFilter> RankFilters { get => _rankFilters; set => _rankFilters = value; }
+    public FilterUI.DateFilter DateFilter { get => _dateFilter; set => _dateFilter = value; }
 }
