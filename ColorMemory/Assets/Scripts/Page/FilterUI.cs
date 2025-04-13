@@ -5,25 +5,22 @@ using UnityEngine;
 
 public class FilterUI : MonoBehaviour
 {
-    public enum FilterType
+    public enum OwnFilter
     {
-        Rank,
-        Date
+        All,
+        Clear,
+        NoClear,
     }
 
     public enum RankFilter
     {
-        None,
-        All,
-        NoClear,
-        Bronze,
-        Silver,
-        Gold
+        Bronze = 1,
+        Silver = 2,
+        Gold = 3
     }
 
     public enum DateFilter
     {
-        None,
         Old,
         New
     }
@@ -57,6 +54,14 @@ public class FilterUI : MonoBehaviour
         for (int i = _filteredArtworkParent.childCount - 1; i >= 0; i--)
         {
             _filteredArtworkParent.GetChild(i).GetComponent<SpawnableUI>().DestroyObject();
+        }
+    }
+
+    public void DestroyFilterItem()
+    {
+        for (int i = _filterItemParent.childCount - 1; i >= 0; i--)
+        {
+            _filterItemParent.GetChild(i).GetComponent<SpawnableUI>().DestroyObject();
         }
     }
 

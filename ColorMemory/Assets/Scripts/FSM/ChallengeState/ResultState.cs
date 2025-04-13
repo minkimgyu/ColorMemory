@@ -38,6 +38,13 @@ namespace Challenge
             ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.HomeScene);
         }
 
+        const int moneyDivideValue = 10;
+
+        int GetMoney()
+        {
+            return _modeData.MyScore / moneyDivideValue;
+        }
+
         async Task<bool> SendDataToServer()
         {
             ScoreManager scoreManager = new ScoreManager();
@@ -53,8 +60,9 @@ namespace Challenge
                 int currentMoneyInServer = await moneyManager.GetMoneyAsync(userId);
                 int useMoney = currentMoneyInServer - _modeData.GoldCount;
 
+                int money = GetMoney();
                 await moneyManager.PayPlayerMoneyAsync(userId, useMoney);
-                await moneyManager.EarnPlayerMoneyAsync(userId, _modeData.MyScore);
+                await moneyManager.EarnPlayerMoneyAsync(userId, money);
             }
             catch (Exception e)
             {
@@ -94,8 +102,9 @@ namespace Challenge
             List<PlayerRankingDTO> playerScoreDTOs = await GetRankingDataFromServer();
             if (playerScoreDTOs == null) return;
 
+            int money = GetMoney();
             _challengeStageUIPresenter.ActivateGameResultPanel(true);
-            _challengeStageUIPresenter.ChangeResultGoldCount(_modeData.MyScore);
+            _challengeStageUIPresenter.ChangeResultGoldCount(money);
 
             string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
 

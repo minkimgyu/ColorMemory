@@ -291,7 +291,7 @@ namespace Challenge
                 return null;
             }
 
-            return new ModeData(money, oneColorHintCost, oneZoneHintCost, maxScore, 5, 10, 1, 3);
+            return new ModeData(money, oneColorHintCost, oneZoneHintCost, maxScore, 5, 6, 2, 3);
         }
 
         public override async void Initialize()

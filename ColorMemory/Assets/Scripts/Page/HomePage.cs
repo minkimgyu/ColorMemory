@@ -78,6 +78,8 @@ public class HomePage : MonoBehaviour
     [SerializeField] Button _filterExitBtn;
     [SerializeField] GameObject _filterContent;
     [SerializeField] TMP_Text _collectionRatioText;
+
+    [SerializeField] Toggle[] _ownToggles;
     [SerializeField] Toggle[] _rankToggles;
     [SerializeField] Toggle[] _dateToggles;
 
@@ -281,6 +283,8 @@ public class HomePage : MonoBehaviour
                 _filterExitBtn,
                 _filterContent,
                 _collectionRatioText,
+
+                _ownToggles,
                 _rankToggles,
                 _dateToggles,
 
