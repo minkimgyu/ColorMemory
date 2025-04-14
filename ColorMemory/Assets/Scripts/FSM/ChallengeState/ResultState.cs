@@ -113,7 +113,7 @@ namespace Challenge
             for (int i = 0; i < playerScoreDTOs.Count; i++)
             {
                 if(playerScoreDTOs[i].PlayerId == userId) myRankingIndex = i;
-                rankingDatas.Add(new PersonalRankingData(1, playerScoreDTOs[i].Name, playerScoreDTOs[i].Score, i + 1));
+                rankingDatas.Add(new PersonalRankingData(playerScoreDTOs[i].IconId, playerScoreDTOs[i].Name, playerScoreDTOs[i].Score, i + 1));
             }
 
             for (int i = 0; i < rankingDatas.Count; i++)
