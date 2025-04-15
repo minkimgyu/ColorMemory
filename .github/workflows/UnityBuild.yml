@@ -34,14 +34,28 @@ jobs:
           fi
           df -h
 
-      - name: 🔍 Validate Keystore Base64
+      - name: 🧪 Decode and Validate Keystore File
         run: |
-          if ! echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > /dev/null 2>&1; then
-            echo "❌ ANDROID_KEYSTORE_BASE64 is not a valid base64 string."
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > temp.keystore
+      
+          if [ ! -f temp.keystore ]; then
+            echo "❌ Failed to create keystore file from base64."
             exit 1
-          else
-            echo "✅ Valid base64 keystore string."
           fi
+      
+          # keytool로 유효성 검사 (alias는 임의로 검증 시도)
+          keytool -list -keystore temp.keystore -storepass ${{ secrets.ANDROID_KEYSTORE_PASS }} > /dev/null 2>&1
+      
+          if [ $? -ne 0 ]; then
+            echo "❌ Keystore file is invalid or password is incorrect."
+            exit 1
+          fi
+      
+          echo "✅ Keystore file is valid."
+
+      - name: 🧹 Cleanup temp keystore
+        if: always()
+        run: rm -f temp.keystore
 
       - name: Unity Build
         uses: game-ci/unity-builder@v4
