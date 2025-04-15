@@ -267,7 +267,7 @@ PlayerSettings:
   AndroidTargetDevices: 0
   AndroidSplashScreenScale: 0
   androidSplashScreen: {fileID: 0}
-  AndroidKeystoreName: C:/Users/meal/Desktop/ColorMemoryKey/user.keystore
+  AndroidKeystoreName: C:/Users/zino/Desktop/Build/ColorMemoryKey/user.keystore
   AndroidKeyaliasName: colormemory
   AndroidEnableArmv9SecurityFeatures: 0
   AndroidBuildApkPerCpuArchitecture: 0
