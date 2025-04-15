@@ -34,6 +34,11 @@ jobs:
           fi
           df -h
 
+      - name: Decode keystore (DEBUG ONLY)
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > debug.keystore
+          file debug.keystore
+
       - name: Unity Build
         uses: game-ci/unity-builder@v4
         env:
