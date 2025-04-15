@@ -16,7 +16,7 @@ jobs:
           lfs: true
 
       - name: Cache Library
-        uses: actions/cache@v4.0.2
+        uses: actions/cache@v4
         with:
           path: Library
           key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
@@ -41,7 +41,7 @@ jobs:
           targetPlatform: Android
 
       - name: Upload Build File
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Build-Android
           path: build
