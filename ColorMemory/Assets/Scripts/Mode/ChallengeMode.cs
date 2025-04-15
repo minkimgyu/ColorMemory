@@ -29,14 +29,20 @@ namespace Challenge
 
         [Header("Bottom")]
         [SerializeField] ToggleGroup _penToggleGroup;
+        [SerializeField] RectTransform _bottomContent;
         [SerializeField] RectTransform _penContent;
+        [SerializeField] Button _skipBtn;
 
         [Header("Setting")]
         [SerializeField] GameObject _pausePanel;
         [SerializeField] Button _pauseExitBtn;
         [SerializeField] Button _gameExitBtn;
+
         [SerializeField] CustomSlider _bgmSlider;
+        [SerializeField] TMP_Text _bgmLeftText;
+
         [SerializeField] CustomSlider _sfxSlider;
+        [SerializeField] TMP_Text _sfxLeftText;
 
         [Header("Preview")]
         [SerializeField] GameObject _stageOverPreviewPanel;
@@ -64,13 +70,16 @@ namespace Challenge
 
         [Header("GameOver")]
         [SerializeField] GameObject _gameOverPanel;
+
         [SerializeField] TMP_Text _clearStageCount;
+        [SerializeField] TMP_Text _resultScore;
+
         [SerializeField] Transform _clearStageContent;
         [SerializeField] Button _nextBtn;
 
         [Header("GameResult")]
         [SerializeField] GameObject _gameResultPanel;
-        //[SerializeField] TMP_Text _resultScore;
+        
         [SerializeField] TMP_Text _goldCount;
 
         [SerializeField] Transform _rankingContent;
@@ -243,7 +252,6 @@ namespace Challenge
             Memorize,
             Paint,
             StageClear,
-            StageOverPreview,
             GameOver,
             Result,
         }
@@ -283,7 +291,7 @@ namespace Challenge
                 return null;
             }
 
-            return new ModeData(money, oneColorHintCost, oneZoneHintCost, maxScore, 5, 10, 1, 3);
+            return new ModeData(money, oneColorHintCost, oneZoneHintCost, maxScore, 5, 6, 2, 3);
         }
 
         public override async void Initialize()
@@ -301,10 +309,10 @@ namespace Challenge
 
             RankingUIFactory rankingFactory = new RankingUIFactory(
                 addressableHandler.SpawnableUIAssets[SpawnableUI.Name.RankingUI],
-                addressableHandler.ProfileIconAssets);
+                addressableHandler.RectProfileIconAssets);
 
             ChallengeStageUIModel model = new ChallengeStageUIModel();
-            ChallengeStageUIPresenter presenter = new ChallengeStageUIPresenter(model);
+            ChallengeStageUIPresenter presenter = new ChallengeStageUIPresenter(model, () => { _fsm.SetState(ChallengeMode.State.GameOver); });
 
             ChallengeStageUIViewer viewer = new ChallengeStageUIViewer(
                 _playPanel,
@@ -321,6 +329,9 @@ namespace Challenge
                 _oneZoneHintCostText,
                 _oneColorHintCostText,
 
+                _bottomContent,
+                _skipBtn,
+
                 _hintPanel,
                 _rememberPanel,
 
@@ -328,7 +339,9 @@ namespace Challenge
                 _coinTxt,
 
                 _gameOverPanel,
+                _resultScore,
                 _clearStageCount,
+
                 _clearStageContent,
                 _gameResultPanel,
                 _goldCount,
@@ -344,7 +357,9 @@ namespace Challenge
                 _pauseExitBtn,
                 _gameExitBtn,
                 _bgmSlider,
+                _bgmLeftText,
                 _sfxSlider,
+                _sfxLeftText,
                 presenter);
 
             presenter.InjectViewer(viewer);
@@ -358,6 +373,8 @@ namespace Challenge
             { 
                 _fsm.OnClickNextBtn(); 
             });
+
+            _skipBtn.onClick.AddListener(() => { _fsm.OnClickSkipBtn(); });
 
             _tryAgainBtn.onClick.AddListener(() => { _fsm.OnClickRetryBtn(); });
             _exitBtn.onClick.AddListener(() => { _fsm.OnClickExitBtn(); });

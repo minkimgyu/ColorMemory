@@ -37,7 +37,8 @@ namespace Collect
 
         public override void OnClickExitBtn()
         {
-            ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.HomeScene);
+            _fsm.SetState(CollectMode.State.Result);
+            //ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.HomeScene);
         }
 
         async Task<List<PlayerArtworkDTO>> GetArtDataFromServer()
@@ -90,16 +91,19 @@ namespace Collect
             // 데이터 업데이트
 
             // 다음 스테이지 해금해주는 코드
-            _artworkDTO.Stages[data.SelectedArtworkSectionIntIndex + 1].Status = StageStauts.Clear; // 현재 스테이지 클리어 적용
+            _artworkDTO.Stages[data.SelectedArtworkSectionIntIndex].Status = StageStauts.Clear; // 현재 스테이지 클리어 적용
 
-            int lastIndex = _artworkDTO.Stages.Count; // 스테이지 개수
-            if(lastIndex >= data.SelectedArtworkSectionIntIndex + 2) // lastIndex 보다 작거나 같은 경우만 진행
+            int lastIndex = _artworkDTO.Stages.Count - 1; // 스테이지 개수 - 1 -> 0부터 시작함
+            if(lastIndex >= data.SelectedArtworkSectionIntIndex + 1) // 다음 스테이지 인덱스가 lastIndex 보다 작거나 같은 경우만 진행
             {
-                _artworkDTO.Stages[data.SelectedArtworkSectionIntIndex + 2].Status = StageStauts.Open;
+                if(_artworkDTO.Stages[data.SelectedArtworkSectionIntIndex + 1].Status == StageStauts.Lock)
+                {
+                    _artworkDTO.Stages[data.SelectedArtworkSectionIntIndex + 1].Status = StageStauts.Open;
+                }
             }
 
-            _artworkDTO.Stages[data.SelectedArtworkSectionIntIndex + 1].IncorrectCnt = _modeData.WrongCount; // index + 1 해서 찾기 -> 1-indexed임
-            _artworkDTO.Stages[data.SelectedArtworkSectionIntIndex + 1].HintUsage = _modeData.GoBackCount;
+            _artworkDTO.Stages[data.SelectedArtworkSectionIntIndex].IncorrectCnt = _modeData.WrongCount; // index + 1 해서 찾기 -> 1-indexed임
+            _artworkDTO.Stages[data.SelectedArtworkSectionIntIndex].HintUsage = _modeData.GoBackCount;
 
             Rank? rank = await UpdateArtDataToServer(_artworkDTO);
             if (rank == null) return null;
@@ -111,10 +115,6 @@ namespace Collect
 
         public override void OnClickNextStageBtn()
         {
-            //List<PlayerArtworkDTO> artDatas = await GetArtDataFromServer();
-            //if (artDatas == null) return;
-
-            //PlayerArtworkDTO artworkDTO = artDatas.Find(x => x.ArtworkId == data.SelectedArtworkKey);
             SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
 
             int row = _artData.Sections.Count;
@@ -169,18 +169,34 @@ namespace Collect
                     // 다음 스테이지로 갈 것인지 판단하는 UI 띄우기
                     _collectStageUIPresenter.ActivateGameClearPanel(true);
                     _collectStageUIPresenter.ActivateNextStageBtn(true);
+                    _collectStageUIPresenter.ActivateClearExitBtn(true);
 
                     SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
                     int row = _artData.Sections.Count;
                     int col = _artData.Sections[0].Count;
 
-                    if (data.SelectedArtworkSectionIndex.x == row - 1
-                    && data.SelectedArtworkSectionIndex.y == col - 1
-                    && _artworkDTO.HasIt == true) // 이미 아트워크를 보유한 경우 && 마지막 스테이지의 경우
+                    if(data.SelectedArtworkSectionIndex.x == row - 1
+                    && data.SelectedArtworkSectionIndex.y == col - 1) // 마지막 스테이지의 경우
                     {
-                        // next 버튼 없애주기
-                        _collectStageUIPresenter.ActivateNextStageBtn(false);
-                        // exit만 가능하게 만들어준다.
+                        _collectStageUIPresenter.ChangeClearTitleInfo("명화를 완성했어요!");
+                        _collectStageUIPresenter.ChangeClearContentInfo("축하해요! 마지막 패턴까지 완성했어요!");
+
+                        if (_artworkDTO.HasIt == true) // 이미 아트워크를 보유한 경우
+                        {
+                            // next 버튼 없애주기
+                            _collectStageUIPresenter.ActivateNextStageBtn(false);
+                            // exit만 가능하게 만들어준다.
+                        }
+                        else // 보유하지 않은 경우
+                        {
+                            _collectStageUIPresenter.ActivateClearExitBtn(false);
+                            // next만 가능하게 만들어준다.
+                        }
+                    }
+                    else
+                    {
+                        _collectStageUIPresenter.ChangeClearTitleInfo("조각을 완성했어요!");
+                        _collectStageUIPresenter.ChangeClearContentInfo("Next 버튼을 눌러 명화를 완성해보세요!");
                     }
                 });
             });
@@ -192,7 +208,9 @@ namespace Collect
         {
             _artworkDTO = null;
             _modeData.MyScore += clearPoint;
+            _collectStageUIPresenter.ActivateDetailContent(false);
             _collectStageUIPresenter.ActivateGameClearPanel(false);
+
             //_collectStageUIPresenter.ChangeNowScore(data.MyScore);
             //_challengeStageUIPresenter.ChangeBestScore(data.MyScore);
         }

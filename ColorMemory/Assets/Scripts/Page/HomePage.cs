@@ -49,6 +49,15 @@ public class HomePage : MonoBehaviour
     [SerializeField] GameObject _selectStageContent;
     [SerializeField] Transform _stageUIContent;
 
+    [SerializeField] GameObject _artworkInfoContent;
+    [SerializeField] GameObject _artworkCompleteRatioContent;
+
+    [SerializeField] CustomProgressUI _currentComplete;
+    [SerializeField] TMP_Text _currentCompleteRatio;
+
+    [SerializeField] CustomProgressUI _totalComplete;
+    [SerializeField] TMP_Text _totalCompleteRatio;
+
     [SerializeField] TMP_Text _titleTxt;
     [SerializeField] TMP_Text _descriptionTxt;
 
@@ -69,6 +78,8 @@ public class HomePage : MonoBehaviour
     [SerializeField] Button _filterExitBtn;
     [SerializeField] GameObject _filterContent;
     [SerializeField] TMP_Text _collectionRatioText;
+
+    [SerializeField] Toggle[] _ownToggles;
     [SerializeField] Toggle[] _rankToggles;
     [SerializeField] Toggle[] _dateToggles;
 
@@ -132,10 +143,33 @@ public class HomePage : MonoBehaviour
         return artDatas;
     }
 
+    async Task<int> GetMoneyFromServer()
+    {
+        MoneyManager moneyManager = new MoneyManager();
+        int money = 0;
+
+        try
+        {
+            string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
+            money = await moneyManager.GetMoneyAsync(userId);
+        }
+        catch (System.Exception e)
+        {
+            Debug.Log(e);
+            Debug.Log("서버로부터 데이터를 받아오지 못함");
+            return -1;
+        }
+        
+        return money;
+    }
+
     private async void Start()
     {
         Dictionary<int, ArtData> artDatas = await GetArtDataFromServer();
         if (artDatas == null) return;
+
+        int money = await GetMoneyFromServer();
+        if (money == -1) return;
 
         AddressableHandler addressableHandler = FindObjectOfType<AddressableHandler>();
         if (addressableHandler == null) return;
@@ -144,18 +178,20 @@ public class HomePage : MonoBehaviour
         _dotFactory = new DotFactory(addressableHandler.DotAssets);
 
         StageUIFactory stageUIFactory = new StageUIFactory(
-           addressableHandler.SpawnableUIAssets[SpawnableUI.Name.StageSelectBtnUI]
+           addressableHandler.SpawnableUIAssets[SpawnableUI.Name.StageSelectBtnUI],
+            addressableHandler.StageRankIconAssets
        );
 
         ArtworkUIFactory artWorkUIFactory = new ArtworkUIFactory(
             addressableHandler.SpawnableUIAssets[SpawnableUI.Name.ArtworkUI],
             addressableHandler.ArtSpriteAsserts,
-            addressableHandler.ArtworkFrameAsserts
+            addressableHandler.ArtworkFrameAsserts,
+            addressableHandler.RankDecorationIconAssets
         );
 
         RankingUIFactory rankingUIFactory = new RankingUIFactory(
             addressableHandler.SpawnableUIAssets[SpawnableUI.Name.RankingUI],
-            addressableHandler.ProfileIconAssets
+            addressableHandler.RectProfileIconAssets
         );
 
         ShopBundleUIFactory shopBundleUIFactory = new ShopBundleUIFactory(
@@ -169,7 +205,7 @@ public class HomePage : MonoBehaviour
 
         FilterItemFactory filterItemFactory = new FilterItemFactory(
             addressableHandler.SpawnableUIAssets[SpawnableUI.Name.FilterItemUI],
-            addressableHandler.RankIconAssets
+            addressableHandler.RankBadgeIconAssets
         );
 
         _shopBtn.onClick.AddListener(() => { _pageFsm.OnClickShopBtn(); });
@@ -182,15 +218,21 @@ public class HomePage : MonoBehaviour
         TopElementViewer topElementViewer = new TopElementViewer(_goldTxt);
         _topElementPresenter = new TopElementPresenter(topElementViewer, topElementModel);
 
-        SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
-
-        MoneyManager moneyManager = new MoneyManager();
-        int money = await moneyManager.GetMoneyAsync(data.UserId);
         _topElementPresenter.ChangeGoldCount(money);
 
-        _settingPage.Initialize(addressableHandler.ProfileIconAssets, () => { _pageFsm.SetState(InnerPageState.Main); });
+        SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
+        _settingPage.Initialize(data.UserName, addressableHandler.CircleProfileIconAssets, () => { _pageFsm.SetState(InnerPageState.Main); });
         _filterScrollUI.Initialize();
         _filterScrollUI.Activate(false);
+
+
+        InnerPageState startState = InnerPageState.Main;
+        if (data.GoToCollectPage == true)
+        {
+            startState = InnerPageState.Collection;
+            ServiceLocater.ReturnSaveManager().ChangeGoToCollectPage(false);
+        }
+       
 
         _pageFsm = new FSM<InnerPageState>();
         _pageFsm.Initialize(new Dictionary<InnerPageState, BaseState<InnerPageState>>
@@ -213,6 +255,15 @@ public class HomePage : MonoBehaviour
                 InnerPageState.Collection, new CollectionPageState(
                 _homeBtn,
                 _collectionContent,
+                _artworkInfoContent,
+                _artworkCompleteRatioContent,
+
+                _currentComplete,
+                _currentCompleteRatio,
+
+                _totalComplete,
+                _totalCompleteRatio,
+
                 _titleTxt,
                 _descriptionTxt,
                 _completeSlider,
@@ -232,6 +283,8 @@ public class HomePage : MonoBehaviour
                 _filterExitBtn,
                 _filterContent,
                 _collectionRatioText,
+
+                _ownToggles,
                 _rankToggles,
                 _dateToggles,
 
@@ -263,6 +316,6 @@ public class HomePage : MonoBehaviour
                 _topElementPresenter,
                 _pageFsm)
             },
-        }, InnerPageState.Main);
+        }, startState);
     }
 }

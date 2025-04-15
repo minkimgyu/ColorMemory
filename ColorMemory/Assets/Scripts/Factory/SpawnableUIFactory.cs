@@ -38,14 +38,19 @@ public class ClearPatternCreater : SpawnableUICreater
 
 public class StageCreater : SpawnableUICreater
 {
-    public StageCreater(SpawnableUI prefab) : base(prefab)
+    Dictionary<NetworkService.DTO.Rank, Sprite> _stageRankIconSprites;
+
+    public StageCreater(
+        SpawnableUI prefab, 
+        Dictionary<Rank, Sprite> stageRankIconSprites) : base(prefab)
     {
+        _stageRankIconSprites = stageRankIconSprites;
     }
 
     public override SpawnableUI Create()
     {
         SpawnableUI selectStageUI = Object.Instantiate(_prefab);
-        selectStageUI.Initialize();
+        selectStageUI.Initialize(_stageRankIconSprites);
 
         return selectStageUI;
     }
@@ -55,20 +60,23 @@ public class ArtworkCreater : SpawnableUICreater
 {
     Dictionary<int, Sprite> _artSprites;
     Dictionary<NetworkService.DTO.Rank, Sprite> _artworkFrameSprites;
+    Dictionary<NetworkService.DTO.Rank, Sprite> _rankIconSprites;
 
     public ArtworkCreater(
         SpawnableUI prefab,
         Dictionary<int, Sprite> artSprites,
-        Dictionary<NetworkService.DTO.Rank, Sprite> artworkFrameSprites) : base(prefab)
+        Dictionary<NetworkService.DTO.Rank, Sprite> artworkFrameSprites,
+        Dictionary<NetworkService.DTO.Rank, Sprite> rankIconSprites) : base(prefab)
     {
         _artSprites = artSprites;
         _artworkFrameSprites = artworkFrameSprites;
+        _rankIconSprites = rankIconSprites;
     }
 
-    public override SpawnableUI Create(int artworkIndex, NetworkService.DTO.Rank frameType, bool hasIt)
+    public override SpawnableUI Create(int artworkIndex, NetworkService.DTO.Rank rankType, bool hasIt)
     {
         SpawnableUI artwork = Object.Instantiate(_prefab);
-        artwork.Initialize(_artSprites[artworkIndex], _artworkFrameSprites[frameType], hasIt);
+        artwork.Initialize(_artSprites[artworkIndex], _artworkFrameSprites[rankType], _rankIconSprites[rankType], hasIt);
         return artwork;
     }
 }
@@ -192,10 +200,13 @@ public class ClearPatternUIFactory : BaseFactory
 public class StageUIFactory : BaseFactory
 {
     StageCreater _selectStageCreater;
+    Dictionary<NetworkService.DTO.Rank, Sprite> _stageRankIconSprites;
 
-    public StageUIFactory(SpawnableUI clearPatternUIPrefab)
+    public StageUIFactory(
+        SpawnableUI clearPatternUIPrefab, 
+        Dictionary<Rank, Sprite> stageRankIconSprites)
     {
-        _selectStageCreater = new StageCreater(clearPatternUIPrefab);
+        _selectStageCreater = new StageCreater(clearPatternUIPrefab, stageRankIconSprites);
     }
 
     public override SpawnableUI Create()
@@ -229,9 +240,10 @@ public class ArtworkUIFactory : BaseFactory
     public ArtworkUIFactory(
         SpawnableUI artworkUIPrefab,
         Dictionary<int, Sprite> artSprites,
-        Dictionary<NetworkService.DTO.Rank, Sprite> artworkFrameSprites)
+        Dictionary<NetworkService.DTO.Rank, Sprite> artworkFrameSprites,
+        Dictionary<NetworkService.DTO.Rank, Sprite> rankIconSprites)
     {
-        _artworkUICreater = new ArtworkCreater(artworkUIPrefab, artSprites, artworkFrameSprites);
+        _artworkUICreater = new ArtworkCreater(artworkUIPrefab, artSprites, artworkFrameSprites, rankIconSprites);
     }
 
     public override SpawnableUI Create(int artworkIndex, NetworkService.DTO.Rank frameType, bool hasIt)

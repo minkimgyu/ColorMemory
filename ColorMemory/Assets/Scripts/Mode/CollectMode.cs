@@ -23,19 +23,29 @@ namespace Collect
 
         [SerializeField] TMP_Text _progressText;
 
+        [SerializeField] GameObject _detailContent;
+        [SerializeField] TMP_Text _hintUsageText;
+        [SerializeField] TMP_Text _wrongCountText;
+
         [Header("Middle")]
         [SerializeField] GridLayoutGroup _dotGridContent;
 
         [Header("Bottom")]
         [SerializeField] ToggleGroup _penToggleGroup;
         [SerializeField] RectTransform _penContent;
+        [SerializeField] RectTransform _bottomContent;
+        [SerializeField] Button _skipBtn;
 
         [Header("Setting")]
         [SerializeField] GameObject _pausePanel;
         [SerializeField] Button _pauseExitBtn;
         [SerializeField] Button _gameExitBtn;
+
         [SerializeField] CustomSlider _bgmSlider;
+        [SerializeField] TMP_Text _bgmLeftText;
+
         [SerializeField] CustomSlider _sfxSlider;
+        [SerializeField] TMP_Text _sfxLeftText;
 
         [Header("ModeData")]
         //[SerializeField] Color[] _pickColors;
@@ -50,12 +60,15 @@ namespace Collect
 
         [Header("Clear")]
         [SerializeField] GameObject _gameClearPanel;
-        [SerializeField] Image _cropArtworkImg;
+        [SerializeField] TMP_Text _clearTitleText;
+        [SerializeField] TMP_Text _clearContentText;
         [SerializeField] Button _nextStageBtn;
-        [SerializeField] Button _gameClearExitBtn;
+        [SerializeField] Button _clearExitBtn;
 
         [Header("Result")]
         [SerializeField] GameObject _gameResultPanel;
+        [SerializeField] TMP_Text _gameResultTitle;
+
         [SerializeField] ArtworkUI _artworkUI;
         [SerializeField] TMP_Text _hintUseCount;
         [SerializeField] TMP_Text _wrongCount;
@@ -64,7 +77,10 @@ namespace Collect
         [SerializeField] Image _rankIcon;
         [SerializeField] TMP_Text _rankText;
 
-        [SerializeField] Image _totalCollectRatio;
+        [SerializeField] CustomProgressUI _currentCollectRatio;
+        [SerializeField] TMP_Text _currentCollectText;
+
+        [SerializeField] CustomProgressUI _totalCollectRatio;
         [SerializeField] TMP_Text _totalCollectText;
         [SerializeField] Button _nextBtn;
 
@@ -159,11 +175,6 @@ namespace Collect
             return _modeData;
         }
 
-        void OnClickExitBtn()
-        {
-            ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.HomeScene);
-        }
-
         private void Update()
         {
             _fsm.OnUpdate();
@@ -188,7 +199,7 @@ namespace Collect
             _modeData = new Data(index, 5, addressableHandler.ArtworkJsonAsset.Data[artworkIndex].Title);
 
             CollectStageUIModel model = new CollectStageUIModel();
-            CollectStageUIPresenter presenter = new CollectStageUIPresenter(model);
+            CollectStageUIPresenter presenter = new CollectStageUIPresenter(model, () => { _fsm.SetState(State.Result); });
             CollectStageUIViewer viewer = new CollectStageUIViewer(
                 _playPanel,
                 _titleText,
@@ -198,21 +209,35 @@ namespace Collect
                 _totalTimeText,
                 _progressText,
 
+                _detailContent,
+                _hintUsageText,
+                _wrongCountText,
+
+                _bottomContent,
+                _skipBtn,
+
                 _rememberPanel,
                 _hintInfoText,
 
                 _gameClearPanel,
-                _cropArtworkImg,
+                _clearTitleText,
+                _clearContentText,
                 _nextStageBtn,
+                _clearExitBtn,
 
                 _pausePanel,
                 _pauseBtn,
                 _pauseExitBtn,
                 _gameExitBtn,
+
                 _bgmSlider,
+                _bgmLeftText,
+
                 _sfxSlider,
+                _sfxLeftText,
 
                 _gameResultPanel,
+                _gameResultTitle,
                 _artworkUI,
                 _hintUseCount,
                 _wrongCount,
@@ -221,15 +246,20 @@ namespace Collect
                 _rankIcon,
                 _rankText,
 
+                _currentCollectRatio,
+                _currentCollectText,
+
                 _totalCollectRatio,
                 _totalCollectText,
                 presenter);
 
             presenter.InjectViewer(viewer);
 
+            _skipBtn.onClick.AddListener(() => { _fsm.OnClickSkipBtn(); });
+
             _nextBtn.onClick.AddListener(() => { _fsm.OnClickNextBtn(); });
 
-            _gameClearExitBtn.onClick.AddListener(() => { _fsm.OnClickExitBtn(); });
+            _clearExitBtn.onClick.AddListener(() => { _fsm.OnClickExitBtn(); });
             _nextStageBtn.onClick.AddListener(() => { _fsm.OnClickNextStageBtn(); });
 
             _goBackBtn.onClick.AddListener(() => { _fsm.OnClickGoBackHint(); });

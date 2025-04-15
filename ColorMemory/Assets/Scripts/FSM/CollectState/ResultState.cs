@@ -27,6 +27,7 @@ namespace Collect
 
         public override void OnClickNextBtn()
         {
+            ServiceLocater.ReturnSaveManager().ChangeGoToCollectPage(true);
             ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.HomeScene);
         }
 
@@ -82,20 +83,27 @@ namespace Collect
             SaveData saveData = ServiceLocater.ReturnSaveManager().GetSaveData();
             PlayerArtworkDTO artworkDTO = artDatas.Item1.Find(x => x.ArtworkId == saveData.SelectedArtworkKey);
 
+            bool clearThisStage = true;
+
             // 힌트, 틀린 개수 업데이트
-            int totalGoBackCount = 0;
-            int totalWrongCount = 0;
+            int totalGoBackCount = artworkDTO.TotalHints;
+            int totalWrongCount = artworkDTO.TotalMistakes;
+            int clearStageCount = 0;
+            int totalStageCount = 0;
 
             foreach (var item in artworkDTO.Stages)
             {
-                totalGoBackCount += item.Value.HintUsage;
-                totalWrongCount += item.Value.IncorrectCnt;
+                // 하나의 스테이지라도 클리어 하지 못한 경우
+                if(item.Value.Status != StageStauts.Clear) clearThisStage = false;
+                else clearStageCount++;
+
+                totalStageCount++;
             }
 
-            artworkDTO.HasIt = true;  // HasIt 업데이트
-            // artworkDTO.ObtainedDate = DateTime.Now; // 획득 날짜 업데이트
-            Rank? getRank = await UpdateArtworkToServer(artworkDTO);
-            if (getRank == null) return;
+            Sprite artworkSprite;
+            Sprite rankFrameSprite;
+            Sprite rankDecorationIconSprite;
+            Sprite rankBadgeIconSprite;
 
             AddressableHandler addressableHandler = UnityEngine.Object.FindObjectOfType<AddressableHandler>();
             if (addressableHandler == null) return;
@@ -103,23 +111,55 @@ namespace Collect
             _collectStageUIPresenter.ActivatePlayPanel(false);
             _collectStageUIPresenter.ActivateGameResultPanel(true);
 
-            Sprite artworkSprite = addressableHandler.ArtSpriteAsserts[saveData.SelectedArtworkKey];
-            Sprite rankFrameSprite = addressableHandler.ArtworkFrameAsserts[getRank.Value];
-            Sprite rankIconSprite = addressableHandler.RankIconAssets[getRank.Value];
+            artworkSprite = addressableHandler.ArtSpriteAsserts[saveData.SelectedArtworkKey];
 
-            float ratio = (float)artDatas.Item2 / (artDatas.Item2 + artDatas.Item3);
+            Rank? getRank;
+            int haveArtworkCount = artDatas.Item2;
+            int totalArtworkCount = artDatas.Item3;
 
-            _collectStageUIPresenter.ChangeRank(rankIconSprite, _rankString[getRank.Value]);
-            _collectStageUIPresenter.ChangeArtwork(artworkSprite, rankFrameSprite);
+            // 모든 스테이지를 클리어 했는지 확인 필요
+            if (clearThisStage == true)
+            {
+                _collectStageUIPresenter.ChangeGameResultTitle(true);
+                haveArtworkCount += 1; // 하나 더 획득했으므로 +1 추가
+                artworkDTO.HasIt = true;  // HasIt 업데이트
+
+                getRank = await UpdateArtworkToServer(artworkDTO);
+                if (getRank == null) return;
+            }
+            else
+            {
+                _collectStageUIPresenter.ChangeGameResultTitle(false);
+                getRank = Rank.NONE;
+            }
+
+            rankFrameSprite = addressableHandler.ArtworkFrameAsserts[getRank.Value];
+            rankDecorationIconSprite = addressableHandler.RankDecorationIconAssets[getRank.Value];
+            rankBadgeIconSprite = addressableHandler.RankBadgeIconAssets[getRank.Value];
+
+            _collectStageUIPresenter.ChangeRank(rankBadgeIconSprite, _rankInfo[getRank.Value].Item1, _rankInfo[getRank.Value].Item2, _rankColor[getRank.Value]);
+            _collectStageUIPresenter.ChangeArtwork(artworkSprite, rankFrameSprite, rankDecorationIconSprite, clearThisStage);
             _collectStageUIPresenter.ChangeGetRank(totalGoBackCount, totalWrongCount);
-            _collectStageUIPresenter.ChangeCollectionRatio(ratio);
+
+            float currentRatio = (float)clearStageCount / totalStageCount;
+            float totalRatio = (float)haveArtworkCount / (haveArtworkCount + totalArtworkCount);
+            _collectStageUIPresenter.ChangeCollectionRatio(currentRatio, totalRatio);
         }
 
-        readonly Dictionary<Rank, string> _rankString = new Dictionary<Rank, string>
+        readonly Dictionary<Rank, Tuple<bool, string>> _rankInfo = new Dictionary<Rank, Tuple<bool, string>>
         {
-            { Rank.COPPER, "Bronze" },
-            { Rank.SILVER, "Silver" },
-            { Rank.GOLD, "Gold" },
+            { Rank.COPPER, new Tuple<bool, string>(true, "Bronze") },
+            { Rank.SILVER, new Tuple<bool, string>(true, "Silver") },
+            { Rank.GOLD, new Tuple<bool, string>(true, "Gold") },
+            { Rank.NONE, new Tuple<bool, string>(false, "No Clear") },
+        };
+
+        readonly Dictionary<Rank, Color> _rankColor = new Dictionary<Rank, Color>
+        {
+            { Rank.COPPER, new Color(250f/255f, 214f/255f, 190f/255f) },
+            { Rank.SILVER, new Color(207f/255f, 207f/255f, 207f/255f) },
+            { Rank.GOLD, new Color(255f/255f, 245f/255f, 173f/255f) },
+            { Rank.NONE, new Color(236f/255f, 232f/255f, 232f/255f) },
         };
 
         public override void OnStateExit()

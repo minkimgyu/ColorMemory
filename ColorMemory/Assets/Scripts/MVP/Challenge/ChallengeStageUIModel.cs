@@ -17,6 +17,9 @@ public class ChallengeStageUIModel
         _oneColorHintActive = true;
         _oneZoneHintActive = true;
 
+        _activePenContent = false;
+        _activeSkipBtn = false;
+
         _oneColorHintCost = 0;
         _oneZoneHintCost = 0;
 
@@ -35,19 +38,21 @@ public class ChallengeStageUIModel
         _activeGameResultPanel = false;
         _goldCount = 0;
 
-        _colorOnZeroValue = new Color(118f / 255f, 113f / 255f, 111f / 255f);
-        _colorOnBgmHandle = new Color(113f / 255f, 191f / 255f, 255f / 255f);
-        _colorOnSfxHandle = new Color(255f / 255f, 154f / 255f, 145f / 255f);
+        _colorOnBgmHandle = Color.white;
+        _colorOnSfxHandle = Color.white;
     }
-
-    Color _colorOnZeroValue;
 
     Color _colorOnBgmHandle;
     Color _colorOnSfxHandle;
 
-    public Color ColorOnZeroValue { get => _colorOnZeroValue; }
-    public Color ColorOnBgmHandle { get => _colorOnBgmHandle; }
-    public Color ColorOnSfxHandle { get => _colorOnSfxHandle; }
+    public Color ColorOnBgmHandle { get => _colorOnBgmHandle; set => _colorOnBgmHandle = value; }
+    public Color ColorOnSfxHandle { get => _colorOnSfxHandle; set => _colorOnSfxHandle = value; }
+
+    string _bgmleftTextInfo;
+    public string BgmleftTextInfo { get => _bgmleftTextInfo; set => _bgmleftTextInfo = value; }
+
+    string _sfxleftTextInfo;
+    public string SfxleftTextInfo { get => _sfxleftTextInfo; set => _sfxleftTextInfo = value; }
 
 
     bool _oneColorHintActive;
@@ -55,6 +60,16 @@ public class ChallengeStageUIModel
 
     bool _oneZoneHintActive;
     public bool OneZoneHintActive { get => _oneZoneHintActive; set => _oneZoneHintActive = value; }
+
+
+
+    bool _activePenContent;
+    public bool ActiveBottomContent { get => _activePenContent; set => _activePenContent = value; }
+
+    bool _activeSkipBtn;
+    public bool ActiveSkipBtn { get => _activeSkipBtn; set => _activeSkipBtn = value; }
+
+
 
 
     int _oneColorHintCost;
@@ -163,6 +178,8 @@ public class ChallengeStageUIModel
         set => _stageCount = value;
     }
 
+
+
     bool _activeRememberPanel;
     public bool ActiveRememberPanel
     {
@@ -206,11 +223,11 @@ public class ChallengeStageUIModel
         set => _activeGameOverPanel = value;
     }
 
-    int _passedDuration;
-    public int PassedDuration
+    int _resultScore;
+    public int ResultScore
     {
-        get => _passedDuration;
-        set => _passedDuration = value;
+        get => _resultScore;
+        set => _resultScore = value;
     }
 
     int _clearStageCount;

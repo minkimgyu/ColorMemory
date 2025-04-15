@@ -22,8 +22,12 @@ public class AddressableHandler : MonoBehaviour
         ArtworkFrame,
         ArtworkData,
 
-        ProfileIcon,
-        RankIcon,
+        RectProfileIcon,
+        CircleProfileIcon,
+
+        RankBadgeIcon,
+        RankDecorationIcon,
+        StageRankIcon,
 
         SpawnableUI,
         ChallengeModeStageData
@@ -60,14 +64,17 @@ public class AddressableHandler : MonoBehaviour
 
 
     public Dictionary<NetworkService.DTO.Rank, Sprite> ArtworkFrameAsserts { get; private set; }
+    public Dictionary<NetworkService.DTO.Rank, Sprite> RankDecorationIconAssets { get; private set; }
+    public Dictionary<NetworkService.DTO.Rank, Sprite> RankBadgeIconAssets { get; private set; }
+    public Dictionary<NetworkService.DTO.Rank, Sprite> StageRankIconAssets { get; private set; }
 
 
     public Dictionary<Dot.Name, Dot> DotAssets { get; private set; }
     public Dictionary<Effect.Name, Effect> EffectAssets { get; private set; }
     public Dictionary<GameMode.Type, Sprite> ModeTitleIconAssets { get; private set; }
 
-    public Dictionary<int, Sprite> ProfileIconAssets { get; private set; }
-    public Dictionary<NetworkService.DTO.Rank, Sprite> RankIconAssets { get; private set; }
+    public Dictionary<int, Sprite> CircleProfileIconAssets { get; private set; }
+    public Dictionary<int, Sprite> RectProfileIconAssets { get; private set; }
 
     public Dictionary<SpawnableUI.Name, SpawnableUI> SpawnableUIAssets { get; private set; }
 
@@ -86,9 +93,12 @@ public class AddressableHandler : MonoBehaviour
         _assetLoaders.Add(new ArtworkFrameAssetLoader(Label.ArtworkFrame, (value, label) => { ArtworkFrameAsserts = value; OnSuccess(label); }));
         _assetLoaders.Add(new ArtworkJsonAssetLoader(Label.ArtworkData, (value, label) => { ArtworkJsonAsset = value; OnSuccess(label); }));
 
+        _assetLoaders.Add(new ProfileIconAssetLoader(Label.CircleProfileIcon, (value, label) => { CircleProfileIconAssets = value; OnSuccess(label); }));
+        _assetLoaders.Add(new ProfileIconAssetLoader(Label.RectProfileIcon, (value, label) => { RectProfileIconAssets = value; OnSuccess(label); }));
 
-        _assetLoaders.Add(new ProfileIconAssetLoader(Label.ProfileIcon, (value, label) => { ProfileIconAssets = value; OnSuccess(label); }));
-        _assetLoaders.Add(new RankIconAssetLoader(Label.RankIcon, (value, label) => { RankIconAssets = value; OnSuccess(label); }));
+        _assetLoaders.Add(new RankIconAssetLoader(Label.RankBadgeIcon, (value, label) => { RankBadgeIconAssets = value; OnSuccess(label); }));
+        _assetLoaders.Add(new RankIconAssetLoader(Label.RankDecorationIcon, (value, label) => { RankDecorationIconAssets = value; OnSuccess(label); }));
+        _assetLoaders.Add(new RankIconAssetLoader(Label.StageRankIcon, (value, label) => { StageRankIconAssets = value; OnSuccess(label); }));
 
         _assetLoaders.Add(new SpawnableUIAssetLoader(Label.SpawnableUI, (value, label) => { SpawnableUIAssets = value; OnSuccess(label); }));
 

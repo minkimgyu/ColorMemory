@@ -41,7 +41,6 @@ public class RankIconAssetLoader : AssetLoader<NetworkService.DTO.Rank, Sprite, 
     }
 }
 
-
 //public class GoldIconAssetLoader : SingleAssetLoader<Sprite, Sprite>
 //{
 //    public GoldIconAssetLoader(AddressableHandler.Label label, Action<Sprite, AddressableHandler.Label> OnComplete) : base(label, OnComplete)

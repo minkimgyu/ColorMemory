@@ -7,6 +7,8 @@ using NetworkService.Manager;
 using NetworkService.DTO;
 using System.Reflection;
 using DG.Tweening;
+using Challenge;
+using System.Collections.ObjectModel;
 
 public class CollectPagePresenter
 {
@@ -38,8 +40,27 @@ public class CollectPagePresenter
         _filteredArtworkFactory = filteredArtworkFactory;
         _filterItemFactory = filterItemFactory;
 
-        _spawnedFilterUIs = new Dictionary<FilterUI.FilterType, SpawnableUI>();
         this.OnClickPlayBtn = OnClickPlayBtn;
+    }
+
+    public void SwitchArtworkInfoContent(bool active)
+    {
+        _collectPageModel.ActiveArtworkInfoContent = active;
+        _collectPageViewer.SwitchArtworkInfoContent(_collectPageModel.ActiveArtworkInfoContent);
+    }
+
+    public void ChangeCollectionRatioInfo()
+    {
+        int hasCount = 0;
+        int maxCount = _collectPageModel.ArtDatas.Count;
+        foreach (var item in _collectPageModel.ArtDatas)
+        {
+            if (item.Value.HasIt == true) hasCount++;
+        }
+
+        float ratio = hasCount / maxCount;
+        _collectPageModel.CollectionRatio = Mathf.RoundToInt(ratio * 100);
+        _collectPageViewer.ChangeCollectionRatioInfo(_collectPageModel.CollectionRatio);
     }
 
     public void InjectViewer(CollectPageViewer collectPageViewer)
@@ -64,143 +85,136 @@ public class CollectPagePresenter
         _collectPageViewer.ActiveFilterContent(_collectPageModel.ActiveFilterContent);
     }
 
-    void AddFilterItem(FilterUI.FilterType type, string title)
+
+    #region Filter
+
+    // 데이터에 맞게 토클도 변경시켜줄 필요가 있음
+
+    void UpdateFilterToggle()
     {
-        SpawnableUI filterItem = _filterItemFactory.Create(title);
-        filterItem.InjectClickEvent(() => {
-
-            FilterUI.FilterType filterType = type;
-            _collectPageViewer.UnableAllToggles(filterType);
-
-            switch (type)
-            {
-                case FilterUI.FilterType.Rank:
-                    OnClickRankToggle(0);
-                    break;
-                case FilterUI.FilterType.Date:
-                    OnClickDateToggle(0);
-                    break;
-                default:
-                    break;
-            }
-
-        }); // 제거 시, 기본 필터로 전환
-
-        _spawnedFilterUIs.Add(type, filterItem);
-        _collectPageViewer.AddFilterItem(filterItem);
+        _collectPageViewer.UpdateToggles(
+            _collectPageModel.OwnFilter,
+            _collectPageModel.RankFilters,
+            _collectPageModel.DateFilter);
     }
 
-    void AddFilterItem(FilterUI.FilterType type, Rank rank, string title)
+    void UpdateFilterItems()
     {
-        SpawnableUI filterItem = _filterItemFactory.Create(rank, title);
-        filterItem.InjectClickEvent(() => 
+        DestroyFilterItems();
+        DOVirtual.DelayedCall(0.5f, () =>
         {
-            FilterUI.FilterType filterType = type;
-            _collectPageViewer.UnableAllToggles(filterType);
-
-            switch (type)
-            {
-                case FilterUI.FilterType.Rank:
-                    OnClickRankToggle(0);
-                    break;
-                case FilterUI.FilterType.Date:
-                    OnClickDateToggle(0);
-                    break;
-                default:
-                    break;
-            }
-        }); // 제거 시, 기본 필터로 전환
-
-        _spawnedFilterUIs.Add(type, filterItem);
-        _collectPageViewer.AddFilterItem(filterItem);
+            FillFilterItems();
+        });
     }
 
-    void DestroyFilterItem(FilterUI.FilterType type)
+    void DestroyFilterItems()
     {
-        bool containKey = _spawnedFilterUIs.ContainsKey(type);
-        if (containKey == false) return;
-
-        SpawnableUI spawnableUI = _spawnedFilterUIs[type];
-        _spawnedFilterUIs.Remove(type);
-
-        if (spawnableUI as UnityEngine.Object == null) return; // fack null 체크
-        spawnableUI.DestroyObject();
+        _collectPageViewer.DestroyFilterItems();
     }
 
-    // FilterUI 변수 선언해서 새로운 필터가 들어가면 파괴해주기
+    readonly Dictionary<FilterUI.OwnFilter, string> _ownFilterDescription = new Dictionary<FilterUI.OwnFilter, string>
+    {
+        { FilterUI.OwnFilter.All, "All" },
+        { FilterUI.OwnFilter.Clear, "Clear" },
+        { FilterUI.OwnFilter.NoClear, "No Clear" },
+    };
 
-    Dictionary<FilterUI.FilterType, SpawnableUI> _spawnedFilterUIs;
+    readonly Dictionary<FilterUI.DateFilter, string> _dateFilterDescription = new Dictionary<FilterUI.DateFilter, string>
+    {
+        { FilterUI.DateFilter.Old, "오래된 순" },
+        { FilterUI.DateFilter.New, "최신 순" },
+    };
+
+    void FillFilterItems()
+    {
+        SpawnableUI ownFilterItem = _filterItemFactory.Create(_ownFilterDescription[_collectPageModel.OwnFilter]);
+        _collectPageViewer.AddFilterItem(ownFilterItem);
+
+        ownFilterItem.InjectClickEvent(() => {
+            // 데이터를 바탕으로 필터를 자동으로 생성해준다.
+            // 제거 시, 데이터를 변경하고 다시 모든 필터 부수고 생성시키기
+            // 토글도 다시 정상화 필요함
+            OnClickOwnToggle(FilterUI.OwnFilter.All);
+        });
+
+
+        // 필터가 획득한 명화만 보여주는 경우에 랭킹과 날짜 필터를 추가해준다.
+        if (_collectPageModel.OwnFilter == FilterUI.OwnFilter.Clear)
+        {
+            for (int i = 0; i < _collectPageModel.RankFilters.Count; i++)
+            {
+                FilterUI.RankFilter filter = _collectPageModel.RankFilters[i];
+                string rankFilterName = filter.ToString();
+
+                Rank convertedRank = (Rank)((int)filter);
+                SpawnableUI rankFilterItem = _filterItemFactory.Create(convertedRank, rankFilterName);
+                _collectPageViewer.AddFilterItem(rankFilterItem);
+
+                rankFilterItem.InjectClickEvent(() => {
+                    // 데이터를 바탕으로 필터를 자동으로 생성해준다.
+                    // 제거 시, 데이터를 변경하고 다시 모든 필터 부수고 생성시키기
+                    OnUnClickRankToggle(filter);
+                });
+            }
+
+            SpawnableUI dateFilterItem = _filterItemFactory.Create(_dateFilterDescription[_collectPageModel.DateFilter]);
+            _collectPageViewer.AddFilterItem(dateFilterItem);
+
+            dateFilterItem.InjectClickEvent(() => {
+                // 데이터를 바탕으로 필터를 자동으로 생성해준다.
+                // 제거 시, 데이터를 변경하고 다시 모든 필터 부수고 생성시키기
+                OnClickDateToggle(FilterUI.DateFilter.Old);
+            });
+        }
+    }
+
+    void UpdateFilter()
+    {
+        // 아트워크를 파괴하는 코드 필요
+        DestroyAllArtwork();
+        UpdateFilterItems(); // 필터를 업데이트 하는 함수
+        UpdateFilterToggle(); // 필터 토글 업데이트 하는 함수
+
+        // 필터링 하는 코드 필요함
+        FilterArtData();
+        ActivateFilterContent(false);
+
+        DOVirtual.DelayedCall(0.5f, () =>
+        {
+            // 다시 필터링된 아트워크를 채워넣는 코드 필요
+            FillArtwork();
+
+            // 여기에 설명 업데이트도 필요함
+            // 첫번째 위치로 스크롤 해줌
+            _collectPageViewer.SetArtworkScrollIndex(0);
+            OnArtworkScrollChanged(0);
+        });
+    }
+
+    public void OnClickOwnToggle(FilterUI.OwnFilter own)
+    {
+        _collectPageModel.OwnFilter = own;
+        UpdateFilter();
+    }
 
     public void OnClickRankToggle(FilterUI.RankFilter rank)
     {
-        // 아트워크를 파괴하는 코드 필요
-        DestroyAllArtwork();
-        // 필터 뽀개는 함수 필요
-        DestroyFilterItem(FilterUI.FilterType.Rank);
-
-        // childCount 재계산을 위한 딜레이
-        DOVirtual.DelayedCall(0.5f, () =>
-        {
-            _collectPageModel.RankFilter = rank;
-            switch (_collectPageModel.RankFilter)
-            {
-                case FilterUI.RankFilter.All:
-                    AddFilterItem(FilterUI.FilterType.Rank, "All");
-                    break;
-                case FilterUI.RankFilter.NoClear:
-                    AddFilterItem(FilterUI.FilterType.Rank, "No Clear");
-                    break;
-                case FilterUI.RankFilter.Bronze:
-                    AddFilterItem(FilterUI.FilterType.Rank, Rank.COPPER, "Bronze");
-                    break;
-                case FilterUI.RankFilter.Silver:
-                    AddFilterItem(FilterUI.FilterType.Rank, Rank.SILVER, "Silver");
-                    break;
-                case FilterUI.RankFilter.Gold:
-                    AddFilterItem(FilterUI.FilterType.Rank, Rank.GOLD, "Gold");
-                    break;
-                default:
-                    break;
-            }
-
-            // 필터링 하는 코드 필요함
-            FilterArtData();
-            ActivateFilterContent(false);
-
-            // 다시 필터링된 아트워크를 채워넣는 코드 필요
-            FillArtwork();
-        });
+        if(_collectPageModel.RankFilters.Contains(rank) == false) _collectPageModel.RankFilters.Add(rank);
+        UpdateFilter();
     }
+
+    public void OnUnClickRankToggle(FilterUI.RankFilter rank)
+    {
+        if (_collectPageModel.RankFilters.Contains(rank) == true) _collectPageModel.RankFilters.Remove(rank);
+        UpdateFilter();
+    }
+
+
 
     public void OnClickDateToggle(FilterUI.DateFilter date)
     {
-        // 아트워크를 파괴하는 코드 필요
-        DestroyAllArtwork();
-        // 필터 뽀개는 함수 필요
-        DestroyFilterItem(FilterUI.FilterType.Date);
-
-        // childCount 재계산을 위한 딜레이
-        DOVirtual.DelayedCall(0.5f, () =>
-        {
-            _collectPageModel.DateFilter = date;
-            switch (_collectPageModel.DateFilter)
-            {
-                case FilterUI.DateFilter.Old:
-                    AddFilterItem(FilterUI.FilterType.Date, "오래된 순");
-                    break;
-                case FilterUI.DateFilter.New:
-                    AddFilterItem(FilterUI.FilterType.Date, "최신 순");
-                    break;
-                default:
-                    break;
-            }
-
-            // 필터링 하는 코드 필요함
-            FilterArtData();
-            ActivateFilterContent(false);
-            // 다시 필터링된 아트워크를 채워넣는 코드 필요
-            FillArtwork();
-        });
+        _collectPageModel.DateFilter = date;
+        UpdateFilter();
     }
 
     void FilterArtData()
@@ -210,54 +224,71 @@ public class CollectPagePresenter
 
         foreach (var item in _collectPageModel.ArtDatas)
         {
-            switch (_collectPageModel.RankFilter)
+            if (_collectPageModel.OwnFilter == FilterUI.OwnFilter.All)
             {
-                case FilterUI.RankFilter.NoClear:
-                    if (item.Value.HasIt == false)
-                        _collectPageModel.FilteredArtDatas.Add(new KeyValuePair<int, ArtData>(item.Key, item.Value));
-                    break;
-                case FilterUI.RankFilter.Bronze:
-                    if (item.Value.Rank == Rank.COPPER)
-                        _collectPageModel.FilteredArtDatas.Add(new KeyValuePair<int, ArtData>(item.Key, item.Value));
-                    break;
-                case FilterUI.RankFilter.Silver:
-                    if (item.Value.Rank == Rank.SILVER)
-                        _collectPageModel.FilteredArtDatas.Add(new KeyValuePair<int, ArtData>(item.Key, item.Value));
-                    break;
-                case FilterUI.RankFilter.Gold:
-                    if (item.Value.Rank == Rank.GOLD)
-                        _collectPageModel.FilteredArtDatas.Add(new KeyValuePair<int, ArtData>(item.Key, item.Value));
-                    break;
-                default:
+                _collectPageModel.FilteredArtDatas.Add(new KeyValuePair<int, ArtData>(item.Key, item.Value));
+            }
+            else if (_collectPageModel.OwnFilter == FilterUI.OwnFilter.NoClear &&
+                item.Value.HasIt == false)
+            {
+                _collectPageModel.FilteredArtDatas.Add(new KeyValuePair<int, ArtData>(item.Key, item.Value));
+            }
+            else if(_collectPageModel.OwnFilter == FilterUI.OwnFilter.Clear && 
+                item.Value.HasIt == true)
+            {
+                if (_collectPageModel.RankFilters.Count == 0) // 필터가 없는 경우
+                {
                     _collectPageModel.FilteredArtDatas.Add(new KeyValuePair<int, ArtData>(item.Key, item.Value));
-                    break;
+                }
+                else
+                {
+                    if (_collectPageModel.RankFilters.Contains(FilterUI.RankFilter.Bronze) &&
+                        item.Value.Rank == Rank.COPPER)
+                    {
+                        _collectPageModel.FilteredArtDatas.Add(new KeyValuePair<int, ArtData>(item.Key, item.Value));
+                    }
+
+                    if (_collectPageModel.RankFilters.Contains(FilterUI.RankFilter.Silver) &&
+                        item.Value.Rank == Rank.SILVER)
+                    {
+                        _collectPageModel.FilteredArtDatas.Add(new KeyValuePair<int, ArtData>(item.Key, item.Value));
+                    }
+
+                    if (_collectPageModel.RankFilters.Contains(FilterUI.RankFilter.Gold) &&
+                        item.Value.Rank == Rank.GOLD)
+                    {
+                        _collectPageModel.FilteredArtDatas.Add(new KeyValuePair<int, ArtData>(item.Key, item.Value));
+                    }
+                }
             }
         }
 
-        switch (_collectPageModel.DateFilter)
+        // 필터가 보유한 명화만 보여주는 경우 정렬을 적용한다.
+        if (_collectPageModel.OwnFilter == FilterUI.OwnFilter.Clear)
         {
-            case FilterUI.DateFilter.Old:
-                _collectPageModel.FilteredArtDatas.Sort((a, b) =>
-                {
-                    if (!a.Value.ObtainedDate.HasValue) return 1;  // a가 null이면 뒤로
-                    if (!b.Value.ObtainedDate.HasValue) return -1; // b가 null이면 앞으로
-                    return a.Value.ObtainedDate.Value.CompareTo(b.Value.ObtainedDate.Value);
-                });
-                break;
+            switch (_collectPageModel.DateFilter)
+            {
+                case FilterUI.DateFilter.Old:
+                    _collectPageModel.FilteredArtDatas.Sort((a, b) =>
+                    {
+                        return a.Value.ObtainedDate.Value.CompareTo(b.Value.ObtainedDate.Value);
+                    });
+                    break;
 
-            case FilterUI.DateFilter.New:
-                _collectPageModel.FilteredArtDatas.Sort((a, b) =>
-                {
-                    if (!a.Value.ObtainedDate.HasValue) return 1;  // a가 null이면 뒤로
-                    if (!b.Value.ObtainedDate.HasValue) return -1; // b가 null이면 앞으로
-                    return b.Value.ObtainedDate.Value.CompareTo(a.Value.ObtainedDate.Value);
-                });
-                break;
+                case FilterUI.DateFilter.New:
+                    _collectPageModel.FilteredArtDatas.Sort((a, b) =>
+                    {
+                        return b.Value.ObtainedDate.Value.CompareTo(a.Value.ObtainedDate.Value);
+                    });
+                    break;
 
-            default:
-                break;
+                default:
+                    break;
+            }
         }
     }
+
+    #endregion Filter
 
     void SelectStage(int index, StageData stageData)
     {
@@ -309,24 +340,26 @@ public class CollectPagePresenter
     {
         foreach (var item in _collectPageModel.FilteredArtDatas)
         {
-            int keyIndex = item.Key; // ✅ 지역 변수로 캡처
+            int artworkIndex = item.Key; // ✅ 지역 변수로 캡처
 
-            SpawnableUI artwork = _artworkFactory.Create(keyIndex, item.Value.Rank, item.Value.HasIt);
+            SpawnableUI artwork = _artworkFactory.Create(artworkIndex, item.Value.Rank, item.Value.HasIt);
             artwork.InjectClickEvent(() => {
-                ServiceLocater.ReturnSaveManager().SelectArtwork(keyIndex);
+                ServiceLocater.ReturnSaveManager().SelectArtwork(artworkIndex);
                 ActiveSelectStageContent(true);
                 FillStage();
             });
 
             _collectPageViewer.AddArtwork(artwork);
 
-            ArtworkData artworkData = _collectPageModel.ArtworkDatas[keyIndex]; // ✅ keyIndex 사용
-            SpawnableUI filteredArtwork = _filteredArtworkFactory.Create(keyIndex, artworkData.Title, item.Value.HasIt);
+            ArtworkData artworkData = _collectPageModel.ArtworkDatas[artworkIndex]; // ✅ keyIndex 사용
+            int scrollIndex = _collectPageModel.FilteredArtDatas.FindIndex(x => x.Key == artworkIndex);
+
+            SpawnableUI filteredArtwork = _filteredArtworkFactory.Create(artworkIndex, artworkData.Title, item.Value.HasIt);
             filteredArtwork.InjectClickEvent(() => { // ✅ filteredArtwork에도 적용
 
                 _collectPageViewer.ActivateFilterBottomSheet(false);
-                _collectPageViewer.SetArtworkScrollIndex(keyIndex - 1);
-                ChangeArtworkDescription(keyIndex - 1);
+                _collectPageViewer.SetArtworkScrollIndex(scrollIndex);
+                OnArtworkScrollChanged(scrollIndex);
                 // ✅ 위 아트워크를 스크롤하는 코드 추가 필요
             });
 
@@ -343,9 +376,16 @@ public class CollectPagePresenter
 
     public void DestroyAllArtwork()
     {
+        //for (int i = 0; i < _spawnedArtworks.Count; i++)
+        //{
+        //    _spawnedArtworks[i].DestroyObject();
+        //}
+
+        //_spawnedArtworks.Clear();
         _collectPageViewer.DestroyAllArtwork();
         _collectPageViewer.DestroyFilteredArtwork();
     }
+
 
 
 
@@ -368,7 +408,7 @@ public class CollectPagePresenter
 
         ChangeCurrentProgress(progressCount);
 
-        int _openIndex = 1;
+        int _openIndex = 0;
 
         foreach (var data in artData.StageDatas)
         {
@@ -376,7 +416,7 @@ public class CollectPagePresenter
             spawnableUI.InjectClickEvent(() =>
             {
                 int index = data.Key;
-                SelectStage(index - 1, data.Value);
+                SelectStage(index, data.Value);
             });
 
             switch (data.Value.Stauts)
@@ -396,22 +436,11 @@ public class CollectPagePresenter
                     break;
             }
 
-            //if (data.Value.Stauts == true)
-            //{
-            //    spawnableUI.SetState(StageUI.State.Lock);
-            //}
-            //else
-            //{
-            //    spawnableUI.SetState(StageUI.State.Open);
-            //    if(data.Value.IsPlayed == true) spawnableUI.SetRank(data.Value.Rank); // 한번 플레이 한 경우만 랭크 표시
-            //    else _openIndex = data.Key;
-            //}
-
             _collectPageViewer.AddStage(spawnableUI);
         }
 
         // 열린 스테이지 Auto Select
-        SelectStage(_openIndex - 1, artData.StageDatas[_openIndex]);
+        SelectStage(_openIndex, artData.StageDatas[_openIndex]);
     }
 
     public void RemoveAllStage()
@@ -424,23 +453,50 @@ public class CollectPagePresenter
         OnClickPlayBtn?.Invoke();
     }
 
+    void UpdateArtInfo(int artworkIndex)
+    {
+        ArtworkData artworkData = _collectPageModel.ArtworkDatas[artworkIndex];
+        _collectPageViewer.ChangeArtDescription(artworkData.Title, artworkData.Description);
+
+        ArtData artData = _collectPageModel.ArtDatas[artworkIndex];
+        int totalStageCount = artData.StageDatas.Count;
+        int clearStageCount = 0;
+        foreach (var data in artData.StageDatas)
+        {
+            if (data.Value.Stauts == StageStauts.Clear) clearStageCount++;
+        }
+
+        float currentCompleteRatio = (float)clearStageCount / totalStageCount;
+        _collectPageViewer.ChangeArtCompleteRatio(currentCompleteRatio, _collectPageModel.TotalCompleteRatio);
+    }
+
     void UpdateArtInfo()
     {
-        int artIndex = _collectPageModel.ArtworkIndex;
-        ArtworkData artData = _collectPageModel.ArtworkDatas[artIndex];
-        _collectPageViewer.ChangeArtDescription(artData.Title, artData.Description);
+        _collectPageViewer.ChangeArtDescription("선택된 명화가 없습니다.", "");
+        _collectPageViewer.ChangeArtCompleteRatio(0, _collectPageModel.TotalCompleteRatio);
     }
 
-    public void ChangeArtworkList(List<int> currentArtNames)
+    //
+    public void OnArtworkScrollChanged(int scrollIndex)
     {
-        //_collectPageModel.HaveArtworkIndexes = currentArtNames;
-        //_collectPageModel.ArtworkIndex = 0;
-        UpdateArtInfo();
+        if (_collectPageModel.FilteredArtDatas.Count == 0)
+        {
+            UpdateArtInfo();
+            return;
+        }
+
+        var item = _collectPageModel.FilteredArtDatas[scrollIndex];
+
+        _collectPageModel.ArtworkIndex = item.Key; // -> 1 추가해서 받기
+        UpdateArtInfo(_collectPageModel.ArtworkIndex);
     }
 
-    public void ChangeArtworkDescription(int index)
+    public void ScrollArtworkToIndex(int artworkIndex)
     {
-        _collectPageModel.ArtworkIndex = index + 1; // -> 1 추가해서 받기
-        UpdateArtInfo();
+        _collectPageModel.ArtworkIndex = artworkIndex; // -> 1 추가해서 받기
+        UpdateArtInfo(_collectPageModel.ArtworkIndex);
+
+        int scrollIndex = _collectPageModel.FilteredArtDatas.FindIndex(x => x.Key == artworkIndex);
+        _collectPageViewer.SetArtworkScrollIndex(scrollIndex);
     }
 }

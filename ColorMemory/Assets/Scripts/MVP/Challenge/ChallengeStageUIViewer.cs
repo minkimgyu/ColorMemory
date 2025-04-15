@@ -26,6 +26,11 @@ public class ChallengeStageUIViewer
     TMP_Text _oneZoneHintCostText;
     TMP_Text _oneColorHintCostText;
 
+    RectTransform _bottomContent;
+    Button _skipBtn;
+
+
+
 
     GameObject _hintPanel;
     GameObject _rememberPanel;
@@ -35,6 +40,8 @@ public class ChallengeStageUIViewer
 
     GameObject _gameOverPanel;
     TMP_Text _clearStageCount;
+    TMP_Text _resultScore;
+
     Transform _clearStageContent;
 
     GameObject _gameResultPanel;
@@ -54,9 +61,11 @@ public class ChallengeStageUIViewer
 
     CustomSlider _bgmSlider;
     Image _bgmSliderHandle;
+    TMP_Text _bgmMuteText;
 
     CustomSlider _sfxSlider;
     Image _sfxSliderHandle;
+    TMP_Text _sfxMuteText;
 
     public ChallengeStageUIViewer(
         GameObject playPanel,
@@ -73,6 +82,9 @@ public class ChallengeStageUIViewer
         TMP_Text oneZoneHintCostText,
         TMP_Text oneColorHintCostText,
 
+        RectTransform bottomContent,
+        Button skipBtn,
+
         GameObject hintPanel,
         GameObject rememberPanel,
 
@@ -80,6 +92,7 @@ public class ChallengeStageUIViewer
         TMP_Text coinTxt,
 
         GameObject gameOverPanel,
+        TMP_Text resultScore,
         TMP_Text clearStageCount,
         Transform clearStageContent,
 
@@ -97,7 +110,11 @@ public class ChallengeStageUIViewer
         Button pauseExitBtn,
         Button gameExitBtn,
         CustomSlider bgmSlider,
+        TMP_Text bgmMuteText,
+
         CustomSlider sfxSlider,
+        TMP_Text sfxMuteText,
+
         ChallengeStageUIPresenter presenter)
     {
         _playPanel = playPanel;
@@ -115,6 +132,9 @@ public class ChallengeStageUIViewer
         _oneColorHintCostText = oneColorHintCostText;
         _oneZoneHintCostText = oneZoneHintCostText;
 
+        _bottomContent = bottomContent;
+        _skipBtn = skipBtn;
+
         _hintPanel = hintPanel;
         _rememberPanel = rememberPanel;
 
@@ -123,6 +143,7 @@ public class ChallengeStageUIViewer
 
         _gameOverPanel = gameOverPanel;
         _clearStageCount = clearStageCount;
+        _resultScore = resultScore;
         _clearStageContent = clearStageContent;
 
         _gameResultPanel = gameResultPanel;
@@ -142,18 +163,30 @@ public class ChallengeStageUIViewer
 
         _bgmSlider = bgmSlider;
         _bgmSliderHandle = bgmSlider.handleRect.GetComponent<Image>();
+        _bgmMuteText = bgmMuteText;
 
         _sfxSlider = sfxSlider;
         _sfxSliderHandle = sfxSlider.handleRect.GetComponent<Image>();
+        _sfxMuteText = sfxMuteText;
 
         _bgmSlider.onHandlePointerUp += ((ratio) => { presenter.SaveBGMValue(); });
         _sfxSlider.onHandlePointerUp += ((ratio) => { presenter.SaveSFXValue(); });
 
-        _gameExitBtn.onClick.AddListener(() => { presenter.OnClickGameExitBtn(); });
+        _gameExitBtn.onClick.AddListener(() => { presenter.OnClickGameExitBtn(); presenter.GoToEndState?.Invoke(); });
         _pauseBtn.onClick.AddListener(() => { presenter.ActivatePausePanel(true); });
         _pauseExitBtn.onClick.AddListener(() => { presenter.ActivatePausePanel(false); });
         _bgmSlider.onValueChanged.AddListener((ratio) => { presenter.OnBGMSliderValeChanged(ratio); });
         _sfxSlider.onValueChanged.AddListener((ratio) => { presenter.OnSFXSliderValeChanged(ratio); });
+    }
+
+    public void ActivateBottomContent(bool active)
+    {
+        _bottomContent.gameObject.SetActive(active);
+    }
+
+    public void ActivateSkipBtn(bool active)
+    {
+        _skipBtn.gameObject.SetActive(active);
     }
 
     public void ActivateHint(bool oneColorHintActive, bool oneZoneHintActive)
@@ -171,28 +204,28 @@ public class ChallengeStageUIViewer
         LayoutRebuilder.ForceRebuildLayoutImmediate(_oneZoneHintCostText.transform.parent.GetComponent<RectTransform>());
     }
 
-    public void ChangeBGMSliderValue(float ratio, Color nomalColor, Color colorOnZeroValue)
+    public void ChangeBGMSliderValue(float ratio, string leftSmallTxt, Color handleColor)
     {
         _bgmSlider.value = ratio;
-        ChangeBGMSliderHandleColor(ratio, nomalColor, colorOnZeroValue);
+        ChangeBGMSliderHandleColor(leftSmallTxt, handleColor);
     }
 
-    public void ChangeSFXSliderValue(float ratio, Color nomalColor, Color colorOnZeroValue)
+    public void ChangeSFXSliderValue(float ratio, string leftSmallTxt, Color handleColor)
     {
         _sfxSlider.value = ratio;
-        ChangeSFXSliderHandleColor(ratio, nomalColor, colorOnZeroValue);
+        ChangeSFXSliderHandleColor(leftSmallTxt, handleColor);
     }
 
-    public void ChangeBGMSliderHandleColor(float ratio, Color nomalColor, Color colorOnZeroValue)
+    public void ChangeBGMSliderHandleColor(string leftSmallTxt, Color handleColor)
     {
-        if (ratio == 0) _bgmSliderHandle.color = colorOnZeroValue;
-        else _bgmSliderHandle.color = nomalColor;
+        _bgmSliderHandle.color = handleColor;
+        _bgmMuteText.text = leftSmallTxt;
     }
 
-    public void ChangeSFXSliderHandleColor(float ratio, Color nomalColor, Color colorOnZeroValue)
+    public void ChangeSFXSliderHandleColor(string leftSmallTxt, Color handleColor)
     {
-        if (ratio == 0) _sfxSliderHandle.color = colorOnZeroValue;
-        else _sfxSliderHandle.color = nomalColor;
+        _sfxSliderHandle.color = handleColor;
+        _sfxMuteText.text = leftSmallTxt;
     }
 
     public void ActivatePausePanel(bool active)
@@ -292,9 +325,10 @@ public class ChallengeStageUIViewer
         _gameOverPanel.SetActive(active);
     }
 
-    public void ChangeClearStageCount(int passedDuration, int stageCount)
+    public void ChangeClearStageCount(int clearStageCount, int resultScore)
     {
-        _clearStageCount.text = $"{passedDuration}초 동안 {stageCount}개의 패턴 클리어!";
+        _clearStageCount.text = clearStageCount.ToString("N0");
+        _resultScore.text = resultScore.ToString("N0");
     }
 
     public void AddClearPattern(SpawnableUI patternUI)

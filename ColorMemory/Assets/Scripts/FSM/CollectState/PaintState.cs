@@ -116,6 +116,7 @@ namespace Collect
                 _penDots[i].Minimize();
             }
 
+            _collectStageUIPresenter.ActivateDetailContent(false);
             _collectStageUIPresenter.ChangeHintInfoText($"힌트를 사용할수록 높은 랭크를 받을 확률이 떨어져요!");
             SaveData save = ServiceLocater.ReturnSaveManager().GetSaveData();
 
@@ -136,6 +137,10 @@ namespace Collect
             _penDots = levelData.Item2;
             _mapData = levelData.Item3;
             _levelSize = new Vector2Int(_dots.GetLength(0), _dots.GetLength(1));
+
+            _collectStageUIPresenter.ActivateDetailContent(true);
+            _collectStageUIPresenter.ChangeCurrentHintUsage(_goBackCount);
+            _collectStageUIPresenter.ChangeCurrentWrongCount(_modeData.WrongCount);
 
             _collectStageUIPresenter.ChangeHintInfoText($"힌트를 {_goBackCount}번 사용했어요");
 
@@ -211,6 +216,7 @@ namespace Collect
             {
                 _dots[index.x, index.y].XSlide(Color.red);
                 _modeData.WrongCount += 1;
+                _collectStageUIPresenter.ChangeCurrentWrongCount(_modeData.WrongCount);
                 return;
             }
             SpreadColor(index);
@@ -264,6 +270,8 @@ namespace Collect
 
             //float leftRatio = _timer.Ratio;
             //_timer.Reset(); // 타이머 리셋
+
+            
 
             _goBackCount = 0;
             _fsm.SetState(CollectMode.State.Clear);

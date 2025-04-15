@@ -35,4 +35,6 @@ abstract public class BaseState<T>
     public virtual void OnClickSettingBtn() { }
 
     public virtual void OnClickPauseBtn() { }
+
+    public virtual void OnClickSkipBtn() { }
 }

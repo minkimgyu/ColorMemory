@@ -179,11 +179,7 @@ namespace Challenge
             _challengeStageUIPresenter.ActiveGoldPanel(true);
 
             _challengeStageUIPresenter.ChangeTotalTime(_modeData.PlayDuration);
-
-            DOVirtual.DelayedCall(0.5f, () =>
-            {
-                _timer.Start(_modeData.PlayDuration);
-            });
+            _timer.Start(_modeData.PlayDuration);
         }
 
         bool OutOfRange(Vector2Int point)

@@ -19,8 +19,12 @@ public class SettingPage : MonoBehaviour
     [SerializeField] Image _profileImg;
     [SerializeField] Toggle[] _profileSelectBtns;
     [SerializeField] Button _doneBtn;
+
     [SerializeField] CustomSlider _bgmSlider;
+    [SerializeField] TMP_Text _bgmLeftText;
+
     [SerializeField] CustomSlider _sfxSlider;
+    [SerializeField] TMP_Text _sfxLeftText;
 
     public void TogglePanel()
     {
@@ -29,7 +33,7 @@ public class SettingPage : MonoBehaviour
 
     System.Action OnClickHomeBtn;
 
-    public void Initialize(Dictionary<int, Sprite> profileSprites, System.Action OnClickHomeBtn)
+    public void Initialize(string myName, Dictionary<int, Sprite> profileSprites, System.Action OnClickHomeBtn)
     {
         this.OnClickHomeBtn = OnClickHomeBtn;
         _homeBtn.onClick.AddListener(() => { TogglePanel(); OnClickHomeBtn?.Invoke();  });
@@ -48,11 +52,13 @@ public class SettingPage : MonoBehaviour
             _profileSelectBtns,
             _doneBtn,
             _bgmSlider,
+            _bgmLeftText,
             _sfxSlider,
+            _sfxLeftText,
             presenter);
         presenter.InjectViewer(viewer);
 
         presenter.ChangeProfileImgFromServer();
-        presenter.ChangeName("meal");
+        presenter.ChangeName(myName);
     }
 }

@@ -11,10 +11,14 @@ public class FilteredArtworkUI : SpawnableUI
     [SerializeField] TMP_Text _artTitle;
     [SerializeField] GameObject _lockPanel;
 
+    [SerializeField] ResizeableImage _resizeableImage;
+
     const int _maxStringLength = 20;
 
     public override void Initialize(Sprite artSprite, string title, bool hasIt = true)
     {
+        _resizeableImage.Initialize(artSprite);
+
         _lockPanel.SetActive(!hasIt);
         _artImg.sprite = artSprite;
         if (title.Length > _maxStringLength) _artTitle.text = $"{title.Substring(0, _maxStringLength)}...";
