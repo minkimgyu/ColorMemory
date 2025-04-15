@@ -34,6 +34,15 @@ jobs:
           fi
           df -h
 
+      - name: 🔍 Validate Keystore Base64
+        run: |
+          if ! echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > /dev/null 2>&1; then
+            echo "❌ ANDROID_KEYSTORE_BASE64 is not a valid base64 string."
+            exit 1
+          else
+            echo "✅ Valid base64 keystore string."
+          fi
+
       - name: Unity Build
         uses: game-ci/unity-builder@v4
         env:
