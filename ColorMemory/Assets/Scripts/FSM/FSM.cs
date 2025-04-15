@@ -5,7 +5,9 @@ using System;
 public class FSM<State>
 {
     Dictionary<State, BaseState<State>> _states;
+
     State _currentState;
+    public State CurrentState { get => _currentState; }
 
     public void Initialize(Dictionary<State, BaseState<State>> states, State currentState)
     {

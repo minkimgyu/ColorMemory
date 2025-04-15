@@ -77,10 +77,10 @@ namespace Collect
         [SerializeField] Image _rankIcon;
         [SerializeField] TMP_Text _rankText;
 
-        [SerializeField] Image _currentCollectRatio;
+        [SerializeField] CustomProgressUI _currentCollectRatio;
         [SerializeField] TMP_Text _currentCollectText;
 
-        [SerializeField] Image _totalCollectRatio;
+        [SerializeField] CustomProgressUI _totalCollectRatio;
         [SerializeField] TMP_Text _totalCollectText;
         [SerializeField] Button _nextBtn;
 

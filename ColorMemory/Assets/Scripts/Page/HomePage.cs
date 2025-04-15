@@ -52,10 +52,10 @@ public class HomePage : MonoBehaviour
     [SerializeField] GameObject _artworkInfoContent;
     [SerializeField] GameObject _artworkCompleteRatioContent;
 
-    [SerializeField] Image _currentComplete;
+    [SerializeField] CustomProgressUI _currentComplete;
     [SerializeField] TMP_Text _currentCompleteRatio;
 
-    [SerializeField] Image _totalComplete;
+    [SerializeField] CustomProgressUI _totalComplete;
     [SerializeField] TMP_Text _totalCompleteRatio;
 
     [SerializeField] TMP_Text _titleTxt;

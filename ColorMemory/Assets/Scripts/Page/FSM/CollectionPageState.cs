@@ -17,10 +17,10 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
         GameObject artworkInfoContent,
         GameObject artworkCompleteRatioContent,
 
-        Image currentComplete,
+        CustomProgressUI currentComplete,
         TMP_Text currentCompleteRatio,
 
-        Image totalComplete,
+        CustomProgressUI totalComplete,
         TMP_Text totalCompleteRatio,
 
         TMP_Text titleTxt,

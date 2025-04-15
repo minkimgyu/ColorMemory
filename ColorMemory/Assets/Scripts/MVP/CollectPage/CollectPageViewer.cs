@@ -18,10 +18,10 @@ public class CollectPageViewer
     TMP_Text _titleTxt;
     TMP_Text _descriptionTxt;
 
-    Image _currentComplete;
+    CustomProgressUI _currentComplete;
     TMP_Text _currentCompleteRatio;
 
-    Image _totalComplete;
+    CustomProgressUI _totalComplete;
     TMP_Text _totalCompleteRatio;
 
     ArtworkScrollUI _artworkScrollUI;
@@ -61,10 +61,10 @@ public class CollectPageViewer
         TMP_Text titleTxt,
         TMP_Text descriptionTxt,
 
-        Image currentComplete,
+        CustomProgressUI currentComplete,
         TMP_Text currentCompleteRatio,
 
-        Image totalComplete,
+        CustomProgressUI totalComplete,
         TMP_Text totalCompleteRatio,
 
         ArtworkScrollUI artworkScrollUI,
@@ -321,10 +321,10 @@ public class CollectPageViewer
 
     public void ChangeArtCompleteRatio(float currentRatio, float totalRatio)
     {
-        _currentComplete.fillAmount = currentRatio;
+        _currentComplete.FillValue = currentRatio;
         _currentCompleteRatio.text = $"{Mathf.RoundToInt(currentRatio * 100)}%";
 
-        _totalComplete.fillAmount = totalRatio;
+        _totalComplete.FillValue = totalRatio;
         _totalCompleteRatio.text = $"{Mathf.RoundToInt(totalRatio * 100)}%";
     }
 

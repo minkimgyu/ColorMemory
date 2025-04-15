@@ -470,9 +470,21 @@ public class CollectPagePresenter
         _collectPageViewer.ChangeArtCompleteRatio(currentCompleteRatio, _collectPageModel.TotalCompleteRatio);
     }
 
+    void UpdateArtInfo()
+    {
+        _collectPageViewer.ChangeArtDescription("선택된 명화가 없습니다.", "");
+        _collectPageViewer.ChangeArtCompleteRatio(0, _collectPageModel.TotalCompleteRatio);
+    }
+
     //
     public void OnArtworkScrollChanged(int scrollIndex)
     {
+        if (_collectPageModel.FilteredArtDatas.Count == 0)
+        {
+            UpdateArtInfo();
+            return;
+        }
+
         var item = _collectPageModel.FilteredArtDatas[scrollIndex];
 
         _collectPageModel.ArtworkIndex = item.Key; // -> 1 추가해서 받기

@@ -59,10 +59,10 @@ public class CollectStageUIViewer
     Image _rankIcon;
     TMP_Text _rankText;
 
-    Image _currentCollectRatio;
+    CustomProgressUI _currentCollectRatio;
     TMP_Text _currentCollectText;
 
-    Image _totalCollectRatio;
+    CustomProgressUI _totalCollectRatio;
     TMP_Text _totalCollectText;
 
     public CollectStageUIViewer(
@@ -113,10 +113,10 @@ public class CollectStageUIViewer
         Image rankIcon,
         TMP_Text rankText,
 
-        Image currentCollectRatio,
+        CustomProgressUI currentCollectRatio,
         TMP_Text currentCollectText,
 
-        Image totalCollectRatio,
+        CustomProgressUI totalCollectRatio,
         TMP_Text totalCollectText,
 
         CollectStageUIPresenter presenter)
@@ -266,10 +266,10 @@ public class CollectStageUIViewer
 
     public void ChangeCollectionRatio(float currentCollectRatio, float totalCollectRatio)
     {
-        _currentCollectRatio.fillAmount = currentCollectRatio;
+        _currentCollectRatio.FillValue = currentCollectRatio;
         _currentCollectText.text = $"{Mathf.RoundToInt(currentCollectRatio * 100)}%";
 
-        _totalCollectRatio.fillAmount = totalCollectRatio;
+        _totalCollectRatio.FillValue = totalCollectRatio;
         _totalCollectText.text = $"{Mathf.RoundToInt(totalCollectRatio * 100)}%";
     }
 
