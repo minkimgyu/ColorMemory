@@ -28,7 +28,10 @@ jobs:
           sudo swapoff -a
           sudo rm -f /swapfile
           sudo apt clean
-          docker rmi $(docker images -q)
+          dockerImages=$(docker images -q)
+          if [ -n "$dockerImages" ]; then
+            docker rmi $dockerImages
+          fi
           df -h
 
       - name: Unity Build
