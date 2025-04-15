@@ -4,31 +4,25 @@ on:
   workflow_dispatch:
 
 permissions: write-all
-  
 jobs:
-  #Job 설정
-  buildForAndroid: 
+  buildForAndroid:
     name: Build Android🛸🛸🛸
     runs-on: ubuntu-latest
     steps:
-
-      # Step1 - Check Out
       - name: Check Out
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           lfs: true
 
-      # Step2 - Cache Library
       - name: Cache Library
         uses: actions/cache@v4.0.2
-        with: 
+        with:
           path: Library
           key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
           restore-keys: |
             Library-
-            
-      # Free up disk space
+
       - name: Free Disk Space for Android
         run: |
           sudo swapoff -a
@@ -37,7 +31,6 @@ jobs:
           docker rmi $(docker images -q)
           df -h
 
-      # Step3 - Unity Build
       - name: Unity Build
         uses: game-ci/unity-builder@v4
         env:
@@ -46,8 +39,7 @@ jobs:
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           targetPlatform: Android
-      
-      # Step4 - Upload Build File
+
       - name: Upload Build File
         uses: actions/upload-artifact@v3
         with:
