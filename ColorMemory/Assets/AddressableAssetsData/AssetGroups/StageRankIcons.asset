@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: StageRankIcons
+  m_EditorClassIdentifier: 
+  m_GroupName: StageRankIcons
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 5a9d2cdb1fa74964c9d99477bad726a7
+  m_SerializeEntries:
+  - m_GUID: 388d09bd7ffd5274f9d4895392dbded7
+    m_Address: GOLD
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - StageRankIcon
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7b13653fec4b26b4bb74ef7865eedbf0
+    m_Address: COPPER
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - StageRankIcon
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: be7ec42f309ab3e4095fc595774c6ac7
+    m_Address: NONE
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - StageRankIcon
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f447efb4e4fc22b41903d38f416012a9
+    m_Address: SILVER
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - StageRankIcon
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 5736eef86fbab2943992749ebee4f1e0, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 60769bd0e10ae194ab62bd89bc4c1a03, type: 2}
+    - {fileID: 11400000, guid: b6369753ab0a5584d98a3a17e2f61196, type: 2}

@@ -10,6 +10,7 @@ namespace Collect
     public class MemorizeState : BaseState<CollectMode.State>
     {
         Dot[,] _dots;
+        Dot[] _penDots;
         Vector2Int _levelSize;
         MapData _mapData;
 
@@ -50,9 +51,10 @@ namespace Collect
         public override void OnStateEnter()
         {
 
-            // ï¿½Ê±ï¿½È­ ï¿½ï¿½ï¿½ï¿½
+            // ÃÊ±âÈ­ ÁøÇà
             Tuple<Dot[,], Dot[], MapData> levelData = GetLevelData();
             _dots = levelData.Item1;
+            _penDots = levelData.Item2;
             _mapData = levelData.Item3;
             _levelSize = new Vector2Int(_dots.GetLength(0), _dots.GetLength(1));
 
@@ -68,10 +70,10 @@ namespace Collect
             {
                 for (int j = 0; j < _levelSize.y; j++)
                 {
-                    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö±ï¿½
+                    // ¿ø·¡ ·¹º§ »öÀ¸·Î º¯°æÇØÁÖ±â
                     _dots[i, j].ChangeColor(GetDotColor(i, j));
 
-                    // ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ Å°ï¿½ï¿½ï¿½
+                    // ·£´ýÇÏ°Ô Å°¿ì±â
                     _dots[i, j].Maximize(1f);
                 }
             }
@@ -93,7 +95,7 @@ namespace Collect
 
             _collectStageUIPresenter.ActivateRememberPanel(false);
 
-            // dot ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½ ï¿½ß°ï¿½
+            // dot µÚÁý´Â ÄÚµå Ãß°¡
             for (int i = 0; i < _levelSize.x; i++)
             {
                 for (int j = 0; j < _levelSize.y; j++)
@@ -102,11 +104,13 @@ namespace Collect
                 }
             }
 
-            _timer.Reset(); // Å¸ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½
+            _timer.Reset(); // Å¸ÀÌ¸Ó ¸®¼Â
 
-            // ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Stateï¿½ï¿½ ï¿½Ìµï¿½
+            // ÀÏÁ¤ ½Ã°£ Áö³ª¸é ´ÙÀ½ State·Î ÀÌµ¿
             DOVirtual.DelayedCall(1.5f, () =>
             {
+                // ¸¸¾à ÇöÀç »óÅÂ°¡ ´Ù¸¥ »óÅÂ¶ó¸é ½ÇÇàµÇÁö ¸øÇÏ°Ô ¸·¾Æ¾ßÇÔ
+                if (_fsm.CurrentState != CollectMode.State.Memorize) return;
                 _fsm.SetState(CollectMode.State.Paint);
             });
         }

@@ -155,8 +155,12 @@ PrefabInstance:
     m_TransformParent: {fileID: 1465544803404977637}
     m_Modifications:
     - target: {fileID: 1263459146728168496, guid: 55424ce3acd47e74cba0530c271303e7, type: 3}
+      propertyPath: m_Spacing.x
+      value: 45
+      objectReference: {fileID: 0}
+    - target: {fileID: 1263459146728168496, guid: 55424ce3acd47e74cba0530c271303e7, type: 3}
       propertyPath: m_ChildAlignment
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1263459146728168496, guid: 55424ce3acd47e74cba0530c271303e7, type: 3}
       propertyPath: m_Padding.m_Left
@@ -167,7 +171,15 @@ PrefabInstance:
       value: FilterScroll
       objectReference: {fileID: 0}
     - target: {fileID: 6846165823205881594, guid: 55424ce3acd47e74cba0530c271303e7, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6846165823205881594, guid: 55424ce3acd47e74cba0530c271303e7, type: 3}
       propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6846165823205881594, guid: 55424ce3acd47e74cba0530c271303e7, type: 3}
+      propertyPath: m_AnchoredPosition.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6983441089633347151, guid: 55424ce3acd47e74cba0530c271303e7, type: 3}

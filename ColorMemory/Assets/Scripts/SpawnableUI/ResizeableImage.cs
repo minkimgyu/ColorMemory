@@ -14,12 +14,12 @@ public class ResizeableImage : MonoBehaviour
     Vector2Int _changedSize;
     public Vector2Int ChangedSize { get => _changedSize; }
 
-    public void Initialize(Sprite artSprite, bool canChangeSize = false)
+    public void Initialize(Sprite artSprite)
     {
         _artRect = _artImg.gameObject.GetComponent<RectTransform>();
 
         Vector2Int size = ResizeSprite(artSprite);
-        if (canChangeSize == true) _artRect.sizeDelta = size;
+        _artRect.sizeDelta = size;
 
         _artImg.sprite = artSprite;
         _changedSize = size;

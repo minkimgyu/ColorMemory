@@ -67,7 +67,7 @@ namespace Challenge
 
         public override void OnStateEnter()
         {
-            //_challengeStageUIPresenter.ChangeTitle($"LEVEL {++_level}");
+            _challengeStageUIPresenter.ActivatePlayPanel(true);
             CreateLevel();
             _fsm.SetState(ChallengeMode.State.Memorize);
         }
@@ -93,6 +93,7 @@ namespace Challenge
 
                     dot.Inject(_effectFactory, new Vector2Int(i, j), (index) => { _fsm.OnClickDot(index); });
                     dot.transform.SetParent(_dotGridContent.transform);
+                    dot.transform.localScale = Vector3.one;
 
                     dots[i, j] = dot;
                 }
@@ -107,6 +108,7 @@ namespace Challenge
 
                 colorPenDot.Inject(_effectFactory, _penToggleGroup, mapData.PickColors[i], (index) => { _fsm.OnClickDot(index); });
                 colorPenDot.transform.SetParent(_penContent);
+                colorPenDot.transform.localScale = Vector3.one;
 
                 colorPenDot.Minimize();
                 colorPenDots[i] = colorPenDot;

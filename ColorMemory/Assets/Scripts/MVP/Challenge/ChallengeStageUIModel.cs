@@ -194,6 +194,27 @@ public class ChallengeStageUIModel
         set => _activeHintPanel = value;
     }
 
+
+
+
+    bool _activeCoinPanel;
+    public bool ActiveCoinPanel
+    {
+        get => _activeCoinPanel;
+        set => _activeCoinPanel = value;
+    }
+
+    int _coinCount;
+    public int CoinCount
+    {
+        get => _coinCount;
+        set => _coinCount = value;
+    }
+
+
+
+
+
     bool _activeGameOverPanel;
 
     public bool ActiveGameOverPanel

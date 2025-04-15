@@ -1,5 +1,7 @@
+using NetworkService.Manager;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,14 +10,17 @@ namespace Challenge
 {
     public class ChallengeMode : GameMode
     {
+        [Header("Play")]
+        [SerializeField] GameObject _playPanel;
+
         [Header("Top")]
         [SerializeField] TMP_Text _bestScoreText;
         [SerializeField] TMP_Text _nowScoreText;
+        [SerializeField] Button _pauseBtn;
 
         [SerializeField] Image _timerSlider;
         [SerializeField] TMP_Text _leftTimeText;
         [SerializeField] TMP_Text _totalTimeText;
-
 
         [SerializeField] TMP_Text _stageText;
 
@@ -52,10 +57,16 @@ namespace Challenge
         //[SerializeField] Vector2Int _levelSize = new Vector2Int(5, 5); // row, col
 
         [Header("Hint")]
-        [SerializeField] Button _randomHintBtn;
-        [SerializeField] Button _revealSameColorHintBtn;
+        [SerializeField] Button _oneZoneHintBtn;
+        [SerializeField] Button _oneColorHintBtn;
+
+        [SerializeField] TMP_Text _oneZoneHintCostText;
+        [SerializeField] TMP_Text _oneColorHintCostText;
+
         [SerializeField] GameObject _hintPanel;
         [SerializeField] GameObject _rememberPanel;
+        [SerializeField] GameObject _coinPanel;
+        [SerializeField] TMP_Text _coinTxt;
 
         [Header("GameOver")]
         [SerializeField] GameObject _gameOverPanel;
@@ -71,7 +82,8 @@ namespace Challenge
         
         [SerializeField] TMP_Text _goldCount;
 
-        [SerializeField] RankingScrollUI _rankingScrollUI;
+        [SerializeField] Transform _rankingContent;
+        [SerializeField] ScrollRect _rankingScrollRect;
         [SerializeField] Button _tryAgainBtn;
         [SerializeField] Button _exitBtn;
 
@@ -122,17 +134,20 @@ namespace Challenge
             [Newtonsoft.Json.JsonProperty] int _mapSize;
             [Newtonsoft.Json.JsonProperty] int _colorCount;
             [Newtonsoft.Json.JsonProperty] int _randomPointCount;
+            [Newtonsoft.Json.JsonProperty] float _memorizeDuration;
 
-            public StageData(int mapSize, int colorCount, int randomPointCount)
+            public StageData(int mapSize, int colorCount, int randomPointCount, float memorizeDuration)
             {
                 _mapSize = mapSize;
                 _colorCount = colorCount;
                 _randomPointCount = randomPointCount;
+                _memorizeDuration = memorizeDuration;
             }
 
             [Newtonsoft.Json.JsonIgnore] public int MapSize { get => _mapSize; }
             [Newtonsoft.Json.JsonIgnore] public int ColorCount { get => _colorCount; }
             [Newtonsoft.Json.JsonIgnore] public int RandomPointCount { get => _randomPointCount; }
+            [Newtonsoft.Json.JsonIgnore] public float MemorizeDuration { get => _memorizeDuration; }
         }
 
         public struct StageDataWrapper
@@ -149,22 +164,39 @@ namespace Challenge
 
         public class ModeData
         {
-            float _memorizeDuration;
+            int _goldCount;
+            int _oneColorHintCost;
+            int _oneZoneHintCost;
+
             float _playDuration;
 
-            float _passedDuration; // ï¿½Ã·ï¿½ï¿½ï¿½ï¿½Ï¸é¼­ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½
+            float _passedDuration; // ÇÃ·¹ÀÌÇÏ¸é¼­ Áö³ª°£ ½Ã°£
 
-            float _decreaseDurationOnMiss; // Æ²ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½
-            float _increaseDurationOnClear; // Å¬ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½
+            float _decreaseDurationOnMiss; // Æ²¸± ½Ã °¨¼Ò ½Ã°£
+            float _increaseDurationOnClear; // Å¬¸®¾î ½Ã Áõ°¡ ½Ã°£
 
             int _stageCount;
             int _myScore;
+            int _maxScore;
             int _clearStageCount;
             List<MapData> _stageData;
 
-            public ModeData(float memorizeDuration = 0, float leftDuration = 0, float decreaseDurationOnMiss = 0, float increaseDurationOnClear = 0)
+            public ModeData(
+                int goldCount,
+                int oneColorHintCost,
+                int oneZoneHintCost,
+                int maxScore,
+
+                float memorizeDuration = 0,
+                float leftDuration = 0,
+                float decreaseDurationOnMiss = 0,
+                float increaseDurationOnClear = 0)
             {
-                _memorizeDuration = memorizeDuration;
+                _goldCount = goldCount;
+                _oneColorHintCost = oneColorHintCost;
+                _oneZoneHintCost = oneZoneHintCost;
+                _maxScore = maxScore;
+
                 _playDuration = leftDuration;
                 _decreaseDurationOnMiss = decreaseDurationOnMiss;
                 _increaseDurationOnClear = increaseDurationOnClear;
@@ -175,15 +207,29 @@ namespace Challenge
                 _stageData = new List<MapData>();
             }
 
+            public int GoldCount { get => _goldCount; set => _goldCount = value; }
             public int StageCount { get => _stageCount; set => _stageCount = value; }
-            public int MyScore { get => _myScore; set => _myScore = value; }
             public int ClearStageCount { get => _clearStageCount; set => _clearStageCount = value; }
             public List<MapData> StageData { get => _stageData; set => _stageData = value; }
-            public float MemorizeDuration { get => _memorizeDuration; set => _memorizeDuration = value; }
             public float PlayDuration { get => _playDuration; set => _playDuration = value; }
             public float DecreaseDurationOnMiss { get => _decreaseDurationOnMiss; set => _decreaseDurationOnMiss = value; }
             public float IncreaseDurationOnClear { get => _increaseDurationOnClear; set => _increaseDurationOnClear = value; }
             public float PassedDuration { get => _passedDuration; set => _passedDuration = value; }
+
+
+            public int OneColorHintCost { get => _oneColorHintCost; }
+            public int OneZoneHintCost { get => _oneZoneHintCost; }
+
+            public int MyScore { get => _myScore; set => _myScore = value; } // ÇöÀç ³» Á¡¼ö
+            public int MaxScore { get => _maxScore; set => _maxScore = value; } // ¼­¹ö¿¡¼­ ºÒ·¯¿Â ÃÖ´ë Á¡¼ö
+
+            public int BestScore // À§ µÑÀ» ºñ±³ÇßÀ» ¶§ ÃÖ´ë Á¡¼ö
+            {
+                get
+                {
+                    return Mathf.Max(MyScore, MaxScore);
+                }
+            }
         }
 
         ModeData _modeData;
@@ -199,7 +245,7 @@ namespace Challenge
             _modeData.ClearStageCount += 1;
         }
 
-        // stateï¿½ï¿½ ï¿½ï¿½ï¿½â¿¡ ï¿½ß°ï¿½
+        // state´Â ¿©±â¿¡ Ãß°¡
         public enum State
         {
             Initialize,
@@ -211,13 +257,16 @@ namespace Challenge
         }
 
         FSM<State> _fsm;
+        bool _nowInitialized = false;
+        bool _errorOnInitializeData = false;
 
         private void Update()
         {
+            if (_nowInitialized == false) return;
             _fsm.OnUpdate();
         }
 
-        public override void Initialize()
+        async Task<ModeData> GetDataFromServer()
         {
             MoneyManager moneyManager = new MoneyManager();
             HintManager hintManager = new HintManager();
@@ -238,7 +287,7 @@ namespace Challenge
             {
                 _errorOnInitializeData = true;
                 Debug.Log(e);
-                Debug.Log("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½Þ¾Æ¿ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½");
+                Debug.Log("¼­¹ö¿¡¼­ µ¥ÀÌÅÍ¸¦ ¹Þ¾Æ¿ÀÁö ¸ø ÇÔ");
                 return null;
             }
 
@@ -255,19 +304,18 @@ namespace Challenge
 
             RandomLevelGenerator randomLevelGenerator = new RandomLevelGenerator(addressableHandler.ChallengeStageDataWrapper.StageDatas);
 
-
             ClearPatternUIFactory clearPatternUIFactory = new ClearPatternUIFactory(
                 addressableHandler.SpawnableUIAssets[SpawnableUI.Name.ClearPatternUI]);
 
             RankingUIFactory rankingFactory = new RankingUIFactory(
                 addressableHandler.SpawnableUIAssets[SpawnableUI.Name.RankingUI],
-                addressableHandler.RankingIconAssets);
+                addressableHandler.RectProfileIconAssets);
 
             ChallengeStageUIModel model = new ChallengeStageUIModel();
             ChallengeStageUIPresenter presenter = new ChallengeStageUIPresenter(model, () => { _fsm.SetState(ChallengeMode.State.GameOver); });
 
-            ChallengeStageUIModel model = new ChallengeStageUIModel();
             ChallengeStageUIViewer viewer = new ChallengeStageUIViewer(
+                _playPanel,
                 _bestScoreText,
                 _nowScoreText,
                 _timerSlider,
@@ -286,6 +334,10 @@ namespace Challenge
 
                 _hintPanel,
                 _rememberPanel,
+
+                _coinPanel,
+                _coinTxt,
+
                 _gameOverPanel,
                 _resultScore,
                 _clearStageCount,
@@ -310,7 +362,12 @@ namespace Challenge
                 _sfxLeftText,
                 presenter);
 
-            ChallengeStageUIPresenter presenter = new ChallengeStageUIPresenter(model, viewer);
+            presenter.InjectViewer(viewer);
+
+            _goToGameOverBtn.onClick.AddListener(() =>
+            {
+                _fsm.OnClickGoToGameOver();
+            });
 
             _nextBtn.onClick.AddListener(() => 
             { 
@@ -322,9 +379,13 @@ namespace Challenge
             _tryAgainBtn.onClick.AddListener(() => { _fsm.OnClickRetryBtn(); });
             _exitBtn.onClick.AddListener(() => { _fsm.OnClickExitBtn(); });
 
-            _randomHintBtn.onClick.AddListener(() => { _fsm.OnClickRandomFillHint(); });
-            _revealSameColorHintBtn.onClick.AddListener(() => { _fsm.OnClickRevealSameColorHint(); });
+            _oneZoneHintBtn.onClick.AddListener(() => { _fsm.OnClickOneZoneHint(); });
+            _oneColorHintBtn.onClick.AddListener(() => { _fsm.OnClickOneColorHint(); });
 
+            presenter.ActivatePlayPanel(true);
+            presenter.ChangeHintCost(_modeData.OneColorHintCost, _modeData.OneZoneHintCost);
+            presenter.ChangeNowScore(_modeData.MyScore);
+            presenter.ChangeBestScore(_modeData.MaxScore);
 
             _fsm = new FSM<State>();
             Dictionary<State, BaseState<State>> states = new Dictionary<State, BaseState<State>>()
@@ -347,14 +408,15 @@ namespace Challenge
                     )
                 },
 
-                { State.Memorize, new MemorizeState(_fsm, _pickColors, _modeData, presenter, GetStage) },
+                { State.Memorize, new MemorizeState(_fsm, _pickColors, _modeData, addressableHandler.ChallengeStageDataWrapper.StageDatas, presenter, GetStage) },
                 { State.Paint, new PaintState(_fsm, _pickColors, _modeData, presenter, GetStage) },
-                { State.StageClear, new StageClearState(_fsm, presenter, _modeData, GetStage, DestroyDots) },
-                { State.GameOver, new GameOverState(_fsm, presenter, _pickColors, clearPatternUIFactory, _modeData) },
+                { State.StageClear, new ClearState(_fsm, presenter, _modeData, GetStage, DestroyDots) },
+                { State.GameOver, new EndState(_fsm, presenter, _pickColors, clearPatternUIFactory, _modeData) },
                 { State.Result, new ResultState(_fsm, rankingFactory, presenter, _modeData) }
             };
 
             _fsm.Initialize(states, State.Initialize);
+            _nowInitialized = true;
         }
     }
 }

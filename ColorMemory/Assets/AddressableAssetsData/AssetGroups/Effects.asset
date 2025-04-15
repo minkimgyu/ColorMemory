@@ -29,6 +29,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - Effect
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ccebadbba8c87004c85c1d3f75cb0ec4
+    m_Address: XEffect
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Effect
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 5736eef86fbab2943992749ebee4f1e0, type: 2}
   m_SchemaSet:

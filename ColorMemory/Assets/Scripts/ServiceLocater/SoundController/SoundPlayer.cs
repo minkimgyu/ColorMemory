@@ -55,6 +55,22 @@ public class SoundPlayer : MonoBehaviour, ISoundPlayable
         }
     }
 
+    public void SetBGMVolume(float volume = 1)
+    {
+        _bgmPlayer.volume = volume;
+        ServiceLocater.ReturnSaveManager().ChangeBGMVolume(volume);
+    }
+
+    public void SetSFXVolume(float volume = 1)
+    {
+        for (int i = 0; i < _sfxPlayer.Length; i++)
+        {
+            _sfxPlayer[i].volume = volume;
+        }
+
+        ServiceLocater.ReturnSaveManager().ChangeSFXVolume(volume);
+    }
+
     public void StopBGM()
     {
         _bgmPlayer.Stop();

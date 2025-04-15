@@ -17,7 +17,7 @@ public class FilteredArtworkUI : SpawnableUI
 
     public override void Initialize(Sprite artSprite, string title, bool hasIt = true)
     {
-        _resizeableImage.Initialize(artSprite, true);
+        _resizeableImage.Initialize(artSprite);
 
         _lockPanel.SetActive(!hasIt);
         _artImg.sprite = artSprite;

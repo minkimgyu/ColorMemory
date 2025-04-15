@@ -1,4 +1,5 @@
 using DG.Tweening;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -7,6 +8,8 @@ using UnityEngine.UI;
 
 public class ChallengeStageUIViewer
 {
+    GameObject _playPanel;
+
     TMP_Text _bestScoreText;
     TMP_Text _nowScoreText;
 
@@ -32,6 +35,9 @@ public class ChallengeStageUIViewer
     GameObject _hintPanel;
     GameObject _rememberPanel;
 
+    GameObject _coinPanel;
+    TMP_Text _coinTxt;
+
     GameObject _gameOverPanel;
     TMP_Text _clearStageCount;
     TMP_Text _resultScore;
@@ -40,8 +46,9 @@ public class ChallengeStageUIViewer
 
     GameObject _gameResultPanel;
     TMP_Text _goldCount;
-    RankingScrollUI _rankingScrollRect;
+
     Transform _rankingContent;
+    ScrollRect _rankingScrollRect;
 
     GameObject _stageOverPreviewPanel;
     ClearPatternUI _lastStagePattern;
@@ -61,6 +68,7 @@ public class ChallengeStageUIViewer
     TMP_Text _sfxMuteText;
 
     public ChallengeStageUIViewer(
+        GameObject playPanel,
         TMP_Text bestScoreText,
         TMP_Text nowScoreText,
         Image timerSlider,
@@ -79,6 +87,9 @@ public class ChallengeStageUIViewer
 
         GameObject hintPanel,
         GameObject rememberPanel,
+
+        GameObject coinPanel,
+        TMP_Text coinTxt,
 
         GameObject gameOverPanel,
         TMP_Text resultScore,
@@ -106,6 +117,8 @@ public class ChallengeStageUIViewer
 
         ChallengeStageUIPresenter presenter)
     {
+        _playPanel = playPanel;
+
         _bestScoreText = bestScoreText;
         _nowScoreText = nowScoreText;
         _timerSlider = timerSlider;
@@ -125,6 +138,9 @@ public class ChallengeStageUIViewer
         _hintPanel = hintPanel;
         _rememberPanel = rememberPanel;
 
+        _coinPanel = coinPanel;
+        _coinTxt = coinTxt;
+
         _gameOverPanel = gameOverPanel;
         _clearStageCount = clearStageCount;
         _resultScore = resultScore;
@@ -132,6 +148,7 @@ public class ChallengeStageUIViewer
 
         _gameResultPanel = gameResultPanel;
         _goldCount = goldCount;
+        _rankingContent = rankingContent;
         _rankingScrollRect = rankingScrollRect;
 
         _stageOverPreviewPanel = stageOverPreviewPanel;
@@ -174,7 +191,8 @@ public class ChallengeStageUIViewer
 
     public void ActivateHint(bool oneColorHintActive, bool oneZoneHintActive)
     {
-        _rankingScrollRect.SetUp(menuCount, index);
+        _oneColorHintBtn.interactable = oneColorHintActive;
+        _oneZoneHintBtn.interactable = oneZoneHintActive;
     }
 
     public void ChangeHintCost(int oneColorHintCost, int oneZoneHintCost)
@@ -227,7 +245,7 @@ public class ChallengeStageUIViewer
 
     public void ChangeStageOverInfo(int currentStageCount)
     {
-        _stageOverInfoText.text = $"Å¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ {currentStageCount}ï¿½ï¿½Â° ï¿½ï¿½ï¿½ï¿½ï¿½Ì¿ï¿½ï¿½ï¿½";
+        _stageOverInfoText.text = $"Å¬¸®¾îÇÏÁö ¸øÇÑ {currentStageCount}¹øÂ° ÆÐÅÏÀÌ¿¡¿ä";
     }
 
 
@@ -254,13 +272,13 @@ public class ChallengeStageUIViewer
 
     public void ChangeTotalTime(float totalTime)
     {
-        int intPart = (int)totalTime;      // ï¿½ï¿½ï¿½ï¿½ ï¿½Îºï¿½
-        float decimalPart = totalTime % 1; // ï¿½Ò¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+        int intPart = (int)totalTime;      // Á¤¼ö ºÎºÐ
+        float decimalPart = totalTime % 1; // ¼Ò¼öÁ¡ ÀÌÇÏ
 
-        // ï¿½ï¿½ï¿½ï¿½ ï¿½Îºï¿½ï¿½ï¿½ 1ï¿½Ú¸ï¿½ï¿½ï¿½ D2ï¿½ï¿½ ï¿½ï¿½ï¿½ß°ï¿½, ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½×´ï¿½ï¿½ ï¿½ï¿½ï¿½
+        // Á¤¼ö ºÎºÐÀÌ 1ÀÚ¸®¸é D2·Î ¸ÂÃß°í, ±×·¸Áö ¾ÊÀ¸¸é ±×´ë·Î Ãâ·Â
         string formattedIntPart = intPart < 10 ? $"{intPart:D2}" : $"{intPart}";
 
-        // ï¿½Ò¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½
+        // ¼Ò¼öÁ¡ ÀÌÇÏ µÎ ÀÚ¸® À¯Áö
         _totalTimeText.text = $"{formattedIntPart}.{(decimalPart * 100):00}";
     }
 
@@ -285,6 +303,18 @@ public class ChallengeStageUIViewer
         _rememberPanel.SetActive(active);
     }
 
+    public void ActivateCoinPanel(bool active)
+    {
+        _coinPanel.SetActive(active);
+    }
+
+    public void ChangeCoinCount(int coin)
+    {
+        _coinTxt.text = coin.ToString("N0"); // "9,000"
+        LayoutRebuilder.ForceRebuildLayoutImmediate(_coinTxt.transform.parent.GetComponent<RectTransform>());
+    }
+
+
     public void ActivateHintPanel(bool active)
     {
         _hintPanel.SetActive(active);
@@ -304,13 +334,17 @@ public class ChallengeStageUIViewer
     public void AddClearPattern(SpawnableUI patternUI)
     {
         patternUI.transform.SetParent(_clearStageContent);
+        patternUI.transform.localScale = Vector3.one;
     }
 
     public void RemoveClearPattern()
     {
         for (int i = _clearStageContent.childCount - 1; i >= 0; i--)
         {
-            _clearStageContent.GetChild(i).GetComponent<SpawnableUI>().DestroyObject();
+            SpawnableUI spawnableUI = _clearStageContent.GetChild(i).GetComponent<SpawnableUI>();
+            if (spawnableUI == null) continue;
+
+            spawnableUI.DestroyObject();
         }
     }
 
@@ -319,18 +353,32 @@ public class ChallengeStageUIViewer
         _gameResultPanel.SetActive(active);
     }
 
-    public void ChangeGoldCount(int goldCount)
+    public void ChangeResultGoldCount(int goldCount)
     {
-        _goldCount.text = $"{goldCount} ï¿½ï¿½ï¿½ï¿½ È¹ï¿½ï¿½!";
+        _goldCount.text = $"{goldCount} ÄÚÀÎ È¹µæ!";
     }
 
-    public void AddRanking(SpawnableUI ranking, bool setToMiddle = false)
+    public void AddRanking(SpawnableUI ranking, Vector3 size)
     {
-        _rankingScrollRect.AddItem(ranking.transform, setToMiddle);
+        ranking.transform.SetParent(_rankingContent);
+        ranking.transform.localScale = size;
+
+        //if (setToMiddle == true) ranking.transform.SetSiblingIndex(_rankingContent.childCount / 2);
     }
 
     public void RemoveAllRanking()
     {
-        _rankingScrollRect.DestroyItems();
+        for (int i = _rankingContent.childCount - 1; i >= 0; i--)
+        {
+            SpawnableUI spawnableUI = _rankingContent.GetChild(i).GetComponent<SpawnableUI>();
+            if(spawnableUI == null) continue;
+
+            spawnableUI.DestroyObject();
+        }
+    }
+
+    public void ChangeRankingScrollValue(int menuCount, int scrollIndex)
+    {
+        //_rankingScrollRect.verticalNormalizedPosition = (float)scrollIndex / (float)menuCount;
     }
 }

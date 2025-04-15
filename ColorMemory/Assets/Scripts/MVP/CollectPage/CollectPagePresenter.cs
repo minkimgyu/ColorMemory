@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
@@ -18,12 +18,18 @@ public class CollectPagePresenter
     ArtworkUIFactory _artworkFactory;
     StageUIFactory _stageUIFactory;
 
+    FilteredArtworkFactory _filteredArtworkFactory;
+    FilterItemFactory _filterItemFactory;
+
     Action OnClickPlayBtn;
 
     public CollectPagePresenter(
         CollectPageModel collectPageModel,
         ArtworkUIFactory artworkFactory,
         StageUIFactory stageUIFactory,
+        FilteredArtworkFactory filteredArtworkFactory,
+        FilterItemFactory filterItemFactory,
+
         Action OnClickPlayBtn)
     {
         _collectPageModel = collectPageModel;
@@ -60,7 +66,7 @@ public class CollectPagePresenter
     public void InjectViewer(CollectPageViewer collectPageViewer)
     {
         _collectPageViewer = collectPageViewer;
-        ChangeArtworkDescription(_collectPageModel.ArtworkIndex);
+        //ChangeArtworkDescription(_collectPageModel.ArtworkIndex);
     }
 
     public void ActivateFilterScrollUI(bool active)
@@ -325,13 +331,14 @@ public class CollectPagePresenter
 
     public void ActiveSelectStageContent(bool active)
     {
+        if (active == false) RemoveAllStage();
         _collectPageModel.ActiveSelectStageContent = active;
         _collectPageViewer.ActiveSelectStageContent(_collectPageModel.ActiveSelectStageContent);
     }
 
     public void FillArtwork()
     {
-        for (int i = 0; i < _collectPageModel.CurrentArtNames.Count; i++)
+        foreach (var item in _collectPageModel.FilteredArtDatas)
         {
             int artworkIndex = item.Key; // ✅ 지역 변수로 캡처
 
@@ -358,6 +365,8 @@ public class CollectPagePresenter
 
             _collectPageViewer.AddFilteredArtwork(filteredArtwork);
         }
+
+        _collectPageViewer.SetUpArtworkScroll(_collectPageModel.FilteredArtDatas.Count);
     }
 
     public void AddArtwork(SpawnableUI artwork)
@@ -365,7 +374,7 @@ public class CollectPagePresenter
         _collectPageViewer.AddArtwork(artwork);
     }
 
-    public void RemoveAllArtwork()
+    public void DestroyAllArtwork()
     {
         //for (int i = 0; i < _spawnedArtworks.Count; i++)
         //{
@@ -382,22 +391,22 @@ public class CollectPagePresenter
 
     public void FillStage()
     {
-        ArtName name = _collectPageModel.CurrentArtNames[_collectPageModel.ArtworkIndex];
-        List<List<CollectiveArtData.Section>> sections = _collectPageModel.ArtData[name].Sections;
+        int artworkIndex = _collectPageModel.ArtworkIndex;
+        ArtData artData = _collectPageModel.ArtDatas[artworkIndex];
 
-        int row = sections.Count;
-        int col = sections[0].Count;
+        int progressCount = 0;
 
-        for (int i = 0; i < row; i++)
+        foreach (var data in artData.StageDatas)
         {
-            for (int j = 0; j < col; j++)
+            StageData stageData = artData.StageDatas[data.Key];
+            if (stageData.Stauts == StageStauts.Clear) 
             {
-                SpawnableUI spawnableUI = _stageUIFactory.Create(sections[i][j].Blocks, sections[i][j].UsedColors);
-                spawnableUI.ChangeIndex(new Vector2Int(i, j));
+                // 이전에 플레이 한 경우만 진행도로 친다
+                progressCount++;
+            }
+        }
 
-                spawnableUI.InjectClickEvent((index) => 
-                {
-                    ServiceLocater.ReturnSaveManager().SelectArtwork(name.ToString(), index);
+        ChangeCurrentProgress(progressCount);
 
         int _openIndex = 0;
 
@@ -414,11 +423,18 @@ public class CollectPagePresenter
             {
                 case StageStauts.Lock:
                     spawnableUI.SetState(StageUI.State.Lock);
-                }
-                else
-                {
-                    spawnableUI.SetState(StageUI.State.Clear);
-                }
+                    break;
+                case StageStauts.Open:
+                    spawnableUI.SetState(StageUI.State.Open);
+                    _openIndex = data.Key;
+                    break;
+                case StageStauts.Clear:
+                    spawnableUI.SetState(StageUI.State.Open);
+                    spawnableUI.SetRank(data.Value.Rank); // 한번 플레이 한 경우만 랭크 표시
+                    break;
+                default:
+                    break;
+            }
 
             _collectPageViewer.AddStage(spawnableUI);
         }
@@ -454,9 +470,21 @@ public class CollectPagePresenter
         _collectPageViewer.ChangeArtCompleteRatio(currentCompleteRatio, _collectPageModel.TotalCompleteRatio);
     }
 
+    void UpdateArtInfo()
+    {
+        _collectPageViewer.ChangeArtDescription("선택된 명화가 없습니다.", "");
+        _collectPageViewer.ChangeArtCompleteRatio(0, _collectPageModel.TotalCompleteRatio);
+    }
+
     //
     public void OnArtworkScrollChanged(int scrollIndex)
     {
+        if (_collectPageModel.FilteredArtDatas.Count == 0)
+        {
+            UpdateArtInfo();
+            return;
+        }
+
         var item = _collectPageModel.FilteredArtDatas[scrollIndex];
 
         _collectPageModel.ArtworkIndex = item.Key; // -> 1 추가해서 받기

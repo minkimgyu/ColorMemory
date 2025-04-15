@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,10 +18,10 @@ public class CollectPageViewer
     TMP_Text _titleTxt;
     TMP_Text _descriptionTxt;
 
-    Image _currentComplete;
+    CustomProgressUI _currentComplete;
     TMP_Text _currentCompleteRatio;
 
-    Image _totalComplete;
+    CustomProgressUI _totalComplete;
     TMP_Text _totalCompleteRatio;
 
     ArtworkScrollUI _artworkScrollUI;
@@ -61,10 +61,10 @@ public class CollectPageViewer
         TMP_Text titleTxt,
         TMP_Text descriptionTxt,
 
-        Image currentComplete,
+        CustomProgressUI currentComplete,
         TMP_Text currentCompleteRatio,
 
-        Image totalComplete,
+        CustomProgressUI totalComplete,
         TMP_Text totalCompleteRatio,
 
         ArtworkScrollUI artworkScrollUI,
@@ -321,10 +321,10 @@ public class CollectPageViewer
 
     public void ChangeArtCompleteRatio(float currentRatio, float totalRatio)
     {
-        _currentComplete.fillAmount = currentRatio;
+        _currentComplete.FillValue = currentRatio;
         _currentCompleteRatio.text = $"{Mathf.RoundToInt(currentRatio * 100)}%";
 
-        _totalComplete.fillAmount = totalRatio;
+        _totalComplete.FillValue = totalRatio;
         _totalCompleteRatio.text = $"{Mathf.RoundToInt(totalRatio * 100)}%";
     }
 
@@ -343,7 +343,7 @@ public class CollectPageViewer
         _artworkScrollUI.AddItem(artwork.transform);
     }
 
-    public void RemoveAllArtwork()
+    public void DestroyAllArtwork()
     {
         _artworkScrollUI.DestroyItems();
     }
@@ -353,13 +353,13 @@ public class CollectPageViewer
         _content.SetActive(active);
     }
 
-    public void SelectStage(Vector2Int index)
+    public void SelectStage(int index)
     {
         int childCount = _stageUIContent.childCount;
         for (int i = 0; i < childCount; i++)
         {
             StageUI stageUI = _stageUIContent.GetChild(i).GetComponent<StageUI>();
-            if(stageUI.Index == index)
+            if(i == index)
             {
                 _stageUIContent.GetChild(i).GetComponent<StageUI>().ChangeSelect(true);
             }
@@ -373,6 +373,7 @@ public class CollectPageViewer
     public void AddStage(SpawnableUI spawnableUI)
     {
         spawnableUI.transform.SetParent(_stageUIContent);
+        spawnableUI.transform.localScale = Vector3.one;
     }
 
     public void RemoveAllStage()

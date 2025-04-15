@@ -1,4 +1,5 @@
 using DG.Tweening;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -7,6 +8,8 @@ using UnityEngine.UI;
 
 public class CollectStageUIViewer
 {
+    GameObject _playPanel;
+
     TMP_Text _titleText;
 
     GameObject _timerContent;
@@ -24,9 +27,11 @@ public class CollectStageUIViewer
     Button _skipBtn;
 
     GameObject _rememberPanel;
+    TMP_Text _hintInfoText;
 
     GameObject _gameClearPanel;
-    Image _cropArtworkImg;
+    TMP_Text _clearTitleText;
+    TMP_Text _clearContentText;
     Button _nextStageBtn;
     Button _gameClearExitBtn;
 
@@ -54,13 +59,14 @@ public class CollectStageUIViewer
     Image _rankIcon;
     TMP_Text _rankText;
 
-    Image _currentCollectRatio;
+    CustomProgressUI _currentCollectRatio;
     TMP_Text _currentCollectText;
 
-    Image _totalCollectRatio;
+    CustomProgressUI _totalCollectRatio;
     TMP_Text _totalCollectText;
 
     public CollectStageUIViewer(
+         GameObject playPanel,
         TMP_Text titleText,
         GameObject timerContent,
         Image timerSlider,
@@ -77,9 +83,13 @@ public class CollectStageUIViewer
         Button skipBtn,
 
         GameObject rememberPanel,
+        TMP_Text hintInfoText,
 
         GameObject gameClearPanel,
-        Image cropArtworkImg,
+        TMP_Text clearTitleText,
+        TMP_Text clearContentText,
+        Button nextStageBtn,
+        Button clearExitBtn,
 
         GameObject pausePanel,
         Button pauseBtn,
@@ -103,14 +113,16 @@ public class CollectStageUIViewer
         Image rankIcon,
         TMP_Text rankText,
 
-        Image currentCollectRatio,
+        CustomProgressUI currentCollectRatio,
         TMP_Text currentCollectText,
 
-        Image totalCollectRatio,
+        CustomProgressUI totalCollectRatio,
         TMP_Text totalCollectText,
 
         CollectStageUIPresenter presenter)
     {
+        _playPanel = playPanel;
+
         _titleText = titleText;
         _timerContent = timerContent;
         _timerSlider = timerSlider;
@@ -127,9 +139,18 @@ public class CollectStageUIViewer
         _skipBtn = skipBtn;
 
         _rememberPanel = rememberPanel;
+        _hintInfoText = hintInfoText;
 
         _gameClearPanel = gameClearPanel;
-        _cropArtworkImg = cropArtworkImg;
+        _clearTitleText = clearTitleText;
+        _clearContentText = clearContentText;
+        _nextStageBtn = nextStageBtn;
+        _gameClearExitBtn = clearExitBtn;
+
+        _pausePanel = pausePanel;
+        _pauseBtn = pauseBtn;
+        _gameExitBtn = gameExitBtn;
+        _pauseExitBtn = pauseExitBtn;
 
         _gameResultPanel = gameResultPanel;
         _gameResultTitle = gameResultTitle;
@@ -167,7 +188,7 @@ public class CollectStageUIViewer
 
     public void ChangeGameResultTitle(string comment)
     {
-        _gameResultTitle.text = comment; // "ï¿½ï¿½ï¿½ï¿½ï¿½Ø¿ï¿½! ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½È­ï¿½ï¿½ È¹ï¿½ï¿½ï¿½ß¾ï¿½ï¿½!";
+        _gameResultTitle.text = comment; // "ÃàÇÏÇØ¿ä! »õ·Î¿î ¸íÈ­¸¦ È¹µæÇß¾î¿ä!";
     }
 
     public void ActivateBottomContent(bool active)
@@ -245,10 +266,10 @@ public class CollectStageUIViewer
 
     public void ChangeCollectionRatio(float currentCollectRatio, float totalCollectRatio)
     {
-        _currentCollectRatio.fillAmount = currentCollectRatio;
+        _currentCollectRatio.FillValue = currentCollectRatio;
         _currentCollectText.text = $"{Mathf.RoundToInt(currentCollectRatio * 100)}%";
 
-        _totalCollectRatio.fillAmount = totalCollectRatio;
+        _totalCollectRatio.FillValue = totalCollectRatio;
         _totalCollectText.text = $"{Mathf.RoundToInt(totalCollectRatio * 100)}%";
     }
 
@@ -269,6 +290,16 @@ public class CollectStageUIViewer
         _titleText.text = title;
     }
 
+    public void ChangeHintInfoText(string infoText)
+    {
+        _hintInfoText.text = infoText;
+    }
+
+    public void ChangeProgressText(int progress)
+    {
+        _progressText.text = $"{progress}%";
+    }
+
     public void FillTimeSlider(float ratio)
     {
         _timerSlider.fillAmount = ratio;
@@ -276,13 +307,13 @@ public class CollectStageUIViewer
 
     public void ChangeTotalTime(float totalTime)
     {
-        int intPart = (int)totalTime;      // ï¿½ï¿½ï¿½ï¿½ ï¿½Îºï¿½
-        float decimalPart = totalTime % 1; // ï¿½Ò¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+        int intPart = (int)totalTime;      // Á¤¼ö ºÎºÐ
+        float decimalPart = totalTime % 1; // ¼Ò¼öÁ¡ ÀÌÇÏ
 
-        // ï¿½ï¿½ï¿½ï¿½ ï¿½Îºï¿½ï¿½ï¿½ 1ï¿½Ú¸ï¿½ï¿½ï¿½ D2ï¿½ï¿½ ï¿½ï¿½ï¿½ß°ï¿½, ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½×´ï¿½ï¿½ ï¿½ï¿½ï¿½
+        // Á¤¼ö ºÎºÐÀÌ 1ÀÚ¸®¸é D2·Î ¸ÂÃß°í, ±×·¸Áö ¾ÊÀ¸¸é ±×´ë·Î Ãâ·Â
         string formattedIntPart = intPart < 10 ? $"{intPart:D2}" : $"{intPart}";
 
-        // ï¿½Ò¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½
+        // ¼Ò¼öÁ¡ ÀÌÇÏ µÎ ÀÚ¸® À¯Áö
         _totalTimeText.text = $"{formattedIntPart}.{(decimalPart * 100):00}";
     }
 
@@ -307,9 +338,11 @@ public class CollectStageUIViewer
         _rememberPanel.SetActive(active);
     }
 
-    public void ActivateHintPanel(bool active)
+  
+
+    public void ActivateGameResultPanel(bool active)
     {
-        _hintPanel.SetActive(active);
+        _gameResultPanel.SetActive(active);
     }
 
     public void ChangeBGMSliderValue(float ratio, string leftSmallTxt, Color handleColor)

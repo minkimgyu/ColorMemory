@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
 using System;
+using Unity.VisualScripting;
 
 public class CollectStageUIPresenter
 {
@@ -26,11 +27,11 @@ public class CollectStageUIPresenter
     {
         if (hasIt)
         {
-            _model.GameResultTitle = "ï¿½ï¿½ï¿½ï¿½ï¿½Ø¿ï¿½! ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½È­ï¿½ï¿½ È¹ï¿½ï¿½ï¿½ß¾ï¿½ï¿½!";
+            _model.GameResultTitle = "ÃàÇÏÇØ¿ä! »õ·Î¿î ¸íÈ­¸¦ È¹µæÇß¾î¿ä!";
         }
         else
         {
-            _model.GameResultTitle = "ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È­ï¿½ï¿½ È¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ß¾ï¿½ï¿½";
+            _model.GameResultTitle = "¾ÆÁ÷ ¸íÈ­¸¦ È¹µæÇÏÁö ¸øÇß¾î¿ä";
         }
 
         _viewer.ChangeGameResultTitle(_model.GameResultTitle);
@@ -140,7 +141,7 @@ public class CollectStageUIPresenter
 
     public void OnClickGameExitBtn()
     {
-        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+        // µ¥ÀÌÅÍ ÀúÀå
         ServiceLocater.ReturnSaveManager().ChangeBGMVolume(_model.BgmRatio);
         ServiceLocater.ReturnSaveManager().ChangeSFXVolume(_model.SfxRatio);
         ActivatePausePanel(false);
@@ -155,7 +156,7 @@ public class CollectStageUIPresenter
         {
             ServiceLocater.ReturnTimeController().Stop();
 
-            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ò·ï¿½ï¿½Í¼ï¿½ ï¿½Ý¿ï¿½
+            // µ¥ÀÌÅÍ ºÒ·¯¿Í¼­ ¹Ý¿µ
             SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
 
             ChangeBGMModel(data.BgmVolume);
@@ -191,12 +192,12 @@ public class CollectStageUIPresenter
     {
         if (volumn == 0)
         {
-            _model.BgmleftTextInfo = "ï¿½ï¿½ï¿½Ò°ï¿½";
+            _model.BgmleftTextInfo = "À½¼Ò°Å";
             _model.ColorOnBgmHandle = _colorOnZeroValue;
         }
         else
         {
-            _model.BgmleftTextInfo = "ï¿½Û°ï¿½";
+            _model.BgmleftTextInfo = "ÀÛ°Ô";
             _model.ColorOnBgmHandle = _colorOnBgmHandle;
         }
     }
@@ -205,12 +206,12 @@ public class CollectStageUIPresenter
     {
         if (volumn == 0)
         {
-            _model.SfxleftTextInfo = "ï¿½ï¿½ï¿½Ò°ï¿½";
+            _model.SfxleftTextInfo = "À½¼Ò°Å";
             _model.ColorOnSfxHandle = _colorOnZeroValue;
         }
         else
         {
-            _model.SfxleftTextInfo = "ï¿½Û°ï¿½";
+            _model.SfxleftTextInfo = "ÀÛ°Ô";
             _model.ColorOnSfxHandle = _colorOnSfxHandle;
         }
     }
@@ -294,27 +295,11 @@ public class CollectStageUIPresenter
         _viewer.ActivateRememberPanel(_model.ActiveRememberPanel);
     }
 
-    public void ActivateHintPanel(bool active)
-    {
-        _model.ActiveHintPanel = active;
-        _viewer.ActivateHintPanel(_model.ActiveHintPanel);
-    }
-
-    public void ActivateGameClearPanel(bool active)
-    {
-        _model.ActiveGameClearPanel = active;
-        _viewer.ActivateGameClearPanel(_model.ActiveGameClearPanel);
-    }
+   
 
     public void ActivateGameResultPanel(bool active)
     {
         _model.ActiveGameResultPanel = active;
         _viewer.ActivateGameResultPanel(_model.ActiveGameResultPanel);
-    }
-
-    public void ChangeGoldCount(int goldCount)
-    {
-        _model.GoldCount = goldCount;
-        _viewer.ChangeGoldCount(_model.GoldCount);
     }
 }

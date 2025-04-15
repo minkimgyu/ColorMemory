@@ -7,19 +7,19 @@ public class ArtworkUI : SpawnableUI
     [SerializeField] RectTransform _artFrame;
     [SerializeField] Button _artFrameBtn;
 
-    [SerializeField] ResizeableImage _resizeableImage;
+    [SerializeField] RefitableImage _refitableImage;
 
     [SerializeField] GameObject _lockObj;
     [SerializeField] Image _rankIcon;
-    // Å©ï¿½ï¿½ï¿½ 500 ~ 700 ï¿½ï¿½ï¿½Ì·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    // Å©±â´Â 500 ~ 700 »çÀÌ·Î ¸ÂÃç¾ßÇÔ
 
     public override void Initialize(Sprite artSprite, Sprite artFrameSprite, Sprite rankIconSprite, bool hasIt = true)
     {
         _lockObj.SetActive(!hasIt);
 
-        _resizeableImage.Initialize(artSprite);
+        Vector2 changedSize = _refitableImage.ResizeImage(artSprite);
 
-        _artFrame.sizeDelta = _resizeableImage.ChangedSize;
+        _artFrame.sizeDelta = changedSize;
         _artFrameImage.sprite = artFrameSprite;
         _rankIcon.sprite = rankIconSprite;
     }
