@@ -49,7 +49,7 @@ jobs:
       
       # Step4 - Upload Build File
       - name: Upload Build File
-      - uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v3
         with:
           name: Build-Android
           path: build
