@@ -129,38 +129,7 @@ namespace Challenge
 
         #endregion 
 
-        public struct StageData
-        {
-            [Newtonsoft.Json.JsonProperty] int _mapSize;
-            [Newtonsoft.Json.JsonProperty] int _colorCount;
-            [Newtonsoft.Json.JsonProperty] int _randomPointCount;
-            [Newtonsoft.Json.JsonProperty] float _memorizeDuration;
 
-            public StageData(int mapSize, int colorCount, int randomPointCount, float memorizeDuration)
-            {
-                _mapSize = mapSize;
-                _colorCount = colorCount;
-                _randomPointCount = randomPointCount;
-                _memorizeDuration = memorizeDuration;
-            }
-
-            [Newtonsoft.Json.JsonIgnore] public int MapSize { get => _mapSize; }
-            [Newtonsoft.Json.JsonIgnore] public int ColorCount { get => _colorCount; }
-            [Newtonsoft.Json.JsonIgnore] public int RandomPointCount { get => _randomPointCount; }
-            [Newtonsoft.Json.JsonIgnore] public float MemorizeDuration { get => _memorizeDuration; }
-        }
-
-        public struct StageDataWrapper
-        {
-            [Newtonsoft.Json.JsonProperty] List<StageData> stageDatas;
-
-            public StageDataWrapper(List<StageData> stageDatas)
-            {
-                this.stageDatas = stageDatas;
-            }
-
-            [Newtonsoft.Json.JsonIgnore] public List<StageData> StageDatas { get => stageDatas; }
-        }
 
         public class ModeData
         {
@@ -299,7 +268,7 @@ namespace Challenge
             _modeData = await GetDataFromServer();
             if (_errorOnInitializeData == true) return;
 
-            AddressableHandler addressableHandler = FindObjectOfType<AddressableHandler>();
+            AddressableLoader addressableHandler = FindObjectOfType<AddressableLoader>();
             if (addressableHandler == null) return;
 
             RandomLevelGenerator randomLevelGenerator = new RandomLevelGenerator(addressableHandler.ChallengeStageDataWrapper.StageDatas);

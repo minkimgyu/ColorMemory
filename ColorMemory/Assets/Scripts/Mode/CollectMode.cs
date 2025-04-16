@@ -182,7 +182,7 @@ namespace Collect
 
         public override void Initialize()
         {
-            AddressableHandler addressableHandler = FindObjectOfType<AddressableHandler>();
+            AddressableLoader addressableHandler = FindObjectOfType<AddressableLoader>();
             if (addressableHandler == null) return;
 
             Vector2 size = _canvas.gameObject.GetComponent<RectTransform>().sizeDelta;

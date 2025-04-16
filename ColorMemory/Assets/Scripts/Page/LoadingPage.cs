@@ -1,3 +1,5 @@
+using Google.Play.AppUpdate;
+using Google.Play.Common;
 using NetworkService.DTO;
 using NetworkService.Manager;
 using System;
@@ -10,10 +12,17 @@ using UnityEngine.Video;
 
 public class LoadingPage : MonoBehaviour
 {
+    [Header("Patch")]
+    [SerializeField] GameObject _patchPanel;
+    [SerializeField] TMP_Text _patchTxt;
+    [SerializeField] Button _patchBtn;
+
+    [Header("Loading")]
     [SerializeField] GameObject _loadingObj;
     [SerializeField] Image _loadingPregressBar;
     [SerializeField] TMP_Text _loadingPregressTxt;
 
+    [Header("Video")]
     [SerializeField] UnityEngine.Video.VideoPlayer _videoPlayer;
     [SerializeField] RenderTexture _renderTexture;
 
@@ -67,6 +76,24 @@ public class LoadingPage : MonoBehaviour
         Debug.Log("Android 버전 실행 중");
         Application.targetFrameRate = 60;
 
+        UpdateAppVersion(() =>
+        {
+            LoginToGoogle((id, name) =>
+            {
+                _userId = id;
+                _userName = name;
+                SetUp();
+            });
+        });
+#elif UNITY_IOS
+    Debug.Log("iOS 버전 실행 중");
+#else
+    Debug.Log("기타 플랫폼");
+#endif
+    }
+
+    void LoginToGoogle(Action<string, string> OnCompleted)
+    {
         GPGSManager gPGSManager = new GPGSManager();
         ServiceLocater.Provide(gPGSManager);
 
@@ -80,16 +107,21 @@ public class LoadingPage : MonoBehaviour
             }
 
             Debug.Log("GPGS 로그인 성공");
-
-            _userId = id;
-            _userName = name;
-            SetUp();
+            OnCompleted?.Invoke(id, name);
         });
-#elif UNITY_IOS
-    Debug.Log("iOS 버전 실행 중");
-#else
-    Debug.Log("기타 플랫폼");
-#endif
+    }
+
+    void UpdateAppVersion(Action OnComplete)
+    {
+        GameObject inAppUpdateManagerObject = new GameObject("InAppUpdateManager");
+        InAppUpdateManager inAppUpdateManager = inAppUpdateManagerObject.AddComponent<InAppUpdateManager>();
+
+        // 초기화 완료 시 실행
+        inAppUpdateManager.Initialize((value) =>
+        {
+            Debug.Log(value);
+            OnComplete?.Invoke();
+        });
     }
 
     async Task<bool> SendDataToServer()
@@ -121,16 +153,35 @@ public class LoadingPage : MonoBehaviour
         _loadingPregressBar.fillAmount = 0;
         _loadingPregressTxt.text = $"{0} %";
 
-        AddressableHandler addressableHandler = CreateAddressableHandler();
-        addressableHandler.AddProgressEvent((value) => {
-            _loadingPregressBar.fillAmount = value;
-            _loadingPregressTxt.text = $"{(value * 100f).ToString("F2")} %";
-        });
+        AddressableUpdater addressableUpdater = CreateAddressableUpdater();
+        addressableUpdater.AddEvents(
+            (patchSize, labels) =>
+            {
+                _patchPanel.SetActive(true);
+                _patchTxt.text = $"파일 사이즈 {patchSize}";
+                _patchBtn.onClick.AddListener(() => { addressableUpdater.PatchFiles(labels); });
+            },
+            (value) => 
+            {
+                _loadingPregressBar.fillAmount = value;
+                _loadingPregressTxt.text = $"{(value * 100f).ToString("F2")} %";
+            }
+        );
 
-        addressableHandler.Load(() => { Initialize(addressableHandler); });
+        // 업데이트 먼저 확인하고 이후 진행
+        addressableUpdater.UpdateAddressable(() =>
+        {
+            AddressableLoader addressableLoader = CreateAddressableLoader();
+            addressableLoader.AddProgressEvent((value) => {
+                _loadingPregressBar.fillAmount = value;
+                _loadingPregressTxt.text = $"{(value * 100f).ToString("F2")} %";
+            });
+
+            addressableLoader.Load(() => { Initialize(addressableLoader); });
+        });
     }
 
-    void Initialize(AddressableHandler addressableHandler)
+    void Initialize(AddressableLoader addressableHandler)
     {
         TimeController timeController = new TimeController();
         SceneController sceneController = new SceneController();
@@ -143,12 +194,21 @@ public class LoadingPage : MonoBehaviour
         ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.HomeScene);
     }
 
-    AddressableHandler CreateAddressableHandler()
+    AddressableLoader CreateAddressableLoader()
     {
-        GameObject addressableObject = new GameObject("AddressableHandler");
-        AddressableHandler addressableHandler = addressableObject.AddComponent<AddressableHandler>();
+        GameObject addressableObject = new GameObject("AddressableLoader");
+        AddressableLoader addressableHandler = addressableObject.AddComponent<AddressableLoader>();
         addressableHandler.Initialize();
 
         return addressableHandler;
+    }
+
+    AddressableUpdater CreateAddressableUpdater()
+    {
+        GameObject addressableObject = new GameObject("AddressableUpdater");
+        AddressableUpdater addressableUpdater = addressableObject.AddComponent<AddressableUpdater>();
+        addressableUpdater.Initialize();
+
+        return addressableUpdater;
     }
 }

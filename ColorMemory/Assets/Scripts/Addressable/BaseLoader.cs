@@ -8,7 +8,7 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 abstract public class BaseLoader
 {
-    protected AddressableHandler.Label _label;
+    protected AddressableLoader.Label _label;
     protected int _successCount;
     protected int _totalCount;
 
@@ -28,10 +28,10 @@ abstract public class BaseLoader
 /// <typeparam name="Type"> 에셋 형식 </typeparam>
 abstract public class SingleAssetLoader<Value, Type> : BaseLoader
 {
-    Action<Value, AddressableHandler.Label> OnComplete;
+    Action<Value, AddressableLoader.Label> OnComplete;
     protected Value _asset;
 
-    public SingleAssetLoader(AddressableHandler.Label label, Action<Value, AddressableHandler.Label> OnComplete)
+    public SingleAssetLoader(AddressableLoader.Label label, Action<Value, AddressableLoader.Label> OnComplete)
     {
         _label = label;
         this.OnComplete = OnComplete;
@@ -83,9 +83,9 @@ abstract public class SingleAssetLoader<Value, Type> : BaseLoader
 abstract public class MultipleAssetLoader<Key, Value, Type> : BaseLoader
 {
     protected Dictionary<Key, Value> _assetDictionary;
-    Action<Dictionary<Key, Value>, AddressableHandler.Label> OnComplete;
+    Action<Dictionary<Key, Value>, AddressableLoader.Label> OnComplete;
 
-    public MultipleAssetLoader(AddressableHandler.Label label, Action<Dictionary<Key, Value>, AddressableHandler.Label> OnComplete)
+    public MultipleAssetLoader(AddressableLoader.Label label, Action<Dictionary<Key, Value>, AddressableLoader.Label> OnComplete)
     {
         _label = label;
         this.OnComplete = OnComplete;
