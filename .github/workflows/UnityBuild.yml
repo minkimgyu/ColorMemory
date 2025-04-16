@@ -66,6 +66,7 @@ jobs:
         with:
           targetPlatform: Android
           projectPath: ./ColorMemory
+          androidKeystoreName: user.keystore # This file won't exist, but this property needs to exist.
           androidKeystoreBase64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
           androidKeystorePass: ${{ secrets.ANDROID_KEYSTORE_PASS }}
           androidKeyaliasName: ${{ secrets.ANDROID_KEY_ALIAS }}
