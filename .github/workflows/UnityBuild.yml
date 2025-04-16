@@ -71,7 +71,7 @@ jobs:
           androidKeystorePass: ${{ secrets.ANDROID_KEYSTORE_PASS }}
           androidKeyaliasName: ${{ secrets.ANDROID_KEY_ALIAS }}
           androidKeyaliasPass: ${{ secrets.ANDROID_KEY_PASS }}
-
+          androidTargetSdkVersion: AndroidApiLevel34
       - name: Upload Build File
         uses: actions/upload-artifact@v4
         with:
