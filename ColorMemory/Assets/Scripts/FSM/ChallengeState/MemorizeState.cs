@@ -20,7 +20,7 @@ namespace Challenge
 
         Timer _timer;
         ChallengeMode.ModeData _modeData;
-        List<ChallengeMode.StageData> _stageDatas;
+        List<LevelData> _stageDatas;
 
         Func<Tuple<Dot[,], Dot[], MapData>> GetStage;
 
@@ -30,7 +30,7 @@ namespace Challenge
             FSM<ChallengeMode.State> fsm,
             Color[] pickColors,
             ChallengeMode.ModeData modeData,
-            List<ChallengeMode.StageData> stageDatas,
+            List<LevelData> stageDatas,
 
             ChallengeStageUIPresenter challengeStageUIPresenter,
             Func<Tuple<Dot[,], Dot[], MapData>> GetStage

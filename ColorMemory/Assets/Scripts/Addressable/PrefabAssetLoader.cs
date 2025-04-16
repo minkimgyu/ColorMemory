@@ -8,28 +8,28 @@ using System;
 
 public class EffectAssetLoader : MultiplePrafabAssetLoader<Effect.Name, Effect>
 {
-    public EffectAssetLoader(AddressableHandler.Label label, Action<Dictionary<Effect.Name, Effect>, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
+    public EffectAssetLoader(AddressableLoader.Label label, Action<Dictionary<Effect.Name, Effect>, AddressableLoader.Label> OnComplete) : base(label, OnComplete)
     {
     }
 }
 
 public class DotAssetLoader : MultiplePrafabAssetLoader<Dot.Name, Dot>
 {
-    public DotAssetLoader(AddressableHandler.Label label, Action<Dictionary<Dot.Name, Dot>, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
+    public DotAssetLoader(AddressableLoader.Label label, Action<Dictionary<Dot.Name, Dot>, AddressableLoader.Label> OnComplete) : base(label, OnComplete)
     {
     }
 }
 
 public class SpawnableUIAssetLoader : MultiplePrafabAssetLoader<SpawnableUI.Name, SpawnableUI>
 {
-    public SpawnableUIAssetLoader(AddressableHandler.Label label, Action<Dictionary<SpawnableUI.Name, SpawnableUI>, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
+    public SpawnableUIAssetLoader(AddressableLoader.Label label, Action<Dictionary<SpawnableUI.Name, SpawnableUI>, AddressableLoader.Label> OnComplete) : base(label, OnComplete)
     {
     }
 }
 
 abstract public class MultiplePrafabAssetLoader<Key, Value> : MultipleAssetLoader<Key, Value, GameObject>
 {
-    protected MultiplePrafabAssetLoader(AddressableHandler.Label label, Action<Dictionary<Key, Value>, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
+    protected MultiplePrafabAssetLoader(AddressableLoader.Label label, Action<Dictionary<Key, Value>, AddressableLoader.Label> OnComplete) : base(label, OnComplete)
     {
     }
 
@@ -60,7 +60,7 @@ abstract public class MultiplePrafabAssetLoader<Key, Value> : MultipleAssetLoade
 
 abstract public class SinglePrafabAssetLoader<Value> : SingleAssetLoader<Value, GameObject>
 {
-    protected SinglePrafabAssetLoader(AddressableHandler.Label label, Action<Value, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
+    protected SinglePrafabAssetLoader(AddressableLoader.Label label, Action<Value, AddressableLoader.Label> OnComplete) : base(label, OnComplete)
     {
     }
 

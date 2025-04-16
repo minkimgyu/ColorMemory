@@ -171,7 +171,7 @@ public class HomePage : MonoBehaviour
         int money = await GetMoneyFromServer();
         if (money == -1) return;
 
-        AddressableHandler addressableHandler = FindObjectOfType<AddressableHandler>();
+        AddressableLoader addressableHandler = FindObjectOfType<AddressableLoader>();
         if (addressableHandler == null) return;
 
         _effectFactory = new EffectFactory(addressableHandler.EffectAssets);

@@ -6,51 +6,6 @@ using TMPro;
 using System;
 using NetworkService.DTO;
 
-//public enum ArtName
-//{
-//    ABlossomingBush,
-//    AChristmasRepast,
-//    ACoastalLandscapeintheSouthofFrance,
-//    ACottageGardenWithChickens,
-//    ADoewithFawn,
-//    AFavoriteSummerPastime,
-//    AForestPathwithHunteratSunset,
-//    AFreshBreeze,
-//    AGardenIdyll,
-//    AGardeninSeptember
-//}
-
-[System.Serializable]
-public struct ArtworkDateWrapper
-{
-    [JsonProperty] Dictionary<int, ArtworkData> _data;
-
-    public ArtworkDateWrapper(Dictionary<int, ArtworkData> data)
-    {
-        _data = data;
-    }
-
-    [JsonIgnore] public Dictionary<int, ArtworkData> Data { get => _data; }
-}
-
-public struct ArtworkData
-{
-    [JsonProperty] string _artist;
-    [JsonProperty] string _title;
-    [JsonProperty] string _description;
-
-    public ArtworkData(string artist, string title, string description)
-    {
-        _artist = artist;
-        _title = title;
-        _description = description;
-    }
-
-    [JsonIgnore] public string Artist { get => _artist; }
-    [JsonIgnore] public string Title { get => _title; }
-    [JsonIgnore] public string Description { get => _description; }
-}
-
 public struct StageData
 {
     Rank _rank;

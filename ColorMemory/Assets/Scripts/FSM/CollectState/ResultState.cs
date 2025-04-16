@@ -5,7 +5,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.U2D;
 
@@ -105,7 +104,7 @@ namespace Collect
             Sprite rankDecorationIconSprite;
             Sprite rankBadgeIconSprite;
 
-            AddressableHandler addressableHandler = UnityEngine.Object.FindObjectOfType<AddressableHandler>();
+            AddressableLoader addressableHandler = UnityEngine.Object.FindObjectOfType<AddressableLoader>();
             if (addressableHandler == null) return;
 
             _collectStageUIPresenter.ActivatePlayPanel(false);

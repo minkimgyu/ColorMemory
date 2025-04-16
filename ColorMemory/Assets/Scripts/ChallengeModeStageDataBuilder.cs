@@ -9,9 +9,9 @@ using System.Net;
 
 public class ChallengeModeStageDataBuilder : SheetDataBuilder
 {
-    List<ChallengeMode.StageData> ParseTsv(string tsv)
+    List<LevelData> ParseTsv(string tsv)
     {
-        List<ChallengeMode.StageData> stageDatas = new List<ChallengeMode.StageData>();
+        List<LevelData> stageDatas = new List<LevelData>();
 
         string[] row = tsv.Split('\n');
         int rowSize = row.Length;
@@ -28,7 +28,7 @@ public class ChallengeModeStageDataBuilder : SheetDataBuilder
             randomPointCount = int.Parse(columns[3]);
             memorizeDuration = int.Parse(columns[4]);
 
-            ChallengeMode.StageData stageData = new ChallengeMode.StageData(mapSize, colorCount, randomPointCount, memorizeDuration);
+            LevelData stageData = new LevelData(mapSize, colorCount, randomPointCount, memorizeDuration);
             stageDatas.Add(stageData);
         }
 
@@ -42,9 +42,9 @@ public class ChallengeModeStageDataBuilder : SheetDataBuilder
 
         StartCoroutine(Load(_address, _sheetID, (string tsv) => {
 
-            List<ChallengeMode.StageData> stageDatas = ParseTsv(tsv);
+            List<LevelData> stageDatas = ParseTsv(tsv);
 
-            ChallengeMode.StageDataWrapper stageDataWrapper = new ChallengeMode.StageDataWrapper(stageDatas);
+            LevelDataWrapper stageDataWrapper = new LevelDataWrapper(stageDatas);
             fileIO.SaveData(stageDataWrapper, _fileLocation, _fileName, true);
         }));
     }

@@ -9,7 +9,7 @@ using System;
 public class SingleJsonAssetLoader<Value> : SingleAssetLoader<Value, TextAsset>
 {
     JsonParser _parser;
-    public SingleJsonAssetLoader(AddressableHandler.Label label, Action<Value, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
+    public SingleJsonAssetLoader(AddressableLoader.Label label, Action<Value, AddressableLoader.Label> OnComplete) : base(label, OnComplete)
     {
         _parser = new JsonParser();
     }
@@ -23,7 +23,7 @@ public class SingleJsonAssetLoader<Value> : SingleAssetLoader<Value, TextAsset>
 public class MultipleJsonAssetLoader<Key, Value> : MultipleAssetLoader<Key, Value, TextAsset>
 {
     JsonParser _parser;
-    public MultipleJsonAssetLoader(AddressableHandler.Label label, Action<Dictionary<Key, Value>, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
+    public MultipleJsonAssetLoader(AddressableLoader.Label label, Action<Dictionary<Key, Value>, AddressableLoader.Label> OnComplete) : base(label, OnComplete)
     {
         _parser = new JsonParser();
     }
@@ -56,7 +56,7 @@ public class MultipleJsonAssetLoader<Key, Value> : MultipleAssetLoader<Key, Valu
 public class IntMultipleJsonAssetLoader<Key, Value> : MultipleAssetLoader<Key, Value, TextAsset>
 {
     JsonParser _parser;
-    public IntMultipleJsonAssetLoader(AddressableHandler.Label label, Action<Dictionary<Key, Value>, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
+    public IntMultipleJsonAssetLoader(AddressableLoader.Label label, Action<Dictionary<Key, Value>, AddressableLoader.Label> OnComplete) : base(label, OnComplete)
     {
         _parser = new JsonParser();
     }
@@ -88,21 +88,21 @@ public class IntMultipleJsonAssetLoader<Key, Value> : MultipleAssetLoader<Key, V
 
 public class CollectiveArtJsonAssetLoader : IntMultipleJsonAssetLoader<int, CollectArtData>
 {
-    public CollectiveArtJsonAssetLoader(AddressableHandler.Label label, Action<Dictionary<int, CollectArtData>, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
+    public CollectiveArtJsonAssetLoader(AddressableLoader.Label label, Action<Dictionary<int, CollectArtData>, AddressableLoader.Label> OnComplete) : base(label, OnComplete)
     {
     }
 }
 
 public class ArtworkJsonAssetLoader : SingleJsonAssetLoader<ArtworkDateWrapper>
 {
-    public ArtworkJsonAssetLoader(AddressableHandler.Label label, Action<ArtworkDateWrapper, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
+    public ArtworkJsonAssetLoader(AddressableLoader.Label label, Action<ArtworkDateWrapper, AddressableLoader.Label> OnComplete) : base(label, OnComplete)
     {
     }
 }
 
-public class ChallengeModeStageDataJsonAssetLoader : SingleJsonAssetLoader<Challenge.ChallengeMode.StageDataWrapper>
+public class ChallengeModeStageDataJsonAssetLoader : SingleJsonAssetLoader<LevelDataWrapper>
 {
-    public ChallengeModeStageDataJsonAssetLoader(AddressableHandler.Label label, Action<Challenge.ChallengeMode.StageDataWrapper, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
+    public ChallengeModeStageDataJsonAssetLoader(AddressableLoader.Label label, Action<LevelDataWrapper, AddressableLoader.Label> OnComplete) : base(label, OnComplete)
     {
     }
 }
