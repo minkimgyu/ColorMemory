@@ -185,7 +185,7 @@ public class HomePage : MonoBehaviour
         ArtworkUIFactory artWorkUIFactory = new ArtworkUIFactory(
             addressableHandler.SpawnableUIAssets[SpawnableUI.Name.ArtworkUI],
             addressableHandler.ArtSpriteAsserts,
-            addressableHandler.ArtworkFrameAsserts,
+            addressableHandler.ArtworkFrameAssets,
             addressableHandler.RankDecorationIconAssets
         );
 

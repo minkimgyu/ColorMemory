@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
 using UnityEngine.Video;
 
@@ -16,6 +17,7 @@ public class LoadingPage : MonoBehaviour
     [SerializeField] GameObject _patchPanel;
     [SerializeField] TMP_Text _patchTxt;
     [SerializeField] Button _patchBtn;
+    [SerializeField] List<AssetLabelReference> _assetLabelsToPatch;
 
     [Header("Loading")]
     [SerializeField] GameObject _loadingObj;
@@ -29,6 +31,9 @@ public class LoadingPage : MonoBehaviour
     string _userId;
     string _userName;
 
+    ILoginService _loginService;
+
+
     void ClearRenderTextureToWhite(RenderTexture rt)
     {
         RenderTexture activeRT = RenderTexture.active;
@@ -41,6 +46,9 @@ public class LoadingPage : MonoBehaviour
 
     private void Awake()
     {
+        // 로그인 서비스 할당
+        _loginService = new LoginService();
+
         ClearRenderTextureToWhite(_renderTexture);
         _loadingObj.SetActive(false);
 
@@ -124,30 +132,18 @@ public class LoadingPage : MonoBehaviour
         });
     }
 
-    async Task<bool> SendDataToServer()
+    void ChangeLoadingProgress(float value)
     {
-        PlayerManager playerManager = new PlayerManager();
-        bool canLogin = false;
-
-        try
-        {
-            Debug.Log("_userId          " + _userId);
-            Debug.Log("_userName            " + _userName);
-            canLogin = await playerManager.AddPlayerAsync(_userId, _userName);
-        }
-        catch (System.Exception e)
-        {
-            Debug.Log(e);
-            Debug.Log("서버에 데이터를 보낼 수 없음");
-            return false;
-        }
-
-        return canLogin;
+        _loadingPregressBar.fillAmount = value;
+        _loadingPregressTxt.text = $"{(value * 100f).ToString("F2")} %";
     }
+
+
+
 
     async void SetUp()
     {
-        bool canLogin = await SendDataToServer();
+        bool canLogin = await _loginService.Login(_userId, _userName);
         if (canLogin == false) return;
 
         _loadingPregressBar.fillAmount = 0;
@@ -159,12 +155,15 @@ public class LoadingPage : MonoBehaviour
             {
                 _patchPanel.SetActive(true);
                 _patchTxt.text = $"파일 사이즈 {patchSize}";
-                _patchBtn.onClick.AddListener(() => { addressableUpdater.PatchFiles(labels); });
+                _patchBtn.onClick.AddListener(() => 
+                {
+                    addressableUpdater.PatchFiles(labels);
+                    _patchPanel.SetActive(false); 
+                });
             },
             (value) => 
             {
-                _loadingPregressBar.fillAmount = value;
-                _loadingPregressTxt.text = $"{(value * 100f).ToString("F2")} %";
+                ChangeLoadingProgress(value);
             }
         );
 
@@ -173,15 +172,14 @@ public class LoadingPage : MonoBehaviour
         {
             AddressableLoader addressableLoader = CreateAddressableLoader();
             addressableLoader.AddProgressEvent((value) => {
-                _loadingPregressBar.fillAmount = value;
-                _loadingPregressTxt.text = $"{(value * 100f).ToString("F2")} %";
+                ChangeLoadingProgress(value);
             });
 
             addressableLoader.Load(() => { Initialize(addressableLoader); });
         });
     }
 
-    void Initialize(AddressableLoader addressableHandler)
+    void Initialize(AddressableLoader addressableLoader)
     {
         TimeController timeController = new TimeController();
         SceneController sceneController = new SceneController();
@@ -207,8 +205,32 @@ public class LoadingPage : MonoBehaviour
     {
         GameObject addressableObject = new GameObject("AddressableUpdater");
         AddressableUpdater addressableUpdater = addressableObject.AddComponent<AddressableUpdater>();
-        addressableUpdater.Initialize();
+        addressableUpdater.Initialize(_assetLabelsToPatch);
 
         return addressableUpdater;
     }
+
+#if UNITY_EDITOR
+    [ContextMenu("Load All Asset Labels")]
+    void LoadAllAssetLabels()
+    {
+        _assetLabelsToPatch.Clear();
+
+        var settings = UnityEditor.AddressableAssets.AddressableAssetSettingsDefaultObject.Settings;
+        if (settings == null)
+        {
+            Debug.LogWarning("AddressableAssetSettings not found.");
+            return;
+        }
+
+        foreach (var label in settings.GetLabels())
+        {
+            var labelRef = new AssetLabelReference();
+            labelRef.labelString = label;
+            _assetLabelsToPatch.Add(labelRef);
+        }
+
+        Debug.Log($"Loaded {_assetLabelsToPatch.Count} labels.");
+    }
+#endif
 }

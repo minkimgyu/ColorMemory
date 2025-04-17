@@ -132,7 +132,7 @@ namespace Collect
                 getRank = Rank.NONE;
             }
 
-            rankFrameSprite = addressableHandler.ArtworkFrameAsserts[getRank.Value];
+            rankFrameSprite = addressableHandler.ArtworkFrameAssets[getRank.Value];
             rankDecorationIconSprite = addressableHandler.RankDecorationIconAssets[getRank.Value];
             rankBadgeIconSprite = addressableHandler.RankBadgeIconAssets[getRank.Value];
 

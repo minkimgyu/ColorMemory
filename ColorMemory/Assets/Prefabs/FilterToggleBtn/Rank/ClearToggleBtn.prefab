@@ -158,11 +158,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 5706010298229474592}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 60, y: -18}
-  m_SizeDelta: {x: 144, y: 48}
-  m_Pivot: {x: 0, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 2, y: 0}
+  m_SizeDelta: {x: 150.1, y: 48}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7004369981035298328
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -193,8 +193,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Clear
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 4514f48dd692fe745ae7bacb4ce82eb1, type: 2}
-  m_sharedMaterial: {fileID: -6330234593403490155, guid: 4514f48dd692fe745ae7bacb4ce82eb1, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 73fc8412cd2585948979983ca6a745be, type: 2}
+  m_sharedMaterial: {fileID: -4805957931704366323, guid: 73fc8412cd2585948979983ca6a745be, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -368,11 +368,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 3959526534349152803}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 60, y: -18}
-  m_SizeDelta: {x: 144, y: 48}
-  m_Pivot: {x: 0, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 2, y: 0}
+  m_SizeDelta: {x: 150.1, y: 48}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5722610947446482862
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -403,8 +403,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Clear
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 4514f48dd692fe745ae7bacb4ce82eb1, type: 2}
-  m_sharedMaterial: {fileID: -6330234593403490155, guid: 4514f48dd692fe745ae7bacb4ce82eb1, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 73fc8412cd2585948979983ca6a745be, type: 2}
+  m_sharedMaterial: {fileID: -4805957931704366323, guid: 73fc8412cd2585948979983ca6a745be, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

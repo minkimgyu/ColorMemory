@@ -157,8 +157,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: User Nickname
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: d7322d43f072a7945b7ff15fc1078c5c, type: 2}
-  m_sharedMaterial: {fileID: -4018653626728808986, guid: d7322d43f072a7945b7ff15fc1078c5c, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 825704354e3526245a64343052aeee3d, type: 2}
+  m_sharedMaterial: {fileID: -3420936784491326758, guid: 825704354e3526245a64343052aeee3d, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -291,8 +291,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "1000\uC704"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 4815e28e4b19f0e4bab5b427903b9f59, type: 2}
-  m_sharedMaterial: {fileID: -8631930442857826230, guid: 4815e28e4b19f0e4bab5b427903b9f59, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 825704354e3526245a64343052aeee3d, type: 2}
+  m_sharedMaterial: {fileID: -3420936784491326758, guid: 825704354e3526245a64343052aeee3d, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -634,8 +634,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 000,000,000
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 1ad7f6decc662354ba49e9a00fa334a3, type: 2}
-  m_sharedMaterial: {fileID: -2415122768689172097, guid: 1ad7f6decc662354ba49e9a00fa334a3, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 825704354e3526245a64343052aeee3d, type: 2}
+  m_sharedMaterial: {fileID: -3420936784491326758, guid: 825704354e3526245a64343052aeee3d, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

@@ -621,8 +621,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: a10f1d559d57a9c49b60796783a334ee, type: 2}
-  m_sharedMaterial: {fileID: 7905446394991061345, guid: a10f1d559d57a9c49b60796783a334ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 73fc8412cd2585948979983ca6a745be, type: 2}
+  m_sharedMaterial: {fileID: -4805957931704366323, guid: 73fc8412cd2585948979983ca6a745be, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -999,6 +999,74 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1103052327}
   m_CullTransparentMesh: 1
+--- !u!1 &1390813740
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1390813743}
+  - component: {fileID: 1390813742}
+  - component: {fileID: 1390813741}
+  m_Layer: 0
+  m_Name: EventSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1390813741
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1390813740}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f231c4fb786f3946a6b90b886c48677, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SendPointerHoverToParent: 1
+  m_HorizontalAxis: Horizontal
+  m_VerticalAxis: Vertical
+  m_SubmitButton: Submit
+  m_CancelButton: Cancel
+  m_InputActionsPerSecond: 10
+  m_RepeatDelay: 0.5
+  m_ForceModuleActive: 0
+--- !u!114 &1390813742
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1390813740}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76c392e42b5098c458856cdf6ecaaaa1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_FirstSelected: {fileID: 0}
+  m_sendNavigationEvents: 1
+  m_DragThreshold: 10
+--- !u!4 &1390813743
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1390813740}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1404783563
 GameObject:
   m_ObjectHideFlags: 0
@@ -1046,6 +1114,21 @@ MonoBehaviour:
   _patchPanel: {fileID: 1465765347}
   _patchTxt: {fileID: 337428874}
   _patchBtn: {fileID: 885632107}
+  _assetLabelsToPatch:
+  - m_LabelString: ModeTitle
+  - m_LabelString: ArtData
+  - m_LabelString: ArtSprite
+  - m_LabelString: ArtworkFrame
+  - m_LabelString: ArtworkData
+  - m_LabelString: ChallengeModeStageData
+  - m_LabelString: RectProfileIcon
+  - m_LabelString: CircleProfileIcon
+  - m_LabelString: RankBadgeIcon
+  - m_LabelString: RankDecorationIcon
+  - m_LabelString: StageRankIcon
+  - m_LabelString: Dot
+  - m_LabelString: Effect
+  - m_LabelString: SpawnableUI
   _loadingObj: {fileID: 824852845}
   _loadingPregressBar: {fileID: 1103052329}
   _loadingPregressTxt: {fileID: 695592118}
@@ -1334,3 +1417,4 @@ SceneRoots:
   - {fileID: 1038613674}
   - {fileID: 1404783565}
   - {fileID: 179930685}
+  - {fileID: 1390813743}

@@ -42,15 +42,15 @@ public class RankingPageState : BaseState<HomePage.InnerPageState>
     async Task<Tuple<List<PlayerRankingDTO>, PlayerRankingDTO>> GetRankingDataFromServer()
     {
         ScoreManager scoreManager = new ScoreManager();
-        List<PlayerRankingDTO> otherScores;
-        PlayerRankingDTO myScore;
+        List<PlayerRankingDTO> otherRankings;
+        PlayerRankingDTO myRanking;
 
         try
         {
             string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
 
-            otherScores = await scoreManager.GetTopWeeklyScoresAsync(10);
-            myScore = await scoreManager.GetPlayerWeeklyScoreAsDTOAsync(userId);
+            otherRankings = await scoreManager.GetTopWeeklyScoresAsync(10);
+            myRanking = await scoreManager.GetPlayerWeeklyScoreAsDTOAsync(userId);
         }
         catch (System.Exception e)
         {
@@ -59,7 +59,7 @@ public class RankingPageState : BaseState<HomePage.InnerPageState>
             return null;
         }
 
-        return new Tuple<List<PlayerRankingDTO>, PlayerRankingDTO>(otherScores, myScore);
+        return new Tuple<List<PlayerRankingDTO>, PlayerRankingDTO>(otherRankings, myRanking);
     }
 
     public override async void OnStateEnter()
