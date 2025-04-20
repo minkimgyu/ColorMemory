@@ -3,63 +3,77 @@ using System.Collections.Generic;
 using UnityEngine;
 using Newtonsoft.Json;
 using TMPro;
+using System;
+using NetworkService.DTO;
 
-public enum ArtName
+public struct StageData
 {
-    ABlossomingBush,
-    AChristmasRepast,
-    ACoastalLandscapeintheSouthofFrance,
-    ACottageGardenWithChickens,
-    ADoewithFawn,
-    AFavoriteSummerPastime,
-    AForestPathwithHunteratSunset,
-    AFreshBreeze,
-    AGardenIdyll,
-    AGardeninSeptember
-}
+    Rank _rank;
+    int _hintUsage;
+    int _incorrectCnt;
+    StageStauts _stageStauts;
 
-[System.Serializable]
-public struct ArtworkDataObject
-{
-    [JsonProperty] Dictionary<ArtName, ArtData> _data;
-
-    public ArtworkDataObject(Dictionary<ArtName, ArtData> data)
+    public StageData(
+        Rank rank,
+        int hintUsage,
+        int incorrectCnt,
+        StageStauts stageStauts)
     {
-        _data = data;
+        _rank = rank;
+        _hintUsage = hintUsage;
+        _incorrectCnt = incorrectCnt;
+        _stageStauts = stageStauts;
     }
 
-    [JsonIgnore] public Dictionary<ArtName, ArtData> Data { get => _data; }
+    public Rank Rank { get => _rank; }
+
+    /// <summary>
+    /// 플레이 한 경우 false로 적용
+    /// </summary>
+    //public bool IsPlayed { get { return HintUsage != -1 || IncorrectCnt != -1; } }
+
+    public int HintUsage { get => _hintUsage; }
+    public int IncorrectCnt { get => _incorrectCnt; }
+    public StageStauts Stauts { get => _stageStauts; }
 }
 
-public enum Rank
-{
-    NONE,
-    COPPER,
-    SILVER,
-    GOLD
-}
-
-[System.Serializable]
 public struct ArtData
 {
-    [JsonProperty] Rank _type;
-    [JsonProperty] string _title;
-    [JsonProperty] string _description;
+    NetworkService.DTO.Rank _rank;
+    bool _hasIt;
 
-    public ArtData(Rank type, string title, string description)
+    Dictionary<int, StageData> _stageDatas;
+
+    int _totalMistakesAndHints;
+    DateTime? _obtainedDate;
+
+    public ArtData(
+        NetworkService.DTO.Rank rank,
+        bool hasIt,
+
+        Dictionary<int, StageData> stageDatas,
+        int totalMistakesAndHints,
+        DateTime? obtainedDate)
     {
-        _type = type;
-        _title = title;
-        _description = description;
+        _rank = rank;
+        _hasIt = hasIt;
+
+        _stageDatas = stageDatas;
+
+        _totalMistakesAndHints = totalMistakesAndHints;
+        _obtainedDate = obtainedDate;
     }
 
-    [JsonIgnore] public string Title { get => _title; }
-    [JsonIgnore] public string Description { get => _description; }
-    public Rank Type { get => _type; }
+    public NetworkService.DTO.Rank Rank { get => _rank; }
+    public bool HasIt { get => _hasIt; }
+
+    public int TotalMistakesAndHints { get => _totalMistakesAndHints; }
+    public DateTime? ObtainedDate { get => _obtainedDate; set => _obtainedDate = value; }
+    public Dictionary<int, StageData> StageDatas { get => _stageDatas; set => _stageDatas = value; }
 }
 
 [System.Serializable]
-public struct CollectiveArtData
+public struct CollectArtData
 {
     public struct ArtSize
     {

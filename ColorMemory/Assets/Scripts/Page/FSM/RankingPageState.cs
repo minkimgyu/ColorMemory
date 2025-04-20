@@ -1,6 +1,9 @@
+using NetworkService.DTO;
+using NetworkService.Manager;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 
@@ -9,14 +12,18 @@ public class RankingPageState : BaseState<HomePage.InnerPageState>
     RankingPagePresenter _rankingPagePresenter;
     RankingUIFactory _rankingUIFactory;
 
+    IRankingService _rankingService;
+
     public RankingPageState(
         GameObject rankingContent,
         Transform scrollContent,
         Transform myRankingContent,
         RankingUIFactory rankingUIFactory,
+        IRankingService rankingService,
         FSM<HomePage.InnerPageState> fsm) : base(fsm)
     {
         _rankingUIFactory = rankingUIFactory;
+        _rankingService = rankingService;
 
         RankingPageModel rankingPageModel = new RankingPageModel();
         _rankingPagePresenter = new RankingPagePresenter(rankingPageModel);
@@ -36,41 +43,21 @@ public class RankingPageState : BaseState<HomePage.InnerPageState>
         _fsm.SetState(HomePage.InnerPageState.Main);
     }
 
-    RankingData GetRankingData()
+    const int topRange = 10;
+
+    public override async void OnStateEnter()
     {
-        List<PersonalRankingData> topRankingDatas = new List<PersonalRankingData>();
-        string[] names = { "Alice", "Bob", "Charlie", "David", "Eve", "Frank", "Grace", "Hank", "Ivy", "Jack" };
+        string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
+        Tuple<List<PersonalRankingData>, PersonalRankingData> rankingData = await _rankingService.GetTopRankingData(topRange, userId);
+        if (rankingData == null) return;
 
-        int count = 10; // 생성할 데이터 개수
-        for (int i = 0; i < count; i++)
+        for (int i = 0; i < rankingData.Item1.Count; i++)
         {
-            RankingIconName iconName = (RankingIconName)UnityEngine.Random.Range(0, Enum.GetValues(typeof(RankingIconName)).Length);
-            string name = names[i];
-            int score = UnityEngine.Random.Range(0, 100000000);
-            int rank = i + 1; // 1부터 시작하는 순위
-
-            topRankingDatas.Add(new PersonalRankingData(iconName, name, score, rank));
-        }
-
-        // 생성시켜주기
-        PersonalRankingData myRankingData = new PersonalRankingData((RankingIconName)1, "Meal", 10000000, 15);
-
-        RankingData rankingData = new RankingData(topRankingDatas, myRankingData);
-        return rankingData;
-    }
-
-    public override void OnStateEnter()
-    {
-        // 생성시켜주기
-        RankingData rankingData = GetRankingData();
-
-        for (int i = 0; i < rankingData.OtherRankingDatas.Count; i++)
-        {
-            SpawnableUI rankingUI = _rankingUIFactory.Create(rankingData.OtherRankingDatas[i]);
+            SpawnableUI rankingUI = _rankingUIFactory.Create(rankingData.Item1[i]);
             _rankingPagePresenter.AddRakingItems(rankingUI);
         }
 
-        SpawnableUI myRankingUI = _rankingUIFactory.Create(rankingData.MyRankingData);
+        SpawnableUI myRankingUI = _rankingUIFactory.Create(rankingData.Item2);
         _rankingPagePresenter.AddMyRaking(myRankingUI);
         _rankingPagePresenter.ActiveContent(true); // home 닫아주기
     }

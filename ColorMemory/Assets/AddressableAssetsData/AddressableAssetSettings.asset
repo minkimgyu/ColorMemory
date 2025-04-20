@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 468a46d0ae32c3544b7d98094e6448a9, type: 3}
   m_Name: AddressableAssetSettings
   m_EditorClassIdentifier: 
-  m_DefaultGroup: 311d11c8d2e6e9641aefc4b54a55e39c
+  m_DefaultGroup: 4cf8421067e45b24fba0926778135873
   m_currentHash:
     serializedVersion: 2
     Hash: 00000000000000000000000000000000
@@ -38,7 +38,7 @@ MonoBehaviour:
     m_Id: 
   m_RemoteCatalogLoadPath:
     m_Id: 
-  m_ContentStateBuildPathProfileVariableName: 
+  m_ContentStateBuildPathProfileVariableName: <default settings path>
   m_CustomContentStateBuildPath: 
   m_ContentStateBuildPath: 
   m_BuildAddressablesWithPlayerBuild: 0
@@ -47,13 +47,18 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 4ede0ddd480073449b4eb8529818c0e5, type: 2}
   - {fileID: 11400000, guid: 67a5e4a8b6f25314f90875e17247ca4a, type: 2}
   - {fileID: 11400000, guid: 49ec98064c86c3b488cfd9b8ff7e258b, type: 2}
+  - {fileID: 11400000, guid: 29400a7ba0061bb4ebb6b50b69d3ae0c, type: 2}
   - {fileID: 11400000, guid: 1f82fe89dc603554e889127fdf5f9022, type: 2}
+  - {fileID: 11400000, guid: 65afca6200dc5bd4387dcc06b4158068, type: 2}
   - {fileID: 11400000, guid: 6036f8de10885254180015372adfe9c7, type: 2}
   - {fileID: 11400000, guid: 553463d0de3e1554d9f90506bf69a093, type: 2}
   - {fileID: 11400000, guid: 5eaccb87ba2affc48931a5d3cc9c8084, type: 2}
   - {fileID: 11400000, guid: b060bcc7c8302e34fa3b37a112baf449, type: 2}
   - {fileID: 11400000, guid: 6447756bad477244397f56ce3842659b, type: 2}
   - {fileID: 11400000, guid: 12ed57960fd08844d9fd53a9d08781a6, type: 2}
+  - {fileID: 11400000, guid: 8c542db80b7825e489ff699e57310e98, type: 2}
+  - {fileID: 11400000, guid: 25b2d9a1c897edf4bb88ff0636f876c2, type: 2}
+  - {fileID: 11400000, guid: 4e3932fcb95d5814fa33a20cd487197f, type: 2}
   m_BuildSettings:
     m_CompileScriptsInVirtualMode: 0
     m_CleanupStreamingAssetsAfterBuilds: 1
@@ -73,6 +78,20 @@ MonoBehaviour:
         m_Value: '[UnityEditor.EditorUserBuildSettings.activeBuildTarget]'
       - m_Id: 799e17b26d0aab740966164cea2e9575
         m_Value: http://[PrivateIpAddress]:[HostingServicePort]
+      - m_Id: 932a9e4c2f624484e8e003832ff92463
+        m_Value: '{UnityEngine.AddressableAssets.Addressables.RuntimePath}/[BuildTarget]'
+    - m_InheritedParent: 
+      m_Id: 6324464d1709f6d4d9b0416f9c242dec
+      m_ProfileName: Build
+      m_Values:
+      - m_Id: 1a9da40adf168d44d8face568bc99132
+        m_Value: ServerData/[BuildTarget]
+      - m_Id: 30e4d13750fe4f249b9b80c5fca05377
+        m_Value: '[UnityEngine.AddressableAssets.Addressables.BuildPath]/[BuildTarget]'
+      - m_Id: 47e4810908016d242bae95ca67a2c0d3
+        m_Value: '[UnityEditor.EditorUserBuildSettings.activeBuildTarget]'
+      - m_Id: 799e17b26d0aab740966164cea2e9575
+        m_Value: https://colormemory-assets.s3.ap-northeast-2.amazonaws.com/[BuildTarget]
       - m_Id: 932a9e4c2f624484e8e003832ff92463
         m_Value: '{UnityEngine.AddressableAssets.Addressables.RuntimePath}/[BuildTarget]'
     m_ProfileEntryNames:
@@ -102,9 +121,13 @@ MonoBehaviour:
     - ArtSprite
     - ArtworkFrame
     - ArtworkData
-    - RankingIcon
     - SpawnableUI
     - ChallengeModeStageData
+    - RectProfileIcon
+    - CircleProfileIcon
+    - RankBadgeIcon
+    - RankDecorationIcon
+    - StageRankIcon
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: 03dca29f491627045ab1f15b73890c5c, type: 2}
@@ -118,7 +141,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 54dd9aa588e135a4094040ce0fd2578d, type: 2}
   - {fileID: 11400000, guid: 08d585036182398418a8f0fa4b5b4be0, type: 2}
   - {fileID: 11400000, guid: c1d1444274ba1a842bfe23b13703943c, type: 2}
-  m_ActiveProfileId: 19889a46ea26334439456adfa9e1ec4e
+  m_ActiveProfileId: 6324464d1709f6d4d9b0416f9c242dec
   m_HostingServicesManager:
     m_HostingServiceInfos: []
     m_Settings: {fileID: 11400000}

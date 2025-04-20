@@ -9,7 +9,7 @@ using System;
 public class SingleJsonAssetLoader<Value> : SingleAssetLoader<Value, TextAsset>
 {
     JsonParser _parser;
-    public SingleJsonAssetLoader(AddressableHandler.Label label, Action<Value, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
+    public SingleJsonAssetLoader(AddressableLoader.Label label, Action<Value, AddressableLoader.Label> OnComplete) : base(label, OnComplete)
     {
         _parser = new JsonParser();
     }
@@ -23,7 +23,7 @@ public class SingleJsonAssetLoader<Value> : SingleAssetLoader<Value, TextAsset>
 public class MultipleJsonAssetLoader<Key, Value> : MultipleAssetLoader<Key, Value, TextAsset>
 {
     JsonParser _parser;
-    public MultipleJsonAssetLoader(AddressableHandler.Label label, Action<Dictionary<Key, Value>, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
+    public MultipleJsonAssetLoader(AddressableLoader.Label label, Action<Dictionary<Key, Value>, AddressableLoader.Label> OnComplete) : base(label, OnComplete)
     {
         _parser = new JsonParser();
     }
@@ -53,23 +53,56 @@ public class MultipleJsonAssetLoader<Key, Value> : MultipleAssetLoader<Key, Valu
     }
 }
 
-public class CollectiveArtJsonAssetLoader : MultipleJsonAssetLoader<ArtName, CollectiveArtData>
+public class IntMultipleJsonAssetLoader<Key, Value> : MultipleAssetLoader<Key, Value, TextAsset>
 {
-    public CollectiveArtJsonAssetLoader(AddressableHandler.Label label, Action<Dictionary<ArtName, CollectiveArtData>, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
+    JsonParser _parser;
+    public IntMultipleJsonAssetLoader(AddressableLoader.Label label, Action<Dictionary<Key, Value>, AddressableLoader.Label> OnComplete) : base(label, OnComplete)
+    {
+        _parser = new JsonParser();
+    }
+
+    protected override void LoadAsset(IResourceLocation location, Dictionary<Key, Value> dictionary, Action OnComplete)
+    {
+        Addressables.LoadAssetAsync<TextAsset>(location).Completed +=
+        (handle) =>
+        {
+            switch (handle.Status)
+            {
+                case AsyncOperationStatus.Succeeded:
+                    Key key = (Key)(object)int.Parse(location.PrimaryKey);
+                    Value value = _parser.JsonToObject<Value>(handle.Result);
+
+                    dictionary.Add(key, value);
+                    OnComplete?.Invoke();
+                    break;
+
+                case AsyncOperationStatus.Failed:
+                    break;
+
+                default:
+                    break;
+            }
+        };
+    }
+}
+
+public class CollectiveArtJsonAssetLoader : IntMultipleJsonAssetLoader<int, CollectArtData>
+{
+    public CollectiveArtJsonAssetLoader(AddressableLoader.Label label, Action<Dictionary<int, CollectArtData>, AddressableLoader.Label> OnComplete) : base(label, OnComplete)
     {
     }
 }
 
-public class ArtworkJsonAssetLoader : SingleJsonAssetLoader<ArtworkDataObject>
+public class ArtworkJsonAssetLoader : SingleJsonAssetLoader<ArtworkDateWrapper>
 {
-    public ArtworkJsonAssetLoader(AddressableHandler.Label label, Action<ArtworkDataObject, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
+    public ArtworkJsonAssetLoader(AddressableLoader.Label label, Action<ArtworkDateWrapper, AddressableLoader.Label> OnComplete) : base(label, OnComplete)
     {
     }
 }
 
-public class ChallengeModeStageDataJsonAssetLoader : SingleJsonAssetLoader<Challenge.ChallengeMode.StageDataWrapper>
+public class ChallengeModeStageDataJsonAssetLoader : SingleJsonAssetLoader<LevelDataWrapper>
 {
-    public ChallengeModeStageDataJsonAssetLoader(AddressableHandler.Label label, Action<Challenge.ChallengeMode.StageDataWrapper, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
+    public ChallengeModeStageDataJsonAssetLoader(AddressableLoader.Label label, Action<LevelDataWrapper, AddressableLoader.Label> OnComplete) : base(label, OnComplete)
     {
     }
 }

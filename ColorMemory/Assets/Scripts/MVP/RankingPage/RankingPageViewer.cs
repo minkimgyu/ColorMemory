@@ -36,11 +36,13 @@ public class RankingPageViewer
     public void AddRankingItemToScroll(SpawnableUI rankingUI)
     {
         rankingUI.transform.SetParent(_scrollContent);
+        rankingUI.transform.localScale = Vector3.one;
     }
 
     public void AddMyRankingItem(SpawnableUI rankingUI)
     {
         rankingUI.transform.SetParent(_myRankingContent);
+        rankingUI.transform.localScale = Vector3.one;
         rankingUI.ResetPosition();
     }
 }

@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using NetworkService.Manager;
+using NetworkService.DTO;
+using System.Threading.Tasks;
+using DG.Tweening;
 
 public class HomePage : MonoBehaviour
 {
@@ -11,7 +15,8 @@ public class HomePage : MonoBehaviour
         Main, // -> Collection, Ranking, Shop
         Collection, // -> Main, Ranking
         Ranking, // -> Main, Shop
-        Shop // -> Main, Ranking
+        Shop, // -> Main, Ranking
+        Setting
     }
 
     EffectFactory _effectFactory;
@@ -36,12 +41,22 @@ public class HomePage : MonoBehaviour
     [SerializeField] ToggleBtn _toggleBtn;
     [SerializeField] Transform _dotParent;
     [SerializeField] Button _playBtn;
+    [SerializeField] TMP_Text _playBtnTxt;
 
     [Header("Collect")]
     [SerializeField] GameObject _collectionContent;
 
     [SerializeField] GameObject _selectStageContent;
     [SerializeField] Transform _stageUIContent;
+
+    [SerializeField] GameObject _artworkInfoContent;
+    [SerializeField] GameObject _artworkCompleteRatioContent;
+
+    [SerializeField] CustomProgressUI _currentComplete;
+    [SerializeField] TMP_Text _currentCompleteRatio;
+
+    [SerializeField] CustomProgressUI _totalComplete;
+    [SerializeField] TMP_Text _totalCompleteRatio;
 
     [SerializeField] TMP_Text _titleTxt;
     [SerializeField] TMP_Text _descriptionTxt;
@@ -52,7 +67,21 @@ public class HomePage : MonoBehaviour
     [SerializeField] Button _playCollectModeBtn;
     [SerializeField] Button _exitBtn;
 
+    [SerializeField] GameObject _stageDetailContent;
+    [SerializeField] TMP_Text _stageUsedHintUseCount;
+    [SerializeField] TMP_Text _stageWrongCount;
+
     [SerializeField] ArtworkScrollUI _artworkScrollUI;
+
+    [SerializeField] FilterUI _filterScrollUI;
+    [SerializeField] Button _filterOpenBtn;
+    [SerializeField] Button _filterExitBtn;
+    [SerializeField] GameObject _filterContent;
+    [SerializeField] TMP_Text _collectionRatioText;
+
+    [SerializeField] Toggle[] _ownToggles;
+    [SerializeField] Toggle[] _rankToggles;
+    [SerializeField] Toggle[] _dateToggles;
 
     [Header("Ranking")]
     [SerializeField] GameObject _rankingContent;
@@ -63,39 +92,91 @@ public class HomePage : MonoBehaviour
     [SerializeField] GameObject _shopContent;
     [SerializeField] Transform _shopScrollContent;
 
+    [Header("Setting")]
+    [SerializeField] SettingPage _settingPage;
+
     FSM<InnerPageState> _pageFsm;
 
-    private void Start()
+    TopElementPresenter _topElementPresenter;
+
+    IAssetService _currencyService;
+    IArtDataService _artDataLoaderService;
+  
+
+    private async void Start()
     {
-        AddressableHandler addressableHandler = FindObjectOfType<AddressableHandler>();
+        string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
+        _currencyService = new CurrencyService();
+        _artDataLoaderService = new ArtDataLoaderService();
+
+        Dictionary<int, ArtData> artDatas = await _artDataLoaderService.GetArtData(userId);
+        if (artDatas == null) return;
+
+        int money = await _currencyService.GetCurrency(userId);
+        if (money == -1) return;
+
+        AddressableLoader addressableHandler = FindObjectOfType<AddressableLoader>();
         if (addressableHandler == null) return;
 
         _effectFactory = new EffectFactory(addressableHandler.EffectAssets);
         _dotFactory = new DotFactory(addressableHandler.DotAssets);
 
         StageUIFactory stageUIFactory = new StageUIFactory(
-           addressableHandler.SpawnableUIAssets[SpawnableUI.Name.StageSelectBtnUI]
+           addressableHandler.SpawnableUIAssets[SpawnableUI.Name.StageSelectBtnUI],
+            addressableHandler.StageRankIconAssets
        );
 
         ArtworkUIFactory artWorkUIFactory = new ArtworkUIFactory(
             addressableHandler.SpawnableUIAssets[SpawnableUI.Name.ArtworkUI],
             addressableHandler.ArtSpriteAsserts,
-            addressableHandler.ArtworkFrameAsserts
+            addressableHandler.ArtworkFrameAssets,
+            addressableHandler.RankDecorationIconAssets
         );
 
         RankingUIFactory rankingUIFactory = new RankingUIFactory(
             addressableHandler.SpawnableUIAssets[SpawnableUI.Name.RankingUI],
-            addressableHandler.RankingIconAssets
+            addressableHandler.RectProfileIconAssets
+        );
+
+        ShopBundleUIFactory shopBundleUIFactory = new ShopBundleUIFactory(
+            addressableHandler.SpawnableUIAssets[SpawnableUI.Name.ShopBundleUI]
+        );
+
+        FilteredArtworkFactory filteredArtworkFactory = new FilteredArtworkFactory(
+            addressableHandler.SpawnableUIAssets[SpawnableUI.Name.FilteredArtworkUI],
+            addressableHandler.ArtSpriteAsserts
+        );
+
+        FilterItemFactory filterItemFactory = new FilterItemFactory(
+            addressableHandler.SpawnableUIAssets[SpawnableUI.Name.FilterItemUI],
+            addressableHandler.RankBadgeIconAssets
         );
 
         _shopBtn.onClick.AddListener(() => { _pageFsm.OnClickShopBtn(); });
         _homeBtn.onClick.AddListener(() => { _pageFsm.OnClickHomeBtn(); });
         _rankingBtn.onClick.AddListener(() => { _pageFsm.OnClickRankingBtn(); });
+        _settingBtn.onClick.AddListener(() => { _settingPage.TogglePanel(); });
 
-        _settingBtn.onClick.AddListener(() => { _sideSheetUI.TogglePanel(); });
+
+        TopElementModel topElementModel = new TopElementModel();
+        TopElementViewer topElementViewer = new TopElementViewer(_goldTxt);
+        _topElementPresenter = new TopElementPresenter(topElementViewer, topElementModel);
+
+        _topElementPresenter.ChangeGoldCount(money);
 
         SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
-        _goldTxt.text = data.Money.ToString();
+        _settingPage.Initialize(data.UserName, addressableHandler.CircleProfileIconAssets, () => { _pageFsm.SetState(InnerPageState.Main); });
+        _filterScrollUI.Initialize();
+        _filterScrollUI.Activate(false);
+
+
+        InnerPageState startState = InnerPageState.Main;
+        if (data.GoToCollectPage == true)
+        {
+            startState = InnerPageState.Collection;
+            ServiceLocater.ReturnSaveManager().ChangeGoToCollectPage(false);
+        }
+       
 
         _pageFsm = new FSM<InnerPageState>();
         _pageFsm.Initialize(new Dictionary<InnerPageState, BaseState<InnerPageState>>
@@ -109,6 +190,7 @@ public class HomePage : MonoBehaviour
                 _toggleBtn,
                 _dotParent,
                 _playBtn,
+                _playBtnTxt,
                 _mainContent,
                 addressableHandler.ModeTitleIconAssets,
                 _pageFsm)
@@ -117,6 +199,15 @@ public class HomePage : MonoBehaviour
                 InnerPageState.Collection, new CollectionPageState(
                 _homeBtn,
                 _collectionContent,
+                _artworkInfoContent,
+                _artworkCompleteRatioContent,
+
+                _currentComplete,
+                _currentCompleteRatio,
+
+                _totalComplete,
+                _totalCompleteRatio,
+
                 _titleTxt,
                 _descriptionTxt,
                 _completeSlider,
@@ -126,9 +217,29 @@ public class HomePage : MonoBehaviour
                 _stageUIContent,
                 _exitBtn,
                 _playCollectModeBtn,
+                _stageDetailContent,
+                _stageUsedHintUseCount,
+                _stageWrongCount,
+
+
+                _filterScrollUI,
+                _filterOpenBtn,
+                _filterExitBtn,
+                _filterContent,
+                _collectionRatioText,
+
+                _ownToggles,
+                _rankToggles,
+                _dateToggles,
+
                 _artworkScrollUI,
+
                 artWorkUIFactory,
                 stageUIFactory,
+                filteredArtworkFactory,
+                filterItemFactory,
+
+                artDatas,
                 addressableHandler.ArtworkJsonAsset.Data,
                 addressableHandler.CollectiveArtJsonAsserts,
                 _pageFsm)
@@ -139,14 +250,17 @@ public class HomePage : MonoBehaviour
                 _rankingScrollContent,
                 _myRankingContent,
                 rankingUIFactory,
+                new Top10RankingService(),
                 _pageFsm)
             },
             {
                 InnerPageState.Shop, new ShopPageState(
                 _shopContent,
                 _shopScrollContent,
+                shopBundleUIFactory,
+                _topElementPresenter,
                 _pageFsm)
             },
-        }, InnerPageState.Main);
+        }, startState);
     }
 }

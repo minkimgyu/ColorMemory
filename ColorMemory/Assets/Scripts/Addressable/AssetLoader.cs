@@ -8,28 +8,35 @@ using System;
 
 public class ModeTitleIconAssetLoader : AssetLoader<GameMode.Type, Sprite, Sprite>
 {
-    public ModeTitleIconAssetLoader(AddressableHandler.Label label, Action<Dictionary<GameMode.Type, Sprite>, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
+    public ModeTitleIconAssetLoader(AddressableLoader.Label label, Action<Dictionary<GameMode.Type, Sprite>, AddressableLoader.Label> OnComplete) : base(label, OnComplete)
     {
     }
 }
 
-public class ArtSpriteAssetLoader : AssetLoader<ArtName, Sprite, Sprite>
+public class ArtSpriteAssetLoader : IntKeyAssetLoader<Sprite, Sprite>
 {
-    public ArtSpriteAssetLoader(AddressableHandler.Label label, Action<Dictionary<ArtName, Sprite>, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
+    public ArtSpriteAssetLoader(AddressableLoader.Label label, Action<Dictionary<int, Sprite>, AddressableLoader.Label> OnComplete) : base(label, OnComplete)
     {
     }
 }
 
-public class ArtworkFrameAssetLoader : AssetLoader<Rank, Sprite, Sprite>
+public class ArtworkFrameAssetLoader : AssetLoader<NetworkService.DTO.Rank, Sprite, Sprite>
 {
-    public ArtworkFrameAssetLoader(AddressableHandler.Label label, Action<Dictionary<Rank, Sprite>, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
+    public ArtworkFrameAssetLoader(AddressableLoader.Label label, Action<Dictionary<NetworkService.DTO.Rank, Sprite>, AddressableLoader.Label> OnComplete) : base(label, OnComplete)
     {
     }
 }
 
-public class RankingIconAssetLoader : AssetLoader<RankingIconName, Sprite, Sprite>
+public class ProfileIconAssetLoader : IntKeyAssetLoader<Sprite, Sprite>
 {
-    public RankingIconAssetLoader(AddressableHandler.Label label, Action<Dictionary<RankingIconName, Sprite>, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
+    public ProfileIconAssetLoader(AddressableLoader.Label label, Action<Dictionary<int, Sprite>, AddressableLoader.Label> OnComplete) : base(label, OnComplete)
+    {
+    }
+}
+
+public class RankIconAssetLoader : AssetLoader<NetworkService.DTO.Rank, Sprite, Sprite>
+{
+    public RankIconAssetLoader(AddressableLoader.Label label, Action<Dictionary<NetworkService.DTO.Rank, Sprite>, AddressableLoader.Label> OnComplete) : base(label, OnComplete)
     {
     }
 }
@@ -46,7 +53,7 @@ public class RankingIconAssetLoader : AssetLoader<RankingIconName, Sprite, Sprit
 
 abstract public class AssetLoader<Key, Value, Type> : MultipleAssetLoader<Key, Value, Type>
 {
-    protected AssetLoader(AddressableHandler.Label label, Action<Dictionary<Key, Value>, AddressableHandler.Label> OnComplete) : base(label, OnComplete)
+    protected AssetLoader(AddressableLoader.Label label, Action<Dictionary<Key, Value>, AddressableLoader.Label> OnComplete) : base(label, OnComplete)
     {
     }
 
@@ -74,3 +81,41 @@ abstract public class AssetLoader<Key, Value, Type> : MultipleAssetLoader<Key, V
     }
 }
 
+abstract public class IntKeyAssetLoader<Value, Type> : MultipleAssetLoader<int, Value, Type>
+{
+    protected IntKeyAssetLoader(AddressableLoader.Label label, Action<Dictionary<int, Value>, AddressableLoader.Label> OnComplete) : base(label, OnComplete)
+    {
+    }
+
+    protected override void LoadAsset(IResourceLocation location, Dictionary<int, Value> dictionary, Action OnComplete)
+    {
+        Addressables.LoadAssetAsync<Value>(location).Completed +=
+        (handle) =>
+        {
+            switch (handle.Status)
+            {
+                case AsyncOperationStatus.Succeeded:
+                    int key = int.Parse(location.PrimaryKey);
+
+                    dictionary.Add(key, handle.Result);
+                    OnComplete?.Invoke();
+                    break;
+
+                case AsyncOperationStatus.Failed:
+                    break;
+
+                default:
+                    break;
+            }
+        };
+    }
+}
+
+public class GoldIconAssetLoader : SingleAssetLoader<Sprite, Sprite>
+{
+    public GoldIconAssetLoader(AddressableLoader.Label label, Action<Sprite, AddressableLoader.Label> OnComplete) : base(label, OnComplete)
+    {
+    }
+
+    protected override void LoadAsset(Sprite item) => _asset = item;
+}

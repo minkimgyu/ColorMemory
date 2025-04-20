@@ -21,11 +21,11 @@ public class ShopPagePresenter
 
     public void DestroyShopItems()
     {
-        _shopPageViewer.DestoryRankingItems();
+        _shopPageViewer.DestoryShopItems();
     }
 
-    public void AddShopItems(SpawnableUI rankingUI)
+    public void AddShopItem(SpawnableUI rankingUI)
     {
-        _shopPageViewer.AddRankingItemToScroll(rankingUI);
+        _shopPageViewer.AddShopItem(rankingUI);
     }
 }

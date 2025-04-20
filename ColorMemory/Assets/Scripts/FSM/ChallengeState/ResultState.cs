@@ -1,7 +1,11 @@
+using NetworkService.DTO;
+using NetworkService.Manager;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Challenge
 {
@@ -11,39 +15,26 @@ namespace Challenge
         RankingUIFactory _rankingUIFactory;
 
         ChallengeMode.ModeData _modeData;
+        IRankingService _nearRankingService;
+        IRankingService _weeklyScoreUpdateService;
+        IAssetService _transactionService;
 
         public ResultState(
             FSM<ChallengeMode.State> fsm,
+            IRankingService nearRankingService,
+            IRankingService weeklyScoreUpdateService,
+            IAssetService transactionService,
             RankingUIFactory rankingUIFactory,
             ChallengeStageUIPresenter challengeStageUIPresenter,
             ChallengeMode.ModeData modeData) : base(fsm)
         {
+            _nearRankingService = nearRankingService;
+            _weeklyScoreUpdateService = weeklyScoreUpdateService;
+            _transactionService = transactionService;
+
             _rankingUIFactory = rankingUIFactory;
             _challengeStageUIPresenter = challengeStageUIPresenter;
             _modeData = modeData;
-        }
-
-        RankingData GetRankingData()
-        {
-            List<PersonalRankingData> topRankingDatas = new List<PersonalRankingData>();
-            string[] names = { "Alice", "Bob", "Charlie", "David", "Eve", "Frank", "Grace", "Hank", "Ivy", "Jack" };
-
-            int count = 10; // 생성할 데이터 개수
-            for (int i = 0; i < count; i++)
-            {
-                RankingIconName iconName = (RankingIconName)UnityEngine.Random.Range(0, Enum.GetValues(typeof(RankingIconName)).Length);
-                string name = names[i];
-                int score = UnityEngine.Random.Range(0, 100000000);
-                int rank = i + 1; // 1부터 시작하는 순위
-
-                topRankingDatas.Add(new PersonalRankingData(iconName, name, score, rank));
-            }
-
-            // 생성시켜주기
-            PersonalRankingData myRankingData = new PersonalRankingData((RankingIconName)1, "Meal", 10000000, 15);
-
-            RankingData rankingData = new RankingData(topRankingDatas, myRankingData);
-            return rankingData;
         }
 
         public override void OnClickRetryBtn()
@@ -56,24 +47,79 @@ namespace Challenge
             ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.HomeScene);
         }
 
-        public override void OnStateEnter()
+        const int moneyDivideValue = 10;
+
+        int GetMoney()
         {
-            _challengeStageUIPresenter.ActivateGameResultPanel(true);
-            _challengeStageUIPresenter.ChangeGoldCount(_modeData.MyScore);
+            return _modeData.MyScore / moneyDivideValue;
+        }
 
-            // 생성시켜주기
-            RankingData rankingData = GetRankingData();
+        async Task<bool> SendDataToServer()
+        {
+            ScoreManager scoreManager = new ScoreManager();
+            MoneyManager moneyManager = new MoneyManager();
 
-            for (int i = 0; i < rankingData.OtherRankingDatas.Count; i++)
+            try
             {
-                SpawnableUI rankingUI = _rankingUIFactory.Create(rankingData.OtherRankingDatas[i]);
-                _challengeStageUIPresenter.AddRanking(rankingUI);
+                string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
+
+
+                await scoreManager.UpdatePlayerWeeklyScoreAsync(userId, _modeData.MyScore);
+
+                int currentMoneyInServer = await moneyManager.GetMoneyAsync(userId);
+                int useMoney = currentMoneyInServer - _modeData.GoldCount;
+
+                int money = GetMoney();
+                await moneyManager.PayPlayerMoneyAsync(userId, useMoney);
+                await moneyManager.EarnPlayerMoneyAsync(userId, money);
+            }
+            catch (Exception e)
+            {
+                Debug.Log(e);
+                Debug.Log("서버로 데이터를 전송하지 못 함");
+                return false;
             }
 
-            SpawnableUI myRankingUI = _rankingUIFactory.Create(rankingData.MyRankingData);
-            _challengeStageUIPresenter.AddRanking(myRankingUI, true);
+            return true;
+        }
 
-            int totalCount = rankingData.OtherRankingDatas.Count + 1;
+        const int _nearRange = 2;
+
+        public override async void OnStateEnter()
+        {
+            string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
+
+            bool canUpdate = await _transactionService.ProcessTransaction(userId, _modeData.GoldCount, GetMoney());
+            if (canUpdate == false) return;
+
+            Tuple<List<PersonalRankingData>, int> rankingData = await _nearRankingService.GetNearRankingData(_nearRange, userId);
+            if (rankingData == null) return;
+
+            int money = GetMoney();
+            _challengeStageUIPresenter.ActivateGameResultPanel(true);
+            _challengeStageUIPresenter.ChangeResultGoldCount(money);
+
+
+            for (int i = 0; i < rankingData.Item1.Count; i++)
+            {
+                SpawnableUI rankingUI = _rankingUIFactory.Create(rankingData.Item1[i]);
+                rankingUI.ChangeSelect(false);
+                Vector3 size;
+
+                if(i == rankingData.Item2)
+                {
+                    rankingUI.ChangeSelect(true);
+                    size = Vector3.one;
+                }
+                else
+                {
+                    size = Vector3.one * 0.8f;
+                }
+
+                _challengeStageUIPresenter.AddRanking(rankingUI, size);
+            }
+
+            int totalCount = rankingData.Item1.Count; // 5개
             int middleIndex = totalCount / 2;
             _challengeStageUIPresenter.SetUpRankingScroll(totalCount, middleIndex);
         }

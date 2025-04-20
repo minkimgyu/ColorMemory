@@ -9,13 +9,23 @@ namespace Collect
 {
     public class CollectMode : GameMode
     {
+        [Header("Play")]
+        [SerializeField] GameObject _playPanel;
+
         [Header("Top")]
         [SerializeField] TMP_Text _titleText;
         [SerializeField] GameObject _timerContent;
         [SerializeField] Image _timerSlider;
+        [SerializeField] Button _pauseBtn;
 
         [SerializeField] TMP_Text _leftTimeText;
         [SerializeField] TMP_Text _totalTimeText;
+
+        [SerializeField] TMP_Text _progressText;
+
+        [SerializeField] GameObject _detailContent;
+        [SerializeField] TMP_Text _hintUsageText;
+        [SerializeField] TMP_Text _wrongCountText;
 
         [Header("Middle")]
         [SerializeField] GridLayoutGroup _dotGridContent;
@@ -23,6 +33,19 @@ namespace Collect
         [Header("Bottom")]
         [SerializeField] ToggleGroup _penToggleGroup;
         [SerializeField] RectTransform _penContent;
+        [SerializeField] RectTransform _bottomContent;
+        [SerializeField] Button _skipBtn;
+
+        [Header("Setting")]
+        [SerializeField] GameObject _pausePanel;
+        [SerializeField] Button _pauseExitBtn;
+        [SerializeField] Button _gameExitBtn;
+
+        [SerializeField] CustomSlider _bgmSlider;
+        [SerializeField] TMP_Text _bgmLeftText;
+
+        [SerializeField] CustomSlider _sfxSlider;
+        [SerializeField] TMP_Text _sfxLeftText;
 
         [Header("ModeData")]
         //[SerializeField] Color[] _pickColors;
@@ -32,55 +55,72 @@ namespace Collect
 
         [Header("Hint")]
         [SerializeField] Button _goBackBtn;
-
-        [SerializeField] Button _randomHintBtn;
-        [SerializeField] Button _revealSameColorHintBtn;
-
-        [SerializeField] GameObject _hintPanel;
         [SerializeField] GameObject _rememberPanel;
+        [SerializeField] TMP_Text _hintInfoText;
 
         [Header("Clear")]
         [SerializeField] GameObject _gameClearPanel;
-        [SerializeField] Image _cropArtworkImg;
+        [SerializeField] TMP_Text _clearTitleText;
+        [SerializeField] TMP_Text _clearContentText;
         [SerializeField] Button _nextStageBtn;
-        [SerializeField] Button _gameClearExitBtn;
+        [SerializeField] Button _clearExitBtn;
 
         [Header("Result")]
         [SerializeField] GameObject _gameResultPanel;
-        [SerializeField] TMP_Text _goldCount;
-        [SerializeField] Button _exitBtn;
+        [SerializeField] TMP_Text _gameResultTitle;
 
+        [SerializeField] ArtworkUI _artworkUI;
+        [SerializeField] TMP_Text _hintUseCount;
+        [SerializeField] TMP_Text _wrongCount;
 
-        CollectiveArtData.Section _section;
+        [SerializeField] Image _rankBackground;
+        [SerializeField] Image _rankIcon;
+        [SerializeField] TMP_Text _rankText;
+
+        [SerializeField] CustomProgressUI _currentCollectRatio;
+        [SerializeField] TMP_Text _currentCollectText;
+
+        [SerializeField] CustomProgressUI _totalCollectRatio;
+        [SerializeField] TMP_Text _totalCollectText;
+        [SerializeField] Button _nextBtn;
+
+        [SerializeField] Canvas _canvas;
+        [SerializeField] RectTransform _nextPanel;
+
+        CollectArtData.Section _section;
         MapData _mapData;
         Dot[,] _dots;
         Dot[] _colorPenDots;
 
         public class Data
         {
+            string _title;
             float _memorizeDuration;
             int _myScore;
 
             Color[] _pickColors; // 색상 종류
 
-            bool[,] _isPlayed; // 플레이 여부
-            int[,] _goBackCount;
+            int _goBackCount; // 힌트 사용 개수
+            int _wrongCount; // 틀린 개수
 
-            public Data(Vector2Int sectionSize, int memorizeDuration, int myScore = 0)
+            public Data(Vector2Int sectionSize, int memorizeDuration, string title)
             {
-                _myScore = myScore;
+                _myScore = 0;
                 _memorizeDuration = memorizeDuration;
+                _title = title;
 
                 _pickColors = new Color[3];
-                _isPlayed = new bool[sectionSize.x, sectionSize.y];
-                _goBackCount = new int[sectionSize.x, sectionSize.y];
+                _goBackCount = 0;
+                _wrongCount = 0;
             }
 
             public float MemorizeDuration { get => _memorizeDuration; set => _memorizeDuration = value; }
             public int MyScore { get => _myScore; set => _myScore = value; }
-            public bool[,] IsPlayed { get => _isPlayed; set => _isPlayed = value; }
-            public int[,] GoBackCount { get => _goBackCount; set => _goBackCount = value; }
+            public int GoBackCount { get => _goBackCount; set => _goBackCount = value; }
+            public int WrongCount { get => _wrongCount; set => _wrongCount = value; }
+
             public Color[] PickColors { get => _pickColors; set => _pickColors = value; }
+            public string Title { get => _title; set => _title = value; }
         }
 
         CollectMode.Data _modeData;
@@ -135,11 +175,6 @@ namespace Collect
             return _modeData;
         }
 
-        void OnClickExitBtn()
-        {
-            ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.HomeScene);
-        }
-
         private void Update()
         {
             _fsm.OnUpdate();
@@ -147,44 +182,87 @@ namespace Collect
 
         public override void Initialize()
         {
-            AddressableHandler addressableHandler = FindObjectOfType<AddressableHandler>();
+            AddressableLoader addressableHandler = FindObjectOfType<AddressableLoader>();
             if (addressableHandler == null) return;
+
+            Vector2 size = _canvas.gameObject.GetComponent<RectTransform>().sizeDelta;
+            _nextPanel.sizeDelta = new Vector2(size.x, _nextPanel.sizeDelta.y); // 사이즈 맞춰주기
 
             SaveData saveData = ServiceLocater.ReturnSaveManager().GetSaveData();
 
-            ArtName artName = (ArtName)Enum.Parse(typeof(ArtName), saveData.SelectedArtworkName);
-            Vector2Int sectionIndex = saveData.SelectedArtworkSectionIndex;
+            int artworkIndex = saveData.SelectedArtworkKey;
+            CollectArtData artData = addressableHandler.CollectiveArtJsonAsserts[artworkIndex];
 
-            CollectiveArtData artData = addressableHandler.CollectiveArtJsonAsserts[artName];
-
-            _section = artData.Sections[sectionIndex.x][sectionIndex.y];
+            _section = artData.Sections[saveData.SelectedArtworkSectionIndex.x][saveData.SelectedArtworkSectionIndex.y];
 
             Vector2Int index = new Vector2Int(_section.Blocks.Count, _section.Blocks[0].Count);
-            _modeData = new Data(index, 5);
-
+            _modeData = new Data(index, 5, addressableHandler.ArtworkJsonAsset.Data[artworkIndex].Title);
 
             CollectStageUIModel model = new CollectStageUIModel();
+            CollectStageUIPresenter presenter = new CollectStageUIPresenter(model, () => { _fsm.SetState(State.Result); });
             CollectStageUIViewer viewer = new CollectStageUIViewer(
+                _playPanel,
                 _titleText,
                 _timerContent,
                 _timerSlider,
                 _leftTimeText,
                 _totalTimeText,
-                _hintPanel,
+                _progressText,
+
+                _detailContent,
+                _hintUsageText,
+                _wrongCountText,
+
+                _bottomContent,
+                _skipBtn,
+
                 _rememberPanel,
+                _hintInfoText,
+
                 _gameClearPanel,
-                _cropArtworkImg,
+                _clearTitleText,
+                _clearContentText,
+                _nextStageBtn,
+                _clearExitBtn,
+
+                _pausePanel,
+                _pauseBtn,
+                _pauseExitBtn,
+                _gameExitBtn,
+
+                _bgmSlider,
+                _bgmLeftText,
+
+                _sfxSlider,
+                _sfxLeftText,
+
                 _gameResultPanel,
-                _goldCount);
+                _gameResultTitle,
+                _artworkUI,
+                _hintUseCount,
+                _wrongCount,
 
-            CollectStageUIPresenter presenter = new CollectStageUIPresenter(model, viewer);
+                _rankBackground,
+                _rankIcon,
+                _rankText,
 
-            _gameClearExitBtn.onClick.AddListener(() => { _fsm.OnClickExitBtn(); });
+                _currentCollectRatio,
+                _currentCollectText,
+
+                _totalCollectRatio,
+                _totalCollectText,
+                presenter);
+
+            presenter.InjectViewer(viewer);
+
+            _skipBtn.onClick.AddListener(() => { _fsm.OnClickSkipBtn(); });
+
+            _nextBtn.onClick.AddListener(() => { _fsm.OnClickNextBtn(); });
+
+            _clearExitBtn.onClick.AddListener(() => { _fsm.OnClickExitBtn(); });
             _nextStageBtn.onClick.AddListener(() => { _fsm.OnClickNextStageBtn(); });
 
             _goBackBtn.onClick.AddListener(() => { _fsm.OnClickGoBackHint(); });
-            _randomHintBtn.onClick.AddListener(() => { _fsm.OnClickRandomFillHint(); });
-            _revealSameColorHintBtn.onClick.AddListener(() => { _fsm.OnClickRevealSameColorHint(); });
 
             _fsm = new FSM<State>();
             Dictionary<State, BaseState<State>> states = new Dictionary<State, BaseState<State>>()
@@ -208,11 +286,24 @@ namespace Collect
 
                 { State.Memorize, new MemorizeState(_fsm, _modeData, presenter, GetLevelData) },
                 { State.Paint, new PaintState(_fsm, _modeData, presenter, GetLevelData) },
-                { State.Clear, new ClearState(_fsm, _modeData, artData, presenter, GetLevelData, DestroyDots) },
-                { State.Result, new GameResultState(_fsm, presenter, _modeData) }
+                { State.Clear, new ClearState(
+                    _fsm,
+                    new ArtDataLoaderService(),
+                    new ArtDataUpdaterService(),
+                    _modeData, 
+                    artData, 
+                    presenter, 
+                    GetLevelData, 
+                    DestroyDots) },
+                { State.Result, new ResultState(
+                    _fsm,
+                    new ArtDataLoaderService(),
+                    new ArtDataUpdaterService(),
+                    presenter,
+                    _modeData) }
             };
 
-            _fsm.Initialize(states, State.Initialize, sectionIndex);
+            _fsm.Initialize(states, State.Initialize);
         }
     }
 }

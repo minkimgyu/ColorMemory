@@ -1,5 +1,6 @@
 using DG.Tweening;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
@@ -18,6 +19,7 @@ namespace Challenge
 
         Timer _timer;
         ChallengeMode.ModeData _modeData;
+        List<LevelData> _stageDatas;
 
         Func<Tuple<Dot[,], Dot[], MapData>> GetStage;
 
@@ -27,6 +29,7 @@ namespace Challenge
             FSM<ChallengeMode.State> fsm,
             Color[] pickColors,
             ChallengeMode.ModeData modeData,
+            List<LevelData> stageDatas,
 
             ChallengeStageUIPresenter challengeStageUIPresenter,
             Func<Tuple<Dot[,], Dot[], MapData>> GetStage
@@ -34,6 +37,7 @@ namespace Challenge
         {
             _pickColors = pickColors;
             _modeData = modeData;
+            _stageDatas = stageDatas;
             _timer = new Timer();
 
             _challengeStageUIPresenter = challengeStageUIPresenter;
@@ -43,6 +47,11 @@ namespace Challenge
         Color GetDotColor(int row, int col)
         {
             return _pickColors[_mapData.DotColor[row, col]];
+        }
+
+        public override void OnClickSkipBtn()
+        {
+            GoToPaintState();
         }
 
         public override void OnStateEnter()
@@ -73,9 +82,42 @@ namespace Challenge
                 }
             }
 
+            int index = Mathf.Clamp(_modeData.StageCount - 1, 0, _stageDatas.Count - 1);
+            float memorizeDuration = _stageDatas[index].MemorizeDuration;
+
+            _challengeStageUIPresenter.ActivateBottomContent(false);
+            _challengeStageUIPresenter.ActivateSkipBtn(true);
+
             _challengeStageUIPresenter.ActivateRememberPanel(true);
-            _challengeStageUIPresenter.ChangeTotalTime(_modeData.MemorizeDuration);
-            _timer.Start(_modeData.MemorizeDuration);
+            _challengeStageUIPresenter.ChangeTotalTime(memorizeDuration);
+            _timer.Start(memorizeDuration);
+        }
+
+        void GoToPaintState()
+        {
+            _challengeStageUIPresenter.ActivateBottomContent(true);
+            _challengeStageUIPresenter.ActivateSkipBtn(false);
+
+            _challengeStageUIPresenter.ActivateRememberPanel(false);
+
+            // dot 뒤집는 코드 추가
+            for (int i = 0; i < _levelSize.x; i++)
+            {
+                for (int j = 0; j < _levelSize.y; j++)
+                {
+                    _dots[i, j].Expand(_fadeColor, 1.5f);
+                }
+            }
+
+            _timer.Reset(); // 타이머 리셋
+
+            // 일정 시간 지나면 다음 State로 이동
+            DOVirtual.DelayedCall(1.5f, () =>
+            {
+                // 만약 현재 상태가 다른 상태라면 실행되지 못하게 막아야함
+                if (_fsm.CurrentState != ChallengeMode.State.Memorize) return;
+                _fsm.SetState(ChallengeMode.State.Paint);
+            });
         }
 
         public override void OnStateUpdate()
@@ -84,28 +126,7 @@ namespace Challenge
 
             if (_timer.CurrentState == Timer.State.Finish)
             {
-                _challengeStageUIPresenter.ActivateRememberPanel(false);
-
-                // dot 뒤집는 코드 추가
-                for (int i = 0; i < _levelSize.x; i++)
-                {
-                    for (int j = 0; j < _levelSize.y; j++)
-                    {
-                        Image.FillMethod fillMethod = (Image.FillMethod)Random.Range(0, 5);
-                        float duration = Random.Range(0, 1.5f);
-
-                        _dots[i, j].Fade(_fadeColor, fillMethod, duration);
-                    }
-                }
-
-
-                _timer.Reset(); // 타이머 리셋
-
-                // 일정 시간 지나면 다음 State로 이동
-                DOVirtual.DelayedCall(1.5f, () =>
-                {
-                    _fsm.SetState(ChallengeMode.State.Paint);
-                });
+                GoToPaintState();
                 return;
             }
         }
