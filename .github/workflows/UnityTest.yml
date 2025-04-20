@@ -1,0 +1,45 @@
+# .github/workflows/UnityTest.yml
+
+name: UnityTest
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches: [ main ]
+
+permissions: write-all
+
+jobs:
+  testRunner:
+    name: 🧪 Run Unity Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Cache Library
+        uses: actions/cache@v4
+        with:
+          path: Library
+          key: Library-Test-${{ hashFiles('ColorMemory/Assets/**', 'ColorMemory/Packages/**', 'ColorMemory/ProjectSettings/**') }}
+          restore-keys: |
+            Library-Test-
+
+      - name: Run Tests
+        uses: game-ci/unity-test-runner@v4
+        with:
+          projectPath: ./ColorMemory
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TestResults
+          path: artifacts
