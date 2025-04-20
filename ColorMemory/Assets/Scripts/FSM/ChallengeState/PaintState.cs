@@ -333,7 +333,7 @@ namespace Challenge
 
             float leftRatio = _timer.Ratio;
             _timer.Reset(); // 타이머 리셋
-            _fsm.SetState(ChallengeMode.State.StageClear, new PaintState.Data(leftRatio));
+            _fsm.SetState(ChallengeMode.State.Clear, new PaintState.Data(leftRatio));
         }
 
         // 색 같은 거끼리 bfs 돌려서 확인해줌

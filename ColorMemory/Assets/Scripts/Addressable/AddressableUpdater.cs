@@ -8,10 +8,13 @@ using System.Linq;
 
 public class AddressableUpdater : MonoBehaviour
 {
-    public void Initialize()
+    List<AssetLabelReference> _assetLabels;
+
+    public void Initialize(List<AssetLabelReference> assetLabels)
     {
         _patchSize = 0;
         _patchMap = new Dictionary<string, long>();
+        _assetLabels = assetLabels;
     }
 
     public void UpdateAddressable(Action OnCompleted)
@@ -20,7 +23,7 @@ public class AddressableUpdater : MonoBehaviour
         StartCoroutine(InitAddressable());
     }
 
-    public void AddEvents(Action<double, List<string>> OnHavePatch, Action<float> OnProgress)
+    public void AddEvents(Action<string, List<string>> OnHavePatch, Action<float> OnProgress)
     {
         this.OnHavePatch = OnHavePatch;
         this.OnProgress = OnProgress;
@@ -28,7 +31,7 @@ public class AddressableUpdater : MonoBehaviour
 
     Action OnCompleted;
 
-    Action<double, List<string>> OnHavePatch;
+    Action<string, List<string>> OnHavePatch;
     Action<float> OnProgress;
 
     long _patchSize;
@@ -41,13 +44,17 @@ public class AddressableUpdater : MonoBehaviour
         var init = Addressables.InitializeAsync();
         yield return init;
 
-        StartCoroutine(GetAllLabels((labels) => // 모든 라벨을 받아서 넘겨주기
+        if(_assetLabels != null)
         {
-            if(labels != null)
+            List<string> labels = new List<string>();
+
+            for (int i = 0; i < _assetLabels.Count; i++)
             {
-                StartCoroutine(CheckUpdateFiles(labels));
+                labels.Add(_assetLabels[i].labelString);
             }
-        }));
+
+            StartCoroutine(CheckUpdateFiles(labels));
+        }
     }
 
     IEnumerator CheckUpdateFiles(List<string> labels)
@@ -62,48 +69,39 @@ public class AddressableUpdater : MonoBehaviour
 
         if(_patchSize > decimal.Zero)
         {
-            OnHavePatch?.Invoke(_patchSize, labels);
+            Debug.Log("패치가 필요함");
+
+            string patchSize = FormatBytes(_patchSize);
+            OnHavePatch?.Invoke(patchSize, labels);
             // 패치가 필요한 경우임
         }
         else
         {
+            Debug.Log("패치 내역이 존재하지 않음");
             OnCompleted?.Invoke();
             // 필요 없다면 바로 완료시키기
         }
         // _patchSize 활용
     }
 
-    IEnumerator GetAllLabels(Action<List<string>> OnCompleted)
+    public string FormatBytes(long bytes)
     {
-        // 모든 리소스 로케이션 불러오기
-        var locationsHandle = Addressables.LoadResourceLocationsAsync((object)null, typeof(UnityEngine.Object));
-        yield return locationsHandle;
+        const long KB = 1024;
+        const long MB = KB * 1024;
+        const long GB = MB * 1024;
 
-        if (locationsHandle.Status == UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationStatus.Succeeded)
-        {
-            var locations = locationsHandle.Result;
-
-            HashSet<string> allLabels = new HashSet<string>();
-
-            foreach (var location in locations)
-            {
-                allLabels.Add(location.PrimaryKey);
-            }
-
-            OnCompleted?.Invoke(new List<string>(allLabels));
-        }
+        if (bytes >= GB)
+            return $"{(bytes / (float)GB):0.##} GB";
+        else if (bytes >= MB)
+            return $"{(bytes / (float)MB):0.##} MB";
+        else if (bytes >= KB)
+            return $"{(bytes / (float)KB):0.##} KB";
         else
-        {
-            Debug.LogError("리소스 로케이션 로딩 실패");
-            OnCompleted?.Invoke(null);
-        }
-
-        Addressables.Release(locationsHandle);
+            return $"{bytes} B";
     }
 
+
     #endregion
-
-
 
 
     #region 패치 진행
@@ -121,7 +119,7 @@ public class AddressableUpdater : MonoBehaviour
             var handle = Addressables.GetDownloadSizeAsync(label);
             yield return handle;
 
-            if(handle.Result != decimal.Zero)
+            if (handle.Result != decimal.Zero)
             {
                 StartCoroutine(DownloadLable(label));
             }
@@ -157,6 +155,7 @@ public class AddressableUpdater : MonoBehaviour
             if (total == _patchSize)
             {
                 OnCompleted?.Invoke(); // 완료
+                break;
             }
 
             total = 0f;

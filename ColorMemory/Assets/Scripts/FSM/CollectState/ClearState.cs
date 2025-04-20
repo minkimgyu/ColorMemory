@@ -6,7 +6,6 @@ using NetworkService.Manager;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Collections;
-using static Challenge.ChallengeMode;
 
 namespace Collect
 {
@@ -19,8 +18,13 @@ namespace Collect
         Func<Tuple<Dot[,], Dot[], MapData>> GetLevelData;
         CollectStageUIPresenter _collectStageUIPresenter;
 
+        IArtDataService _artDataLoaderService;
+        IArtDataService _artDataUpdaterService;
+
         public ClearState(
             FSM<CollectMode.State> fsm,
+            IArtDataService artDataLoaderService,
+            IArtDataService artDataUpdaterService,
             CollectMode.Data modeData,
             CollectArtData artData,
             CollectStageUIPresenter collectStageUIPresenter,
@@ -28,6 +32,9 @@ namespace Collect
             Func<Tuple<Dot[,], Dot[], MapData>> GetLevelData,
             Action DestroyDots) : base(fsm)
         {
+            _artDataLoaderService = artDataLoaderService;
+            _artDataUpdaterService = artDataUpdaterService;
+
             _collectStageUIPresenter = collectStageUIPresenter;
             this.GetLevelData = GetLevelData;
             this.DestroyDots = DestroyDots;
@@ -82,12 +89,13 @@ namespace Collect
 
         async Task<Rank?> UpdateArtDataToServer()
         {
-            List<PlayerArtworkDTO> artDatas = await GetArtDataFromServer();
-            if (artDatas == null) return null;
-
+            string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
             SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
-            _artworkDTO = artDatas.Find(x => x.ArtworkId == data.SelectedArtworkKey);
 
+            Tuple<PlayerArtworkDTO, int, int> artData = await _artDataLoaderService.GetArtData(userId, data.SelectedArtworkKey);
+            if (artData == null) return null;
+
+            _artworkDTO = artData.Item1;
             // 데이터 업데이트
 
             // 다음 스테이지 해금해주는 코드
@@ -105,7 +113,7 @@ namespace Collect
             _artworkDTO.Stages[data.SelectedArtworkSectionIntIndex].IncorrectCnt = _modeData.WrongCount; // index + 1 해서 찾기 -> 1-indexed임
             _artworkDTO.Stages[data.SelectedArtworkSectionIntIndex].HintUsage = _modeData.GoBackCount;
 
-            Rank? rank = await UpdateArtDataToServer(_artworkDTO);
+            Rank? rank = await _artDataUpdaterService.UpdateArtData(_artworkDTO);
             if (rank == null) return null;
 
             return rank;

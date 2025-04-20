@@ -1,5 +1,6 @@
 <dependencies>
   <packages>
+    <package>androidx.activity:activity:1.6.0</package>
     <package>com.google.android.play:app-update:2.1.0</package>
     <package>com.google.android.play:core-common:2.0.4</package>
     <package>com.google.games:gpgs-plugin-support:2.0.0</package>

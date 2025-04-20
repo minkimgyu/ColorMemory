@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using static Challenge.ChallengeMode;
 
 namespace Challenge
 {
@@ -16,13 +15,23 @@ namespace Challenge
         RankingUIFactory _rankingUIFactory;
 
         ChallengeMode.ModeData _modeData;
+        IRankingService _nearRankingService;
+        IRankingService _weeklyScoreUpdateService;
+        IAssetService _transactionService;
 
         public ResultState(
             FSM<ChallengeMode.State> fsm,
+            IRankingService nearRankingService,
+            IRankingService weeklyScoreUpdateService,
+            IAssetService transactionService,
             RankingUIFactory rankingUIFactory,
             ChallengeStageUIPresenter challengeStageUIPresenter,
             ChallengeMode.ModeData modeData) : base(fsm)
         {
+            _nearRankingService = nearRankingService;
+            _weeklyScoreUpdateService = weeklyScoreUpdateService;
+            _transactionService = transactionService;
+
             _rankingUIFactory = rankingUIFactory;
             _challengeStageUIPresenter = challengeStageUIPresenter;
             _modeData = modeData;
@@ -74,55 +83,30 @@ namespace Challenge
             return true;
         }
 
-        async Task<List<PlayerRankingDTO>> GetRankingDataFromServer()
-        {
-            ScoreManager scoreManager = new ScoreManager();
-            List<PlayerRankingDTO> playerScoreDTOs = new List<PlayerRankingDTO>();
-
-            try
-            {
-                string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
-                playerScoreDTOs = await scoreManager.GetSurroundingWeeklyRankingByIdAsync(userId, 2);
-            }
-            catch (Exception e)
-            {
-                Debug.Log(e);
-                Debug.Log("서버로 데이터를 전송하지 못 함");
-                return null;
-            }
-
-            return playerScoreDTOs;
-        }
+        const int _nearRange = 2;
 
         public override async void OnStateEnter()
         {
-            bool isSuccess = await SendDataToServer();
-            if (isSuccess == false) return;
+            string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
 
-            List<PlayerRankingDTO> playerScoreDTOs = await GetRankingDataFromServer();
-            if (playerScoreDTOs == null) return;
+            bool canUpdate = await _transactionService.ProcessTransaction(userId, _modeData.GoldCount, GetMoney());
+            if (canUpdate == false) return;
+
+            Tuple<List<PersonalRankingData>, int> rankingData = await _nearRankingService.GetNearRankingData(_nearRange, userId);
+            if (rankingData == null) return;
 
             int money = GetMoney();
             _challengeStageUIPresenter.ActivateGameResultPanel(true);
             _challengeStageUIPresenter.ChangeResultGoldCount(money);
 
-            string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
 
-            int myRankingIndex = -1;
-            List<PersonalRankingData> rankingDatas = new List<PersonalRankingData>();
-            for (int i = 0; i < playerScoreDTOs.Count; i++)
+            for (int i = 0; i < rankingData.Item1.Count; i++)
             {
-                if(playerScoreDTOs[i].PlayerId == userId) myRankingIndex = i;
-                rankingDatas.Add(new PersonalRankingData(playerScoreDTOs[i].IconId, playerScoreDTOs[i].Name, playerScoreDTOs[i].Score, i + 1));
-            }
-
-            for (int i = 0; i < rankingDatas.Count; i++)
-            {
-                SpawnableUI rankingUI = _rankingUIFactory.Create(rankingDatas[i]);
+                SpawnableUI rankingUI = _rankingUIFactory.Create(rankingData.Item1[i]);
                 rankingUI.ChangeSelect(false);
                 Vector3 size;
 
-                if(i == myRankingIndex)
+                if(i == rankingData.Item2)
                 {
                     rankingUI.ChangeSelect(true);
                     size = Vector3.one;
@@ -135,7 +119,7 @@ namespace Challenge
                 _challengeStageUIPresenter.AddRanking(rankingUI, size);
             }
 
-            int totalCount = rankingDatas.Count; // 5개
+            int totalCount = rankingData.Item1.Count; // 5개
             int middleIndex = totalCount / 2;
             _challengeStageUIPresenter.SetUpRankingScroll(totalCount, middleIndex);
         }

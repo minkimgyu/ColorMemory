@@ -12,14 +12,18 @@ public class RankingPageState : BaseState<HomePage.InnerPageState>
     RankingPagePresenter _rankingPagePresenter;
     RankingUIFactory _rankingUIFactory;
 
+    IRankingService _rankingService;
+
     public RankingPageState(
         GameObject rankingContent,
         Transform scrollContent,
         Transform myRankingContent,
         RankingUIFactory rankingUIFactory,
+        IRankingService rankingService,
         FSM<HomePage.InnerPageState> fsm) : base(fsm)
     {
         _rankingUIFactory = rankingUIFactory;
+        _rankingService = rankingService;
 
         RankingPageModel rankingPageModel = new RankingPageModel();
         _rankingPagePresenter = new RankingPagePresenter(rankingPageModel);
@@ -39,51 +43,21 @@ public class RankingPageState : BaseState<HomePage.InnerPageState>
         _fsm.SetState(HomePage.InnerPageState.Main);
     }
 
-    async Task<Tuple<List<PlayerRankingDTO>, PlayerRankingDTO>> GetRankingDataFromServer()
-    {
-        ScoreManager scoreManager = new ScoreManager();
-        List<PlayerRankingDTO> otherScores;
-        PlayerRankingDTO myScore;
-
-        try
-        {
-            string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
-
-            otherScores = await scoreManager.GetTopWeeklyScoresAsync(10);
-            myScore = await scoreManager.GetPlayerWeeklyScoreAsDTOAsync(userId);
-        }
-        catch (System.Exception e)
-        {
-            Debug.Log(e);
-            Debug.Log("서버로부터 데이터를 받아오지 못함");
-            return null;
-        }
-
-        return new Tuple<List<PlayerRankingDTO>, PlayerRankingDTO>(otherScores, myScore);
-    }
+    const int topRange = 10;
 
     public override async void OnStateEnter()
     {
-        Tuple<List<PlayerRankingDTO>, PlayerRankingDTO> rankingData = await GetRankingDataFromServer();
+        string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
+        Tuple<List<PersonalRankingData>, PersonalRankingData> rankingData = await _rankingService.GetTopRankingData(topRange, userId);
         if (rankingData == null) return;
-
-        List<PersonalRankingData> topRankingDatas = new List<PersonalRankingData>();
 
         for (int i = 0; i < rankingData.Item1.Count; i++)
         {
-            topRankingDatas.Add(new PersonalRankingData(rankingData.Item1[i].IconId, rankingData.Item1[i].Name, rankingData.Item1[i].Score, rankingData.Item1[i].Ranking));
-        }
-
-        PlayerRankingDTO playerScoreDTO = rankingData.Item2;
-        PersonalRankingData myRankingData = new PersonalRankingData(playerScoreDTO.IconId, playerScoreDTO.Name, playerScoreDTO.Score, playerScoreDTO.Ranking);
-
-        for (int i = 0; i < topRankingDatas.Count; i++)
-        {
-            SpawnableUI rankingUI = _rankingUIFactory.Create(topRankingDatas[i]);
+            SpawnableUI rankingUI = _rankingUIFactory.Create(rankingData.Item1[i]);
             _rankingPagePresenter.AddRakingItems(rankingUI);
         }
 
-        SpawnableUI myRankingUI = _rankingUIFactory.Create(myRankingData);
+        SpawnableUI myRankingUI = _rankingUIFactory.Create(rankingData.Item2);
         _rankingPagePresenter.AddMyRaking(myRankingUI);
         _rankingPagePresenter.ActiveContent(true); // home 닫아주기
     }

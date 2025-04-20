@@ -11,9 +11,12 @@ public class SettingPagePresenter
     SettingPageModel _model;
     SettingPageViewer _viewer;
 
-    public SettingPagePresenter(SettingPageModel settingPageModel)
+    IProfileService _iconService;
+
+    public SettingPagePresenter(SettingPageModel settingPageModel, IProfileService iconService)
     {
         _model = settingPageModel;
+        _iconService = iconService;
     }
 
     public void InjectViewer(SettingPageViewer settingPageViewer)
@@ -115,56 +118,19 @@ public class SettingPagePresenter
     public async void OnProfileDone()
     {
         _model.ProfileIndex = _model.SelectedProfileIndex;
-        bool isSuccess = await SendPlayerIconToServer();
+        SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
+
+        bool isSuccess = await _iconService.SetPlayerIconId(data.UserId, data.UserName, _model.ProfileIndex);
         if (isSuccess == false) return;
     }
 
     public async void ChangeProfileImgFromServer()
     {
-        int index = await GetPlayerIconFromServer();
+        string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
+        int index = await _iconService.GetPlayerIconId(userId);
         _model.ProfileIndex = index;
         _viewer.ChangeProfileImg(_model.ProfileSprites[_model.ProfileIndex]);
         _viewer.ChangeProfileToggle(index);
-    }
-
-    async Task<int> GetPlayerIconFromServer()
-    {
-        PlayerManager playerManager = new PlayerManager();
-        int iconIndex = -1;
-
-        try
-        {
-            string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
-            iconIndex = await playerManager.GetPlayerIconIdAsync(userId);
-        }
-        catch (Exception e)
-        {
-            Debug.Log(e);
-            Debug.Log("서버로 데이터를 전달할 수 없음");
-            return -1;
-        }
-
-        return iconIndex;
-    }
-
-    async Task<bool> SendPlayerIconToServer()
-    {
-        PlayerManager playerManager = new PlayerManager();
-        bool isSuccess = false;
-
-        try
-        {
-            SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
-            isSuccess = await playerManager.SetPlayerIconIdAsync(data.UserId, data.UserName, _model.ProfileIndex);
-        }
-        catch (Exception e)
-        {
-            Debug.Log(e);
-            Debug.Log("서버로 데이터를 전달할 수 없음");
-            return false;
-        }
-
-        return isSuccess;
     }
 
     public void OnProfileSelected(bool on, int i)

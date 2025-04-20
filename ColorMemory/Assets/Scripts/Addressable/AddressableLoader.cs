@@ -58,7 +58,7 @@ public class AddressableLoader : MonoBehaviour
     public ArtworkDateWrapper ArtworkJsonAsset { get; private set; }
     public Dictionary<int, Sprite> ArtSpriteAsserts { get; private set; }
 
-    public Dictionary<NetworkService.DTO.Rank, Sprite> ArtworkFrameAsserts { get; private set; }
+    public Dictionary<NetworkService.DTO.Rank, Sprite> ArtworkFrameAssets { get; private set; }
     public Dictionary<NetworkService.DTO.Rank, Sprite> RankDecorationIconAssets { get; private set; }
     public Dictionary<NetworkService.DTO.Rank, Sprite> RankBadgeIconAssets { get; private set; }
     public Dictionary<NetworkService.DTO.Rank, Sprite> StageRankIconAssets { get; private set; }
@@ -85,7 +85,7 @@ public class AddressableLoader : MonoBehaviour
         _assetLoaders.Add(new CollectiveArtJsonAssetLoader(Label.ArtData, (value, label) => { CollectiveArtJsonAsserts = value; OnSuccess(label); }));
         _assetLoaders.Add(new ArtSpriteAssetLoader(Label.ArtSprite, (value, label) => { ArtSpriteAsserts = value; OnSuccess(label); }));
 
-        _assetLoaders.Add(new ArtworkFrameAssetLoader(Label.ArtworkFrame, (value, label) => { ArtworkFrameAsserts = value; OnSuccess(label); }));
+        _assetLoaders.Add(new ArtworkFrameAssetLoader(Label.ArtworkFrame, (value, label) => { ArtworkFrameAssets = value; OnSuccess(label); }));
         _assetLoaders.Add(new ArtworkJsonAssetLoader(Label.ArtworkData, (value, label) => { ArtworkJsonAsset = value; OnSuccess(label); }));
 
         _assetLoaders.Add(new ProfileIconAssetLoader(Label.CircleProfileIcon, (value, label) => { CircleProfileIconAssets = value; OnSuccess(label); }));
