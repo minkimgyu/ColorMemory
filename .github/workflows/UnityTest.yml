@@ -3,10 +3,13 @@
 name: UnityTest
 
 on:
-  workflow_dispatch:
   pull_request:
-  push:
-    branches: [ main ]
+    branches:
+      - build
+    types:
+      - closed  # PR이 머지되었을 때만
+
+  workflow_dispatch:  # 수동 실행은 유지
 
 permissions: write-all
 
