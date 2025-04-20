@@ -8,41 +8,65 @@ using UnityEngine;
 
 public interface IRankingService
 {
-    Task<Tuple<List<PlayerRankingDTO>, PlayerRankingDTO>> GetTop10RankingData() { return default; }
-    Task<List<PlayerRankingDTO>> GetNearRankingData(int nearRange) { return default; }
+    Task<bool> UpdatePlayerWeeklyScore(int myScore, string userId) { return default; }
+    Task<Tuple<List<PersonalRankingData>, PersonalRankingData>> GetTopRankingData(int topCount, string userId) { return default; }
+    Task<Tuple<List<PersonalRankingData>, int>> GetNearRankingData(int nearRange, string userId) { return default; }
 }
 
 public class MockRankingService : IRankingService
 {
-    public async Task<Tuple<List<PlayerRankingDTO>, PlayerRankingDTO>> GetTop10RankingData()
+    IRankingService _weeklyScoreUpdateService;
+    IRankingService _top10RankingService;
+    IRankingService _nearRankingService;
+
+    public MockRankingService(IRankingService weeklyScoreUpdateService, IRankingService top10RankingService, IRankingService nearRankingService)
     {
-        ScoreManager scoreManager = new ScoreManager();
-        List<PlayerRankingDTO> otherRankings;
-        PlayerRankingDTO myRanking;
-
-        string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
-
-        otherRankings = await scoreManager.GetTopWeeklyScoresAsync(10);
-        myRanking = await scoreManager.GetPlayerWeeklyScoreAsDTOAsync(userId);
-
-        return new Tuple<List<PlayerRankingDTO>, PlayerRankingDTO>(otherRankings, myRanking);
+        _weeklyScoreUpdateService = weeklyScoreUpdateService;
+        _top10RankingService = top10RankingService;
+        _nearRankingService = nearRankingService;
     }
 
-    public async Task<List<PlayerRankingDTO>> GetNearRankingData(int nearRange)
+    public async Task<bool> UpdatePlayerWeeklyScore(int myScore, string userId)
+    {
+        return await _weeklyScoreUpdateService.UpdatePlayerWeeklyScore(myScore, userId);
+    }
+
+    public async Task<Tuple<List<PersonalRankingData>, PersonalRankingData>> GetTopRankingData(int topCount, string userId)
+    {
+        return await _top10RankingService.GetTopRankingData(topCount, userId);
+    }
+
+    public async Task<Tuple<List<PersonalRankingData>, int>> GetNearRankingData(int nearRange, string userId)
+    {
+        return await _nearRankingService.GetNearRankingData(nearRange, userId);
+    }
+}
+
+public class WeeklyScoreUpdateService : IRankingService
+{
+    public async Task<bool> UpdatePlayerWeeklyScore(int myScore, string userId)
     {
         ScoreManager scoreManager = new ScoreManager();
-        List<PlayerRankingDTO> playerScoreDTOs = new List<PlayerRankingDTO>();
+        bool canUpdate = false; 
 
-        string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
-        playerScoreDTOs = await scoreManager.GetSurroundingWeeklyRankingByIdAsync(userId, nearRange);
+        try
+        {
+            canUpdate = await scoreManager.UpdatePlayerWeeklyScoreAsync(userId, myScore);
+        }
+        catch (System.Exception e)
+        {
+            Debug.Log(e);
+            Debug.Log("서버에 데이터를 전송하지 못함");
+            return false;
+        }
 
-        return playerScoreDTOs;
+        return canUpdate;
     }
 }
 
 public class Top10RankingService : IRankingService
 {
-    public async Task<Tuple<List<PlayerRankingDTO>, PlayerRankingDTO>> GetTop10RankingData() 
+    public async Task<Tuple<List<PersonalRankingData>, PersonalRankingData>> GetTopRankingData(int topCount, string userId) 
     {
         ScoreManager scoreManager = new ScoreManager();
         List<PlayerRankingDTO> otherRankings;
@@ -50,9 +74,7 @@ public class Top10RankingService : IRankingService
 
         try
         {
-            string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
-
-            otherRankings = await scoreManager.GetTopWeeklyScoresAsync(10);
+            otherRankings = await scoreManager.GetTopWeeklyScoresAsync(topCount);
             myRanking = await scoreManager.GetPlayerWeeklyScoreAsDTOAsync(userId);
         }
         catch (System.Exception e)
@@ -62,20 +84,28 @@ public class Top10RankingService : IRankingService
             return null;
         }
 
-        return new Tuple<List<PlayerRankingDTO>, PlayerRankingDTO>(otherRankings, myRanking);
+        List<PersonalRankingData> topRankingDatas = new List<PersonalRankingData>();
+
+        for (int i = 0; i < otherRankings.Count; i++)
+        {
+            topRankingDatas.Add(new PersonalRankingData(otherRankings[i].IconId, otherRankings[i].Name, otherRankings[i].Score, otherRankings[i].Ranking));
+        }
+
+        PersonalRankingData myRankingData = new PersonalRankingData(myRanking.IconId, myRanking.Name, myRanking.Score, myRanking.Ranking);
+
+        return new Tuple<List<PersonalRankingData>, PersonalRankingData>(topRankingDatas, myRankingData);
     }
 }
 
 public class NearRankingService : IRankingService
 {
-    public async Task<List<PlayerRankingDTO>> GetNearRankingData(int nearRange)
+    public async Task<Tuple<List<PersonalRankingData>, int>> GetNearRankingData(int nearRange, string userId)
     {
         ScoreManager scoreManager = new ScoreManager();
         List<PlayerRankingDTO> playerScoreDTOs = new List<PlayerRankingDTO>();
 
         try
         {
-            string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
             playerScoreDTOs = await scoreManager.GetSurroundingWeeklyRankingByIdAsync(userId, nearRange);
         }
         catch (Exception e)
@@ -85,6 +115,14 @@ public class NearRankingService : IRankingService
             return null;
         }
 
-        return playerScoreDTOs;
+        int myRankingIndex = -1;
+        List<PersonalRankingData> rankingDatas = new List<PersonalRankingData>();
+        for (int i = 0; i < playerScoreDTOs.Count; i++)
+        {
+            if (playerScoreDTOs[i].PlayerId == userId) myRankingIndex = i;
+            rankingDatas.Add(new PersonalRankingData(playerScoreDTOs[i].IconId, playerScoreDTOs[i].Name, playerScoreDTOs[i].Score, i + 1));
+        }
+
+        return new Tuple<List<PersonalRankingData>, int>(rankingDatas, myRankingIndex);
     }
 }

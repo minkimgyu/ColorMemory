@@ -99,76 +99,20 @@ public class HomePage : MonoBehaviour
 
     TopElementPresenter _topElementPresenter;
 
-    async Task<Dictionary<int, ArtData>> GetArtDataFromServer()
-    {
-        ArtworkManager artworkManager = new ArtworkManager();
-        List<PlayerArtworkDTO> artworkDTOs;
-
-        try
-        {
-            string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
-            artworkDTOs = await artworkManager.GetWholePlayerArtworksAsync(userId);
-        }
-        catch (System.Exception e)
-        {
-            Debug.Log(e);
-            Debug.Log("서버로부터 데이터를 받아오지 못함");
-            return null;
-        }
-
-        artworkDTOs.Sort((a, b) => a.ArtworkId.CompareTo(b.ArtworkId));
-
-        Dictionary<int, ArtData> artDatas = new Dictionary<int, ArtData>();
-
-        for (int i = 0; i < artworkDTOs.Count; i++)
-        {
-            Dictionary<int, StageData> stageDatas = new Dictionary<int, StageData>();
-
-            foreach (var dto in artworkDTOs[i].Stages)
-            {
-                StageData stageData = new StageData(dto.Value.Rank, dto.Value.HintUsage, dto.Value.IncorrectCnt, dto.Value.Status);
-                stageDatas.Add(dto.Key, stageData);
-            }
-
-            ArtData artData = new ArtData(
-                artworkDTOs[i].Rank,
-                artworkDTOs[i].HasIt,
-                stageDatas,
-                artworkDTOs[i].TotalMistakesAndHints,
-                artworkDTOs[i].ObtainedDate);
-
-            artDatas.Add(artworkDTOs[i].ArtworkId, artData);
-        }
-
-        return artDatas;
-    }
-
-    async Task<int> GetMoneyFromServer()
-    {
-        MoneyManager moneyManager = new MoneyManager();
-        int money = 0;
-
-        try
-        {
-            string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
-            money = await moneyManager.GetMoneyAsync(userId);
-        }
-        catch (System.Exception e)
-        {
-            Debug.Log(e);
-            Debug.Log("서버로부터 데이터를 받아오지 못함");
-            return -1;
-        }
-        
-        return money;
-    }
+    IAssetService _currencyService;
+    IArtDataService _artDataLoaderService;
+  
 
     private async void Start()
     {
-        Dictionary<int, ArtData> artDatas = await GetArtDataFromServer();
+        string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
+        _currencyService = new CurrencyService();
+        _artDataLoaderService = new ArtDataLoaderService();
+
+        Dictionary<int, ArtData> artDatas = await _artDataLoaderService.GetArtData(userId);
         if (artDatas == null) return;
 
-        int money = await GetMoneyFromServer();
+        int money = await _currencyService.GetCurrency(userId);
         if (money == -1) return;
 
         AddressableLoader addressableHandler = FindObjectOfType<AddressableLoader>();
@@ -306,6 +250,7 @@ public class HomePage : MonoBehaviour
                 _rankingScrollContent,
                 _myRankingContent,
                 rankingUIFactory,
+                new Top10RankingService(),
                 _pageFsm)
             },
             {

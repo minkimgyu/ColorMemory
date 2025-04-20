@@ -50,6 +50,9 @@ namespace Challenge
 
                 DOVirtual.DelayedCall(1.5f, () =>
                 {
+                    // 만약 현재 상태가 다른 상태라면 실행되지 못하게 막아야함
+                    if (_fsm.CurrentState != ChallengeMode.State.Clear) return;
+
                     DestroyDots?.Invoke();
                     _fsm.SetState(ChallengeMode.State.Initialize);
                 });

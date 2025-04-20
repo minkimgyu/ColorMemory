@@ -1,3 +1,4 @@
+using DG.Tweening;
 using Google.Play.AppUpdate;
 using Google.Play.Common;
 using NetworkService.DTO;
@@ -44,8 +45,14 @@ public class LoadingPage : MonoBehaviour
         RenderTexture.active = activeRT;
     }
 
+    public void InitializedDotween()
+    {
+        //DOTween.defaultTimeScaleIndependent = false;
+    }
+
     private void Awake()
     {
+        InitializedDotween();
         // 로그인 서비스 할당
         _loginService = new LoginService();
 

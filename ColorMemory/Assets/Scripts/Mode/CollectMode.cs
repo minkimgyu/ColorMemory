@@ -286,8 +286,21 @@ namespace Collect
 
                 { State.Memorize, new MemorizeState(_fsm, _modeData, presenter, GetLevelData) },
                 { State.Paint, new PaintState(_fsm, _modeData, presenter, GetLevelData) },
-                { State.Clear, new ClearState(_fsm, _modeData, artData, presenter, GetLevelData, DestroyDots) },
-                { State.Result, new ResultState(_fsm, presenter, _modeData) }
+                { State.Clear, new ClearState(
+                    _fsm,
+                    new ArtDataLoaderService(),
+                    new ArtDataUpdaterService(),
+                    _modeData, 
+                    artData, 
+                    presenter, 
+                    GetLevelData, 
+                    DestroyDots) },
+                { State.Result, new ResultState(
+                    _fsm,
+                    new ArtDataLoaderService(),
+                    new ArtDataUpdaterService(),
+                    presenter,
+                    _modeData) }
             };
 
             _fsm.Initialize(states, State.Initialize);

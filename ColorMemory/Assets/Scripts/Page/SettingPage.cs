@@ -40,7 +40,7 @@ public class SettingPage : MonoBehaviour
 
         _sideSheetUI.Initialize();
         SettingPageModel model = new SettingPageModel(profileSprites);
-        SettingPagePresenter presenter = new SettingPagePresenter(model);
+        SettingPagePresenter presenter = new SettingPagePresenter(model, new ProfileService());
 
         SettingPageViewer viewer = new SettingPageViewer(
             _sideSheetUI,

@@ -35,10 +35,15 @@ public class LoginService : ILoginService
 
 public class MockLoginService : ILoginService
 {
+    ILoginService _loginService;
+
+    public MockLoginService(ILoginService loginService)
+    {
+        _loginService = loginService;
+    }
+
     public async Task<bool> Login(string userId, string userName)
     {
-        PlayerManager playerManager = new PlayerManager();
-        bool canLogin = await playerManager.AddPlayerAsync(userId, userName);
-        return canLogin;
+        return await _loginService.Login(userId, userName);
     }
 }

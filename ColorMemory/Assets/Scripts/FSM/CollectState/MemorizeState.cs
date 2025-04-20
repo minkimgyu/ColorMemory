@@ -3,7 +3,6 @@ using DG.Tweening;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
-using Random = UnityEngine.Random;
 
 namespace Collect
 {
@@ -50,7 +49,6 @@ namespace Collect
 
         public override void OnStateEnter()
         {
-
             // 초기화 진행
             Tuple<Dot[,], Dot[], MapData> levelData = GetLevelData();
             _dots = levelData.Item1;

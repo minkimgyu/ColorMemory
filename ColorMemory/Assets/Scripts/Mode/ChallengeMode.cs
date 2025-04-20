@@ -87,6 +87,8 @@ namespace Challenge
         [SerializeField] Button _tryAgainBtn;
         [SerializeField] Button _exitBtn;
 
+        IAssetService _challengeModeDataService;
+
         #region Stage
 
         MapData _mapData;
@@ -156,8 +158,7 @@ namespace Challenge
                 int oneZoneHintCost,
                 int maxScore,
 
-                float memorizeDuration = 0,
-                float leftDuration = 0,
+                float playDuration = 0,
                 float decreaseDurationOnMiss = 0,
                 float increaseDurationOnClear = 0)
             {
@@ -166,7 +167,7 @@ namespace Challenge
                 _oneZoneHintCost = oneZoneHintCost;
                 _maxScore = maxScore;
 
-                _playDuration = leftDuration;
+                _playDuration = playDuration;
                 _decreaseDurationOnMiss = decreaseDurationOnMiss;
                 _increaseDurationOnClear = increaseDurationOnClear;
 
@@ -220,14 +221,13 @@ namespace Challenge
             Initialize,
             Memorize,
             Paint,
-            StageClear,
+            Clear,
             GameOver,
             Result,
         }
 
         FSM<State> _fsm;
         bool _nowInitialized = false;
-        bool _errorOnInitializeData = false;
 
         private void Update()
         {
@@ -235,38 +235,13 @@ namespace Challenge
             _fsm.OnUpdate();
         }
 
-        async Task<ModeData> GetDataFromServer()
-        {
-            MoneyManager moneyManager = new MoneyManager();
-            HintManager hintManager = new HintManager();
-            ScoreManager scoreManager = new ScoreManager();
-
-            int money, oneColorHintCost, oneZoneHintCost, maxScore;
-
-            try
-            {
-                string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
-
-                money = await moneyManager.GetMoneyAsync(userId);
-                oneColorHintCost = await hintManager.GetHintPriceAsync(NetworkService.DTO.HintType.OneColorHint);
-                oneZoneHintCost = await hintManager.GetHintPriceAsync(NetworkService.DTO.HintType.OneZoneHint);
-                maxScore = await scoreManager.GetPlayerWeeklyScoreAsIntAsync(userId);
-            }
-            catch (Exception e)
-            {
-                _errorOnInitializeData = true;
-                Debug.Log(e);
-                Debug.Log("서버에서 데이터를 받아오지 못 함");
-                return null;
-            }
-
-            return new ModeData(money, oneColorHintCost, oneZoneHintCost, maxScore, 5, 6, 2, 3);
-        }
-
         public override async void Initialize()
         {
-            _modeData = await GetDataFromServer();
-            if (_errorOnInitializeData == true) return;
+            string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
+
+            _challengeModeDataService = new ChallengeModeDataService();
+            _modeData = await _challengeModeDataService.GetChallengeModeData(userId, 6, 2, 3);
+            if (_modeData == null) return;
 
             AddressableLoader addressableHandler = FindObjectOfType<AddressableLoader>();
             if (addressableHandler == null) return;
@@ -379,9 +354,16 @@ namespace Challenge
 
                 { State.Memorize, new MemorizeState(_fsm, _pickColors, _modeData, addressableHandler.ChallengeStageDataWrapper.StageDatas, presenter, GetStage) },
                 { State.Paint, new PaintState(_fsm, _pickColors, _modeData, presenter, GetStage) },
-                { State.StageClear, new ClearState(_fsm, presenter, _modeData, GetStage, DestroyDots) },
+                { State.Clear, new ClearState(_fsm, presenter, _modeData, GetStage, DestroyDots) },
                 { State.GameOver, new EndState(_fsm, presenter, _pickColors, clearPatternUIFactory, _modeData) },
-                { State.Result, new ResultState(_fsm, rankingFactory, presenter, _modeData) }
+                { State.Result, new ResultState(
+                    _fsm,
+                    new NearRankingService(),
+                    new WeeklyScoreUpdateService(),
+                    new TransactionService(),
+                    rankingFactory,
+                    presenter,
+                    _modeData) }
             };
 
             _fsm.Initialize(states, State.Initialize);

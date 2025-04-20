@@ -247,7 +247,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &179930684
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1115,20 +1115,10 @@ MonoBehaviour:
   _patchTxt: {fileID: 337428874}
   _patchBtn: {fileID: 885632107}
   _assetLabelsToPatch:
-  - m_LabelString: ModeTitle
   - m_LabelString: ArtData
-  - m_LabelString: ArtSprite
-  - m_LabelString: ArtworkFrame
   - m_LabelString: ArtworkData
+  - m_LabelString: ArtSprite
   - m_LabelString: ChallengeModeStageData
-  - m_LabelString: RectProfileIcon
-  - m_LabelString: CircleProfileIcon
-  - m_LabelString: RankBadgeIcon
-  - m_LabelString: RankDecorationIcon
-  - m_LabelString: StageRankIcon
-  - m_LabelString: Dot
-  - m_LabelString: Effect
-  - m_LabelString: SpawnableUI
   _loadingObj: {fileID: 824852845}
   _loadingPregressBar: {fileID: 1103052329}
   _loadingPregressTxt: {fileID: 695592118}

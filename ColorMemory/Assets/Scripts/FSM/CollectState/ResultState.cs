@@ -15,11 +15,19 @@ namespace Collect
         CollectStageUIPresenter _collectStageUIPresenter;
         CollectMode.Data _modeData;
 
+        IArtDataService _artDataLoaderService;
+        IArtDataService _artDataUpdaterService;
+
         public ResultState(
             FSM<CollectMode.State> fsm,
+            IArtDataService artDataLoaderService,
+            IArtDataService artDataUpdaterService,
             CollectStageUIPresenter collectStageUIPresenter,
             CollectMode.Data modeData) : base(fsm)
         {
+            _artDataLoaderService = artDataLoaderService;
+            _artDataUpdaterService = artDataUpdaterService;
+
             _collectStageUIPresenter = collectStageUIPresenter;
             _modeData = modeData; 
         }
@@ -30,67 +38,23 @@ namespace Collect
             ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.HomeScene);
         }
 
-        async Task<Rank?> UpdateArtworkToServer(PlayerArtworkDTO dTO)
-        {
-            ArtworkManager artworkManager = new ArtworkManager();
-            Rank? rank;
-
-            try
-            {
-                rank = await artworkManager.UpdatePlayerArtworkAsync(dTO);
-            }
-            catch (System.Exception e)
-            {
-                Debug.Log(e);
-                Debug.Log("서버로 데이터를 전송하지 못함");
-                return null;
-            }
-
-            return rank;
-        }
-
-        async Task<Tuple<List<PlayerArtworkDTO>, int, int>> GetArtDataFromServer()
-        {
-            ArtworkManager artworkManager = new ArtworkManager();
-            List<PlayerArtworkDTO> ownedArtworkDTOs, unownedArtworkDTOs;
-
-            try
-            {
-                string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
-                ownedArtworkDTOs = await artworkManager.GetPlayerArtworksAsync(userId, true);
-                unownedArtworkDTOs = await artworkManager.GetPlayerArtworksAsync(userId, false);
-            }
-            catch (System.Exception e)
-            {
-                Debug.Log(e);
-                Debug.Log("서버로부터 데이터를 받아오지 못함");
-                return null;
-            }
-
-            int ownCount = ownedArtworkDTOs.Count;
-            int unownedCount = unownedArtworkDTOs.Count;
-
-            ownedArtworkDTOs.AddRange(unownedArtworkDTOs); // list1에 list2 요소 추가
-            return new Tuple<List<PlayerArtworkDTO>, int, int>(ownedArtworkDTOs, ownCount, unownedCount);
-        }
-
         public override async void OnStateEnter()
         {
-            Tuple<List<PlayerArtworkDTO>, int, int> artDatas = await GetArtDataFromServer();
-            if (artDatas == null) return;
-
+            string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
             SaveData saveData = ServiceLocater.ReturnSaveManager().GetSaveData();
-            PlayerArtworkDTO artworkDTO = artDatas.Item1.Find(x => x.ArtworkId == saveData.SelectedArtworkKey);
+
+            Tuple<PlayerArtworkDTO, int, int> artData = await _artDataLoaderService.GetArtData(userId, saveData.SelectedArtworkKey);
+            if (artData == null) return;
 
             bool clearThisStage = true;
 
             // 힌트, 틀린 개수 업데이트
-            int totalGoBackCount = artworkDTO.TotalHints;
-            int totalWrongCount = artworkDTO.TotalMistakes;
+            int totalGoBackCount = artData.Item1.TotalHints;
+            int totalWrongCount = artData.Item1.TotalMistakes;
             int clearStageCount = 0;
             int totalStageCount = 0;
 
-            foreach (var item in artworkDTO.Stages)
+            foreach (var item in artData.Item1.Stages)
             {
                 // 하나의 스테이지라도 클리어 하지 못한 경우
                 if(item.Value.Status != StageStauts.Clear) clearThisStage = false;
@@ -113,17 +77,17 @@ namespace Collect
             artworkSprite = addressableHandler.ArtSpriteAsserts[saveData.SelectedArtworkKey];
 
             Rank? getRank;
-            int haveArtworkCount = artDatas.Item2;
-            int totalArtworkCount = artDatas.Item3;
+            int ownCount = artData.Item2;
+            int unownedCount = artData.Item3;
 
             // 모든 스테이지를 클리어 했는지 확인 필요
             if (clearThisStage == true)
             {
                 _collectStageUIPresenter.ChangeGameResultTitle(true);
-                haveArtworkCount += 1; // 하나 더 획득했으므로 +1 추가
-                artworkDTO.HasIt = true;  // HasIt 업데이트
+                ownCount += 1; // 하나 더 획득했으므로 +1 추가
+                artData.Item1.HasIt = true;  // HasIt 업데이트
 
-                getRank = await UpdateArtworkToServer(artworkDTO);
+                getRank = await _artDataUpdaterService.UpdateArtData(artData.Item1);
                 if (getRank == null) return;
             }
             else
@@ -141,7 +105,7 @@ namespace Collect
             _collectStageUIPresenter.ChangeGetRank(totalGoBackCount, totalWrongCount);
 
             float currentRatio = (float)clearStageCount / totalStageCount;
-            float totalRatio = (float)haveArtworkCount / (haveArtworkCount + totalArtworkCount);
+            float totalRatio = (float)ownCount / (ownCount + unownedCount);
             _collectStageUIPresenter.ChangeCollectionRatio(currentRatio, totalRatio);
         }
 
