@@ -23,6 +23,12 @@ public class ServerTest
     [SetUp]
     public void Setup()
     {
+        //  _userId = "serverTest"
+        // 테스트 계정 로그인
+        // 테스트 계정 삭제
+
+
+
         _artDataIndex = 0; // 테스트할 때마다 바꾸기
         _userId = "serverTestUser12";
         _userName = "serverTestUser12345";

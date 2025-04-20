@@ -1,7 +1,11 @@
 name: UnityBuild
 
 on:
-  workflow_dispatch:
+#  workflow_run:
+#    workflows: ["UnityTest"]
+#    types:
+#      - completed
+  workflow_dispatch:  # 👉 수동 실행 허용
 
 permissions: write-all
 jobs:
