@@ -54,35 +54,6 @@ namespace Challenge
             return _modeData.MyScore / moneyDivideValue;
         }
 
-        async Task<bool> SendDataToServer()
-        {
-            ScoreManager scoreManager = new ScoreManager();
-            MoneyManager moneyManager = new MoneyManager();
-
-            try
-            {
-                string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
-
-
-                await scoreManager.UpdatePlayerWeeklyScoreAsync(userId, _modeData.MyScore);
-
-                int currentMoneyInServer = await moneyManager.GetMoneyAsync(userId);
-                int useMoney = currentMoneyInServer - _modeData.GoldCount;
-
-                int money = GetMoney();
-                await moneyManager.PayPlayerMoneyAsync(userId, useMoney);
-                await moneyManager.EarnPlayerMoneyAsync(userId, money);
-            }
-            catch (Exception e)
-            {
-                Debug.Log(e);
-                Debug.Log("서버로 데이터를 전송하지 못 함");
-                return false;
-            }
-
-            return true;
-        }
-
         const int _nearRange = 2;
 
         public override async void OnStateEnter()
@@ -91,6 +62,9 @@ namespace Challenge
 
             bool canUpdate = await _transactionService.ProcessTransaction(userId, _modeData.GoldCount, GetMoney());
             if (canUpdate == false) return;
+
+            bool updateResult = await _weeklyScoreUpdateService.UpdatePlayerWeeklyScore(_modeData.MyScore, userId);
+            if (updateResult == false) return;
 
             Tuple<List<PersonalRankingData>, int> rankingData = await _nearRankingService.GetNearRankingData(_nearRange, userId);
             if (rankingData == null) return;

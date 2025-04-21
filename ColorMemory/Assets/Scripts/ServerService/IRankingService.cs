@@ -47,7 +47,7 @@ public class WeeklyScoreUpdateService : IRankingService
     public async Task<bool> UpdatePlayerWeeklyScore(int myScore, string userId)
     {
         ScoreManager scoreManager = new ScoreManager();
-        bool canUpdate = false; 
+        bool canUpdate = false;
 
         try
         {
@@ -120,7 +120,7 @@ public class NearRankingService : IRankingService
         for (int i = 0; i < playerScoreDTOs.Count; i++)
         {
             if (playerScoreDTOs[i].PlayerId == userId) myRankingIndex = i;
-            rankingDatas.Add(new PersonalRankingData(playerScoreDTOs[i].IconId, playerScoreDTOs[i].Name, playerScoreDTOs[i].Score, i + 1));
+            rankingDatas.Add(new PersonalRankingData(playerScoreDTOs[i].IconId, playerScoreDTOs[i].Name, playerScoreDTOs[i].Score, playerScoreDTOs[i].Ranking));
         }
 
         return new Tuple<List<PersonalRankingData>, int>(rankingDatas, myRankingIndex);
