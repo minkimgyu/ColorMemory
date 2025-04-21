@@ -4,12 +4,13 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public interface ILoginService
+public interface IAccountService
 {
-    Task<bool> Login(string userId, string userName);
+    Task<bool> Login(string userId, string userName) { return default; }
+    Task<bool> DeleteAccount(string userId) { return default; }
 }
 
-public class LoginService : ILoginService
+public class AccountService : IAccountService
 {
     public async Task<bool> Login(string userId, string userName)
     {
@@ -31,13 +32,33 @@ public class LoginService : ILoginService
 
         return canLogin;
     }
+
+    public async Task<bool> DeleteAccount(string userId) 
+    {
+        PlayerManager playerManager = new PlayerManager();
+        bool canDelete = false;
+
+        try
+        {
+            Debug.Log("_userId          " + userId);
+            canDelete = await playerManager.DeletePlayerAync(userId);
+        }
+        catch (System.Exception e)
+        {
+            Debug.Log(e);
+            Debug.Log("서버에 데이터를 보낼 수 없음");
+            return false;
+        }
+
+        return canDelete;
+    }
 }
 
-public class MockLoginService : ILoginService
+public class MockAccountService : IAccountService
 {
-    ILoginService _loginService;
+    IAccountService _loginService;
 
-    public MockLoginService(ILoginService loginService)
+    public MockAccountService(IAccountService loginService)
     {
         _loginService = loginService;
     }

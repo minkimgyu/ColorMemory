@@ -32,7 +32,7 @@ public class LoadingPage : MonoBehaviour
     string _userId;
     string _userName;
 
-    ILoginService _loginService;
+    IAccountService _loginService;
 
 
     void ClearRenderTextureToWhite(RenderTexture rt)
@@ -54,7 +54,7 @@ public class LoadingPage : MonoBehaviour
     {
         InitializedDotween();
         // 로그인 서비스 할당
-        _loginService = new LoginService();
+        _loginService = new AccountService();
 
         ClearRenderTextureToWhite(_renderTexture);
         _loadingObj.SetActive(false);

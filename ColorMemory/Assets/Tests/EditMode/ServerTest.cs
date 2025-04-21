@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 public class ServerTest
 {
-    private ILoginService _loginService;
+    private IAccountService _accountService;
     private IRankingService _rankingService;
     private IProfileService _iconService;
     private IAssetService _assetService;
@@ -27,13 +27,11 @@ public class ServerTest
         // 테스트 계정 로그인
         // 테스트 계정 삭제
 
-
-
         _artDataIndex = 0; // 테스트할 때마다 바꾸기
         _userId = "serverTestUser12";
         _userName = "serverTestUser12345";
 
-        _loginService = new MockLoginService(new LoginService());
+        _accountService = new MockAccountService(new AccountService());
         _rankingService = new MockRankingService(new WeeklyScoreUpdateService(), new Top10RankingService(), new NearRankingService());
         _iconService = new MockProfileService(new ProfileService());
         _assetService = new MockAssetService(new CurrencyService(), new ChallengeModeDataService(), new TransactionService());
@@ -44,7 +42,7 @@ public class ServerTest
     public async void IntegratedServerTest()
     {
         // Act
-        bool result = await _loginService.Login(_userId, _userName);
+        bool result = await _accountService.Login(_userId, _userName);
         // Assert
         Assert.IsTrue(result, "로그인 실패");
 
@@ -140,6 +138,9 @@ public class ServerTest
 
 
 
+        bool deleteResult = await _accountService.DeleteAccount(_userId);
+        // Assert
+        Assert.IsTrue(deleteResult, "계정 삭제 실패");
     }
 
 
