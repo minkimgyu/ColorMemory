@@ -78,14 +78,14 @@ public class LoadingPage : MonoBehaviour
 #if UNITY_STANDALONE
         Debug.Log("Standalone 버전 실행 중");
 
-        _userId = "testId1";
-        _userName = "testMeal";
+        _userId = "adminId";
+        _userName = "admin";
         SetUp();
 #elif UNITY_EDITOR
         Debug.Log("Editor 버전 실행 중");
 
-        _userId = "testId1";
-        _userName = "testMeal";
+        _userId = "adminId";
+        _userName = "admin";
         SetUp();
 #elif UNITY_ANDROID
         Debug.Log("Android 버전 실행 중");
