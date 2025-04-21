@@ -47,7 +47,7 @@ public class WeeklyScoreUpdateService : IRankingService
     public async Task<bool> UpdatePlayerWeeklyScore(int myScore, string userId)
     {
         ScoreManager scoreManager = new ScoreManager();
-        bool canUpdate = false; 
+        bool canUpdate = false;
 
         try
         {
