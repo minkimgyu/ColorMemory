@@ -38,14 +38,20 @@ namespace Collect
 
         [Header("Setting")]
         [SerializeField] GameObject _pausePanel;
+        [SerializeField] TMP_Text _pauseTitleText;
+
         [SerializeField] Button _pauseExitBtn;
         [SerializeField] Button _gameExitBtn;
 
         [SerializeField] CustomSlider _bgmSlider;
+        [SerializeField] TMP_Text _bgmTitleText;
         [SerializeField] TMP_Text _bgmLeftText;
+        [SerializeField] TMP_Text _bgmRightText;
 
         [SerializeField] CustomSlider _sfxSlider;
+        [SerializeField] TMP_Text _sfxTitleText;
         [SerializeField] TMP_Text _sfxLeftText;
+        [SerializeField] TMP_Text _sfxRightText;
 
         [Header("ModeData")]
         //[SerializeField] Color[] _pickColors;
@@ -56,6 +62,8 @@ namespace Collect
         [Header("Hint")]
         [SerializeField] Button _goBackBtn;
         [SerializeField] GameObject _rememberPanel;
+        [SerializeField] TMP_Text _rememberTxt;
+
         [SerializeField] TMP_Text _hintInfoText;
 
         [Header("Clear")]
@@ -196,7 +204,7 @@ namespace Collect
             _section = artData.Sections[saveData.SelectedArtworkSectionIndex.x][saveData.SelectedArtworkSectionIndex.y];
 
             Vector2Int index = new Vector2Int(_section.Blocks.Count, _section.Blocks[0].Count);
-            _modeData = new Data(index, 5, addressableHandler.ArtworkJsonAsset.Data[artworkIndex].Title);
+            _modeData = new Data(index, 5, addressableHandler.ArtworkJsonDataAsset.Data[artworkIndex].Title);
 
             CollectStageUIModel model = new CollectStageUIModel();
             CollectStageUIPresenter presenter = new CollectStageUIPresenter(model, () => { _fsm.SetState(State.Result); });
@@ -217,6 +225,7 @@ namespace Collect
                 _skipBtn,
 
                 _rememberPanel,
+                _rememberTxt,
                 _hintInfoText,
 
                 _gameClearPanel,
@@ -225,16 +234,19 @@ namespace Collect
                 _nextStageBtn,
                 _clearExitBtn,
 
-                _pausePanel,
+                 _pausePanel,
+                _pauseTitleText,
                 _pauseBtn,
                 _pauseExitBtn,
                 _gameExitBtn,
-
                 _bgmSlider,
+                _bgmTitleText,
                 _bgmLeftText,
-
+                _bgmRightText,
                 _sfxSlider,
+                _sfxTitleText,
                 _sfxLeftText,
+                _sfxRightText,
 
                 _gameResultPanel,
                 _gameResultTitle,

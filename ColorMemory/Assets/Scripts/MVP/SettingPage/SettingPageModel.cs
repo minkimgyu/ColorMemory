@@ -37,11 +37,56 @@ public class SettingPageModel
     public Color ColorOnBgmHandle { get => _colorOnBgmHandle; set => _colorOnBgmHandle = value; }
     public Color ColorOnSfxHandle { get => _colorOnSfxHandle; set => _colorOnSfxHandle = value; }
 
+
+    string _bgmTitleText;
+    public string BGMTitleText
+    {
+        get => _bgmTitleText;
+        set => _bgmTitleText = value;
+    }
+
     string _bgmleftTextInfo;
     public string BgmleftTextInfo { get => _bgmleftTextInfo; set => _bgmleftTextInfo = value; }
 
+    string _bgmRightText;
+    public string BgmRightText
+    {
+        get => _bgmRightText;
+        set => _bgmRightText = value;
+    }
+
+    string _sfxTitleText;
+    public string SfxTitleText
+    {
+        get => _sfxTitleText;
+        set => _sfxTitleText = value;
+    }
+
     string _sfxleftTextInfo;
     public string SfxleftTextInfo { get => _sfxleftTextInfo; set => _sfxleftTextInfo = value; }
+
+    string _sfxRightText;
+    public string SfxRightText
+    {
+        get => _sfxRightText;
+        set => _sfxRightText = value;
+    }
+
+    string _soundLeftText;
+    public string SoundLeftText
+    {
+        get => _soundLeftText;
+        set => _soundLeftText = value;
+    }
+
+    string _soundRightText;
+    public string SoundRightText
+    {
+        get => _soundRightText;
+        set => _soundRightText = value;
+    }
+
+
 
     public SettingPageModel(Dictionary<int, Sprite> profileSprites)
     {

@@ -27,6 +27,7 @@ public class CollectStageUIViewer
     Button _skipBtn;
 
     GameObject _rememberPanel;
+    TMP_Text _rememberTxt;
     TMP_Text _hintInfoText;
 
     GameObject _gameClearPanel;
@@ -36,17 +37,24 @@ public class CollectStageUIViewer
     Button _gameClearExitBtn;
 
     GameObject _pausePanel;
+    TMP_Text _pauseTitleText;
+
     Button _pauseBtn;
     Button _pauseExitBtn;
     Button _gameExitBtn;
+    TMP_Text _gameExitText;
 
+    TMP_Text _bgmTitleText;
     CustomSlider _bgmSlider;
     Image _bgmSliderHandle;
-    TMP_Text _bgmMuteText;
+    TMP_Text _bgmLeftText;
+    TMP_Text _bgmRightText;
 
+    TMP_Text _sfxTitleText;
     CustomSlider _sfxSlider;
     Image _sfxSliderHandle;
-    TMP_Text _sfxMuteText;
+    TMP_Text _sfxLeftText;
+    TMP_Text _sfxRightText;
 
     GameObject _gameResultPanel;
     TMP_Text _gameResultTitle;
@@ -83,6 +91,7 @@ public class CollectStageUIViewer
         Button skipBtn,
 
         GameObject rememberPanel,
+        TMP_Text rememberTxt,
         TMP_Text hintInfoText,
 
         GameObject gameClearPanel,
@@ -92,15 +101,21 @@ public class CollectStageUIViewer
         Button clearExitBtn,
 
         GameObject pausePanel,
+        TMP_Text pauseTitleText,
+
         Button pauseBtn,
         Button pauseExitBtn,
         Button gameExitBtn,
 
         CustomSlider bgmSlider,
-        TMP_Text bgmMuteText,
+        TMP_Text bgmTitleText,
+        TMP_Text bgmLeftText,
+        TMP_Text bgmRightText,
 
         CustomSlider sfxSlider,
-        TMP_Text sfxMuteText,
+        TMP_Text sfxTitleText,
+        TMP_Text sfxLeftText,
+        TMP_Text sfxRightText,
 
         GameObject gameResultPanel,
         TMP_Text gameResultTitle,
@@ -139,6 +154,7 @@ public class CollectStageUIViewer
         _skipBtn = skipBtn;
 
         _rememberPanel = rememberPanel;
+        _rememberTxt = rememberTxt;
         _hintInfoText = hintInfoText;
 
         _gameClearPanel = gameClearPanel;
@@ -148,8 +164,11 @@ public class CollectStageUIViewer
         _gameClearExitBtn = clearExitBtn;
 
         _pausePanel = pausePanel;
+        _pauseTitleText = pauseTitleText;
         _pauseBtn = pauseBtn;
         _gameExitBtn = gameExitBtn;
+        _gameExitText = _gameExitBtn.GetComponentInChildren<TMP_Text>();
+
         _pauseExitBtn = pauseExitBtn;
 
         _gameResultPanel = gameResultPanel;
@@ -168,13 +187,17 @@ public class CollectStageUIViewer
         _totalCollectRatio = totalCollectRatio;
         _totalCollectText = totalCollectText;
 
+        _bgmTitleText = bgmTitleText;
         _bgmSlider = bgmSlider;
-        _bgmMuteText = bgmMuteText;
         _bgmSliderHandle = bgmSlider.handleRect.GetComponent<Image>();
+        _bgmLeftText = bgmLeftText;
+        _bgmRightText = bgmRightText;
 
+        _sfxTitleText = sfxTitleText;
         _sfxSlider = sfxSlider;
-        _sfxMuteText = sfxMuteText;
         _sfxSliderHandle = sfxSlider.handleRect.GetComponent<Image>();
+        _sfxLeftText = sfxLeftText;
+        _sfxRightText = sfxRightText;
 
         _bgmSlider.onHandlePointerUp += ((ratio) => { presenter.SaveBGMValue(); });
         _sfxSlider.onHandlePointerUp += ((ratio) => { presenter.SaveSFXValue(); });
@@ -184,6 +207,28 @@ public class CollectStageUIViewer
         _pauseExitBtn.onClick.AddListener(() => { presenter.ActivatePausePanel(false); });
         _bgmSlider.onValueChanged.AddListener((ratio) => { presenter.OnBGMSliderValeChanged(ratio); });
         _sfxSlider.onValueChanged.AddListener((ratio) => { presenter.OnSFXSliderValeChanged(ratio); });
+    }
+
+    public void ChangePauseTitleText(string title)
+    {
+        _pauseTitleText.text = title;
+    }
+
+    public void ChangeGameExitText(string content)
+    {
+        _gameExitText.text = content;
+    }
+
+    public void ChangeSoundText(string bgmTitle, string sfxTitle, string leftText, string rightText)
+    {
+        _bgmTitleText.text = bgmTitle;
+        _sfxTitleText.text = sfxTitle;
+
+        _bgmLeftText.text = leftText;
+        _sfxLeftText.text = leftText;
+
+        _bgmRightText.text = rightText;
+        _sfxRightText.text = rightText;
     }
 
     public void ChangeGameResultTitle(string comment)
@@ -336,9 +381,8 @@ public class CollectStageUIViewer
     public void ActivateRememberPanel(bool active)
     {
         _rememberPanel.SetActive(active);
+        _rememberTxt.text = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.RememberTitle);
     }
-
-  
 
     public void ActivateGameResultPanel(bool active)
     {
@@ -360,12 +404,12 @@ public class CollectStageUIViewer
     public void ChangeBGMSliderHandleColor(string leftSmallTxt, Color handleColor)
     {
         _bgmSliderHandle.color = handleColor;
-        _bgmMuteText.text = leftSmallTxt;
+        _bgmLeftText.text = leftSmallTxt;
     }
 
     public void ChangeSFXSliderHandleColor(string leftSmallTxt, Color handleColor)
     {
         _sfxSliderHandle.color = handleColor;
-        _sfxMuteText.text = leftSmallTxt;
+        _sfxLeftText.text = leftSmallTxt;
     }
 }

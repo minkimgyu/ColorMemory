@@ -183,11 +183,14 @@ namespace Collect
                     int row = _artData.Sections.Count;
                     int col = _artData.Sections[0].Count;
 
+                    string completeTitle;
+                    string completeContent;
+
                     if(data.SelectedArtworkSectionIndex.x == row - 1
                     && data.SelectedArtworkSectionIndex.y == col - 1) // 마지막 스테이지의 경우
                     {
-                        _collectStageUIPresenter.ChangeClearTitleInfo("명화를 완성했어요!");
-                        _collectStageUIPresenter.ChangeClearContentInfo("축하해요! 마지막 패턴까지 완성했어요!");
+                        completeTitle = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.CollectionCompleteTitle);
+                        completeContent = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.CollectionCompleteContent);
 
                         if (_artworkDTO.HasIt == true) // 이미 아트워크를 보유한 경우
                         {
@@ -203,9 +206,12 @@ namespace Collect
                     }
                     else
                     {
-                        _collectStageUIPresenter.ChangeClearTitleInfo("조각을 완성했어요!");
-                        _collectStageUIPresenter.ChangeClearContentInfo("Next 버튼을 눌러 명화를 완성해보세요!");
+                        completeTitle = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.CollectionClearTitle);
+                        completeContent = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.CollectionClearContent);
                     }
+
+                    _collectStageUIPresenter.ChangeClearTitleInfo(completeTitle);
+                    _collectStageUIPresenter.ChangeClearContentInfo(completeContent);
                 });
             });
         }

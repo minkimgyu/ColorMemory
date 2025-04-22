@@ -22,6 +22,18 @@ public class ChallengeStageUIPresenter
     public void InjectViewer(ChallengeStageUIViewer viewer)
     {
         _viewer = viewer;
+
+        _model.PauseTitleText = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.GameSettingTitle);
+        _viewer.ChangePauseTitleText(_model.PauseTitleText);
+
+        _model.GameExitText = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.GameExitBtn);
+        _viewer.ChangeGameExitText(_model.GameExitText);
+
+        _model.BGMTitleText = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.BGMTitle);
+        _model.SfxTitleText = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.SFXTitle);
+        _model.SoundLeftText = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.DecreaseSound);
+        _model.SoundRightText = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.IncreaseSound);
+        _viewer.ChangeSoundText(_model.BGMTitleText, _model.SfxTitleText, _model.SoundLeftText, _model.SoundRightText);
     }
 
     public void ActivateBottomContent(bool active)
@@ -102,12 +114,12 @@ public class ChallengeStageUIPresenter
     {
         if (volumn == 0)
         {
-            _model.BgmleftTextInfo = "음소거";
+            _model.BgmleftTextInfo = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.Mute);
             _model.ColorOnBgmHandle = _colorOnZeroValue;
         }
         else
         {
-            _model.BgmleftTextInfo = "작게";
+            _model.BgmleftTextInfo = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.DecreaseSound);
             _model.ColorOnBgmHandle = _colorOnBgmHandle;
         }
     }
@@ -116,12 +128,12 @@ public class ChallengeStageUIPresenter
     {
         if (volumn == 0)
         {
-            _model.SfxleftTextInfo = "음소거";
+            _model.SfxleftTextInfo = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.Mute);
             _model.ColorOnSfxHandle = _colorOnZeroValue;
         }
         else
         {
-            _model.SfxleftTextInfo = "작게";
+            _model.SfxleftTextInfo = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.DecreaseSound);
             _model.ColorOnSfxHandle = _colorOnSfxHandle;
         }
     }

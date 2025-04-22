@@ -84,6 +84,8 @@ public class RankingUI : SpawnableUI
         _profileImg.sprite = profileSprite;
         _nameTxt.text = title;
         _scoreTxt.text = $"{score:N0}";
-        _rankTxt.text = $"{rank}À§";
+
+        string rankFormat = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.Rank);
+        _rankTxt.text = string.Format(rankFormat, rank);
     }
 }

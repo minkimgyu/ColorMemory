@@ -93,9 +93,9 @@ public class CollectiveArtJsonAssetLoader : IntMultipleJsonAssetLoader<int, Coll
     }
 }
 
-public class ArtworkJsonAssetLoader : SingleJsonAssetLoader<ArtworkDateWrapper>
+public class ArtworkDataJsonAssetLoader : SingleJsonAssetLoader<ArtworkDateWrapper>
 {
-    public ArtworkJsonAssetLoader(AddressableLoader.Label label, Action<ArtworkDateWrapper, AddressableLoader.Label> OnComplete) : base(label, OnComplete)
+    public ArtworkDataJsonAssetLoader(AddressableLoader.Label label, Action<ArtworkDateWrapper, AddressableLoader.Label> OnComplete) : base(label, OnComplete)
     {
     }
 }
@@ -103,6 +103,13 @@ public class ArtworkJsonAssetLoader : SingleJsonAssetLoader<ArtworkDateWrapper>
 public class ChallengeModeStageDataJsonAssetLoader : SingleJsonAssetLoader<LevelDataWrapper>
 {
     public ChallengeModeStageDataJsonAssetLoader(AddressableLoader.Label label, Action<LevelDataWrapper, AddressableLoader.Label> OnComplete) : base(label, OnComplete)
+    {
+    }
+}
+
+public class LocalizationDataJsonAssetLoader : SingleJsonAssetLoader<Localization>
+{
+    public LocalizationDataJsonAssetLoader(AddressableLoader.Label label, Action<Localization, AddressableLoader.Label> OnComplete) : base(label, OnComplete)
     {
     }
 }

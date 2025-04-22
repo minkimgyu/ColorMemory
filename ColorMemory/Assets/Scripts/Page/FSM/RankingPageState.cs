@@ -4,7 +4,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using UnityEditor;
 using UnityEngine;
 
 public class RankingPageState : BaseState<HomePage.InnerPageState>
@@ -16,6 +15,7 @@ public class RankingPageState : BaseState<HomePage.InnerPageState>
 
     public RankingPageState(
         GameObject rankingContent,
+        TMPro.TMP_Text rankingTitleText,
         Transform scrollContent,
         Transform myRankingContent,
         RankingUIFactory rankingUIFactory,
@@ -27,7 +27,7 @@ public class RankingPageState : BaseState<HomePage.InnerPageState>
 
         RankingPageModel rankingPageModel = new RankingPageModel();
         _rankingPagePresenter = new RankingPagePresenter(rankingPageModel);
-        RankingPageViewer rankingPageViewer = new RankingPageViewer(rankingContent, scrollContent, myRankingContent);
+        RankingPageViewer rankingPageViewer = new RankingPageViewer(rankingContent, rankingTitleText, scrollContent, myRankingContent);
         _rankingPagePresenter.InjectViewer(rankingPageViewer);
 
         _rankingPagePresenter.ActiveContent(false);

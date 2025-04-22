@@ -21,17 +21,29 @@ public class CollectStageUIPresenter
     public void InjectViewer(CollectStageUIViewer viewer)
     {
         _viewer = viewer;
+
+        _model.PauseTitleText = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.GameSettingTitle);
+        _viewer.ChangePauseTitleText(_model.PauseTitleText);
+
+        _model.GameExitText = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.GameExitBtn);
+        _viewer.ChangeGameExitText(_model.GameExitText);
+
+        _model.BGMTitleText = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.BGMTitle);
+        _model.SfxTitleText = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.SFXTitle);
+        _model.SoundLeftText = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.DecreaseSound);
+        _model.SoundRightText = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.IncreaseSound);
+        _viewer.ChangeSoundText(_model.BGMTitleText, _model.SfxTitleText, _model.SoundLeftText, _model.SoundRightText);
     }
 
     public void ChangeGameResultTitle(bool hasIt)
     {
         if (hasIt)
         {
-            _model.GameResultTitle = "축하해요! 새로운 명화를 획득했어요!";
+            _model.GameResultTitle = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.CompleteArtworkResultTitle);
         }
         else
         {
-            _model.GameResultTitle = "아직 명화를 획득하지 못했어요";
+            _model.GameResultTitle = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.ProgressArtworkResultTitle);
         }
 
         _viewer.ChangeGameResultTitle(_model.GameResultTitle);
@@ -192,12 +204,12 @@ public class CollectStageUIPresenter
     {
         if (volumn == 0)
         {
-            _model.BgmleftTextInfo = "음소거";
+            _model.BgmleftTextInfo = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.Mute);
             _model.ColorOnBgmHandle = _colorOnZeroValue;
         }
         else
         {
-            _model.BgmleftTextInfo = "작게";
+            _model.BgmleftTextInfo = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.DecreaseSound);
             _model.ColorOnBgmHandle = _colorOnBgmHandle;
         }
     }
@@ -206,12 +218,12 @@ public class CollectStageUIPresenter
     {
         if (volumn == 0)
         {
-            _model.SfxleftTextInfo = "음소거";
+            _model.SfxleftTextInfo = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.Mute);
             _model.ColorOnSfxHandle = _colorOnZeroValue;
         }
         else
         {
-            _model.SfxleftTextInfo = "작게";
+            _model.SfxleftTextInfo = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.DecreaseSound);
             _model.ColorOnSfxHandle = _colorOnSfxHandle;
         }
     }

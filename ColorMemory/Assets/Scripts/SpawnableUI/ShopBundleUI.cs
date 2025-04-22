@@ -22,6 +22,8 @@ public class ShopBundleUI : SpawnableUI
         _titleTxt.text = title;
         _descriptionTxt.text = description;
         _rewardTxt.text = reward.ToString("N0");
-        _priceTxt.text = $"{price.ToString("N0")} 원에 구매하기";
+
+        string buyFormat = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.ShopBundleBuyInfo);
+        _priceTxt.text = string.Format(buyFormat, price);
     }
 }

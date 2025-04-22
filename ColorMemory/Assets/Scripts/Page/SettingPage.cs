@@ -20,11 +20,15 @@ public class SettingPage : MonoBehaviour
     [SerializeField] Toggle[] _profileSelectBtns;
     [SerializeField] Button _doneBtn;
 
+    [SerializeField] TMP_Text _bgmTitleText;
     [SerializeField] CustomSlider _bgmSlider;
     [SerializeField] TMP_Text _bgmLeftText;
+    [SerializeField] TMP_Text _bgmRightText;
 
+    [SerializeField] TMP_Text _sfxTitleText;
     [SerializeField] CustomSlider _sfxSlider;
     [SerializeField] TMP_Text _sfxLeftText;
+    [SerializeField] TMP_Text _sfxRightText;
 
     public void TogglePanel()
     {
@@ -51,10 +55,16 @@ public class SettingPage : MonoBehaviour
             _profileImg,
             _profileSelectBtns,
             _doneBtn,
+
             _bgmSlider,
+            _bgmTitleText,
             _bgmLeftText,
+            _bgmRightText,
+
             _sfxSlider,
+            _sfxTitleText,
             _sfxLeftText,
+            _sfxRightText,
             presenter);
         presenter.InjectViewer(viewer);
 

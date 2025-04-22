@@ -5,12 +5,14 @@ using UnityEngine;
 public class RankingPageViewer
 {
     GameObject _content;
+    TMPro.TMP_Text _rankingTitleText;
     Transform _scrollContent;
     Transform _myRankingContent;
 
-    public RankingPageViewer(GameObject content, Transform scrollContent, Transform myRankingContent)
+    public RankingPageViewer(GameObject content, TMPro.TMP_Text rankingTitleText, Transform scrollContent, Transform myRankingContent)
     {
         _content = content;
+        _rankingTitleText = rankingTitleText;
         _scrollContent = scrollContent;
         _myRankingContent = myRankingContent;
     }
@@ -18,6 +20,11 @@ public class RankingPageViewer
     public void ActiveContent(bool active)
     {
         _content.SetActive(active);
+    }
+
+    public void ChangeRankingTitle(string title)
+    {
+        _rankingTitleText.text = title;
     }
 
     public void DestoryRankingItems()

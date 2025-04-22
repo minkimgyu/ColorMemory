@@ -19,6 +19,12 @@ public class ShopPagePresenter
         _shopPageViewer.ActiveContent(_shopPageModel.ActiveContent);
     }
 
+    public void ChangeShopAdBtnTxt(string content)
+    {
+        _shopPageModel.ShopAdBtnTxt = content;
+        _shopPageViewer.ChangeShopAdBtnTxt(_shopPageModel.ShopAdBtnTxt);
+    }
+
     public void DestroyShopItems()
     {
         _shopPageViewer.DestoryShopItems();
