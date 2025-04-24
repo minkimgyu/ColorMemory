@@ -109,6 +109,14 @@ namespace Collect
         [SerializeField] Canvas _canvas;
         [SerializeField] RectTransform _nextPanel;
 
+        [SerializeField] Button _openShareBtn;
+
+        [Header("Share")]
+        [SerializeField] ShareComponent _shareComponent;
+        [SerializeField] GameObject _sharePanel;
+        [SerializeField] Button _shareBtn;
+        [SerializeField] Button _shareExitBtn;
+
         CollectArtData.Section _section;
         MapData _mapData;
         Dot[,] _dots;
@@ -221,7 +229,11 @@ namespace Collect
             _modeData = new Data(index, 5, addressableHandler.ArtworkJsonDataAssets[saveData.Language].Data[artworkIndex].Title);
 
             CollectStageUIModel model = new CollectStageUIModel();
-            CollectStageUIPresenter presenter = new CollectStageUIPresenter(model, () => { _fsm.SetState(State.Result); });
+            CollectStageUIPresenter presenter = new CollectStageUIPresenter(
+                model,
+                _shareComponent,
+                () => { _fsm.SetState(State.Result); }
+            );
             CollectStageUIViewer viewer = new CollectStageUIViewer(
                 _playPanel,
                 _titleText,
@@ -292,6 +304,11 @@ namespace Collect
                 _totalCollectTitle,
                 _totalCollectRatio,
                 _totalCollectText,
+                _openShareBtn,
+
+                _sharePanel,
+                _shareBtn,
+                _shareExitBtn,
                 presenter);
 
             presenter.InjectViewer(viewer);

@@ -1,15 +1,16 @@
 {
-    "name": "Scripts",
+    "name": "LogicScripts",
     "rootNamespace": "",
     "references": [
         "GUID:6055be8ebefd69e48b49212b09b47b2f",
-        "GUID:69448af7b92c7f342b298e06a37122aa",
-        "GUID:84651a3751eca9349aac36a66bba901b",
         "GUID:9e24947de15b9834991c9d8411ea37cf",
+        "GUID:84651a3751eca9349aac36a66bba901b",
+        "GUID:69448af7b92c7f342b298e06a37122aa",
         "GUID:a3608d6c771df4d5ea920975c31d3a5f",
         "GUID:b4318b6f3695442c4983c360248781db",
         "GUID:1ed07ff861e5f468287b0baef844706d",
-        "GUID:e637e7f2d087d4742b88636269b3070b"
+        "GUID:e637e7f2d087d4742b88636269b3070b",
+        "GUID:2ace7ebb826df10459d12b4f3c4a9407"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

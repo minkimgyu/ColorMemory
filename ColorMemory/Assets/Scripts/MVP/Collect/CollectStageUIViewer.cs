@@ -88,6 +88,12 @@ public class CollectStageUIViewer
     CustomProgressUI _totalCollectRatio;
     TMP_Text _totalCollectText;
 
+    Button _openShareBtn;
+
+    GameObject _sharePanel;
+    Button _shareBtn;
+    Button _shareExitBtn;
+
     public CollectStageUIViewer(
         GameObject playPanel,
         TMP_Text titleText,
@@ -163,6 +169,12 @@ public class CollectStageUIViewer
         CustomProgressUI totalCollectRatio,
         TMP_Text totalCollectText,
 
+        Button openShareBtn,
+
+        GameObject sharePanel,
+        Button shareBtn,
+        Button shareExitBtn,
+
         CollectStageUIPresenter presenter)
     {
         _playPanel = playPanel;
@@ -230,6 +242,16 @@ public class CollectStageUIViewer
         _totalCollectRatio = totalCollectRatio;
         _totalCollectText = totalCollectText;
 
+        _openShareBtn = openShareBtn;
+        _openShareBtn.onClick.AddListener(() => { presenter.ActivateSharePanel(true); });
+
+        _sharePanel = sharePanel;
+        _shareBtn = shareBtn;
+        _shareExitBtn = shareExitBtn;
+
+        _shareExitBtn.onClick.AddListener(() => { presenter.ActivateSharePanel(false); });
+        _shareBtn.onClick.AddListener(() => presenter.OnClickShare());
+
         _bgmTitleText = bgmTitleText;
         _bgmSlider = bgmSlider;
         _bgmSliderHandle = bgmSlider.handleRect.GetComponent<Image>();
@@ -251,6 +273,18 @@ public class CollectStageUIViewer
         _bgmSlider.onValueChanged.AddListener((ratio) => { presenter.OnBGMSliderValeChanged(ratio); });
         _sfxSlider.onValueChanged.AddListener((ratio) => { presenter.OnSFXSliderValeChanged(ratio); });
     }
+
+    public void ActivateSharePanel(bool activeSharePanel)
+    {
+        _sharePanel.SetActive(activeSharePanel);
+    }
+
+    public void ActivateShareBottomItems(bool activeShareBottomItems)
+    {
+        _shareBtn.gameObject.SetActive(activeShareBottomItems);
+        _shareExitBtn.gameObject.SetActive(activeShareBottomItems);
+    }
+
 
     public void ChangeArtworkTitle(string artworkTitle)
     {

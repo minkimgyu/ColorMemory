@@ -143,6 +143,20 @@ public class CollectStageUIModel
     public string RankName { get => _rankName; set => _rankName = value; }
 
 
+    bool _activeSharePanel;
+    public bool ActiveSharePanel 
+    { 
+        get => _activeSharePanel; 
+        set => _activeSharePanel = value; 
+    }
+
+    bool _activeShareBottomItems;
+    public bool ActiveShareBottomItems
+    {
+        get => _activeShareBottomItems;
+        set => _activeShareBottomItems = value;
+    }
+
 
     bool _activePausePanel;
 
@@ -378,5 +392,4 @@ public class CollectStageUIModel
 
     string _title;
     public string Title { get => _title; set => _title = value; }
- 
 }

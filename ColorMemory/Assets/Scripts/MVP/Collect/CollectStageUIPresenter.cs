@@ -10,12 +10,25 @@ public class CollectStageUIPresenter
     CollectStageUIModel _model;
     CollectStageUIViewer _viewer;
 
+    ShareComponent _shareComponent;
+
     public Action GoToResultState { get; private set; }
 
-    public CollectStageUIPresenter(CollectStageUIModel model, Action GoToResultState)
+    public CollectStageUIPresenter(CollectStageUIModel model, ShareComponent shareComponent, Action GoToResultState)
     {
         _model = model;
+        _shareComponent = shareComponent;
+
+        _shareComponent.Initialize(
+            () => ActivateShareBottomItems(false),
+            () => ActivateShareBottomItems(true));
+
         this.GoToResultState = GoToResultState;
+    }
+
+    public void OnClickShare()
+    {
+        _shareComponent.OnShareButtonClick();
     }
 
     public void InjectViewer(CollectStageUIViewer viewer)
@@ -37,6 +50,18 @@ public class CollectStageUIPresenter
         _model.HintUsageTitle = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.HintUsage);
         _model.WrongCountTitle = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.WrongCount);
         _viewer.ChangeDetailTitle(_model.HintUsageTitle, _model.WrongCountTitle);
+    }
+
+    public void ActivateSharePanel(bool activeSharePanel)
+    {
+        _model.ActiveSharePanel = activeSharePanel;
+        _viewer.ActivateSharePanel(_model.ActiveSharePanel);
+    }
+
+    public void ActivateShareBottomItems(bool activeSharePanel)
+    {
+        _model.ActiveShareBottomItems = activeSharePanel;
+        _viewer.ActivateShareBottomItems(_model.ActiveShareBottomItems);
     }
 
     public void ChangeArtworkTitle(string artworkTitle)
