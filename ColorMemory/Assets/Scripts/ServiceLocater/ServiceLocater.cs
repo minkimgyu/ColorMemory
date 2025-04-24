@@ -19,6 +19,9 @@ public static class ServiceLocater
     static IGPGS _gpgsManager;
     static NullGPGSManager _nullGpgsManager;
 
+    static ILocalization _localizationManager;
+    static NullLocalizationManager _nullLocalizationManager;
+
     static ServiceLocater()
     {
         _nullSoundPlayer = new NullSoundPlayer();
@@ -26,6 +29,7 @@ public static class ServiceLocater
         _nullSaveManager = new NullSaveManager();
         _nullTimeController = new NullTimeController();
         _nullGpgsManager = new NullGPGSManager();
+        _nullLocalizationManager = new NullLocalizationManager();
     }
 
     public static void Provide(ISoundPlayable soundPlayer)
@@ -51,6 +55,11 @@ public static class ServiceLocater
     public static void Provide(IGPGS gpgs)
     {
         _gpgsManager = gpgs;
+    }
+
+    public static void Provide(ILocalization localization)
+    {
+        _localizationManager = localization;
     }
 
     public static ISoundPlayable ReturnSoundPlayer()
@@ -81,5 +90,11 @@ public static class ServiceLocater
     {
         if (_gpgsManager == null) return _nullGpgsManager;
         return _gpgsManager;
+    }
+
+    public static ILocalization ReturnLocalizationManager()
+    {
+        if (_localizationManager == null) return _nullLocalizationManager;
+        return _localizationManager;
     }
 }

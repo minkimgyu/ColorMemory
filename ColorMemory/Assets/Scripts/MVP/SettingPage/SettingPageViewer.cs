@@ -18,13 +18,17 @@ public class SettingPageViewer
     Toggle[] _profileSelectBtns;
     Button _doneBtn;
 
+    TMP_Text _bgmTitleText;
     CustomSlider _bgmSlider;
     Image _bgmSliderHandle;
-    TMP_Text _bgmMuteText;
+    TMP_Text _bgmLeftText;
+    TMP_Text _bgmRightText;
 
+    TMP_Text _sfxTitleText;
     CustomSlider _sfxSlider;
     Image _sfxSliderHandle;
-    TMP_Text _sfxMuteText;
+    TMP_Text _sfxLeftText;
+    TMP_Text _sfxRightText;
 
     public SettingPageViewer(
         SideSheetUI sideSheetUI,
@@ -39,10 +43,14 @@ public class SettingPageViewer
         Button doneBtn,
 
         CustomSlider bgmSlider,
-        TMP_Text bgmMuteText,
+        TMP_Text bgmTitleText,
+        TMP_Text bgmLeftText,
+        TMP_Text bgmRightText,
 
         CustomSlider sfxSlider,
-        TMP_Text sfxMuteText,
+        TMP_Text sfxTitleText,
+        TMP_Text sfxLeftText,
+        TMP_Text sfxRightText,
 
         SettingPagePresenter presenter)
     {
@@ -58,13 +66,17 @@ public class SettingPageViewer
         _profileSelectBtns = profileSelectBtns;
         _doneBtn = doneBtn;
 
+        _bgmTitleText = bgmTitleText;
         _bgmSlider = bgmSlider;
         _bgmSliderHandle = bgmSlider.handleRect.GetComponent<Image>();
-        _bgmMuteText = bgmMuteText;
+        _bgmLeftText = bgmLeftText;
+        _bgmRightText = bgmRightText;
 
+        _sfxTitleText = sfxTitleText;
         _sfxSlider = sfxSlider;
         _sfxSliderHandle = sfxSlider.handleRect.GetComponent<Image>();
-        _sfxMuteText = sfxMuteText;
+        _sfxLeftText = sfxLeftText;
+        _sfxRightText = sfxRightText;
 
         _doneBtn.onClick.AddListener(() => { presenter.OnProfileDone(); });
 
@@ -89,6 +101,18 @@ public class SettingPageViewer
         _sfxSlider.onValueChanged.AddListener((ratio) => { presenter.OnSFXSliderValeChanged(ratio); });
     }
 
+    public void ChangeSoundText(string bgmTitle, string sfxTitle, string leftText, string rightText)
+    {
+        _bgmTitleText.text = bgmTitle;
+        _sfxTitleText.text = sfxTitle;
+
+        _bgmLeftText.text = leftText;
+        _sfxLeftText.text = leftText;
+
+        _bgmRightText.text = rightText;
+        _sfxRightText.text = rightText;
+    }
+
     public void ChangeBGMSliderValue(float ratio, string leftSmallTxt, Color handleColor)
     {
         _bgmSlider.value = ratio;
@@ -104,13 +128,13 @@ public class SettingPageViewer
     public void ChangeBGMSliderHandleColor(string leftSmallTxt, Color handleColor)
     {
         _bgmSliderHandle.color = handleColor;
-        _bgmMuteText.text = leftSmallTxt;
+        _bgmLeftText.text = leftSmallTxt;
     }
 
     public void ChangeSFXSliderHandleColor(string leftSmallTxt, Color handleColor)
     {
         _sfxSliderHandle.color = handleColor;
-        _sfxMuteText.text = leftSmallTxt;
+        _sfxLeftText.text = leftSmallTxt;
     }
 
 

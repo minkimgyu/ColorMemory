@@ -64,6 +64,12 @@ public class HomePage : MonoBehaviour
     [SerializeField] Image _completeSlider;
     [SerializeField] TMP_Text _leftCompleteText;
     [SerializeField] TMP_Text _totalCompleteText;
+
+    [SerializeField] TMP_Text _selectStageTitle;
+
+    [SerializeField] TMP_Text _stageUsedHintUseTitle;
+    [SerializeField] TMP_Text _stageWrongCountTitle;
+
     [SerializeField] Button _playCollectModeBtn;
     [SerializeField] Button _exitBtn;
 
@@ -78,6 +84,11 @@ public class HomePage : MonoBehaviour
     [SerializeField] Button _filterExitBtn;
     [SerializeField] GameObject _filterContent;
     [SerializeField] TMP_Text _collectionRatioText;
+    [SerializeField] TMP_Text _collectionCheerText;
+
+    [SerializeField] TMP_Text _ownFilterTitleText;
+    [SerializeField] TMP_Text _rankFilterTitleText;
+    [SerializeField] TMP_Text _dateFilterTitleText;
 
     [SerializeField] Toggle[] _ownToggles;
     [SerializeField] Toggle[] _rankToggles;
@@ -85,11 +96,13 @@ public class HomePage : MonoBehaviour
 
     [Header("Ranking")]
     [SerializeField] GameObject _rankingContent;
+    [SerializeField] TMP_Text _rankingTitleText;
     [SerializeField] Transform _rankingScrollContent;
     [SerializeField] Transform _myRankingContent;
 
     [Header("Shop")]
     [SerializeField] GameObject _shopContent;
+    [SerializeField] Button _shopAdBtn;
     [SerializeField] Transform _shopScrollContent;
 
     [Header("Setting")]
@@ -213,8 +226,15 @@ public class HomePage : MonoBehaviour
                 _completeSlider,
                 _leftCompleteText,
                 _totalCompleteText,
+
+                _selectStageTitle,
+
                 _selectStageContent,
                 _stageUIContent,
+
+                _stageUsedHintUseTitle,
+                _stageWrongCountTitle,
+
                 _exitBtn,
                 _playCollectModeBtn,
                 _stageDetailContent,
@@ -227,6 +247,11 @@ public class HomePage : MonoBehaviour
                 _filterExitBtn,
                 _filterContent,
                 _collectionRatioText,
+                _collectionCheerText,
+
+                _ownFilterTitleText,
+                _rankFilterTitleText,
+                _dateFilterTitleText,
 
                 _ownToggles,
                 _rankToggles,
@@ -240,13 +265,14 @@ public class HomePage : MonoBehaviour
                 filterItemFactory,
 
                 artDatas,
-                addressableHandler.ArtworkJsonAsset.Data,
+                addressableHandler.ArtworkJsonDataAssets[data.Language].Data,
                 addressableHandler.CollectiveArtJsonAsserts,
                 _pageFsm)
             },
             { 
                 InnerPageState.Ranking, new RankingPageState(
                 _rankingContent,
+                _rankingTitleText,
                 _rankingScrollContent,
                 _myRankingContent,
                 rankingUIFactory,
@@ -256,6 +282,7 @@ public class HomePage : MonoBehaviour
             {
                 InnerPageState.Shop, new ShopPageState(
                 _shopContent,
+                _shopAdBtn,
                 _shopScrollContent,
                 shopBundleUIFactory,
                 _topElementPresenter,

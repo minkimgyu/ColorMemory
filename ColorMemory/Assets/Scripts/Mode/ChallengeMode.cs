@@ -35,19 +35,28 @@ namespace Challenge
 
         [Header("Setting")]
         [SerializeField] GameObject _pausePanel;
+        [SerializeField] TMP_Text _pauseTitleText;
+
         [SerializeField] Button _pauseExitBtn;
         [SerializeField] Button _gameExitBtn;
 
         [SerializeField] CustomSlider _bgmSlider;
+        [SerializeField] TMP_Text _bgmTitleText;
         [SerializeField] TMP_Text _bgmLeftText;
+        [SerializeField] TMP_Text _bgmRightText;
 
         [SerializeField] CustomSlider _sfxSlider;
+        [SerializeField] TMP_Text _sfxTitleText;
         [SerializeField] TMP_Text _sfxLeftText;
+        [SerializeField] TMP_Text _sfxRightText;
 
         [Header("Preview")]
         [SerializeField] GameObject _stageOverPreviewPanel;
         [SerializeField] ClearPatternUI _lastStagePattern;
-        [SerializeField] TMP_Text _stageOverInfoText;
+        [SerializeField] TMP_Text _stageOverTitleText;
+
+        [SerializeField] TMP_Text _stageOverInfoText1;
+        [SerializeField] TMP_Text _stageOverInfoText2;
         [SerializeField] Button _goToGameOverBtn;
 
         [Header("ModeData")]
@@ -65,6 +74,8 @@ namespace Challenge
 
         [SerializeField] GameObject _hintPanel;
         [SerializeField] GameObject _rememberPanel;
+        [SerializeField] TMP_Text _rememberTxt;
+
         [SerializeField] GameObject _coinPanel;
         [SerializeField] TMP_Text _coinTxt;
 
@@ -246,7 +257,7 @@ namespace Challenge
             AddressableLoader addressableHandler = FindObjectOfType<AddressableLoader>();
             if (addressableHandler == null) return;
 
-            RandomLevelGenerator randomLevelGenerator = new RandomLevelGenerator(addressableHandler.ChallengeStageDataWrapper.StageDatas);
+            RandomLevelGenerator randomLevelGenerator = new RandomLevelGenerator(addressableHandler.ChallengeStageJsonDataAsset.StageDatas);
 
             ClearPatternUIFactory clearPatternUIFactory = new ClearPatternUIFactory(
                 addressableHandler.SpawnableUIAssets[SpawnableUI.Name.ClearPatternUI]);
@@ -278,6 +289,7 @@ namespace Challenge
 
                 _hintPanel,
                 _rememberPanel,
+                _rememberTxt,
 
                 _coinPanel,
                 _coinTxt,
@@ -294,16 +306,23 @@ namespace Challenge
                 
                 _stageOverPreviewPanel,
                 _lastStagePattern,
-                _stageOverInfoText,
+                _stageOverTitleText,
+                _stageOverInfoText1,
+                _stageOverInfoText2,
                 
                 _pausePanel,
+                _pauseTitleText,
                 _pauseBtn,
                 _pauseExitBtn,
                 _gameExitBtn,
                 _bgmSlider,
+                _bgmTitleText,
                 _bgmLeftText,
+                _bgmRightText,
                 _sfxSlider,
+                _sfxTitleText,
                 _sfxLeftText,
+                _sfxRightText,
                 presenter);
 
             presenter.InjectViewer(viewer);
@@ -352,7 +371,7 @@ namespace Challenge
                     )
                 },
 
-                { State.Memorize, new MemorizeState(_fsm, _pickColors, _modeData, addressableHandler.ChallengeStageDataWrapper.StageDatas, presenter, GetStage) },
+                { State.Memorize, new MemorizeState(_fsm, _pickColors, _modeData, addressableHandler.ChallengeStageJsonDataAsset.StageDatas, presenter, GetStage) },
                 { State.Paint, new PaintState(_fsm, _pickColors, _modeData, presenter, GetStage) },
                 { State.Clear, new ClearState(_fsm, presenter, _modeData, GetStage, DestroyDots) },
                 { State.GameOver, new EndState(_fsm, presenter, _pickColors, clearPatternUIFactory, _modeData) },

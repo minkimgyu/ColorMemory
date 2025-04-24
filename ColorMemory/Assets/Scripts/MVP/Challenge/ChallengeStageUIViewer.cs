@@ -34,6 +34,7 @@ public class ChallengeStageUIViewer
 
     GameObject _hintPanel;
     GameObject _rememberPanel;
+    TMP_Text _rememberTxt;
 
     GameObject _coinPanel;
     TMP_Text _coinTxt;
@@ -52,20 +53,30 @@ public class ChallengeStageUIViewer
 
     GameObject _stageOverPreviewPanel;
     ClearPatternUI _lastStagePattern;
-    TMP_Text _stageOverInfoText;
+
+    TMP_Text _stageOverTitleText;
+    TMP_Text _stageOverInfoText1;
+    TMP_Text _stageOverInfoText2;
 
     GameObject _pausePanel;
+    TMP_Text _pauseTitleText;
+
     Button _pauseBtn;
     Button _pauseExitBtn;
     Button _gameExitBtn;
+    TMP_Text _gameExitText;
 
+    TMP_Text _bgmTitleText;
     CustomSlider _bgmSlider;
     Image _bgmSliderHandle;
-    TMP_Text _bgmMuteText;
+    TMP_Text _bgmLeftText;
+    TMP_Text _bgmRightText;
 
+    TMP_Text _sfxTitleText;
     CustomSlider _sfxSlider;
     Image _sfxSliderHandle;
-    TMP_Text _sfxMuteText;
+    TMP_Text _sfxLeftText;
+    TMP_Text _sfxRightText;
 
     public ChallengeStageUIViewer(
         GameObject playPanel,
@@ -87,6 +98,7 @@ public class ChallengeStageUIViewer
 
         GameObject hintPanel,
         GameObject rememberPanel,
+        TMP_Text rememberTxt,
 
         GameObject coinPanel,
         TMP_Text coinTxt,
@@ -103,17 +115,27 @@ public class ChallengeStageUIViewer
 
         GameObject stageOverPreviewPanel,
         ClearPatternUI lastStagePattern,
-        TMP_Text stageOverInfoText,
+        TMP_Text stageOverTitleText,
+
+        TMP_Text stageOverInfoText1,
+        TMP_Text stageOverInfoText2,
 
         GameObject pausePanel,
+        TMP_Text pauseTitleText,
+
         Button pauseBtn,
         Button pauseExitBtn,
         Button gameExitBtn,
+
         CustomSlider bgmSlider,
-        TMP_Text bgmMuteText,
+        TMP_Text bgmTitleText,
+        TMP_Text bgmLeftText,
+        TMP_Text bgmRightText,
 
         CustomSlider sfxSlider,
-        TMP_Text sfxMuteText,
+        TMP_Text sfxTitleText,
+        TMP_Text sfxLeftText,
+        TMP_Text sfxRightText,
 
         ChallengeStageUIPresenter presenter)
     {
@@ -137,6 +159,7 @@ public class ChallengeStageUIViewer
 
         _hintPanel = hintPanel;
         _rememberPanel = rememberPanel;
+        _rememberTxt = rememberTxt;
 
         _coinPanel = coinPanel;
         _coinTxt = coinTxt;
@@ -154,20 +177,31 @@ public class ChallengeStageUIViewer
         _stageOverPreviewPanel = stageOverPreviewPanel;
 
         _lastStagePattern = lastStagePattern;
-        _stageOverInfoText = stageOverInfoText;
+
+        _stageOverTitleText = stageOverTitleText;
+        _stageOverInfoText1 = stageOverInfoText1;
+        _stageOverInfoText2 = stageOverInfoText2;
 
         _pausePanel = pausePanel;
+        _pauseTitleText = pauseTitleText;
+
         _pauseBtn = pauseBtn;
         _gameExitBtn = gameExitBtn;
+        _gameExitText = _gameExitBtn.GetComponentInChildren<TMP_Text>();
+
         _pauseExitBtn = pauseExitBtn;
 
+        _bgmTitleText = bgmTitleText;
         _bgmSlider = bgmSlider;
         _bgmSliderHandle = bgmSlider.handleRect.GetComponent<Image>();
-        _bgmMuteText = bgmMuteText;
+        _bgmLeftText = bgmLeftText;
+        _bgmRightText = bgmRightText;
 
+        _sfxTitleText = sfxTitleText;
         _sfxSlider = sfxSlider;
         _sfxSliderHandle = sfxSlider.handleRect.GetComponent<Image>();
-        _sfxMuteText = sfxMuteText;
+        _sfxLeftText = sfxLeftText;
+        _sfxRightText = sfxRightText;
 
         _bgmSlider.onHandlePointerUp += ((ratio) => { presenter.SaveBGMValue(); });
         _sfxSlider.onHandlePointerUp += ((ratio) => { presenter.SaveSFXValue(); });
@@ -177,6 +211,28 @@ public class ChallengeStageUIViewer
         _pauseExitBtn.onClick.AddListener(() => { presenter.ActivatePausePanel(false); });
         _bgmSlider.onValueChanged.AddListener((ratio) => { presenter.OnBGMSliderValeChanged(ratio); });
         _sfxSlider.onValueChanged.AddListener((ratio) => { presenter.OnSFXSliderValeChanged(ratio); });
+    }
+
+    public void ChangePauseTitleText(string title)
+    {
+        _pauseTitleText.text = title;
+    }
+
+    public void ChangeGameExitText(string content)
+    {
+        _gameExitText.text = content;
+    }
+
+    public void ChangeSoundText(string bgmTitle, string sfxTitle, string leftText, string rightText)
+    {
+        _bgmTitleText.text = bgmTitle;
+        _sfxTitleText.text = sfxTitle;
+
+        _bgmLeftText.text = leftText;
+        _sfxLeftText.text = leftText;
+
+        _bgmRightText.text = rightText;
+        _sfxRightText.text = rightText;
     }
 
     public void ActivateBottomContent(bool active)
@@ -219,13 +275,13 @@ public class ChallengeStageUIViewer
     public void ChangeBGMSliderHandleColor(string leftSmallTxt, Color handleColor)
     {
         _bgmSliderHandle.color = handleColor;
-        _bgmMuteText.text = leftSmallTxt;
+        _bgmLeftText.text = leftSmallTxt;
     }
 
     public void ChangeSFXSliderHandleColor(string leftSmallTxt, Color handleColor)
     {
         _sfxSliderHandle.color = handleColor;
-        _sfxMuteText.text = leftSmallTxt;
+        _sfxLeftText.text = leftSmallTxt;
     }
 
     public void ActivatePausePanel(bool active)
@@ -245,10 +301,14 @@ public class ChallengeStageUIViewer
 
     public void ChangeStageOverInfo(int currentStageCount)
     {
-        _stageOverInfoText.text = $"클리어하지 못한 {currentStageCount}번째 패턴이에요";
+        _stageOverTitleText.text = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.PreviewTitle);
+
+        string content1 = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.PreviewContent1);
+        _stageOverInfoText1.text = string.Format(content1, currentStageCount);
+
+        string content2 = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.PreviewContent2);
+        _stageOverInfoText2.text = content2;
     }
-
-
 
     public void ActivatePlayPanel(bool active)
     {
@@ -301,6 +361,7 @@ public class ChallengeStageUIViewer
     public void ActivateRememberPanel(bool active)
     {
         _rememberPanel.SetActive(active);
+        _rememberTxt.text = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.RememberTitle);
     }
 
     public void ActivateCoinPanel(bool active)
@@ -355,15 +416,14 @@ public class ChallengeStageUIViewer
 
     public void ChangeResultGoldCount(int goldCount)
     {
-        _goldCount.text = $"{goldCount} 코인 획득!";
+        string getCoinTxt = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.GetCoin);
+        _goldCount.text = string.Format(getCoinTxt, goldCount);
     }
 
     public void AddRanking(SpawnableUI ranking, Vector3 size)
     {
         ranking.transform.SetParent(_rankingContent);
         ranking.transform.localScale = size;
-
-        //if (setToMiddle == true) ranking.transform.SetSiblingIndex(_rankingContent.childCount / 2);
     }
 
     public void RemoveAllRanking()

@@ -17,7 +17,10 @@ public interface IAssetService
         return default;
     }
 
-    Task<bool> ProcessTransaction(string playerId, int usedMoney, int earnMoney) { return default; }
+    Task<bool> PayPlayerMoneyAsync(string playerId, int moneyToPay) { return default; }
+    Task<bool> EarnPlayerMoneyAsync(string playerId, int moneyToEarn) { return default; }
+
+    Task<bool> ProcessTransaction(string playerId, int currentMoney, int earnMoney) { return default; }
     Task<int> GetCurrency(string playerId) { return default; }
 }
 
@@ -39,17 +42,27 @@ public class MockAssetService : IAssetService
          float decreaseDurationOnMiss,
          float increaseDurationOnClear)
     {
-        return await _challengeModeDataService.GetChallengeModeData (playerId, leftDuration, decreaseDurationOnMiss, increaseDurationOnClear);
+        return await _challengeModeDataService.GetChallengeModeData(playerId, leftDuration, decreaseDurationOnMiss, increaseDurationOnClear);
     }
 
-    public async Task<bool> ProcessTransaction(string playerId, int usedMoney, int earnMoney) 
+    public async Task<bool> ProcessTransaction(string playerId, int currentMoney, int earnMoney) 
     {
-        return await _transactionService.ProcessTransaction(playerId, usedMoney, earnMoney);
+        return await _transactionService.ProcessTransaction(playerId, currentMoney, earnMoney);
     }
 
     public async Task<int> GetCurrency(string playerId)
     {
         return await _currencyService.GetCurrency(playerId);
+    }
+
+    public async Task<bool> EarnPlayerMoneyAsync(string playerId, int moneyToEarn)
+    {
+        return await _transactionService.EarnPlayerMoneyAsync(playerId, moneyToEarn);
+    }
+
+    public async Task<bool> PayPlayerMoneyAsync(string playerId, int moneyToPay)
+    {
+        return await _transactionService.PayPlayerMoneyAsync(playerId, moneyToPay);
     }
 }
 
@@ -115,9 +128,44 @@ public class ChallengeModeDataService : IAssetService
 
 public class TransactionService : IAssetService
 {
+    public async Task<bool> PayPlayerMoneyAsync(string playerId, int moneyToPay) 
+    {
+        MoneyManager moneyManager = new MoneyManager();
+
+        try
+        {
+            await moneyManager.PayPlayerMoneyAsync(playerId, moneyToPay);
+        }
+        catch (Exception e)
+        {
+            Debug.Log(e);
+            Debug.Log("서버로 데이터를 전송하지 못 함");
+            return false;
+        }
+
+        return true;
+    }
+
+    public async Task<bool> EarnPlayerMoneyAsync(string playerId, int moneyToEarn) 
+    {
+        MoneyManager moneyManager = new MoneyManager();
+
+        try
+        {
+            await moneyManager.EarnPlayerMoneyAsync(playerId, moneyToEarn);
+        }
+        catch (Exception e)
+        {
+            Debug.Log(e);
+            Debug.Log("서버로 데이터를 전송하지 못 함");
+            return false;
+        }
+
+        return true;
+    }
+
     public async Task<bool> ProcessTransaction(string playerId, int currentMoney, int earnMoney) 
     {
-        ScoreManager scoreManager = new ScoreManager();
         MoneyManager moneyManager = new MoneyManager();
 
         try
@@ -125,8 +173,8 @@ public class TransactionService : IAssetService
             int currentMoneyInServer = await moneyManager.GetMoneyAsync(playerId);
             int usedMoney = currentMoneyInServer - currentMoney;
 
-            await moneyManager.PayPlayerMoneyAsync(playerId, usedMoney);
-            await moneyManager.EarnPlayerMoneyAsync(playerId, earnMoney);
+            await PayPlayerMoneyAsync(playerId, usedMoney);
+            await EarnPlayerMoneyAsync(playerId, earnMoney);
         }
         catch (Exception e)
         {

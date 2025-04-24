@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class ChallengeStageUIModel
@@ -86,11 +87,48 @@ public class ChallengeStageUIModel
         set => _activePausePanel = value;
     }
 
+    string _pauseTitleText;
+    public string PauseTitleText 
+    { 
+        get => _pauseTitleText; 
+        set => _pauseTitleText = value; 
+    }
+
+    string _gameExitText;
+    public string GameExitText
+    {
+        get => _gameExitText;
+        set => _gameExitText = value;
+    }
+
+    string _bgmTitleText;
+    public string BGMTitleText
+    {
+        get => _bgmTitleText;
+        set => _bgmTitleText = value;
+    }
+
     float _bgmRatio;
     public float BgmRatio
     {
         get => _bgmRatio;
         set => _bgmRatio = value;
+    }
+
+    string _bgmRightText;
+    public string BgmRightText
+    {
+        get => _bgmRightText;
+        set => _bgmRightText = value;
+    }
+
+
+
+    string _sfxTitleText;
+    public string SfxTitleText
+    {
+        get => _sfxTitleText;
+        set => _sfxTitleText = value;
     }
 
     float _sfxRatio;
@@ -100,6 +138,27 @@ public class ChallengeStageUIModel
         set => _sfxRatio = value;
     }
 
+    string _sfxRightText;
+    public string SfxRightText
+    {
+        get => _sfxRightText;
+        set => _sfxRightText = value;
+    }
+
+
+    string _soundLeftText;
+    public string SoundLeftText
+    {
+        get => _soundLeftText;
+        set => _soundLeftText = value;
+    }
+
+    string _soundRightText;
+    public string SoundRightText
+    {
+        get => _soundRightText;
+        set => _soundRightText = value;
+    }
 
 
 

@@ -63,6 +63,24 @@ public class CollectPagePresenter
         _collectPageViewer.ChangeCollectionRatioInfo(_collectPageModel.CollectionRatio);
     }
 
+    public void ChangeCollectionCheerInfo()
+    {
+        _collectPageModel.CollectionCheerText = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.FilterCheerInfo);
+        _collectPageViewer.ChangeCollectionCheerInfo(_collectPageModel.CollectionCheerText);
+    }
+
+    public void ChangeFilterTitle()
+    {
+        _collectPageModel.OwnFilterTitle = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.OwnFilterTitle);
+        _collectPageModel.RankFilterTitle = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.RankFilterTitle);
+        _collectPageModel.DateFilterTitle = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.DateFilterTitle);
+
+        _collectPageViewer.ChangeFilterTitle(
+            _collectPageModel.OwnFilterTitle,
+            _collectPageModel.RankFilterTitle,
+            _collectPageModel.DateFilterTitle);
+    }
+
     public void InjectViewer(CollectPageViewer collectPageViewer)
     {
         _collectPageViewer = collectPageViewer;
@@ -121,8 +139,8 @@ public class CollectPagePresenter
 
     readonly Dictionary<FilterUI.DateFilter, string> _dateFilterDescription = new Dictionary<FilterUI.DateFilter, string>
     {
-        { FilterUI.DateFilter.Old, "오래된 순" },
-        { FilterUI.DateFilter.New, "최신 순" },
+        { FilterUI.DateFilter.Old, "Old" },
+        { FilterUI.DateFilter.New, "New" },
     };
 
     void FillFilterItems()
@@ -472,7 +490,8 @@ public class CollectPagePresenter
 
     void UpdateArtInfo()
     {
-        _collectPageViewer.ChangeArtDescription("선택된 명화가 없습니다.", "");
+        string noFilteredArtworkInfo = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.NoFilteredArtwork);
+        _collectPageViewer.ChangeArtDescription(noFilteredArtworkInfo, "");
         _collectPageViewer.ChangeArtCompleteRatio(0, _collectPageModel.TotalCompleteRatio);
     }
 

@@ -24,7 +24,10 @@ namespace Collect
         [SerializeField] TMP_Text _progressText;
 
         [SerializeField] GameObject _detailContent;
+        [SerializeField] TMP_Text _hintUsageTitle;
         [SerializeField] TMP_Text _hintUsageText;
+
+        [SerializeField] TMP_Text _wrongCountTitle;
         [SerializeField] TMP_Text _wrongCountText;
 
         [Header("Middle")]
@@ -38,14 +41,20 @@ namespace Collect
 
         [Header("Setting")]
         [SerializeField] GameObject _pausePanel;
+        [SerializeField] TMP_Text _pauseTitleText;
+
         [SerializeField] Button _pauseExitBtn;
         [SerializeField] Button _gameExitBtn;
 
         [SerializeField] CustomSlider _bgmSlider;
+        [SerializeField] TMP_Text _bgmTitleText;
         [SerializeField] TMP_Text _bgmLeftText;
+        [SerializeField] TMP_Text _bgmRightText;
 
         [SerializeField] CustomSlider _sfxSlider;
+        [SerializeField] TMP_Text _sfxTitleText;
         [SerializeField] TMP_Text _sfxLeftText;
+        [SerializeField] TMP_Text _sfxRightText;
 
         [Header("ModeData")]
         //[SerializeField] Color[] _pickColors;
@@ -56,6 +65,8 @@ namespace Collect
         [Header("Hint")]
         [SerializeField] Button _goBackBtn;
         [SerializeField] GameObject _rememberPanel;
+        [SerializeField] TMP_Text _rememberTxt;
+
         [SerializeField] TMP_Text _hintInfoText;
 
         [Header("Clear")]
@@ -70,22 +81,41 @@ namespace Collect
         [SerializeField] TMP_Text _gameResultTitle;
 
         [SerializeField] ArtworkUI _artworkUI;
-        [SerializeField] TMP_Text _hintUseCount;
-        [SerializeField] TMP_Text _wrongCount;
+
+        [SerializeField] TMP_Text _artworkTitle;
+
+        [SerializeField] TMP_Text _getRankTitle;
+        [SerializeField] TMP_Text _totalHintUsageTitle;
+        [SerializeField] TMP_Text _totalWrongCountTitle;
+
+        [SerializeField] TMP_Text _totalHintUseCount;
+        [SerializeField] TMP_Text _totalWrongCount;
 
         [SerializeField] Image _rankBackground;
         [SerializeField] Image _rankIcon;
         [SerializeField] TMP_Text _rankText;
 
+        [SerializeField] TMP_Text _myCollectionTitle;
+
+        [SerializeField] TMP_Text _currentCollectTitle;
         [SerializeField] CustomProgressUI _currentCollectRatio;
         [SerializeField] TMP_Text _currentCollectText;
 
+        [SerializeField] TMP_Text _totalCollectTitle;
         [SerializeField] CustomProgressUI _totalCollectRatio;
         [SerializeField] TMP_Text _totalCollectText;
         [SerializeField] Button _nextBtn;
 
         [SerializeField] Canvas _canvas;
         [SerializeField] RectTransform _nextPanel;
+
+        [SerializeField] Button _openShareBtn;
+
+        [Header("Share")]
+        [SerializeField] ShareComponent _shareComponent;
+        [SerializeField] GameObject _sharePanel;
+        [SerializeField] Button _shareBtn;
+        [SerializeField] Button _shareExitBtn;
 
         CollectArtData.Section _section;
         MapData _mapData;
@@ -196,10 +226,14 @@ namespace Collect
             _section = artData.Sections[saveData.SelectedArtworkSectionIndex.x][saveData.SelectedArtworkSectionIndex.y];
 
             Vector2Int index = new Vector2Int(_section.Blocks.Count, _section.Blocks[0].Count);
-            _modeData = new Data(index, 5, addressableHandler.ArtworkJsonAsset.Data[artworkIndex].Title);
+            _modeData = new Data(index, 5, addressableHandler.ArtworkJsonDataAssets[saveData.Language].Data[artworkIndex].Title);
 
             CollectStageUIModel model = new CollectStageUIModel();
-            CollectStageUIPresenter presenter = new CollectStageUIPresenter(model, () => { _fsm.SetState(State.Result); });
+            CollectStageUIPresenter presenter = new CollectStageUIPresenter(
+                model,
+                _shareComponent,
+                () => { _fsm.SetState(State.Result); }
+            );
             CollectStageUIViewer viewer = new CollectStageUIViewer(
                 _playPanel,
                 _titleText,
@@ -210,13 +244,17 @@ namespace Collect
                 _progressText,
 
                 _detailContent,
+                _hintUsageTitle,
                 _hintUsageText,
+
+                _wrongCountTitle,
                 _wrongCountText,
 
                 _bottomContent,
                 _skipBtn,
 
                 _rememberPanel,
+                _rememberTxt,
                 _hintInfoText,
 
                 _gameClearPanel,
@@ -225,32 +263,52 @@ namespace Collect
                 _nextStageBtn,
                 _clearExitBtn,
 
-                _pausePanel,
+                 _pausePanel,
+                _pauseTitleText,
                 _pauseBtn,
                 _pauseExitBtn,
                 _gameExitBtn,
-
                 _bgmSlider,
+                _bgmTitleText,
                 _bgmLeftText,
-
+                _bgmRightText,
                 _sfxSlider,
+                _sfxTitleText,
                 _sfxLeftText,
+                _sfxRightText,
 
                 _gameResultPanel,
                 _gameResultTitle,
+
                 _artworkUI,
-                _hintUseCount,
-                _wrongCount,
+                _artworkTitle,
+
+                _getRankTitle,
+
+                _totalHintUsageTitle,
+                _totalWrongCountTitle,
+
+                _totalHintUseCount,
+                _totalWrongCount,
 
                 _rankBackground,
                 _rankIcon,
                 _rankText,
 
+                _myCollectionTitle,
+
+                _currentCollectTitle,
                 _currentCollectRatio,
                 _currentCollectText,
 
+                _totalCollectTitle,
                 _totalCollectRatio,
                 _totalCollectText,
+                _openShareBtn,
+
+                _sharePanel,
+                _shareBtn,
+                _shareExitBtn,
                 presenter);
 
             presenter.InjectViewer(viewer);

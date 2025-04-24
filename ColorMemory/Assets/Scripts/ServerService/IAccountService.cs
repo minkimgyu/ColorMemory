@@ -19,8 +19,6 @@ public class AccountService : IAccountService
 
         try
         {
-            Debug.Log("_userId          " + userId);
-            Debug.Log("_userName            " + userName);
             canLogin = await playerManager.AddPlayerAsync(userId, userName);
         }
         catch (System.Exception e)
@@ -40,7 +38,6 @@ public class AccountService : IAccountService
 
         try
         {
-            Debug.Log("_userId          " + userId);
             canDelete = await playerManager.DeletePlayerAync(userId);
         }
         catch (System.Exception e)
@@ -66,5 +63,10 @@ public class MockAccountService : IAccountService
     public async Task<bool> Login(string userId, string userName)
     {
         return await _loginService.Login(userId, userName);
+    }
+
+    public async Task<bool> DeleteAccount(string userId) 
+    {
+        return await _loginService.DeleteAccount(userId);
     }
 }

@@ -17,6 +17,7 @@ public interface ISaveable
 
     void Load() { }
 
+    void ChangeLanguage(ILocalization.Language language) { }
     void ChangeGoToCollectPage(bool goToCollectPage) { }
 
     void ChangeBGMMute(bool nowMute) { }
@@ -35,13 +36,6 @@ public interface ISaveable
 
 public class NullSaveManager : ISaveable { }
 
-public class PlayerArtwork
-{
-    string artName;
-    bool hasIt;
-    NetworkService.DTO.Rank rank;
-}
-
 public struct SaveData
 {
     [JsonProperty] string _userId;
@@ -56,6 +50,8 @@ public struct SaveData
     [JsonProperty] int _selectedArtworkKey;
     [JsonProperty] Vector2Int _selectedArtworkSectionIndex;
     [JsonProperty] bool _goToCollectPage;
+
+    [JsonProperty] [JsonConverter(typeof(StringEnumConverter))] ILocalization.Language _language;
 
     public SaveData(string id, string name)
     {
@@ -72,6 +68,7 @@ public struct SaveData
         _selectedArtworkKey = 0;
         _selectedArtworkSectionIndex = Vector2Int.zero;
         _goToCollectPage = false;
+        _language = ILocalization.Language.Korean;
     }
 
     [JsonIgnore] public bool MuteBGM { get => _muteBGM; set => _muteBGM = value; }
@@ -93,6 +90,7 @@ public struct SaveData
     [JsonIgnore] public string UserId { get => _userId; set => _userId = value; }
     [JsonIgnore] public string UserName { get => _userName; set => _userName = value; }
     [JsonIgnore] public bool GoToCollectPage { get => _goToCollectPage; set => _goToCollectPage = value; }
+    [JsonIgnore] public ILocalization.Language Language { get => _language; set => _language = value; }
 
     [JsonIgnore] const int ArtworkSize = 4;
 }
@@ -191,6 +189,12 @@ public class SaveManager : ISaveable
     {
         string json = _parser.ObjectToJson(_saveData);
         File.WriteAllText(_filePath, json);
+    }
+
+    public void ChangeLanguage(ILocalization.Language language) 
+    { 
+        _saveData.Language = language;
+        Save();
     }
 
     public void ChangeGoToCollectPage(bool goToCollectPage)

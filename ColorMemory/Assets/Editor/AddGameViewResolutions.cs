@@ -36,6 +36,8 @@ public static class AddGameViewResolutions
 
     private static void AddCustomResolutions(GameViewSizeGroupType groupType)
     {
+        AddResolution(groupType, "IOS", 1206, 2622);
+
         // Galaxy S 시리즈
         AddResolution(groupType, "Galaxy S4", 1080, 1920);
         AddResolution(groupType, "Galaxy S5", 1080, 1920);

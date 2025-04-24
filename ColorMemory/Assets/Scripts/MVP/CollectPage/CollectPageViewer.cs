@@ -31,6 +31,11 @@ public class CollectPageViewer
     TMP_Text _leftCompleteText;
     TMP_Text _totalCompleteText;
 
+    TMP_Text _selectStageTitle;
+
+    TMP_Text _stageUsedHintUseTitle;
+    TMP_Text _stageWrongCountTitle;
+
     GameObject _selectStageContent;
     Transform _stageUIContent;
     Button _exitBtn;
@@ -45,6 +50,11 @@ public class CollectPageViewer
     Button _filterExitBtn;
     GameObject _filterContent;
     TMP_Text _collectionRatioText;
+    TMP_Text _collectionCheerText;
+
+    TMP_Text _ownFilterTitleTxt;
+    TMP_Text _rankFilterTitleTxt;
+    TMP_Text _dateFilterTitleTxt;
 
     Toggle[] _ownToggles;
     Toggle[] _rankToggles;
@@ -73,8 +83,14 @@ public class CollectPageViewer
         TMP_Text leftCompleteText,
         TMP_Text totalCompleteText,
 
+        TMP_Text selectStageTitle,
+
         GameObject selectStageContent,
         Transform stageUIContent,
+
+        TMP_Text stageUsedHintUseTitle,
+        TMP_Text stageWrongCountTitle,
+
         Button exitBtn,
         Button playBtn,
 
@@ -87,6 +103,11 @@ public class CollectPageViewer
         Button filterExitBtn,
         GameObject filterContent,
         TMP_Text collectionRatioText,
+        TMP_Text collectionCheerText,
+
+        TMP_Text ownFilterTitle,
+        TMP_Text rankFilterTitle,
+        TMP_Text dateFilterTitle,
 
         Toggle[] ownToggles,
         Toggle[] rankToggles,
@@ -115,6 +136,11 @@ public class CollectPageViewer
         _totalComplete = totalComplete;
         _totalCompleteRatio = totalCompleteRatio;
 
+        _selectStageTitle = selectStageTitle;
+        ChangeSelectStageTitle();
+
+        _stageUsedHintUseTitle = stageUsedHintUseTitle;
+        _stageWrongCountTitle = stageWrongCountTitle;
 
         _titleTxt = titleTxt;
         _descriptionTxt = descriptionTxt;
@@ -140,6 +166,11 @@ public class CollectPageViewer
         _filterExitBtn = filterExitBtn;
         _filterContent = filterContent;
         _collectionRatioText = collectionRatioText;
+        _collectionCheerText = collectionCheerText;
+
+        _ownFilterTitleTxt = ownFilterTitle;
+        _rankFilterTitleTxt = rankFilterTitle;
+        _dateFilterTitleTxt = dateFilterTitle;
 
         _ownToggles = ownToggles;
         _rankToggles = rankToggles; // 이벤트 걸기
@@ -187,9 +218,27 @@ public class CollectPageViewer
         ActiveContent(false);
     }
 
+    void ChangeSelectStageTitle()
+    {
+        _selectStageTitle.text = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.StageSelectTitle);
+    }
+
     public void ChangeCollectionRatioInfo(float ratio)
     {
-        _collectionRatioText.text = $"현재 전체 명화의 {ratio}%를 수집했어요!";
+        string filterTitleFormat = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.FilterTitle);
+        _collectionRatioText.text = string.Format(filterTitleFormat, ratio);
+    }
+
+    public void ChangeFilterTitle(string ownFilterTitle, string rankFilterTitle, string dateFilterTitle)
+    {
+        _ownFilterTitleTxt.text = ownFilterTitle;
+        _rankFilterTitleTxt.text = rankFilterTitle;
+        _dateFilterTitleTxt.text = dateFilterTitle;
+    }
+
+    public void ChangeCollectionCheerInfo(string info)
+    {
+        _collectionCheerText.text = info;
     }
 
     public void UpdateToggles(FilterUI.OwnFilter ownFilter, List<FilterUI.RankFilter> rankFilters, FilterUI.DateFilter dateFilter)
@@ -309,8 +358,18 @@ public class CollectPageViewer
 
     public void ChangeStageDetails(int hintCount, int wrongCount)
     {
-        _stageHintUseCount.text = $"{hintCount}회";
-        _stageWrongCount.text = $"{wrongCount}회";
+        _stageUsedHintUseTitle.text = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.HintUsage);
+        _stageWrongCountTitle.text = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.WrongCount);
+
+        string countTxt = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.Count);
+        string countsTxt = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.Counts);
+
+
+        if (hintCount > 1) _stageHintUseCount.text = string.Format(countsTxt, hintCount);
+        else _stageHintUseCount.text = string.Format(countTxt, hintCount);
+
+        if (wrongCount > 1) _stageWrongCount.text = string.Format(countsTxt, wrongCount);
+        else _stageWrongCount.text = string.Format(countTxt, wrongCount);
     }
 
     public void ChangeArtDescription(string title, string description)

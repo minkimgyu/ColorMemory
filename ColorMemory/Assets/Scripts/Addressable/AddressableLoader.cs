@@ -20,7 +20,6 @@ public class AddressableLoader : MonoBehaviour
         ArtSprite,
 
         ArtworkFrame,
-        ArtworkData,
 
         RectProfileIcon,
         CircleProfileIcon,
@@ -30,7 +29,10 @@ public class AddressableLoader : MonoBehaviour
         StageRankIcon,
 
         SpawnableUI,
-        ChallengeModeStageData
+
+        ArtworkData,
+        LocalizationData,
+        ChallengeModeStageData,
     }
 
     HashSet<BaseLoader> _assetLoaders;
@@ -55,7 +57,6 @@ public class AddressableLoader : MonoBehaviour
     }
 
     public Dictionary<int, CollectArtData> CollectiveArtJsonAsserts { get; private set; }
-    public ArtworkDateWrapper ArtworkJsonAsset { get; private set; }
     public Dictionary<int, Sprite> ArtSpriteAsserts { get; private set; }
 
     public Dictionary<NetworkService.DTO.Rank, Sprite> ArtworkFrameAssets { get; private set; }
@@ -73,7 +74,9 @@ public class AddressableLoader : MonoBehaviour
 
     public Dictionary<SpawnableUI.Name, SpawnableUI> SpawnableUIAssets { get; private set; }
 
-    public LevelDataWrapper ChallengeStageDataWrapper { get; private set; }
+    public LevelDataWrapper ChallengeStageJsonDataAsset { get; private set; }
+    public Dictionary<ILocalization.Language, ArtworkDateWrapper> ArtworkJsonDataAssets { get; private set; }
+    public Localization LocalizationJsonDataAsset { get; private set; }
 
 
     public void Load(Action OnCompleted)
@@ -86,7 +89,6 @@ public class AddressableLoader : MonoBehaviour
         _assetLoaders.Add(new ArtSpriteAssetLoader(Label.ArtSprite, (value, label) => { ArtSpriteAsserts = value; OnSuccess(label); }));
 
         _assetLoaders.Add(new ArtworkFrameAssetLoader(Label.ArtworkFrame, (value, label) => { ArtworkFrameAssets = value; OnSuccess(label); }));
-        _assetLoaders.Add(new ArtworkJsonAssetLoader(Label.ArtworkData, (value, label) => { ArtworkJsonAsset = value; OnSuccess(label); }));
 
         _assetLoaders.Add(new ProfileIconAssetLoader(Label.CircleProfileIcon, (value, label) => { CircleProfileIconAssets = value; OnSuccess(label); }));
         _assetLoaders.Add(new ProfileIconAssetLoader(Label.RectProfileIcon, (value, label) => { RectProfileIconAssets = value; OnSuccess(label); }));
@@ -97,7 +99,9 @@ public class AddressableLoader : MonoBehaviour
 
         _assetLoaders.Add(new SpawnableUIAssetLoader(Label.SpawnableUI, (value, label) => { SpawnableUIAssets = value; OnSuccess(label); }));
 
-        _assetLoaders.Add(new ChallengeModeStageDataJsonAssetLoader(Label.ChallengeModeStageData, (value, label) => { ChallengeStageDataWrapper = value; OnSuccess(label); }));
+        _assetLoaders.Add(new ArtworkDataJsonAssetLoader(Label.ArtworkData, (value, label) => { ArtworkJsonDataAssets = value; OnSuccess(label); }));
+        _assetLoaders.Add(new ChallengeModeStageDataJsonAssetLoader(Label.ChallengeModeStageData, (value, label) => { ChallengeStageJsonDataAsset = value; OnSuccess(label); }));
+        _assetLoaders.Add(new LocalizationDataJsonAssetLoader(Label.LocalizationData, (value, label) => { LocalizationJsonDataAsset = value; OnSuccess(label); }));
 
         this.OnCompleted = OnCompleted;
         _totalCount = _assetLoaders.Count;

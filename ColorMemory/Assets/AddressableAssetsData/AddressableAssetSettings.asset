@@ -44,6 +44,7 @@ MonoBehaviour:
   m_BuildAddressablesWithPlayerBuild: 0
   m_overridePlayerVersion: '[UnityEditor.PlayerSettings.bundleVersion]'
   m_GroupAssets:
+  - {fileID: 11400000, guid: f26106950c6d1554fa2433cb0d82d850, type: 2}
   - {fileID: 11400000, guid: 4ede0ddd480073449b4eb8529818c0e5, type: 2}
   - {fileID: 11400000, guid: 67a5e4a8b6f25314f90875e17247ca4a, type: 2}
   - {fileID: 11400000, guid: 49ec98064c86c3b488cfd9b8ff7e258b, type: 2}
@@ -128,6 +129,7 @@ MonoBehaviour:
     - RankBadgeIcon
     - RankDecorationIcon
     - StageRankIcon
+    - LocalizationData
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: 03dca29f491627045ab1f15b73890c5c, type: 2}

@@ -10,28 +10,95 @@ public class CollectStageUIPresenter
     CollectStageUIModel _model;
     CollectStageUIViewer _viewer;
 
+    ShareComponent _shareComponent;
+
     public Action GoToResultState { get; private set; }
 
-    public CollectStageUIPresenter(CollectStageUIModel model, Action GoToResultState)
+    public CollectStageUIPresenter(CollectStageUIModel model, ShareComponent shareComponent, Action GoToResultState)
     {
         _model = model;
+        _shareComponent = shareComponent;
+
+        _shareComponent.Initialize(
+            () => ActivateShareBottomItems(false),
+            () => ActivateShareBottomItems(true));
+
         this.GoToResultState = GoToResultState;
+    }
+
+    public void OnClickShare()
+    {
+        _shareComponent.OnShareButtonClick();
     }
 
     public void InjectViewer(CollectStageUIViewer viewer)
     {
         _viewer = viewer;
+
+        _model.PauseTitleText = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.GameSettingTitle);
+        _viewer.ChangePauseTitleText(_model.PauseTitleText);
+
+        _model.GameExitText = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.GameExitBtn);
+        _viewer.ChangeGameExitText(_model.GameExitText);
+
+        _model.BGMTitleText = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.BGMTitle);
+        _model.SfxTitleText = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.SFXTitle);
+        _model.SoundLeftText = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.DecreaseSound);
+        _model.SoundRightText = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.IncreaseSound);
+        _viewer.ChangeSoundText(_model.BGMTitleText, _model.SfxTitleText, _model.SoundLeftText, _model.SoundRightText);
+
+        _model.HintUsageTitle = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.HintUsage);
+        _model.WrongCountTitle = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.WrongCount);
+        _viewer.ChangeDetailTitle(_model.HintUsageTitle, _model.WrongCountTitle);
     }
+
+    public void ActivateSharePanel(bool activeSharePanel)
+    {
+        _model.ActiveSharePanel = activeSharePanel;
+        _viewer.ActivateSharePanel(_model.ActiveSharePanel);
+    }
+
+    public void ActivateShareBottomItems(bool activeSharePanel)
+    {
+        _model.ActiveShareBottomItems = activeSharePanel;
+        _viewer.ActivateShareBottomItems(_model.ActiveShareBottomItems);
+    }
+
+    public void ChangeArtworkTitle(string artworkTitle)
+    {
+        _model.ArtworkTitle = artworkTitle;
+        _viewer.ChangeArtworkTitle(_model.ArtworkTitle);
+    }
+    public void ChangeGetRankTitle(string getRankTitle, string hintUsageTitle, string wrongCountTitle)
+    {
+        _model.GetRankTitle = getRankTitle;
+        _model.TotalHintUsageTitle = hintUsageTitle;
+        _model.TotalWrongCountTitle = wrongCountTitle;
+        _viewer.ChangeGetRankTitle(_model.GetRankTitle, _model.TotalHintUsageTitle, _model.TotalWrongCountTitle);
+    }
+
+
+    public void ChangeMyCollectionTitle(string myCollectionTitle,
+        string currentCollectTitle,
+        string totalCollectTitle)
+    {
+        _model.MyCollectionTitle = myCollectionTitle;
+        _model.CurrentCollectTitle = currentCollectTitle;
+        _model.TotalCollectTitle = totalCollectTitle;
+        _viewer.ChangeMyCollectionTitle(_model.MyCollectionTitle, _model.CurrentCollectTitle, _model.TotalCollectTitle);
+    }
+
+
 
     public void ChangeGameResultTitle(bool hasIt)
     {
         if (hasIt)
         {
-            _model.GameResultTitle = "축하해요! 새로운 명화를 획득했어요!";
+            _model.GameResultTitle = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.CompleteArtworkResultTitle);
         }
         else
         {
-            _model.GameResultTitle = "아직 명화를 획득하지 못했어요";
+            _model.GameResultTitle = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.ProgressArtworkResultTitle);
         }
 
         _viewer.ChangeGameResultTitle(_model.GameResultTitle);
@@ -126,10 +193,10 @@ public class CollectStageUIPresenter
 
     public void ChangeGetRank(int hintUseCount, int wrongCount)
     {
-        _model.HintUseCount = hintUseCount;
-        _model.WrongCount = wrongCount;
+        _model.TotalHintUseCount = hintUseCount;
+        _model.TotalWrongCount = wrongCount;
 
-        _viewer.ChangeGetRank(_model.HintUseCount, _model.WrongCount);
+        _viewer.ChangeGetRank(_model.TotalHintUseCount, _model.TotalWrongCount);
     }
 
     public void ChangeCollectionRatio(float currentCollectRatio, float totalCollectRatio)
@@ -192,12 +259,12 @@ public class CollectStageUIPresenter
     {
         if (volumn == 0)
         {
-            _model.BgmleftTextInfo = "음소거";
+            _model.BgmleftTextInfo = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.Mute);
             _model.ColorOnBgmHandle = _colorOnZeroValue;
         }
         else
         {
-            _model.BgmleftTextInfo = "작게";
+            _model.BgmleftTextInfo = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.DecreaseSound);
             _model.ColorOnBgmHandle = _colorOnBgmHandle;
         }
     }
@@ -206,12 +273,12 @@ public class CollectStageUIPresenter
     {
         if (volumn == 0)
         {
-            _model.SfxleftTextInfo = "음소거";
+            _model.SfxleftTextInfo = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.Mute);
             _model.ColorOnSfxHandle = _colorOnZeroValue;
         }
         else
         {
-            _model.SfxleftTextInfo = "작게";
+            _model.SfxleftTextInfo = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.DecreaseSound);
             _model.ColorOnSfxHandle = _colorOnSfxHandle;
         }
     }

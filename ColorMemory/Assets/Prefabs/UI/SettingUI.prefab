@@ -3016,11 +3016,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 7034254021493589795}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 88, y: -249}
-  m_SizeDelta: {x: 120, y: 48}
-  m_Pivot: {x: 0, y: 1}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 88, y: -83.99994}
+  m_SizeDelta: {x: 250, y: 48}
+  m_Pivot: {x: 0, y: 0}
 --- !u!222 &6713716042576343110
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3228,7 +3228,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 118.8, y: 60}
+  m_SizeDelta: {x: 150, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2706956797730489731
 CanvasRenderer:
@@ -3258,7 +3258,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uC57D\uAD00"
+  m_text: "\rTerms"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 825704354e3526245a64343052aeee3d, type: 2}
   m_sharedMaterial: {fileID: -3420936784491326758, guid: 825704354e3526245a64343052aeee3d, type: 2}
@@ -3800,10 +3800,14 @@ MonoBehaviour:
   - {fileID: 8621677872283692588}
   - {fileID: 2353111951701436911}
   _doneBtn: {fileID: 8386700900461749335}
+  _bgmTitleText: {fileID: 7475635572776776125}
   _bgmSlider: {fileID: 33169385061825153}
   _bgmLeftText: {fileID: 8438380691115912546}
+  _bgmRightText: {fileID: 3709522932486364483}
+  _sfxTitleText: {fileID: 5502477480996222391}
   _sfxSlider: {fileID: 8455394521882352839}
   _sfxLeftText: {fileID: 2960878445070896863}
+  _sfxRightText: {fileID: 6519723035511387259}
 --- !u!1 &3168809691798151566
 GameObject:
   m_ObjectHideFlags: 0
@@ -4228,11 +4232,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 7034254021493589795}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 616, y: -249}
-  m_SizeDelta: {x: 60, y: 48}
-  m_Pivot: {x: 0, y: 1}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
+  m_AnchoredPosition: {x: -92, y: -84}
+  m_SizeDelta: {x: 250, y: 48}
+  m_Pivot: {x: 1, y: 0}
 --- !u!222 &5840844360919165975
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4613,11 +4617,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 696786306554756984}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 616, y: -249}
-  m_SizeDelta: {x: 60, y: 48}
-  m_Pivot: {x: 0, y: 1}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
+  m_AnchoredPosition: {x: -92, y: -84}
+  m_SizeDelta: {x: 250, y: 48}
+  m_Pivot: {x: 1, y: 0}
 --- !u!222 &8468380546618795171
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5817,7 +5821,7 @@ GameObject:
   - component: {fileID: 5665305282625271494}
   - component: {fileID: 5502477480996222391}
   m_Layer: 0
-  m_Name: BGMTitle
+  m_Name: SFXTitle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5840,7 +5844,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 88, y: -54}
-  m_SizeDelta: {x: 144, y: 72}
+  m_SizeDelta: {x: 300, y: 72}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &5665305282625271494
 CanvasRenderer:
@@ -5974,7 +5978,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 88, y: -54}
-  m_SizeDelta: {x: 144, y: 72}
+  m_SizeDelta: {x: 300, y: 72}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &6005030961310079929
 CanvasRenderer:
@@ -6729,11 +6733,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 696786306554756984}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 88, y: -249}
-  m_SizeDelta: {x: 120, y: 48}
-  m_Pivot: {x: 0, y: 1}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 88, y: -84}
+  m_SizeDelta: {x: 250, y: 48}
+  m_Pivot: {x: 0, y: 0}
 --- !u!222 &5979639054797628324
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -11081,7 +11085,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 118.8, y: 60}
+  m_SizeDelta: {x: 150, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7341489616475322995
 CanvasRenderer:
@@ -11111,7 +11115,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uC57D\uAD00"
+  m_text: "\rTerms"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 825704354e3526245a64343052aeee3d, type: 2}
   m_sharedMaterial: {fileID: -3420936784491326758, guid: 825704354e3526245a64343052aeee3d, type: 2}

@@ -191,10 +191,12 @@ public class LoadingPage : MonoBehaviour
         TimeController timeController = new TimeController();
         SceneController sceneController = new SceneController();
         SaveManager saveManager = new SaveManager(new SaveData(_userId, _userName));
+        LocalizationManager localizationManager = new LocalizationManager(addressableLoader.LocalizationJsonDataAsset);
 
         ServiceLocater.Provide(timeController);
         ServiceLocater.Provide(sceneController);
         ServiceLocater.Provide(saveManager);
+        ServiceLocater.Provide(localizationManager);
 
         ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.HomeScene);
     }

@@ -30,8 +30,14 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
         TMP_Text leftCompleteText,
         TMP_Text totalCompleteText,
 
+        TMP_Text selectStageTitle,
+
         GameObject selectStageContent,
         Transform stageUIContent,
+
+        TMP_Text stageUsedHintUseTitle,
+        TMP_Text stageWrongCountTitle,
+
         Button exitBtn,
         Button playBtn,
 
@@ -45,6 +51,11 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
         Button filterExitBtn,
         GameObject filterContent,
         TMP_Text collectionRatioText,
+        TMP_Text collectionCheerText,
+
+        TMP_Text ownTitleText,
+        TMP_Text rankTitleText,
+        TMP_Text dateTitleText,
 
         Toggle[] ownToggles,
         Toggle[] rankToggles,
@@ -90,12 +101,20 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
             totalComplete,
             totalCompleteRatio,
 
+
             artworkScrollUI,
             completeSlider,
             leftCompleteText,
             totalCompleteText,
+
+            selectStageTitle,
+
             selectStageContent,
             stageUIContent,
+
+            stageUsedHintUseTitle,
+            stageWrongCountTitle,
+
             exitBtn,
             playBtn,
             stageDetailContent,
@@ -106,6 +125,11 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
             filterExitBtn,
             filterContent,
             collectionRatioText,
+            collectionCheerText,
+
+            ownTitleText,
+            rankTitleText,
+            dateTitleText,
 
             ownToggles,
             rankToggles,
@@ -139,6 +163,9 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
     public override void OnStateEnter()
     {
         _collectPagePresenter.ChangeCollectionRatioInfo();
+        _collectPagePresenter.ChangeCollectionCheerInfo();
+        _collectPagePresenter.ChangeFilterTitle();
+
         _collectPagePresenter.ActivateFilterScrollUI(true);
 
         // 아트워크 채우기

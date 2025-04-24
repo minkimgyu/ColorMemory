@@ -2,7 +2,6 @@ using NetworkService.DTO;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static FilterUI;
 
 public class CollectPageModel
 {
@@ -33,10 +32,15 @@ public class CollectPageModel
     int _wrongCount;
 
     float _collectionRatio;
+    string _collectionCheerText;
 
     bool _activeFilterBottomSheet;
     bool _activeFilterContent;
     float _collectRatio;
+
+    string _ownFilterTitle;
+    string _rankFilterTitle;
+    string _dateFilterTitle;
 
     FilterUI.OwnFilter _ownFilter;
     List<FilterUI.RankFilter> _rankFilters;
@@ -56,6 +60,7 @@ public class CollectPageModel
         _selectedSectionIndex = 0;
 
         _collectionRatio = 0;
+        _collectionCheerText = "";
 
         _currentProgress = 0;
 
@@ -86,8 +91,12 @@ public class CollectPageModel
     }
 
     public float CollectionRatio { get => _collectionRatio; set => _collectionRatio = value; }
+    public string CollectionCheerText { get => _collectionCheerText; set => _collectionCheerText = value; }
 
 
+    public string OwnFilterTitle { get => _ownFilterTitle; set => _ownFilterTitle = value; }
+    public string RankFilterTitle { get => _rankFilterTitle; set => _rankFilterTitle = value; }
+    public string DateFilterTitle { get => _dateFilterTitle; set => _dateFilterTitle = value; }
 
     public bool ActiveContent { get => _activeContent; set => _activeContent = value; }
     public bool ActiveSelectStageContent { get => _activeSelectStageContent; set => _activeSelectStageContent = value; }
@@ -123,4 +132,5 @@ public class CollectPageModel
     public FilterUI.OwnFilter OwnFilter { get => _ownFilter; set => _ownFilter = value; }
     public List<FilterUI.RankFilter> RankFilters { get => _rankFilters; set => _rankFilters = value; }
     public FilterUI.DateFilter DateFilter { get => _dateFilter; set => _dateFilter = value; }
+
 }
