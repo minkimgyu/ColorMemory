@@ -20,7 +20,11 @@ public class CollectStageUIViewer
     TMP_Text _progressText;
 
     GameObject _detailContent;
+
+    TMP_Text _hintUsageTitle;
     TMP_Text _hintUsageText;
+
+    TMP_Text _wrongCountTitle;
     TMP_Text _wrongCountText;
 
     RectTransform _bottomContent;
@@ -60,21 +64,32 @@ public class CollectStageUIViewer
     TMP_Text _gameResultTitle;
 
     ArtworkUI _artworkUI;
-    TMP_Text _hintUseCount;
-    TMP_Text _wrongCount;
+
+    TMP_Text _artworkTitle;
+
+    TMP_Text _getRankTitle;
+    TMP_Text _totalHintUsageTitle;
+    TMP_Text _totalWrongCountTitle;
+
+    TMP_Text _totalHintUseCount;
+    TMP_Text _totalWrongCount;
 
     Image _rankBackground;
     Image _rankIcon;
     TMP_Text _rankText;
 
+    TMP_Text _myCollectionTitle;
+
+    TMP_Text _currentCollectTitle;
     CustomProgressUI _currentCollectRatio;
     TMP_Text _currentCollectText;
 
+    TMP_Text _totalCollectTitle;
     CustomProgressUI _totalCollectRatio;
     TMP_Text _totalCollectText;
 
     public CollectStageUIViewer(
-         GameObject playPanel,
+        GameObject playPanel,
         TMP_Text titleText,
         GameObject timerContent,
         Image timerSlider,
@@ -84,7 +99,10 @@ public class CollectStageUIViewer
         TMP_Text progressText,
 
         GameObject detailContent,
+        TMP_Text hintUsageTitle,
         TMP_Text hintUsageText,
+
+        TMP_Text wrongCountTitle,
         TMP_Text wrongCountText,
 
         RectTransform bottomContent,
@@ -121,16 +139,27 @@ public class CollectStageUIViewer
         TMP_Text gameResultTitle,
 
         ArtworkUI artworkUI,
-        TMP_Text hintUseCount,
-        TMP_Text wrongCount,
+
+        TMP_Text artworkTitle,
+
+        TMP_Text getRankTitle,
+        TMP_Text totalHintUsageTitle,
+        TMP_Text totalWrongCountTitle,
+
+        TMP_Text totalHintUseCount,
+        TMP_Text totalWrongCount,
 
         Image rankBackground,
         Image rankIcon,
         TMP_Text rankText,
 
+        TMP_Text myCollectionTitle,
+
+        TMP_Text currentCollectTitle,
         CustomProgressUI currentCollectRatio,
         TMP_Text currentCollectText,
 
+        TMP_Text totalCollectTitle,
         CustomProgressUI totalCollectRatio,
         TMP_Text totalCollectText,
 
@@ -147,7 +176,10 @@ public class CollectStageUIViewer
         _progressText = progressText;
 
         _detailContent = detailContent;
+        _hintUsageTitle = hintUsageTitle;
         _hintUsageText = hintUsageText;
+
+        _wrongCountTitle = wrongCountTitle;
         _wrongCountText = wrongCountText;
 
         _bottomContent = bottomContent;
@@ -175,15 +207,26 @@ public class CollectStageUIViewer
         _gameResultTitle = gameResultTitle;
 
         _artworkUI = artworkUI;
-        _hintUseCount = hintUseCount;
-        _wrongCount = wrongCount;
+        _artworkTitle = artworkTitle;
+
+        _getRankTitle = getRankTitle;
+
+        _totalHintUsageTitle = totalHintUsageTitle;
+        _totalWrongCountTitle = totalWrongCountTitle;
+
+        _totalHintUseCount = totalHintUseCount;
+        _totalWrongCount = totalWrongCount;
         _rankBackground = rankBackground;
         _rankIcon = rankIcon;
         _rankText = rankText;
 
+        _myCollectionTitle = myCollectionTitle;
+
+        _currentCollectTitle = currentCollectTitle;
         _currentCollectRatio = currentCollectRatio;
         _currentCollectText = currentCollectText;
 
+        _totalCollectTitle = totalCollectTitle;
         _totalCollectRatio = totalCollectRatio;
         _totalCollectText = totalCollectText;
 
@@ -208,6 +251,36 @@ public class CollectStageUIViewer
         _bgmSlider.onValueChanged.AddListener((ratio) => { presenter.OnBGMSliderValeChanged(ratio); });
         _sfxSlider.onValueChanged.AddListener((ratio) => { presenter.OnSFXSliderValeChanged(ratio); });
     }
+
+    public void ChangeArtworkTitle(string artworkTitle)
+    {
+        _artworkTitle.text = artworkTitle;
+    }
+
+    public void ChangeDetailTitle(string hintUsageTitle, string wrongCountTitle)
+    {
+        _hintUsageTitle.text = hintUsageTitle;
+        _wrongCountTitle.text = wrongCountTitle;
+    }
+
+    public void ChangeGetRankTitle(string getRankTitle, string hintUsageTitle, string wrongCountTitle)
+    {
+        _getRankTitle.text = getRankTitle;
+        _totalHintUsageTitle.text = hintUsageTitle;
+        _totalWrongCountTitle.text = wrongCountTitle;
+    }
+
+
+    public void ChangeMyCollectionTitle(string myCollectionTitle, 
+        string currentCollectTitle, 
+        string totalCollectTitle)
+    {
+        _myCollectionTitle.text = myCollectionTitle;
+        _currentCollectTitle.text = currentCollectTitle;
+        _totalCollectTitle.text = totalCollectTitle;
+    }
+
+
 
     public void ChangePauseTitleText(string title)
     {
@@ -279,14 +352,21 @@ public class CollectStageUIViewer
 
     public void ChangeCurrentHintUsage(int usage)
     {
-        _hintUsageText.text = $"{usage}ȸ";
+        string usageFormat;
+        if (usage > 1) usageFormat = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.Counts);
+        else usageFormat = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.Count);
+
+        _hintUsageText.text = string.Format(usageFormat, usage);
     }
 
     public void ChangeCurrentWrongCount(int wrongCount)
     {
-        _wrongCountText.text = $"{wrongCount}ȸ";
-    }
+        string wrongFormat;
+        if (wrongCount > 1) wrongFormat = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.Counts);
+        else wrongFormat = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.Count);
 
+        _wrongCountText.text = string.Format(wrongFormat, wrongCount);
+    }
 
 
 
@@ -305,8 +385,16 @@ public class CollectStageUIViewer
 
     public void ChangeGetRank(int hintUseCount, int wrongCount)
     {
-        _hintUseCount.text = hintUseCount.ToString();
-        _wrongCount.text = wrongCount.ToString();
+        string usageFormat;
+        if (hintUseCount > 1) usageFormat = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.Counts);
+        else usageFormat = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.Count);
+
+        string wrongFormat;
+        if (wrongCount > 1) wrongFormat = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.Counts);
+        else wrongFormat = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.Count);
+
+        _totalHintUseCount.text = string.Format(usageFormat, hintUseCount);
+        _totalWrongCount.text = string.Format(wrongFormat, wrongCount);
     }
 
     public void ChangeCollectionRatio(float currentCollectRatio, float totalCollectRatio)

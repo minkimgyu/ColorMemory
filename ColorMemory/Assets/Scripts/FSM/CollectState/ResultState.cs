@@ -29,13 +29,30 @@ namespace Collect
             _artDataUpdaterService = artDataUpdaterService;
 
             _collectStageUIPresenter = collectStageUIPresenter;
-            _modeData = modeData; 
+            _modeData = modeData;
         }
 
         public override void OnClickNextBtn()
         {
             ServiceLocater.ReturnSaveManager().ChangeGoToCollectPage(true);
             ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.HomeScene);
+        }
+
+        void ApplyLocalization(string artworkTitle)
+        {
+            _collectStageUIPresenter.ChangeArtworkTitle(artworkTitle);
+
+            string getRankTitle = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.GetRankTitle);
+            string hintUsageTitle = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.HintUsage);
+            string wrongCountTitle = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.WrongCount);
+
+            _collectStageUIPresenter.ChangeGetRankTitle(getRankTitle, hintUsageTitle, wrongCountTitle);
+
+            string myCollectionTitle = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.MyCollectionTitle);
+            string currentCollectionComplete = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.CurrentCollectionComplete);
+            string totalCollectionComplete = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.TotalCollectionComplete);
+
+            _collectStageUIPresenter.ChangeMyCollectionTitle(myCollectionTitle, currentCollectionComplete, totalCollectionComplete);
         }
 
         public override async void OnStateEnter()
@@ -75,6 +92,9 @@ namespace Collect
             _collectStageUIPresenter.ActivateGameResultPanel(true);
 
             artworkSprite = addressableHandler.ArtSpriteAsserts[saveData.SelectedArtworkKey];
+
+            string artworkTitle = addressableHandler.ArtworkJsonDataAssets[saveData.Language].Data[saveData.SelectedArtworkKey].Title;
+            ApplyLocalization(artworkTitle);
 
             Rank? getRank;
             int ownCount = artData.Item2;

@@ -1456,7 +1456,6 @@ MonoBehaviour:
   _patchBtn: {fileID: 885632107}
   _assetLabelsToPatch:
   - m_LabelString: ArtData
-  - m_LabelString: ArtworkData
   - m_LabelString: ArtSprite
   - m_LabelString: ChallengeModeStageData
   _loadingObj: {fileID: 824852845}

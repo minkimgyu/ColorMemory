@@ -44,10 +44,17 @@ public class CollectStageUIModel
     public string GameResultTitle { get => _gameResultTitle; set => _gameResultTitle = value; }
 
     bool _activeDetailContent;
+    string _hintUsageTitle;
     int _currentHintUsage;
+
+    string _wrongCountTitle;
     int _currentWrongCount;
 
     public bool ActiveDetailContent { get => _activeDetailContent; set => _activeDetailContent = value; }
+
+    public string HintUsageTitle { get => _hintUsageTitle; set => _hintUsageTitle = value; }
+    public string WrongCountTitle { get => _wrongCountTitle; set => _wrongCountTitle = value; }
+
     public int CurrentHintUsage { get => _currentHintUsage; set => _currentHintUsage = value; }
     public int CurrentWrongCount { get => _currentWrongCount; set => _currentWrongCount = value; }
 
@@ -59,15 +66,44 @@ public class CollectStageUIModel
     public bool ActiveSkipBtn { get => _activeSkipBtn; set => _activeSkipBtn = value; }
 
 
+    string _artworkTitle;
+    public string ArtworkTitle { get => _artworkTitle; set => _artworkTitle = value; }
+
     Sprite _artSprite;
     Sprite _artFrameSprite;
     Sprite _rankDecorationIconSprite;
     bool _isLock;
 
-    int _hintUseCount; 
-    int _wrongCount;
+    string _totalHintUsageTitle;
+    int _totalHintUseCount;
+
+    string _totalWrongCountTitle;
+    int _totalWrongCount;
+
+    public string TotalHintUsageTitle { get => _totalHintUsageTitle; set => _totalHintUsageTitle = value; }
+    public string TotalWrongCountTitle { get => _totalWrongCountTitle; set => _totalWrongCountTitle = value; }
+
+    public int TotalHintUseCount { get => _totalHintUseCount; set => _totalHintUseCount = value; }
+    public int TotalWrongCount { get => _totalWrongCount; set => _totalWrongCount = value; }
+
+
+    string _myCollectionTitle;
+    string _currentCollectTitle;
+    string _totalCollectTitle;
+
     float _currentCollectRatio;
     float _totalCollectRatio;
+
+    public float CurrentCollectRatio { get => _currentCollectRatio; set => _currentCollectRatio = value; }
+    public float TotalCollectRatio { get => _totalCollectRatio; set => _totalCollectRatio = value; }
+
+    public string MyCollectionTitle { get => _myCollectionTitle; set => _myCollectionTitle = value; }
+    public string CurrentCollectTitle { get => _currentCollectTitle; set => _currentCollectTitle = value; }
+    public string TotalCollectTitle { get => _totalCollectTitle; set => _totalCollectTitle = value; }
+
+    string _getRankTitle;
+    public string GetRankTitle { get => _getRankTitle; set => _getRankTitle = value; }
+
 
     Color _rankBackgroundColor;
     Sprite _rankIcon;
@@ -97,10 +133,11 @@ public class CollectStageUIModel
     public bool HasIt { get => _isLock; set => _isLock = value; }
 
 
-    public int HintUseCount { get => _hintUseCount; set => _hintUseCount = value; }
-    public int WrongCount { get => _wrongCount; set => _wrongCount = value; }
-    public float CurrentCollectRatio { get => _currentCollectRatio; set => _currentCollectRatio = value; }
-    public float TotalCollectRatio { get => _totalCollectRatio; set => _totalCollectRatio = value; }
+   
+
+    
+
+   
     public Sprite RankIcon { get => _rankIcon; set => _rankIcon = value; }
     public bool ActiveIcon { get => _activeIcon; set => _activeIcon = value; }
     public string RankName { get => _rankName; set => _rankName = value; }
@@ -341,4 +378,5 @@ public class CollectStageUIModel
 
     string _title;
     public string Title { get => _title; set => _title = value; }
+ 
 }

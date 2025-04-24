@@ -33,7 +33,37 @@ public class CollectStageUIPresenter
         _model.SoundLeftText = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.DecreaseSound);
         _model.SoundRightText = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.IncreaseSound);
         _viewer.ChangeSoundText(_model.BGMTitleText, _model.SfxTitleText, _model.SoundLeftText, _model.SoundRightText);
+
+        _model.HintUsageTitle = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.HintUsage);
+        _model.WrongCountTitle = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.WrongCount);
+        _viewer.ChangeDetailTitle(_model.HintUsageTitle, _model.WrongCountTitle);
     }
+
+    public void ChangeArtworkTitle(string artworkTitle)
+    {
+        _model.ArtworkTitle = artworkTitle;
+        _viewer.ChangeArtworkTitle(_model.ArtworkTitle);
+    }
+    public void ChangeGetRankTitle(string getRankTitle, string hintUsageTitle, string wrongCountTitle)
+    {
+        _model.GetRankTitle = getRankTitle;
+        _model.TotalHintUsageTitle = hintUsageTitle;
+        _model.TotalWrongCountTitle = wrongCountTitle;
+        _viewer.ChangeGetRankTitle(_model.GetRankTitle, _model.TotalHintUsageTitle, _model.TotalWrongCountTitle);
+    }
+
+
+    public void ChangeMyCollectionTitle(string myCollectionTitle,
+        string currentCollectTitle,
+        string totalCollectTitle)
+    {
+        _model.MyCollectionTitle = myCollectionTitle;
+        _model.CurrentCollectTitle = currentCollectTitle;
+        _model.TotalCollectTitle = totalCollectTitle;
+        _viewer.ChangeMyCollectionTitle(_model.MyCollectionTitle, _model.CurrentCollectTitle, _model.TotalCollectTitle);
+    }
+
+
 
     public void ChangeGameResultTitle(bool hasIt)
     {
@@ -138,10 +168,10 @@ public class CollectStageUIPresenter
 
     public void ChangeGetRank(int hintUseCount, int wrongCount)
     {
-        _model.HintUseCount = hintUseCount;
-        _model.WrongCount = wrongCount;
+        _model.TotalHintUseCount = hintUseCount;
+        _model.TotalWrongCount = wrongCount;
 
-        _viewer.ChangeGetRank(_model.HintUseCount, _model.WrongCount);
+        _viewer.ChangeGetRank(_model.TotalHintUseCount, _model.TotalWrongCount);
     }
 
     public void ChangeCollectionRatio(float currentCollectRatio, float totalCollectRatio)

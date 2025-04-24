@@ -18,7 +18,13 @@ MonoBehaviour:
   m_GUID: 890c1143062d677439224b46569394bf
   m_SerializeEntries:
   - m_GUID: 1903bf67109878d44ae372586466deab
-    m_Address: ArtworkData
+    m_Address: English
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - ArtworkData
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d0be488e156f10d4abb60606849935b1
+    m_Address: Korean
     m_ReadOnly: 0
     m_SerializedLabels:
     - ArtworkData

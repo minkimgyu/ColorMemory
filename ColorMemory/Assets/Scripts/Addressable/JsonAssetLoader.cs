@@ -93,9 +93,9 @@ public class CollectiveArtJsonAssetLoader : IntMultipleJsonAssetLoader<int, Coll
     }
 }
 
-public class ArtworkDataJsonAssetLoader : SingleJsonAssetLoader<ArtworkDateWrapper>
+public class ArtworkDataJsonAssetLoader : MultipleJsonAssetLoader<ILocalization.Language, ArtworkDateWrapper>
 {
-    public ArtworkDataJsonAssetLoader(AddressableLoader.Label label, Action<ArtworkDateWrapper, AddressableLoader.Label> OnComplete) : base(label, OnComplete)
+    public ArtworkDataJsonAssetLoader(AddressableLoader.Label label, Action<Dictionary<ILocalization.Language, ArtworkDateWrapper>, AddressableLoader.Label> OnComplete) : base(label, OnComplete)
     {
     }
 }

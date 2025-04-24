@@ -265,7 +265,7 @@ public class HomePage : MonoBehaviour
                 filterItemFactory,
 
                 artDatas,
-                addressableHandler.ArtworkJsonDataAsset.Data,
+                addressableHandler.ArtworkJsonDataAssets[data.Language].Data,
                 addressableHandler.CollectiveArtJsonAsserts,
                 _pageFsm)
             },

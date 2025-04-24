@@ -51,7 +51,7 @@ public struct SaveData
     [JsonProperty] Vector2Int _selectedArtworkSectionIndex;
     [JsonProperty] bool _goToCollectPage;
 
-    [JsonProperty] ILocalization.Language _language;
+    [JsonProperty] [JsonConverter(typeof(StringEnumConverter))] ILocalization.Language _language;
 
     public SaveData(string id, string name)
     {

@@ -75,7 +75,7 @@ public class AddressableLoader : MonoBehaviour
     public Dictionary<SpawnableUI.Name, SpawnableUI> SpawnableUIAssets { get; private set; }
 
     public LevelDataWrapper ChallengeStageJsonDataAsset { get; private set; }
-    public ArtworkDateWrapper ArtworkJsonDataAsset { get; private set; }
+    public Dictionary<ILocalization.Language, ArtworkDateWrapper> ArtworkJsonDataAssets { get; private set; }
     public Localization LocalizationJsonDataAsset { get; private set; }
 
 
@@ -99,7 +99,7 @@ public class AddressableLoader : MonoBehaviour
 
         _assetLoaders.Add(new SpawnableUIAssetLoader(Label.SpawnableUI, (value, label) => { SpawnableUIAssets = value; OnSuccess(label); }));
 
-        _assetLoaders.Add(new ArtworkDataJsonAssetLoader(Label.ArtworkData, (value, label) => { ArtworkJsonDataAsset = value; OnSuccess(label); }));
+        _assetLoaders.Add(new ArtworkDataJsonAssetLoader(Label.ArtworkData, (value, label) => { ArtworkJsonDataAssets = value; OnSuccess(label); }));
         _assetLoaders.Add(new ChallengeModeStageDataJsonAssetLoader(Label.ChallengeModeStageData, (value, label) => { ChallengeStageJsonDataAsset = value; OnSuccess(label); }));
         _assetLoaders.Add(new LocalizationDataJsonAssetLoader(Label.LocalizationData, (value, label) => { LocalizationJsonDataAsset = value; OnSuccess(label); }));
 
