@@ -47,6 +47,7 @@ jobs:
         with:
           projectPath: ./ColorMemory
           testMode: editmode
+          artifactsPath: editmode-artifacts
           githubToken: ${{ secrets.GITHUB_TOKEN }}
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
@@ -58,6 +59,7 @@ jobs:
         with:
           projectPath: ./ColorMemory
           testMode: playmode
+          artifactsPath: playmode-artifacts
           githubToken: ${{ secrets.GITHUB_TOKEN }}
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
