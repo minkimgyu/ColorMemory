@@ -7,7 +7,7 @@ permissions: write-all
 jobs:
   buildForAndroid:
     name: Build Android🛸🛸🛸
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Check Out
         uses: actions/checkout@v4
