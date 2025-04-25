@@ -83,7 +83,7 @@ jobs:
 
   build:
     name: 📦 Build for Android
-    runs-on: windows-latest
+    runs-on: ubuntu-latest # windows-latest
     needs: testRunner
 
     steps:
@@ -100,6 +100,18 @@ jobs:
           key: Library-${{ hashFiles('ColorMemory/Assets/**', 'ColorMemory/Packages/**', 'ColorMemory/ProjectSettings/**') }}
           restore-keys: |
             Library-
+
+      - name: Run Addressables Build Script
+        uses: game-ci/unity-builder@v4
+        with:
+          buildMethod: UnityBuilderAction.AddressableBuildScript.PerformBuild
+
+      - name: Upload Addressable Bundles as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: AddressableBundles # 아티팩트 이름
+          path: Assets/StreamingAssets/aa/**/* # Addressables 빌드 출력 경로 (프로젝트 루트 기준)
+          retention-days: 7 # 아티팩트 보관 기간 (선택 사항)
 
       - name: Unity Build (Android)
         uses: game-ci/unity-builder@v4
