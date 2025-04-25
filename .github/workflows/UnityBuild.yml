@@ -23,41 +23,6 @@ jobs:
           restore-keys: |
             Library-
 
-      - name: Free Disk Space for Android
-        run: |
-          # Docker 이미지 삭제
-          $dockerImages = docker images -q
-          if ($dockerImages) {
-            docker rmi $dockerImages
-          }
-          Get-PSDrive -PSProvider FileSystem | Where-Object {$_.Used -gt 0} # 디스크 공간 확인
-
-      - name: 🧪 Decode and Validate Keystore File
-        run: |
-          # Base64 디코딩 후 파일 생성
-          [System.IO.File]::WriteAllBytes("temp.keystore", [Convert]::FromBase64String("${{ secrets.ANDROID_KEYSTORE_BASE64 }}"))
-          if (-Not (Test-Path "temp.keystore")) {
-            Write-Host "❌ Failed to create keystore file from base64."
-            exit 1
-          }
-
-          # keytool로 유효성 검사
-          & "keytool" -list -keystore temp.keystore -storepass ${{ secrets.ANDROID_KEYSTORE_PASS }} > $null 2>&1
-          if ($LASTEXITCODE -ne 0) {
-            Write-Host "❌ Keystore file is invalid or password is incorrect."
-            exit 1
-          }
-
-          Write-Host "✅ Keystore file is valid."
-
-      - name: 🧹 Cleanup temp keystore
-        if: always()
-        run: |
-          # temp.keystore 파일 존재 여부 확인 후 삭제
-          if (Test-Path "temp.keystore") {
-            Remove-Item -Force "temp.keystore"
-          }
-
       - name: Unity Build
         uses: game-ci/unity-builder@v4
         env:
