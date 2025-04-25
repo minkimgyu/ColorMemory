@@ -1,0 +1,170 @@
+name: Unity CI
+
+on:
+  pull_request:
+    branches:
+      - build
+    types:
+      - closed  # main → build 병합
+  workflow_dispatch:  # 수동 실행 허용
+
+permissions: write-all
+
+jobs:
+  test:
+    name: 🧪 Run Unity Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check Out
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # PR 병합 여부 확인 (수동 실행이면 건너뜀)
+      - name: Check if PR was merged
+        if: github.event_name == 'pull_request'
+        id: check_merge
+        run: |
+          echo "Merged: ${{ github.event.pull_request.merged }}"
+          if [ "${{ github.event.pull_request.merged }}" != "true" ]; then
+            echo "PR not merged. Skipping..."
+            exit 1
+          fi
+
+      - name: Cache Library
+        uses: actions/cache@v4
+        with:
+          path: Library
+          key: Library-Test-${{ hashFiles('ColorMemory/Assets/**', 'ColorMemory/Packages/**', 'ColorMemory/ProjectSettings/**') }}
+          restore-keys: |
+            Library-Test-
+
+      - name: Run Edit Mode Tests with Coverage
+        uses: game-ci/unity-test-runner@v4
+        with:
+          projectPath: ./ColorMemory
+          testMode: editmode
+          artifactsPath: editmode-artifacts
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          coverageOptions: 'generateHtmlReport'
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+
+      - name: Run Play Mode Tests
+        uses: game-ci/unity-test-runner@v4
+        with:
+          projectPath: ./ColorMemory
+          testMode: playmode
+          artifactsPath: playmode-artifacts
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TestResults
+          path: |
+            editmode-artifacts
+            playmode-artifacts
+
+      - name: Upload Coverage HTML Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: CoverageHtmlReport
+          path: ./ColorMemory/TestResults/**/*.html
+
+  build:
+    name: 📦 Build for Android & Windows
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+      - name: Check Out
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          lfs: true
+
+      - name: Cache Library
+        uses: actions/cache@v4
+        with:
+          path: Library
+          key: Library-${{ hashFiles('ColorMemory/Assets/**', 'ColorMemory/Packages/**', 'ColorMemory/ProjectSettings/**') }}
+          restore-keys: |
+            Library-
+
+      - name: Free Disk Space
+        run: |
+          sudo swapoff -a
+          sudo rm -f /swapfile
+          sudo apt clean
+          dockerImages=$(docker images -q)
+          if [ -n "$dockerImages" ]; then
+            docker rmi $dockerImages
+          fi
+          df -h
+
+      - name: 🧪 Decode and Validate Keystore File
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > temp.keystore
+          if [ ! -f temp.keystore ]; then
+            echo "❌ Failed to create keystore file from base64."
+            exit 1
+          fi
+          keytool -list -keystore temp.keystore -storepass ${{ secrets.ANDROID_KEYSTORE_PASS }} > /dev/null 2>&1
+          if [ $? -ne 0 ]; then
+            echo "❌ Keystore file is invalid or password is incorrect."
+            exit 1
+          fi
+          echo "✅ Keystore file is valid."
+
+      - name: 🧹 Cleanup temp keystore
+        if: always()
+        run: rm -f temp.keystore
+
+      - name: Build Android (AAB)
+        uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          targetPlatform: Android
+          projectPath: ./ColorMemory
+          androidExportType: androidAppBundle # ✅ AAB 지정
+          androidKeystoreName: user.keystore
+          androidKeystoreBase64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          androidKeystorePass: ${{ secrets.ANDROID_KEYSTORE_PASS }}
+          androidKeyaliasName: ${{ secrets.ANDROID_KEY_ALIAS }}
+          androidKeyaliasPass: ${{ secrets.ANDROID_KEY_PASS }}
+          androidTargetSdkVersion: AndroidApiLevel34
+
+      - name: Upload Android AAB
+        uses: actions/upload-artifact@v4
+        with:
+          name: Build-Android-AAB
+          path: build/*.aab
+
+      - name: Build Windows (EXE)
+        uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          targetPlatform: StandaloneWindows64
+          projectPath: ./ColorMemory
+
+      - name: Upload Windows EXE
+        uses: actions/upload-artifact@v4
+        with:
+          name: Build-Windows
+          path: build/**/ColorMemory.exe
