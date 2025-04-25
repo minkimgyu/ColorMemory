@@ -24,19 +24,6 @@ jobs:
           restore-keys: |
             Library-
 
-      - name: Run Addressables Build Script
-        uses: game-ci/unity-builder@v4
-        with:
-          projectPath: ./ColorMemory
-          buildMethod: UnityBuilderAction.AddressableBuildScript.PerformBuild
-
-      - name: Upload Addressable Bundles as Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: AddressableBundles # 아티팩트 이름
-          path: Assets/StreamingAssets/aa/**/* # Addressables 빌드 출력 경로 (프로젝트 루트 기준)
-          retention-days: 7 # 아티팩트 보관 기간 (선택 사항)
-
       - name: Unity Build (Android)
         uses: game-ci/unity-builder@v4
         env:
@@ -51,7 +38,14 @@ jobs:
           androidKeystorePass: ${{ secrets.ANDROID_KEYSTORE_PASS }}
           androidKeyaliasName: ${{ secrets.ANDROID_KEY_ALIAS }}
           androidKeyaliasPass: ${{ secrets.ANDROID_KEY_PASS }}
+          buildMethod: UnityBuilderAction.AddressableBuildScript.PerformBuild
           androidTargetSdkVersion: AndroidApiLevel34
+
+      - name: Upload Addressable Bundles as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: AddressableBundles # 아티팩트 이름
+          path: ./ColorMemoryAssets/StreamingAssets/aa/**/* # Addressables 빌드 출력 경로 (프로젝트 루트 기준)
 
       - name: Upload Build File
         uses: actions/upload-artifact@v4
