@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System;
 using Random = UnityEngine.Random;
 
-public class RandomLevelGenerator : LevelGenerator
+public class RandomLevelGenerator : ILevelGenerator
 {
     int _pickPointCount;
     Vector2Int _levelSize = new Vector2Int(5, 5); // row, col

@@ -1457,7 +1457,6 @@ MonoBehaviour:
   _assetLabelsToPatch:
   - m_LabelString: ArtData
   - m_LabelString: ArtSprite
-  - m_LabelString: ChallengeModeStageData
   _loadingObj: {fileID: 824852845}
   _loadingPregressBar: {fileID: 1103052329}
   _loadingPregressTxt: {fileID: 695592118}
