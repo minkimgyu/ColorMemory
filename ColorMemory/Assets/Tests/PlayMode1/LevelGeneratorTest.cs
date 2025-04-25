@@ -14,7 +14,7 @@ public class LevelGeneratorTest
     {
         GameObject addressableObject = new GameObject("AddressableLoader");
         AddressableLoader addressableHandler = addressableObject.AddComponent<AddressableLoader>();
-        addressableHandler.Initialize();
+        addressableHandler.Initialize(false);
 
         return addressableHandler;
     }
@@ -29,7 +29,6 @@ public class LevelGeneratorTest
     public IEnumerator LevelTest()
     {
         _addressableLoader = CreateAddressableLoader();
-        _addressableLoader.Initialize();
         _addressableLoader.Load(() =>
         {
             _isComplete = true;

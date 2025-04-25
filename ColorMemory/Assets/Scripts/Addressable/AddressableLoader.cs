@@ -42,9 +42,9 @@ public class AddressableLoader : MonoBehaviour
     Action OnCompleted;
     Action<float> OnProgress;
 
-    public void Initialize()
+    public void Initialize(bool dontDestroyOnLoad = true)
     {
-        DontDestroyOnLoad(gameObject);
+        if(dontDestroyOnLoad) DontDestroyOnLoad(gameObject);
 
         _successCount = 0;
         _totalCount = 0;
