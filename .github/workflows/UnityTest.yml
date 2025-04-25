@@ -7,22 +7,32 @@ on:
     branches:
       - build
     types:
-      - closed  # PR이 머지되었을 때만
-
-  workflow_dispatch:  # 수동 실행은 유지
+      - closed  # PR이 닫힐 때 (merge 포함)
+  workflow_dispatch:  # 수동 실행 가능
 
 permissions: write-all
 
 jobs:
   testRunner:
-    if: github.event.pull_request.merged == true
     name: 🧪 Run Unity Edit & Play Mode Tests
     runs-on: ubuntu-latest
+
     steps:
       - name: Check Out
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      # PR 병합 여부 확인 (수동 실행일 경우 건너뜀)
+      - name: Check if PR was merged (only on pull_request)
+        if: github.event_name == 'pull_request'
+        id: check_merge
+        run: |
+          echo "Merged: ${{ github.event.pull_request.merged }}"
+          if [ "${{ github.event.pull_request.merged }}" != "true" ]; then
+            echo "PR not merged. Skipping..."
+            exit 1
+          fi
 
       - name: Cache Library
         uses: actions/cache@v4
