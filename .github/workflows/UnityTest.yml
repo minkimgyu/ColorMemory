@@ -71,4 +71,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: TestResults
-          path: artifacts
+          path: |
+            editmode-artifacts
+            playmode-artifacts
