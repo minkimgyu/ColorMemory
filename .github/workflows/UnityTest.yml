@@ -47,6 +47,7 @@ jobs:
         with:
           projectPath: ./ColorMemory
           testMode: editmode
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
@@ -57,6 +58,7 @@ jobs:
         with:
           projectPath: ./ColorMemory
           testMode: playmode
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
