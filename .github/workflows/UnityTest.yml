@@ -81,4 +81,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: CoverageHtmlReport
-          path: ./ColorMemory/TestResults/**/*.html # ✅ 추가됨
+          path: editmode-artifacts/**/html/**/*.html
