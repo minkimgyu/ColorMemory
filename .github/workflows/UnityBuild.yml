@@ -5,9 +5,10 @@ on:
 
 permissions: write-all
 jobs:
-  buildForAndroid:
-    name: Build Android🛸🛸🛸
-    runs-on: windows-latest
+  build:
+    name: 📦 Build for Android
+    runs-on: ubuntu-latest # windows-latest
+
     steps:
       - name: Check Out
         uses: actions/checkout@v4
@@ -23,7 +24,19 @@ jobs:
           restore-keys: |
             Library-
 
-      - name: Unity Build
+      - name: Run Addressables Build Script
+        uses: game-ci/unity-builder@v4
+        with:
+          buildMethod: UnityBuilderAction.AddressableBuildScript.PerformBuild
+
+      - name: Upload Addressable Bundles as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: AddressableBundles # 아티팩트 이름
+          path: Assets/StreamingAssets/aa/**/* # Addressables 빌드 출력 경로 (프로젝트 루트 기준)
+          retention-days: 7 # 아티팩트 보관 기간 (선택 사항)
+
+      - name: Unity Build (Android)
         uses: game-ci/unity-builder@v4
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
@@ -32,7 +45,7 @@ jobs:
         with:
           targetPlatform: Android
           projectPath: ./ColorMemory
-          androidKeystoreName: user.keystore # This file won't exist, but this property needs to exist.
+          androidKeystoreName: user.keystore # 실제로 존재하지 않음, 필요시 수정
           androidKeystoreBase64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
           androidKeystorePass: ${{ secrets.ANDROID_KEYSTORE_PASS }}
           androidKeyaliasName: ${{ secrets.ANDROID_KEY_ALIAS }}
