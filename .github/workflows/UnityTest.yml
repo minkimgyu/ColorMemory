@@ -15,7 +15,7 @@ permissions: write-all
 jobs:
   testRunner:
     name: 🧪 Run Unity Edit & Play Mode Tests
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - name: Check Out
