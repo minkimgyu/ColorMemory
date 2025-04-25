@@ -6,8 +6,6 @@ using GooglePlayGames.BasicApi.SavedGame;
 using System;
 using GooglePlayGames.BasicApi;
 
-#if !UNIT_TEST
-
 public interface IGPGS
 {
     void Login(Action<bool, string, string> OnLoginComplete);
@@ -18,11 +16,18 @@ public class NullGPGSManager : IGPGS
     public void Login(Action<bool, string, string> OnLoginComplete) { }
 }
 
+// gameci test runner용
+#if UNITY_STANDALONE_LINUX
+public class GPGSManager : IGPGS
+{
+    public void Login(Action<bool, string, string> OnLoginComplete)
+    {
+    }
+}
+#else
 public class GPGSManager : IGPGS
 {
     Action<bool, string, string> OnLoginComplete;
-
-    #region 로그인
 
     public void Login(Action<bool, string, string> OnLoginComplete)
     {
@@ -51,7 +56,5 @@ public class GPGSManager : IGPGS
 
         OnLoginComplete = null;
     }
-
-    #endregion
 }
 #endif

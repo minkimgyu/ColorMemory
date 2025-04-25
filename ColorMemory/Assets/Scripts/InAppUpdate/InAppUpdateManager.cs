@@ -5,6 +5,15 @@ using Google.Play.AppUpdate;
 using Google.Play.Common;
 using System;
 
+// gameci test runner용
+#if UNITY_STANDALONE_LINUX
+public class InAppUpdateManager : MonoBehaviour
+{
+    public void Initialize(Action<string> OnCompleted)
+    {
+    }
+}
+#else
 public class InAppUpdateManager : MonoBehaviour
 {
     AppUpdateManager _appUpdateManager;
@@ -73,3 +82,4 @@ public class InAppUpdateManager : MonoBehaviour
         }
     }
 }
+#endif
