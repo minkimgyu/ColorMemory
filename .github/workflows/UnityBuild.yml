@@ -38,7 +38,7 @@ jobs:
           androidKeystorePass: ${{ secrets.ANDROID_KEYSTORE_PASS }}
           androidKeyaliasName: ${{ secrets.ANDROID_KEY_ALIAS }}
           androidKeyaliasPass: ${{ secrets.ANDROID_KEY_PASS }}
-          buildMethod: UnityBuilderAction.AddressableBuildScript.PerformBuild
+          buildMethod: UnityBuilderAction.Builder.Build
           androidTargetSdkVersion: AndroidApiLevel34
 
 #      - name: Upload Addressable Bundles as Artifact
