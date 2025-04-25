@@ -1,10 +1,6 @@
 name: UnityBuild
 
 on:
-#  workflow_run:
-#    workflows: ["UnityTest"]
-#    types:
-#      - completed
   workflow_dispatch:  # 👉 수동 실행 허용
 
 permissions: write-all
@@ -27,39 +23,12 @@ jobs:
           restore-keys: |
             Library-
 
-      - name: Free Disk Space for Android
+      - name: 🧠 Addressables Update Build (Custom Script)
         run: |
-          sudo swapoff -a
-          sudo rm -f /swapfile
-          sudo apt clean
-          dockerImages=$(docker images -q)
-          if [ -n "$dockerImages" ]; then
-            docker rmi $dockerImages
-          fi
-          df -h
-
-      - name: 🧪 Decode and Validate Keystore File
-        run: |
-          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > temp.keystore
-      
-          if [ ! -f temp.keystore ]; then
-            echo "❌ Failed to create keystore file from base64."
-            exit 1
-          fi
-      
-          # keytool로 유효성 검사 (alias는 임의로 검증 시도)
-          keytool -list -keystore temp.keystore -storepass ${{ secrets.ANDROID_KEYSTORE_PASS }} > /dev/null 2>&1
-      
-          if [ $? -ne 0 ]; then
-            echo "❌ Keystore file is invalid or password is incorrect."
-            exit 1
-          fi
-      
-          echo "✅ Keystore file is valid."
-
-      - name: 🧹 Cleanup temp keystore
-        if: always()
-        run: rm -f temp.keystore
+          & "C:\Program Files\Unity\Hub\Editor\2022.3.55f1\Editor\Unity.exe" `
+            -batchmode -quit `
+            -projectPath "./ColorMemory" `
+            -executeMethod AddressablesUpdateBuilder.BuildAddressablesUpdate
 
       - name: Unity Build
         uses: game-ci/unity-builder@v4
@@ -76,6 +45,7 @@ jobs:
           androidKeyaliasName: ${{ secrets.ANDROID_KEY_ALIAS }}
           androidKeyaliasPass: ${{ secrets.ANDROID_KEY_PASS }}
           androidTargetSdkVersion: AndroidApiLevel34
+
       - name: Upload Build File
         uses: actions/upload-artifact@v4
         with:
