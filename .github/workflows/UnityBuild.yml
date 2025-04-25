@@ -23,6 +23,13 @@ jobs:
           restore-keys: |
             Library-
 
+      - name: 🧠 Addressables Update Build (Custom Script)
+        run: |
+          & "C:\Program Files\Unity\Hub\Editor\2022.3.55f1\Editor\Unity.exe" `
+            -batchmode -quit `
+            -projectPath "./ColorMemory" `
+            -executeMethod AddressablesUpdateBuilder.BuildAddressablesUpdate
+
       - name: Unity Build
         uses: game-ci/unity-builder@v4
         env:
