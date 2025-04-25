@@ -6,6 +6,8 @@ using GooglePlayGames.BasicApi.SavedGame;
 using System;
 using GooglePlayGames.BasicApi;
 
+#if !UNIT_TEST
+
 public interface IGPGS
 {
     void Login(Action<bool, string, string> OnLoginComplete);
@@ -52,3 +54,4 @@ public class GPGSManager : IGPGS
 
     #endregion
 }
+#endif
