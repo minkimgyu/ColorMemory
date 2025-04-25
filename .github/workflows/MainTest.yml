@@ -13,7 +13,7 @@ permissions: write-all
 jobs:
   test:
     name: 🧪 Run Unity Tests
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Check Out
@@ -79,7 +79,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: CoverageHtmlReport
-          path: ./ColorMemory/TestResults/**/*.html
+          path: editmode-artifacts
 
   build:
     name: 📦 Build for Android & Windows
@@ -152,19 +152,3 @@ jobs:
         with:
           name: Build-Android-AAB
           path: build/*.aab
-
-      - name: Build Windows (EXE)
-        uses: game-ci/unity-builder@v4
-        env:
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-        with:
-          targetPlatform: StandaloneWindows64
-          projectPath: ./ColorMemory
-
-      - name: Upload Windows EXE
-        uses: actions/upload-artifact@v4
-        with:
-          name: Build-Windows
-          path: build/**/ColorMemory.exe
