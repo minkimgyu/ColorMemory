@@ -13,7 +13,7 @@ permissions: write-all
 jobs:
   testRunner:
     name: 🧪 Run Unity Edit & Play Mode Tests
-    runs-on: windows-latest
+    runs-on: ubuntu-latest  # Ubuntu에서 실행
 
     steps:
       - name: Check Out
