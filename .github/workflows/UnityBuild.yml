@@ -61,4 +61,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: AddressableBundles # 아티팩트 이름
-          path: ./ColorMemory/Assets/StreamingAssets/aa/**/* # Addressables 빌드 출력 경로 (프로젝트 루트 기준)
+          path: ./ColorMemory/ServerData/Android/**/*
