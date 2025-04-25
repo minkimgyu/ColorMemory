@@ -1,17 +1,14 @@
 name: UnityBuild
 
 on:
-#  workflow_run:
-#    workflows: ["UnityTest"]
-#    types:
-#      - completed
   workflow_dispatch:  # 👉 수동 실행 허용
 
 permissions: write-all
 jobs:
-  buildForAndroid:
-    name: Build Android🛸🛸🛸
-    runs-on: ubuntu-latest
+  build:
+    name: 📦 Build for Android
+    runs-on: ubuntu-latest # windows-latest
+
     steps:
       - name: Check Out
         uses: actions/checkout@v4
@@ -22,46 +19,12 @@ jobs:
       - name: Cache Library
         uses: actions/cache@v4
         with:
-          path: Library
+          path: ColorMemory/Library
           key: Library-${{ hashFiles('ColorMemory/Assets/**', 'ColorMemory/Packages/**', 'ColorMemory/ProjectSettings/**') }}
           restore-keys: |
             Library-
 
-      - name: Free Disk Space for Android
-        run: |
-          sudo swapoff -a
-          sudo rm -f /swapfile
-          sudo apt clean
-          dockerImages=$(docker images -q)
-          if [ -n "$dockerImages" ]; then
-            docker rmi $dockerImages
-          fi
-          df -h
-
-      - name: 🧪 Decode and Validate Keystore File
-        run: |
-          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > temp.keystore
-      
-          if [ ! -f temp.keystore ]; then
-            echo "❌ Failed to create keystore file from base64."
-            exit 1
-          fi
-      
-          # keytool로 유효성 검사 (alias는 임의로 검증 시도)
-          keytool -list -keystore temp.keystore -storepass ${{ secrets.ANDROID_KEYSTORE_PASS }} > /dev/null 2>&1
-      
-          if [ $? -ne 0 ]; then
-            echo "❌ Keystore file is invalid or password is incorrect."
-            exit 1
-          fi
-      
-          echo "✅ Keystore file is valid."
-
-      - name: 🧹 Cleanup temp keystore
-        if: always()
-        run: rm -f temp.keystore
-
-      - name: Unity Build
+      - name: Unity Build (Android)
         uses: game-ci/unity-builder@v4
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
@@ -70,14 +33,22 @@ jobs:
         with:
           targetPlatform: Android
           projectPath: ./ColorMemory
-          androidKeystoreName: user.keystore # This file won't exist, but this property needs to exist.
+          androidKeystoreName: user.keystore # 실제로 존재하지 않음, 필요시 수정
           androidKeystoreBase64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
           androidKeystorePass: ${{ secrets.ANDROID_KEYSTORE_PASS }}
           androidKeyaliasName: ${{ secrets.ANDROID_KEY_ALIAS }}
           androidKeyaliasPass: ${{ secrets.ANDROID_KEY_PASS }}
+          buildMethod: UnityBuilderAction.AddressableBuildScript.PerformBuild
           androidTargetSdkVersion: AndroidApiLevel34
+
+#      - name: Upload Addressable Bundles as Artifact
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: AddressableBundles # 아티팩트 이름
+#          path: ./ColorMemory/Assets/StreamingAssets/aa/**/* # Addressables 빌드 출력 경로 (프로젝트 루트 기준)
+
       - name: Upload Build File
         uses: actions/upload-artifact@v4
         with:
           name: Build-Android
-          path: build
+          path: ./ColorMemory/build/**/*

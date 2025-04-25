@@ -1,21 +1,19 @@
-# .github/workflows/UnityTest.yml
-
-name: UnityTest
+name: Unity CI
 
 on:
   pull_request:
     branches:
       - build
     types:
-      - closed  # PR이 닫힐 때 (merge 포함)
-  workflow_dispatch:  # 수동 실행 가능
+      - closed  # main → build 병합
+  workflow_dispatch:  # 수동 실행 허용
 
 permissions: write-all
 
 jobs:
   testRunner:
     name: 🧪 Run Unity Edit & Play Mode Tests
-    runs-on: windows-latest
+    runs-on: ubuntu-latest  # Ubuntu에서 실행
 
     steps:
       - name: Check Out
@@ -82,3 +80,57 @@ jobs:
         with:
           name: CoverageHtmlReport
           path: editmode-artifacts
+
+  build:
+    name: 📦 Build for Android
+    runs-on: ubuntu-latest # windows-latest
+    needs: testRunner
+
+    steps:
+      - name: Check Out
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          lfs: true
+
+      - name: Cache Library
+        uses: actions/cache@v4
+        with:
+          path: Library
+          key: Library-${{ hashFiles('ColorMemory/Assets/**', 'ColorMemory/Packages/**', 'ColorMemory/ProjectSettings/**') }}
+          restore-keys: |
+            Library-
+
+      - name: Run Addressables Build Script
+        uses: game-ci/unity-builder@v4
+        with:
+          buildMethod: UnityBuilderAction.AddressableBuildScript.PerformBuild
+
+      - name: Upload Addressable Bundles as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: AddressableBundles # 아티팩트 이름
+          path: Assets/StreamingAssets/aa/**/* # Addressables 빌드 출력 경로 (프로젝트 루트 기준)
+          retention-days: 7 # 아티팩트 보관 기간 (선택 사항)
+
+      - name: Unity Build (Android)
+        uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          targetPlatform: Android
+          projectPath: ./ColorMemory
+          androidKeystoreName: user.keystore # 실제로 존재하지 않음, 필요시 수정
+          androidKeystoreBase64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          androidKeystorePass: ${{ secrets.ANDROID_KEYSTORE_PASS }}
+          androidKeyaliasName: ${{ secrets.ANDROID_KEY_ALIAS }}
+          androidKeyaliasPass: ${{ secrets.ANDROID_KEY_PASS }}
+          androidTargetSdkVersion: AndroidApiLevel34
+
+      - name: Upload Build File
+        uses: actions/upload-artifact@v4
+        with:
+          name: Build-Android
+          path: build
