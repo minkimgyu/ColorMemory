@@ -6,7 +6,9 @@
         "UnityEditor.TestRunner",
         "LogicScripts"
     ],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": true,
