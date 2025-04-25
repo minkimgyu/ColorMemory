@@ -1454,7 +1454,9 @@ MonoBehaviour:
   _patchPanel: {fileID: 1465765347}
   _patchTxt: {fileID: 337428874}
   _patchBtn: {fileID: 885632107}
-  _assetLabelsToPatch: []
+  _assetLabelsToPatch:
+  - m_LabelString: ArtData
+  - m_LabelString: ArtSprite
   _loadingObj: {fileID: 824852845}
   _loadingPregressBar: {fileID: 1103052329}
   _loadingPregressTxt: {fileID: 695592118}
