@@ -12,81 +12,81 @@ permissions: write-all
 
 jobs:
   testRunner:
-      name: 🧪 Run Unity Edit & Play Mode Tests
-      runs-on: windows-latest
-  
-      steps:
-        - name: Check Out
-          uses: actions/checkout@v4
-          with:
-            fetch-depth: 0
-  
-        # PR 병합 여부 확인 (수동 실행일 경우 건너뜀)
-        - name: Check if PR was merged (only on pull_request)
-          if: github.event_name == 'pull_request'
-          id: check_merge
-          run: |
-            echo "Merged: ${{ github.event.pull_request.merged }}"
-            if [ "${{ github.event.pull_request.merged }}" != "true" ]; then
-              echo "PR not merged. Skipping..."
-              exit 1
-            fi
-  
-        - name: Cache Library
-          uses: actions/cache@v4
-          with:
-            path: Library
-            key: Library-Test-${{ hashFiles('ColorMemory/Assets/**', 'ColorMemory/Packages/**', 'ColorMemory/ProjectSettings/**') }}
-            restore-keys: |
-              Library-Test-
-  
-        - name: Run Edit Mode Tests
-          uses: game-ci/unity-test-runner@v4
-          with:
-            projectPath: ./ColorMemory
-            testMode: editmode
-            artifactsPath: editmode-artifacts
-            githubToken: ${{ secrets.GITHUB_TOKEN }}
-            coverageOptions: 'generateHtmlReport'
-          env:
-            UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-            UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-            UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-  
-        - name: Run Play Mode Tests
-          uses: game-ci/unity-test-runner@v4
-          with:
-            projectPath: ./ColorMemory
-            testMode: playmode
-            artifactsPath: playmode-artifacts
-            githubToken: ${{ secrets.GITHUB_TOKEN }}
-          env:
-            UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-            UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-            UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-  
-        - name: Upload Test Results
-          if: always()
-          uses: actions/upload-artifact@v4
-          with:
-            name: TestResults
-            path: |
-              editmode-artifacts
-              playmode-artifacts
-  
-        - name: Upload Coverage HTML Report
-          if: always()
-          uses: actions/upload-artifact@v4
-          with:
-            name: CoverageHtmlReport
-            path: editmode-artifacts
-          
+    name: 🧪 Run Unity Edit & Play Mode Tests
+    runs-on: windows-latest
+
+    steps:
+      - name: Check Out
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # PR 병합 여부 확인 (수동 실행일 경우 건너뜀)
+      - name: Check if PR was merged (only on pull_request)
+        if: github.event_name == 'pull_request'
+        id: check_merge
+        run: |
+          echo "Merged: ${{ github.event.pull_request.merged }}"
+          if [ "${{ github.event.pull_request.merged }}" != "true" ]; then
+            echo "PR not merged. Skipping..."
+            exit 1
+          fi
+
+      - name: Cache Library
+        uses: actions/cache@v4
+        with:
+          path: Library
+          key: Library-Test-${{ hashFiles('ColorMemory/Assets/**', 'ColorMemory/Packages/**', 'ColorMemory/ProjectSettings/**') }}
+          restore-keys: |
+            Library-Test-
+
+      - name: Run Edit Mode Tests
+        uses: game-ci/unity-test-runner@v4
+        with:
+          projectPath: ./ColorMemory
+          testMode: editmode
+          artifactsPath: editmode-artifacts
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          coverageOptions: 'generateHtmlReport'
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+
+      - name: Run Play Mode Tests
+        uses: game-ci/unity-test-runner@v4
+        with:
+          projectPath: ./ColorMemory
+          testMode: playmode
+          artifactsPath: playmode-artifacts
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TestResults
+          path: |
+            editmode-artifacts
+            playmode-artifacts
+
+      - name: Upload Coverage HTML Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: CoverageHtmlReport
+          path: editmode-artifacts
+
   build:
-    name: 📦 Build for Android & Windows
+    name: 📦 Build for Android
     runs-on: windows-latest
     needs: testRunner
 
-     steps:
+    steps:
       - name: Check Out
         uses: actions/checkout@v4
         with:
@@ -101,7 +101,7 @@ jobs:
           restore-keys: |
             Library-
 
-      - name: Unity Build
+      - name: Unity Build (Android)
         uses: game-ci/unity-builder@v4
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
@@ -110,7 +110,7 @@ jobs:
         with:
           targetPlatform: Android
           projectPath: ./ColorMemory
-          androidKeystoreName: user.keystore # This file won't exist, but this property needs to exist.
+          androidKeystoreName: user.keystore # 실제로 존재하지 않음, 필요시 수정
           androidKeystoreBase64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
           androidKeystorePass: ${{ secrets.ANDROID_KEYSTORE_PASS }}
           androidKeyaliasName: ${{ secrets.ANDROID_KEY_ALIAS }}
