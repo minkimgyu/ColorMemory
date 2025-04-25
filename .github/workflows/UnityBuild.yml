@@ -27,6 +27,7 @@ jobs:
       - name: Run Addressables Build Script
         uses: game-ci/unity-builder@v4
         with:
+          projectPath: ./ColorMemory
           buildMethod: UnityBuilderAction.AddressableBuildScript.PerformBuild
 
       - name: Upload Addressable Bundles as Artifact
