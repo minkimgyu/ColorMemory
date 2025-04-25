@@ -25,8 +25,8 @@ jobs:
 
       - name: Build Addressables
         run: |
-          /home/username/Unity/Editor/Unity -batchmode -quit -projectPath ./ColorMemory -executeMethod AddressablesBuilder.BuildAddressables
-
+          & "C:\Program Files\Unity\Hub\Editor\2022.3.55f1\Editor\Unity.exe" -batchmode -quit -projectPath ./ColorMemory -executeMethod AddressablesBuilder.BuildAddressables
+      
       - name: Unity Build
         uses: game-ci/unity-builder@v4
         env:
