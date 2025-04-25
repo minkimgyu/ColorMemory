@@ -16,7 +16,7 @@ permissions: write-all
 jobs:
   testRunner:
     if: github.event.pull_request.merged == true
-    name: 🧪 Run Unity Tests
+    name: 🧪 Run Unity Edit & Play Mode Tests
     runs-on: ubuntu-latest
     steps:
       - name: Check Out
@@ -32,10 +32,21 @@ jobs:
           restore-keys: |
             Library-Test-
 
-      - name: Run Tests
+      - name: Run Edit Mode Tests
         uses: game-ci/unity-test-runner@v4
         with:
           projectPath: ./ColorMemory
+          testMode: editmode
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+
+      - name: Run Play Mode Tests
+        uses: game-ci/unity-test-runner@v4
+        with:
+          projectPath: ./ColorMemory
+          testMode: playmode
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
