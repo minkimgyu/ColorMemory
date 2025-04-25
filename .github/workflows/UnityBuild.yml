@@ -30,7 +30,8 @@ jobs:
           sudo swapoff -a
           sudo rm -f /swapfile
           sudo apt clean
-          docker rmi $(docker images -q) || true # 삭제할 이미지 없어도 실패하지 않음
+          # 사용되지 않는 모든 Docker 리소스 정리 (확인 메시지 없이 강제 삭제)
+          docker system prune -af || true # 실패해도 단계 전체는 실패하지 않음
           df -h
 
       - name: Unity Build (Android)
