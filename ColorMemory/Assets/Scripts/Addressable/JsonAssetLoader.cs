@@ -37,7 +37,18 @@ public class MultipleJsonAssetLoader<Key, Value> : MultipleAssetLoader<Key, Valu
             {
                 case AsyncOperationStatus.Succeeded:
                     Key key = (Key)Enum.Parse(typeof(Key), location.PrimaryKey);
-                    Value value = _parser.JsonToObject<Value>(handle.Result);
+                    Value value;
+
+                    try
+                    {
+                        value = _parser.JsonToObject<Value>(handle.Result);
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogException(e);
+                        throw;
+                    }
+
 
                     dictionary.Add(key, value);
                     OnComplete?.Invoke();

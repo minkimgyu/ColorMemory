@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public interface LevelGenerator
+public interface ILevelGenerator
 {
     bool CanGenerateLevelData();
     MapData GenerateLevelData(int currentStageIndex) { return default; }

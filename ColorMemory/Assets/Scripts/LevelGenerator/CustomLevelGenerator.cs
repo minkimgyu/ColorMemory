@@ -2,7 +2,8 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System;
-public class CustomLevelGenerator : LevelGenerator
+
+public class CustomLevelGenerator : ILevelGenerator
 {
     CollectArtData.Section _section;
 

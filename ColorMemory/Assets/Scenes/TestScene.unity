@@ -378,7 +378,7 @@ GameObject:
   - component: {fileID: 636162764}
   - component: {fileID: 636162765}
   m_Layer: 0
-  m_Name: ArtDataBuilder
+  m_Name: ENGArtworkDataBuilder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -413,7 +413,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _address: https://docs.google.com/spreadsheets/d/1YMPCChQ5VHH_Gg7RgglN4P8YZzTqNt5HkDNI5ohNhj4
   _sheetID: 541414076
-  _fileName: ArtworkData
+  _fileName: ENGArtworkData
   _fileLocation: JsonDatas
 --- !u!1 &727143063
 GameObject:
@@ -783,7 +783,7 @@ GameObject:
   - component: {fileID: 1586436355}
   - component: {fileID: 1586436354}
   m_Layer: 0
-  m_Name: ArtDataBuilder (1)
+  m_Name: KRArtworkDataBuilder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
