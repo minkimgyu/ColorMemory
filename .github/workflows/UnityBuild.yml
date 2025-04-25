@@ -19,7 +19,7 @@ jobs:
       - name: Cache Library
         uses: actions/cache@v4
         with:
-          path: Library
+          path: ColorMemory/Library
           key: Library-${{ hashFiles('ColorMemory/Assets/**', 'ColorMemory/Packages/**', 'ColorMemory/ProjectSettings/**') }}
           restore-keys: |
             Library-
