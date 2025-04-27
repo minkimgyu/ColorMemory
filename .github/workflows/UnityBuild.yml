@@ -24,6 +24,16 @@ jobs:
           restore-keys: |
             Library-
 
+        # Free up disk space
+      - name: Free Disk Space for Android
+        run: |
+          sudo swapoff -a
+          sudo rm -f /swapfile
+          sudo apt clean
+          # 사용되지 않는 모든 Docker 리소스 정리 (확인 메시지 없이 강제 삭제)
+          docker system prune -af || true # 실패해도 단계 전체는 실패하지 않음
+          df -h
+
       - name: Unity Build (Android)
         uses: game-ci/unity-builder@v4
         env:
@@ -38,17 +48,17 @@ jobs:
           androidKeystorePass: ${{ secrets.ANDROID_KEYSTORE_PASS }}
           androidKeyaliasName: ${{ secrets.ANDROID_KEY_ALIAS }}
           androidKeyaliasPass: ${{ secrets.ANDROID_KEY_PASS }}
-          buildMethod: UnityBuilderAction.AddressableBuildScript.PerformBuild
+          buildMethod: UnityBuilderAction.BuildScript.Build
           androidTargetSdkVersion: AndroidApiLevel34
-
-#      - name: Upload Addressable Bundles as Artifact
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: AddressableBundles # 아티팩트 이름
-#          path: ./ColorMemory/Assets/StreamingAssets/aa/**/* # Addressables 빌드 출력 경로 (프로젝트 루트 기준)
 
       - name: Upload Build File
         uses: actions/upload-artifact@v4
         with:
           name: Build-Android
-          path: ./ColorMemory/build/**/*
+          path: build
+
+      - name: Upload Addressable Bundles as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: AddressableBundles # 아티팩트 이름
+          path: ./ColorMemory/ServerData/Android/**/*
