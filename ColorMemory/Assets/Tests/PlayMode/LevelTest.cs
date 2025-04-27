@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-public class LevelGeneratorTest
+public class LevelTest
 {
     AddressableLoader _addressableLoader;
     ILevelGenerator _mockLevelGenerator;
@@ -26,7 +26,7 @@ public class LevelGeneratorTest
     }
 
     [UnityTest]
-    public IEnumerator LevelTest()
+    public IEnumerator LevelGenerateTest()
     {
         _addressableLoader = CreateAddressableLoader();
         _addressableLoader.Load(() =>

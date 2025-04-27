@@ -189,7 +189,7 @@ public class ServerTest
         Assert.AreEqual(clearedArtData.Item1.HasIt, true, "보유 업데이트가 안 됨");
     }
 
-    [Test]
+    [Test, Timeout(10000)] // 10초 넘으면 실패
     public async void IntegratedServerTest()
     {
         await TestAccountService_Start();
