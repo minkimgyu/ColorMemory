@@ -1,19 +1,19 @@
-name: Unity CI
+name: CI/CD
 
 on:
   pull_request:
     branches:
       - build
     types:
-      - closed  # main → build 병합
-  workflow_dispatch:  # 수동 실행 허용
+      - closed
+  workflow_dispatch:
 
 permissions: write-all
 
 jobs:
-  testRunner:
+  test:
     name: 🧪 Run Unity Edit & Play Mode Tests
-    runs-on: ubuntu-latest  # Ubuntu에서 실행
+    runs-on: windows-latest
 
     steps:
       - name: Check Out
@@ -21,7 +21,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      # PR 병합 여부 확인 (수동 실행일 경우 건너뜀)
+      # PR 병합 여부 확인 (수동 실행이면 생략)
       - name: Check if PR was merged (only on pull_request)
         if: github.event_name == 'pull_request'
         id: check_merge
@@ -32,7 +32,7 @@ jobs:
             exit 1
           fi
 
-      - name: Cache Library
+      - name: Cache Library for Tests
         uses: actions/cache@v4
         with:
           path: Library
@@ -83,8 +83,8 @@ jobs:
 
   build:
     name: 📦 Build for Android
-    runs-on: ubuntu-latest # windows-latest
-    needs: testRunner
+    runs-on: ubuntu-latest
+    needs: test # 테스트 진행해야 빌드 시작
 
     steps:
       - name: Check Out
@@ -93,25 +93,21 @@ jobs:
           fetch-depth: 0
           lfs: true
 
-      - name: Cache Library
+      - name: Cache Library for Build
         uses: actions/cache@v4
         with:
-          path: Library
-          key: Library-${{ hashFiles('ColorMemory/Assets/**', 'ColorMemory/Packages/**', 'ColorMemory/ProjectSettings/**') }}
+          path: ColorMemory/Library
+          key: Library-Build-${{ hashFiles('ColorMemory/Assets/**', 'ColorMemory/Packages/**', 'ColorMemory/ProjectSettings/**') }}
           restore-keys: |
-            Library-
+            Library-Build-
 
-      - name: Run Addressables Build Script
-        uses: game-ci/unity-builder@v4
-        with:
-          buildMethod: UnityBuilderAction.AddressableBuildScript.PerformBuild
-
-      - name: Upload Addressable Bundles as Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: AddressableBundles # 아티팩트 이름
-          path: Assets/StreamingAssets/aa/**/* # Addressables 빌드 출력 경로 (프로젝트 루트 기준)
-          retention-days: 7 # 아티팩트 보관 기간 (선택 사항)
+      - name: Free Disk Space for Android
+        run: |
+          sudo swapoff -a
+          sudo rm -f /swapfile
+          sudo apt clean
+          docker system prune -af || true
+          df -h
 
       - name: Unity Build (Android)
         uses: game-ci/unity-builder@v4
@@ -122,15 +118,22 @@ jobs:
         with:
           targetPlatform: Android
           projectPath: ./ColorMemory
-          androidKeystoreName: user.keystore # 실제로 존재하지 않음, 필요시 수정
+          androidKeystoreName: user.keystore
           androidKeystoreBase64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
           androidKeystorePass: ${{ secrets.ANDROID_KEYSTORE_PASS }}
           androidKeyaliasName: ${{ secrets.ANDROID_KEY_ALIAS }}
           androidKeyaliasPass: ${{ secrets.ANDROID_KEY_PASS }}
+          buildMethod: UnityBuilderAction.BuildScript.Build
           androidTargetSdkVersion: AndroidApiLevel34
 
-      - name: Upload Build File
+      - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
         with:
           name: Build-Android
           path: build
+
+      - name: Upload Addressable Bundles
+        uses: actions/upload-artifact@v4
+        with:
+          name: AddressableBundles
+          path: ./ColorMemory/ServerData/Android/**/*
