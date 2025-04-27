@@ -13,7 +13,7 @@ permissions: write-all
 jobs:
   test:
     name: 🧪 Run Play & Edit Mode Tests
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Check Out
