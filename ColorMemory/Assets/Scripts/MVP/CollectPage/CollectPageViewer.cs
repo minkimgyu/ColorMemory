@@ -31,6 +31,7 @@ public class CollectPageViewer
     TMP_Text _leftCompleteText;
     TMP_Text _totalCompleteText;
 
+    TMP_Text _stageNameTxt;
     TMP_Text _selectStageTitle;
 
     TMP_Text _stageUsedHintUseTitle;
@@ -83,6 +84,7 @@ public class CollectPageViewer
         TMP_Text leftCompleteText,
         TMP_Text totalCompleteText,
 
+        TMP_Text stageNameTxt,
         TMP_Text selectStageTitle,
 
         GameObject selectStageContent,
@@ -136,6 +138,7 @@ public class CollectPageViewer
         _totalComplete = totalComplete;
         _totalCompleteRatio = totalCompleteRatio;
 
+        _stageNameTxt = stageNameTxt;
         _selectStageTitle = selectStageTitle;
         ChangeSelectStageTitle();
 
@@ -216,6 +219,11 @@ public class CollectPageViewer
         _playBtn.onClick.AddListener(() => { collectPagePresenter.PlayCollectMode(); });
         artworkScrollUI.OnDragEnd += collectPagePresenter.OnArtworkScrollChanged; // -> 이거 수정해서 맞는 인덱스 적용해주기
         ActiveContent(false);
+    }
+
+    public void ChangeStageNameText(string stageNameText)
+    {
+        _stageNameTxt.text = stageNameText;
     }
 
     void ChangeSelectStageTitle()

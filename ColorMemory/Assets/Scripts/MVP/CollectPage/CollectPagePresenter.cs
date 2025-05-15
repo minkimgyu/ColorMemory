@@ -43,6 +43,12 @@ public class CollectPagePresenter
         this.OnClickPlayBtn = OnClickPlayBtn;
     }
 
+    public void ChangeStageNameText(string stageName)
+    {
+        _collectPageModel.StageNameTxt = stageName;
+        _collectPageViewer.ChangeStageNameText(_collectPageModel.StageNameTxt);
+    }
+
     public void SwitchArtworkInfoContent(bool active)
     {
         _collectPageModel.ActiveArtworkInfoContent = active;
@@ -369,7 +375,8 @@ public class CollectPagePresenter
 
             _collectPageViewer.AddArtwork(artwork);
 
-            ArtworkData artworkData = _collectPageModel.ArtworkDatas[artworkIndex]; // ✅ keyIndex 사용
+            ILocalization.Language language = ServiceLocater.ReturnSaveManager().GetSaveData().Language;
+            ArtworkData artworkData = _collectPageModel.ArtworkDatas[language].Data[artworkIndex]; // ✅ keyIndex 사용
             int scrollIndex = _collectPageModel.FilteredArtDatas.FindIndex(x => x.Key == artworkIndex);
 
             SpawnableUI filteredArtwork = _filteredArtworkFactory.Create(artworkIndex, artworkData.Title, item.Value.HasIt);
@@ -424,7 +431,12 @@ public class CollectPagePresenter
             }
         }
 
+        SaveData saveData = ServiceLocater.ReturnSaveManager().GetSaveData();
+
         ChangeCurrentProgress(progressCount);
+
+        ArtworkData artworkData = _collectPageModel.ArtworkDatas[saveData.Language].Data[artworkIndex]; // ✅ keyIndex 사용
+        ChangeStageNameText(artworkData.Title);
 
         int _openIndex = 0;
 
@@ -473,7 +485,8 @@ public class CollectPagePresenter
 
     void UpdateArtInfo(int artworkIndex)
     {
-        ArtworkData artworkData = _collectPageModel.ArtworkDatas[artworkIndex];
+        ILocalization.Language language = ServiceLocater.ReturnSaveManager().GetSaveData().Language;
+        ArtworkData artworkData = _collectPageModel.ArtworkDatas[language].Data[artworkIndex]; // ✅ keyIndex 사용
         _collectPageViewer.ChangeArtDescription(artworkData.Title, artworkData.Description);
 
         ArtData artData = _collectPageModel.ArtDatas[artworkIndex];

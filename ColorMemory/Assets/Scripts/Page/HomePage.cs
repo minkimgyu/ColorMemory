@@ -65,6 +65,7 @@ public class HomePage : MonoBehaviour
     [SerializeField] TMP_Text _leftCompleteText;
     [SerializeField] TMP_Text _totalCompleteText;
 
+    [SerializeField] TMP_Text _stageNameTxt;
     [SerializeField] TMP_Text _selectStageTitle;
 
     [SerializeField] TMP_Text _stageUsedHintUseTitle;
@@ -227,6 +228,7 @@ public class HomePage : MonoBehaviour
                 _leftCompleteText,
                 _totalCompleteText,
 
+                _stageNameTxt,
                 _selectStageTitle,
 
                 _selectStageContent,
@@ -265,7 +267,7 @@ public class HomePage : MonoBehaviour
                 filterItemFactory,
 
                 artDatas,
-                addressableHandler.ArtworkJsonDataAssets[data.Language].Data,
+                addressableHandler.ArtworkJsonDataAssets, // 이거 매번 불러오기
                 addressableHandler.CollectiveArtJsonAsserts,
                 _pageFsm)
             },

@@ -30,6 +30,7 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
         TMP_Text leftCompleteText,
         TMP_Text totalCompleteText,
 
+        TMP_Text stageNameTxt,
         TMP_Text selectStageTitle,
 
         GameObject selectStageContent,
@@ -70,7 +71,7 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
         FilterItemFactory filterItemFactory,
 
         Dictionary<int, ArtData> artDatas,
-        Dictionary<int, ArtworkData> artworkDatas,
+        Dictionary<ILocalization.Language, ArtworkDateWrapper> artworkDatas,
         Dictionary<int, CollectArtData> collectArtDatas,
         FSM<HomePage.InnerPageState> fsm) : base(fsm)
     {
@@ -107,6 +108,7 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
             leftCompleteText,
             totalCompleteText,
 
+            stageNameTxt,
             selectStageTitle,
 
             selectStageContent,

@@ -86,7 +86,16 @@ public struct SaveData
         }
     }
 
-    [JsonIgnore] public float SelectedArtworkProgress { get => (float)((_selectedArtworkSectionIndex.x * ArtworkSize) + _selectedArtworkSectionIndex.y) / (float)(ArtworkSize * ArtworkSize);  }
+    [JsonIgnore]
+    public int TotalArtworkSectionSize
+    {
+        get
+        {
+            return ArtworkSize * ArtworkSize;
+        }
+    }
+
+    [JsonIgnore] public float SelectedArtworkProgress { get => (float)SelectedArtworkSectionIntIndex / TotalArtworkSectionSize;  }
     [JsonIgnore] public string UserId { get => _userId; set => _userId = value; }
     [JsonIgnore] public string UserName { get => _userName; set => _userName = value; }
     [JsonIgnore] public bool GoToCollectPage { get => _goToCollectPage; set => _goToCollectPage = value; }

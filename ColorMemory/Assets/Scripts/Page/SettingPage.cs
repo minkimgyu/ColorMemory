@@ -30,6 +30,8 @@ public class SettingPage : MonoBehaviour
     [SerializeField] TMP_Text _sfxLeftText;
     [SerializeField] TMP_Text _sfxRightText;
 
+    [SerializeField] TMP_Dropdown _languageDropdown;
+
     public void TogglePanel()
     {
         _sideSheetUI.TogglePanel();
@@ -41,6 +43,13 @@ public class SettingPage : MonoBehaviour
     {
         this.OnClickHomeBtn = OnClickHomeBtn;
         _homeBtn.onClick.AddListener(() => { TogglePanel(); OnClickHomeBtn?.Invoke();  });
+
+        // ÃÊ±âÈ­
+        _languageDropdown.value = (int)ServiceLocater.ReturnSaveManager().GetSaveData().Language;
+        _languageDropdown.onValueChanged.AddListener((index) => 
+        { 
+            ServiceLocater.ReturnSaveManager().ChangeLanguage((ILocalization.Language)index); 
+        });
 
         _sideSheetUI.Initialize();
         SettingPageModel model = new SettingPageModel(profileSprites);

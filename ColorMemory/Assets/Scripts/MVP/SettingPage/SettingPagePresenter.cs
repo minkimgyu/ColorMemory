@@ -48,11 +48,6 @@ public class SettingPagePresenter
             _viewer.ChangeBGMSliderValue(data.BgmVolume, _model.BgmleftTextInfo, _model.ColorOnBgmHandle);
             _viewer.ChangeSFXSliderValue(data.SfxVolume, _model.SfxleftTextInfo, _model.ColorOnSfxHandle);
         }
-        //else
-        //{
-        //    ServiceLocater.ReturnSaveManager().ChangeBGMVolume(_settingPageModel.BgmRatio);
-        //    ServiceLocater.ReturnSaveManager().ChangeSFXVolume(_settingPageModel.SfxRatio);
-        //}
     }
 
     readonly Color _colorOnZeroValue = new Color(118f / 255f, 113f / 255f, 111f / 255f);

@@ -319,10 +319,12 @@ public class CollectStageUIPresenter
         _viewer.ChangeProgressText(_model.Progress);
     }
 
-    public void ChangeTitle(string title)
+    public void ChangeTitle(string title, int currentSection, int totalSectionSize)
     {
         _model.Title = title;
-        _viewer.ChangeTitle(_model.Title);
+        _model.CurrentSectionIndex = currentSection;
+        _model.TotalSectionSize = totalSectionSize;
+        _viewer.ChangeTitle(_model.Title, _model.CurrentSectionIndex, _model.TotalSectionSize);
     }
 
     public void FillTimeSlider(float duration)

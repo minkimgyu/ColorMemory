@@ -47,6 +47,8 @@ public class RankingPageState : BaseState<HomePage.InnerPageState>
 
     public override async void OnStateEnter()
     {
+        _rankingPagePresenter.ChangeRankingTitle();
+
         string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
         Tuple<List<PersonalRankingData>, PersonalRankingData> rankingData = await _rankingService.GetTopRankingData(topRange, userId);
         if (rankingData == null) return;
@@ -54,6 +56,8 @@ public class RankingPageState : BaseState<HomePage.InnerPageState>
         for (int i = 0; i < rankingData.Item1.Count; i++)
         {
             SpawnableUI rankingUI = _rankingUIFactory.Create(rankingData.Item1[i]);
+
+            if (rankingData.Item2.Rank == rankingData.Item1[i].Rank) rankingUI.ChangeSelect(true); // 내 랭킹과 같은 순위라면 선택해줌
             _rankingPagePresenter.AddRakingItems(rankingUI);
         }
 

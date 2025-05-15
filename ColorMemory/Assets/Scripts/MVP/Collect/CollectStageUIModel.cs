@@ -392,4 +392,10 @@ public class CollectStageUIModel
 
     string _title;
     public string Title { get => _title; set => _title = value; }
+
+    int _currentSectionIndex;
+    public int CurrentSectionIndex { get => _currentSectionIndex; set => _currentSectionIndex = value; }
+
+    int _totalSectionSize;
+    public int TotalSectionSize { get => _totalSectionSize; set => _totalSectionSize = value; }
 }

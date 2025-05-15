@@ -452,9 +452,13 @@ public class CollectStageUIViewer
         _playPanel.SetActive(active);
     }
 
-    public void ChangeTitle(string title)
+    const int maxTitleSize = 13;
+    const int dotSize = 3;
+
+    public void ChangeTitle(string title, int currentSection, int totalSectionSize)
     {
-        _titleText.text = title;
+        if (title.Length > maxTitleSize) title = title.Substring(0, maxTitleSize - dotSize) + "...";
+        _titleText.text = title + " (" + currentSection + "/" + totalSectionSize + ")";
     }
 
     public void ChangeHintInfoText(string infoText)
@@ -464,7 +468,7 @@ public class CollectStageUIViewer
 
     public void ChangeProgressText(int progress)
     {
-        _progressText.text = $"{progress}%";
+        _progressText.text = $"{ progress }%";
     }
 
     public void FillTimeSlider(float ratio)

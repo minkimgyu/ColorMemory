@@ -215,8 +215,8 @@ namespace Collect
             AddressableLoader addressableHandler = FindObjectOfType<AddressableLoader>();
             if (addressableHandler == null) return;
 
-            Vector2 size = _canvas.gameObject.GetComponent<RectTransform>().sizeDelta;
-            _nextPanel.sizeDelta = new Vector2(size.x, _nextPanel.sizeDelta.y); // 사이즈 맞춰주기
+            //Vector2 size = _canvas.gameObject.GetComponent<RectTransform>().sizeDelta;
+            //_nextPanel.sizeDelta = new Vector2(size.x, _nextPanel.sizeDelta.y); // 사이즈 맞춰주기
 
             SaveData saveData = ServiceLocater.ReturnSaveManager().GetSaveData();
 

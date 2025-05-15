@@ -529,7 +529,7 @@ MonoBehaviour:
   _nameTxt: {fileID: 117743315202843355}
   _scoreTxt: {fileID: 4537108523802244697}
   _rankTxt: {fileID: 6470566408715956589}
-  _selectedColor: {r: 1, g: 0.8941177, b: 0.7843138, a: 1}
+  _selectedColor: {r: 0.92549026, g: 0.909804, b: 0.909804, a: 1}
 --- !u!1 &8430014000167488033
 GameObject:
   m_ObjectHideFlags: 0
