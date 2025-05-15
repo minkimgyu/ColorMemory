@@ -48,45 +48,6 @@ namespace Collect
             //ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.HomeScene);
         }
 
-        async Task<List<PlayerArtworkDTO>> GetArtDataFromServer()
-        {
-            ArtworkManager artworkManager = new ArtworkManager();
-            List<PlayerArtworkDTO> artworkDTOs;
-
-            try
-            {
-                string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
-                artworkDTOs = await artworkManager.GetWholePlayerArtworksAsync(userId);
-            }
-            catch (System.Exception e)
-            {
-                Debug.Log(e);
-                Debug.Log("서버로부터 데이터를 받아오지 못함");
-                return null;
-            }
-
-            return artworkDTOs;
-        }
-
-        async Task<Rank?> UpdateArtDataToServer(PlayerArtworkDTO artworkDTO)
-        {
-            ArtworkManager artworkManager = new ArtworkManager();
-            Rank? rank = null;
-
-            try
-            {
-                rank = await artworkManager.UpdatePlayerArtworkAsync(artworkDTO);
-            }
-            catch (System.Exception e)
-            {
-                Debug.Log(e);
-                Debug.Log("서버로 데이터를 업데이트하지 못 함");
-                return null;
-            }
-
-            return rank;
-        }
-
         async Task<Rank?> UpdateArtDataToServer()
         {
             string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;

@@ -221,9 +221,23 @@ public class CollectPageViewer
         ActiveContent(false);
     }
 
+    const int maxStageNameSize = 25;
     public void ChangeStageNameText(string stageNameText)
     {
-        _stageNameTxt.text = stageNameText;
+        bool overLength = stageNameText.Length > maxStageNameSize;
+        string newStageName;
+
+        if (overLength == true)
+        {
+            int clampedLength = Mathf.Clamp(maxStageNameSize, 0, stageNameText.Length);
+            newStageName = $"{stageNameText.Substring(0, clampedLength)}...";
+        }
+        else
+        {
+            newStageName = stageNameText;
+        }
+
+        _stageNameTxt.text = newStageName;
     }
 
     void ChangeSelectStageTitle()
