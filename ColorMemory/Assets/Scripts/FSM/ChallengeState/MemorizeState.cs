@@ -39,17 +39,13 @@ namespace Challenge
             _timer = new Timer();
 
             _challengeStageUIPresenter = challengeStageUIPresenter;
+            _challengeStageUIPresenter.OnClickSkipBtn += GoToPaintState;
             this.GetStage = GetStage;
         }
 
         Color GetDotColor(int row, int col)
         {
             return _pickColors[_mapData.DotColor[row, col]];
-        }
-
-        public override void OnClickSkipBtn()
-        {
-            GoToPaintState();
         }
 
         public override void OnStateEnter()

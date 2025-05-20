@@ -13,6 +13,9 @@ public class SettingPagePresenter
 
     IProfileService _iconService;
 
+    public Action OnHomeBtnClicked { get; set; }
+    public Action<int> OnChangeLanguage { get; set; }
+
     public SettingPagePresenter(SettingPageModel settingPageModel, IProfileService iconService)
     {
         _model = settingPageModel;
@@ -22,12 +25,19 @@ public class SettingPagePresenter
     public void InjectViewer(SettingPageViewer settingPageViewer)
     {
         _viewer = settingPageViewer;
+        ChangeLanguage();
+    }
 
+    public void ChangeLanguage()
+    {
         _model.BGMTitleText = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.BGMTitle);
         _model.SfxTitleText = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.SFXTitle);
         _model.SoundLeftText = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.DecreaseSound);
         _model.SoundRightText = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.IncreaseSound);
         _viewer.ChangeSoundText(_model.BGMTitleText, _model.SfxTitleText, _model.SoundLeftText, _model.SoundRightText);
+
+        _model.LanguageTitle = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.LanguageTitle);
+        _viewer.ChangeLanguageTitle(_model.LanguageTitle);
     }
 
     public void ChangeName(string name)
@@ -82,6 +92,12 @@ public class SettingPagePresenter
         }
     }
 
+    public void ChangeLanguageDropdown(int index)
+    {
+        _model.LanguageDropdownIndex = index;
+        _viewer.ChangeLanguageDropdown(_model.LanguageDropdownIndex);
+    }
+
     public void OnBGMSliderValeChanged(float ratio)
     {
         _model.BgmRatio = ratio;
@@ -102,6 +118,7 @@ public class SettingPagePresenter
 
     public void ActivateTogglePanel(int index)
     {
+        ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.BtnClick);
         _model.CurrentToggleIndex = index;
         _viewer.ActivateTogglePanel(_model.CurrentToggleIndex);
     }
@@ -118,6 +135,7 @@ public class SettingPagePresenter
 
     public async void OnProfileDone()
     {
+        ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.BtnClick);
         _model.ProfileIndex = _model.SelectedProfileIndex;
         SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
 

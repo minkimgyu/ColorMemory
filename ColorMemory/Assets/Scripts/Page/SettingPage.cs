@@ -30,6 +30,8 @@ public class SettingPage : MonoBehaviour
     [SerializeField] TMP_Text _sfxLeftText;
     [SerializeField] TMP_Text _sfxRightText;
 
+    [SerializeField] TMP_Text _languageTitle;
+
     [SerializeField] TMP_Dropdown _languageDropdown;
 
     public void TogglePanel()
@@ -37,24 +39,11 @@ public class SettingPage : MonoBehaviour
         _sideSheetUI.TogglePanel();
     }
 
-    System.Action OnClickHomeBtn;
-
-    public void Initialize(string myName, Dictionary<int, Sprite> profileSprites, System.Action OnClickHomeBtn)
+    public void Initialize(string myName, Dictionary<int, Sprite> profileSprites, System.Action OnClickHomeBtn, System.Action OnChangeLanguage)
     {
-        this.OnClickHomeBtn = OnClickHomeBtn;
-        _homeBtn.onClick.AddListener(() => { TogglePanel(); OnClickHomeBtn?.Invoke();  });
-
-        // 초기화
-        _languageDropdown.value = (int)ServiceLocater.ReturnSaveManager().GetSaveData().Language;
-        _languageDropdown.onValueChanged.AddListener((index) => 
-        { 
-            ServiceLocater.ReturnSaveManager().ChangeLanguage((ILocalization.Language)index); 
-        });
-
         _sideSheetUI.Initialize();
         SettingPageModel model = new SettingPageModel(profileSprites);
         SettingPagePresenter presenter = new SettingPagePresenter(model, new ProfileService());
-
         SettingPageViewer viewer = new SettingPageViewer(
             _sideSheetUI,
             _toggles,
@@ -74,10 +63,43 @@ public class SettingPage : MonoBehaviour
             _sfxTitleText,
             _sfxLeftText,
             _sfxRightText,
+            _languageTitle,
+            _homeBtn,
+            _languageDropdown,
             presenter);
         presenter.InjectViewer(viewer);
 
+        presenter.OnHomeBtnClicked += () => 
+        {
+            ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.BtnClick);
+            TogglePanel(); 
+            OnClickHomeBtn?.Invoke(); 
+        };
+
+        presenter.ChangeLanguageDropdown((int)ServiceLocater.ReturnSaveManager().GetSaveData().Language);
+        presenter.OnChangeLanguage += (index) =>
+        {
+            ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.BtnClick);
+
+            ServiceLocater.ReturnSaveManager().ChangeLanguage((ILocalization.Language)index);
+            string languageTitle = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.LanguageTitle);
+            presenter.ChangeLanguage();
+
+            OnChangeLanguage?.Invoke();
+        };
+
         presenter.ChangeProfileImgFromServer();
         presenter.ChangeName(myName);
+
+        // 초기화
+        //_languageDropdown.value = ;
+        //_languageDropdown.onValueChanged.AddListener((index) =>
+        //{
+        //    ServiceLocater.ReturnSaveManager().ChangeLanguage((ILocalization.Language)index);
+        //    string languageTitle = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.LanguageTitle);
+        //    presenter.ChangeLanguage();
+
+        //    OnChangeLanguage?.Invoke();
+        //});
     }
 }

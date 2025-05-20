@@ -73,5 +73,8 @@ abstract public class Dot : MonoBehaviour, IPointerDownHandler
         _dotEffectComponent.XSlide(changeColor, 0.5f);
     }
 
-    public abstract void OnPointerDown(PointerEventData eventData);
+    public virtual void OnPointerDown(PointerEventData eventData)
+    {
+        ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.DotClick);
+    }
 }

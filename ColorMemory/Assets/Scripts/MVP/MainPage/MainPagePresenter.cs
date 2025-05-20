@@ -7,12 +7,11 @@ public class MainPagePresenter
 {
     MainPageViewer _mainPageViewer;
     MainPageModel _mainPageModel;
-    System.Action<GameMode.Type> OnPlayBtnClicked;
+    public System.Action<GameMode.Type> OnPlayBtnClicked { get; set; }
 
-    public MainPagePresenter(MainPageModel mainPageModel, System.Action<GameMode.Type> OnPlayBtnClicked)
+    public MainPagePresenter(MainPageModel mainPageModel)
     {
         _mainPageModel = mainPageModel;
-        this.OnPlayBtnClicked = OnPlayBtnClicked;
     }
 
     public void InjectViewer(MainPageViewer mainPageViewer)
@@ -44,8 +43,13 @@ public class MainPagePresenter
         _mainPageViewer.ActiveContent(_mainPageModel.ActiveContent);
     }
 
-    public void OnModeTypeChanged(bool isOn)
+    public void OnModeTypeChanged(bool isUIInput, bool isOn)
     {
+        if(isUIInput)
+        {
+            ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.BtnClick);
+        }
+
         if (isOn)
         {
             _mainPageModel.ModeType = GameMode.Type.Challenge;

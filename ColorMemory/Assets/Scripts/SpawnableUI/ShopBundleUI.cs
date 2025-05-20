@@ -14,7 +14,7 @@ public class ShopBundleUI : SpawnableUI
 
     public override void InjectClickEvent(System.Action OnClick) 
     {
-        _buyBtn.onClick.AddListener(() => { OnClick?.Invoke(); });
+        _buyBtn.onClick.AddListener(() => { OnClick?.Invoke(); ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.BtnClick); });
     }
 
     public override void Initialize(string title, string description, int reward, int price) 

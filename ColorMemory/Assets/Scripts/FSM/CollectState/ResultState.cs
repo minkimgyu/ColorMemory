@@ -16,26 +16,43 @@ namespace Collect
         CollectMode.Data _modeData;
 
         IArtDataService _artDataLoaderService;
-        IArtDataService _artDataUpdaterService;
+
+        Dictionary<int, Sprite> _artSpriteAsserts;
+        Dictionary<NetworkService.DTO.Rank, Sprite> _artworkFrameAssets;
+        Dictionary<NetworkService.DTO.Rank, Sprite> _rankDecorationIconAssets;
+        Dictionary<NetworkService.DTO.Rank, Sprite> _rankBadgeIconAssets;
+        ArtworkDateWrapper _artworkJsonDataAssets;
 
         public ResultState(
             FSM<CollectMode.State> fsm,
             IArtDataService artDataLoaderService,
-            IArtDataService artDataUpdaterService,
+
+            Dictionary<int, Sprite> artSpriteAsserts,
+            Dictionary<NetworkService.DTO.Rank, Sprite> artworkFrameAssets,
+            Dictionary<NetworkService.DTO.Rank, Sprite> rankDecorationIconAssets,
+            Dictionary<NetworkService.DTO.Rank, Sprite> rankBadgeIconAssets,
+            ArtworkDateWrapper artworkJsonDataAssets,
+
             CollectStageUIPresenter collectStageUIPresenter,
             CollectMode.Data modeData) : base(fsm)
         {
             _artDataLoaderService = artDataLoaderService;
-            _artDataUpdaterService = artDataUpdaterService;
+
+            _artSpriteAsserts = artSpriteAsserts;
+            _artworkFrameAssets = artworkFrameAssets;
+            _rankDecorationIconAssets = rankDecorationIconAssets;
+            _rankBadgeIconAssets = rankBadgeIconAssets;
+            _artworkJsonDataAssets = artworkJsonDataAssets;
 
             _collectStageUIPresenter = collectStageUIPresenter;
-            _modeData = modeData;
-        }
+            _collectStageUIPresenter.GoToShareState += () => { _fsm.SetState(CollectMode.State.Share); };
+            _collectStageUIPresenter.OnClickNextBtn += () => 
+            {
+                ServiceLocater.ReturnSaveManager().ChangeGoToCollectPage(true);
+                ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.HomeScene);
+            };
 
-        public override void OnClickNextBtn()
-        {
-            ServiceLocater.ReturnSaveManager().ChangeGoToCollectPage(true);
-            ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.HomeScene);
+            _modeData = modeData;
         }
 
         void ApplyLocalization(string artworkTitle)
@@ -63,8 +80,6 @@ namespace Collect
             Tuple<PlayerArtworkDTO, int, int> artData = await _artDataLoaderService.GetArtData(userId, saveData.SelectedArtworkKey);
             if (artData == null) return;
 
-            bool clearThisStage = true;
-
             // 힌트, 틀린 개수 업데이트
             int totalGoBackCount = artData.Item1.TotalHints;
             int totalWrongCount = artData.Item1.TotalMistakes;
@@ -74,9 +89,7 @@ namespace Collect
             foreach (var item in artData.Item1.Stages)
             {
                 // 하나의 스테이지라도 클리어 하지 못한 경우
-                if(item.Value.Status != StageStauts.Clear) clearThisStage = false;
-                else clearStageCount++;
-
+                if(item.Value.Status == StageStauts.Clear) clearStageCount++;
                 totalStageCount++;
             }
 
@@ -85,43 +98,43 @@ namespace Collect
             Sprite rankDecorationIconSprite;
             Sprite rankBadgeIconSprite;
 
-            AddressableLoader addressableHandler = UnityEngine.Object.FindObjectOfType<AddressableLoader>();
-            if (addressableHandler == null) return;
-
             _collectStageUIPresenter.ActivatePlayPanel(false);
             _collectStageUIPresenter.ActivateGameResultPanel(true);
 
-            artworkSprite = addressableHandler.ArtSpriteAsserts[saveData.SelectedArtworkKey];
+            ServiceLocater.ReturnSoundPlayer().PlayBGM(ISoundPlayable.SoundName.CollectResultBGM);
 
-            string artworkTitle = addressableHandler.ArtworkJsonDataAssets[saveData.Language].Data[saveData.SelectedArtworkKey].Title;
+            artworkSprite = _artSpriteAsserts[saveData.SelectedArtworkKey];
+
+            string artworkTitle = _artworkJsonDataAssets.Data[saveData.SelectedArtworkKey].Title;
             ApplyLocalization(artworkTitle);
 
-            Rank? getRank;
+            //Rank? getRank;
             int ownCount = artData.Item2;
             int unownedCount = artData.Item3;
 
             // 모든 스테이지를 클리어 했는지 확인 필요
-            if (clearThisStage == true)
+            if (artData.Item1.Rank != Rank.NONE)
             {
                 _collectStageUIPresenter.ChangeGameResultTitle(true);
+                _collectStageUIPresenter.ActivateOpenShareBtnInteraction(true);
                 ownCount += 1; // 하나 더 획득했으므로 +1 추가
-                artData.Item1.HasIt = true;  // HasIt 업데이트
 
-                getRank = await _artDataUpdaterService.UpdateArtData(artData.Item1);
-                if (getRank == null) return;
+                //getRank = await _artDataUpdaterService.UpdateArtData(artData.Item1);
+                //if (getRank == null) return;
             }
             else
             {
                 _collectStageUIPresenter.ChangeGameResultTitle(false);
-                getRank = Rank.NONE;
+                _collectStageUIPresenter.ActivateOpenShareBtnInteraction(false);
+                //getRank = Rank.NONE;
             }
 
-            rankFrameSprite = addressableHandler.ArtworkFrameAssets[getRank.Value];
-            rankDecorationIconSprite = addressableHandler.RankDecorationIconAssets[getRank.Value];
-            rankBadgeIconSprite = addressableHandler.RankBadgeIconAssets[getRank.Value];
+            rankFrameSprite = _artworkFrameAssets[artData.Item1.Rank];
+            rankDecorationIconSprite = _rankDecorationIconAssets[artData.Item1.Rank];
+            rankBadgeIconSprite = _rankBadgeIconAssets[artData.Item1.Rank];
 
-            _collectStageUIPresenter.ChangeRank(rankBadgeIconSprite, _rankInfo[getRank.Value].Item1, _rankInfo[getRank.Value].Item2, _rankColor[getRank.Value]);
-            _collectStageUIPresenter.ChangeArtwork(artworkSprite, rankFrameSprite, rankDecorationIconSprite, clearThisStage);
+            _collectStageUIPresenter.ChangeRank(rankBadgeIconSprite, _rankInfo[artData.Item1.Rank].Item1, _rankInfo[artData.Item1.Rank].Item2, _rankColor[artData.Item1.Rank]);
+            _collectStageUIPresenter.ChangeArtwork(artworkSprite, rankFrameSprite, rankDecorationIconSprite, artData.Item1.Rank != Rank.NONE);
             _collectStageUIPresenter.ChangeGetRank(totalGoBackCount, totalWrongCount);
 
             float currentRatio = (float)clearStageCount / totalStageCount;
@@ -144,10 +157,5 @@ namespace Collect
             { Rank.GOLD, new Color(255f/255f, 245f/255f, 173f/255f) },
             { Rank.NONE, new Color(236f/255f, 232f/255f, 232f/255f) },
         };
-
-        public override void OnStateExit()
-        {
-            _collectStageUIPresenter.ActivateGameResultPanel(false);
-        }
     }
 }

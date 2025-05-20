@@ -70,7 +70,10 @@ public interface ILocalization
         ShopBundle3Title,
         ShopBundle3Content,
         Rank,
-        Progress
+        Progress,
+
+        LanguageTitle,
+        ShareArtwork
     }
 
     string GetWord(Key key);

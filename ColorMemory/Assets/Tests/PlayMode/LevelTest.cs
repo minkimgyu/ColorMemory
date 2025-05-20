@@ -39,7 +39,7 @@ public class LevelTest
 
         _mockLevelGenerator = new MockLevelGenerator(
            new RandomLevelGenerator(_addressableLoader.ChallengeStageJsonDataAsset.StageDatas),
-           new CustomLevelGenerator(_addressableLoader.CollectiveArtJsonAsserts[0].Sections[0][0])
+           new CustomLevelGenerator(_addressableLoader.CollectiveArtJsonAssets[0].Sections[0][0])
        );
 
         bool canGenerate = _mockLevelGenerator.CanGenerateLevelData();

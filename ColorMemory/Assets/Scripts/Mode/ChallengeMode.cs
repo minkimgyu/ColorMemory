@@ -61,7 +61,7 @@ namespace Challenge
 
         [Header("ModeData")]
         [SerializeField] Color[] _pickColors;
-        [SerializeField] Vector2 _spacing;
+        //[SerializeField] Vector2 _spacing;
         //[SerializeField] int _pickCount;
         //[SerializeField] Vector2Int _levelSize = new Vector2Int(5, 5); // row, col
 
@@ -86,6 +86,7 @@ namespace Challenge
         [SerializeField] TMP_Text _resultScore;
 
         [SerializeField] Transform _clearStageContent;
+        [SerializeField] Button _gameOverExitBtn;
         [SerializeField] Button _nextBtn;
 
         [Header("GameResult")]
@@ -96,7 +97,7 @@ namespace Challenge
         [SerializeField] Transform _rankingContent;
         [SerializeField] ScrollRect _rankingScrollRect;
         [SerializeField] Button _tryAgainBtn;
-        [SerializeField] Button _exitBtn;
+        [SerializeField] Button _gameResultExitBtn;
 
         IAssetService _challengeModeDataService;
 
@@ -257,6 +258,10 @@ namespace Challenge
             AddressableLoader addressableHandler = FindObjectOfType<AddressableLoader>();
             if (addressableHandler == null) return;
 
+            ServiceLocater.ReturnSoundPlayer().PlayBGM(ISoundPlayable.SoundName.ChallengeBGM);
+
+            _pickColors = addressableHandler.ColorPaletteDataWrapper.RandomColorPaletteData.Colors;
+
             RandomLevelGenerator randomLevelGenerator = new RandomLevelGenerator(addressableHandler.ChallengeStageJsonDataAsset.StageDatas);
 
             ClearPatternUIFactory clearPatternUIFactory = new ClearPatternUIFactory(
@@ -267,7 +272,7 @@ namespace Challenge
                 addressableHandler.RectProfileIconAssets);
 
             ChallengeStageUIModel model = new ChallengeStageUIModel();
-            ChallengeStageUIPresenter presenter = new ChallengeStageUIPresenter(model, () => { _fsm.SetState(ChallengeMode.State.GameOver); });
+            ChallengeStageUIPresenter presenter = new ChallengeStageUIPresenter(model);
 
             ChallengeStageUIViewer viewer = new ChallengeStageUIViewer(
                 _playPanel,
@@ -287,6 +292,7 @@ namespace Challenge
                 _bottomContent,
                 _skipBtn,
 
+
                 _hintPanel,
                 _rememberPanel,
                 _rememberTxt,
@@ -299,17 +305,23 @@ namespace Challenge
                 _clearStageCount,
 
                 _clearStageContent,
+                _gameOverExitBtn,
+                _nextBtn,
+
                 _gameResultPanel,
                 _goldCount,
                 _rankingContent,
                 _rankingScrollRect,
-                
+                _tryAgainBtn,
+                _gameResultExitBtn,
+
                 _stageOverPreviewPanel,
                 _lastStagePattern,
                 _stageOverTitleText,
                 _stageOverInfoText1,
                 _stageOverInfoText2,
-                
+                _goToGameOverBtn,
+
                 _pausePanel,
                 _pauseTitleText,
                 _pauseBtn,
@@ -327,23 +339,28 @@ namespace Challenge
 
             presenter.InjectViewer(viewer);
 
-            _goToGameOverBtn.onClick.AddListener(() =>
-            {
-                _fsm.OnClickGoToGameOver();
-            });
+            //_goToGameOverBtn.onClick.AddListener(() =>
+            //{
+            //    _fsm.OnClickGoToGameOver();
+            //});
 
-            _nextBtn.onClick.AddListener(() => 
-            { 
-                _fsm.OnClickNextBtn(); 
-            });
+            //_nextBtn.onClick.AddListener(() => 
+            //{ 
+            //    _fsm.OnClickNextBtn(); 
+            //});
 
-            _skipBtn.onClick.AddListener(() => { _fsm.OnClickSkipBtn(); });
+            //_gameOverExitBtn.onClick.AddListener(() =>
+            //{
+            //    _fsm.OnClickExitBtn();
+            //});
 
-            _tryAgainBtn.onClick.AddListener(() => { _fsm.OnClickRetryBtn(); });
-            _exitBtn.onClick.AddListener(() => { _fsm.OnClickExitBtn(); });
+            //_skipBtn.onClick.AddListener(() => { _fsm.OnClickSkipBtn(); });
 
-            _oneZoneHintBtn.onClick.AddListener(() => { _fsm.OnClickOneZoneHint(); });
-            _oneColorHintBtn.onClick.AddListener(() => { _fsm.OnClickOneColorHint(); });
+            //_tryAgainBtn.onClick.AddListener(() => { _fsm.OnClickRetryBtn(); });
+            //_gameResultExitBtn.onClick.AddListener(() => { _fsm.OnClickExitBtn(); });
+
+            //_oneZoneHintBtn.onClick.AddListener(() => { _fsm.OnClickOneZoneHint(); });
+            //_oneColorHintBtn.onClick.AddListener(() => { _fsm.OnClickOneColorHint(); });
 
             presenter.ActivatePlayPanel(true);
             presenter.ChangeHintCost(_modeData.OneColorHintCost, _modeData.OneZoneHintCost);

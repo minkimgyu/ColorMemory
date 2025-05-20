@@ -1,6 +1,8 @@
+using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -85,8 +87,9 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
             artworkFactory,
             stageUIFactory,
             filteredArtworkFactory,
-            filterItemFactory,
-            GoToCollectMode);
+            filterItemFactory);
+
+        _collectPagePresenter.OnClickPlayBtn += GoToCollectMode;
 
         CollectPageViewer collectPageViewer = new CollectPageViewer(
             collectionContent,
@@ -147,38 +150,28 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
         ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.CollectScene);
     }
 
-    public override void OnClickShopBtn()
+    public override void ChangeLanguage()
     {
-        _fsm.SetState(HomePage.InnerPageState.Shop);
-    }
-
-    public override void OnClickRankingBtn()
-    {
-        _fsm.SetState(HomePage.InnerPageState.Ranking);
-    }
-
-    public override void OnClickHomeBtn()
-    {
-        _fsm.SetState(HomePage.InnerPageState.Main);
+        OnStateExit();
+        DOVirtual.DelayedCall(0.5f, () =>
+        {
+            OnStateEnter();
+        });
     }
 
     public override void OnStateEnter()
     {
+        // content 열어주기
+        _collectPagePresenter.ActiveContent(true);
+
         _collectPagePresenter.ChangeCollectionRatioInfo();
         _collectPagePresenter.ChangeCollectionCheerInfo();
         _collectPagePresenter.ChangeFilterTitle();
 
         _collectPagePresenter.ActivateFilterScrollUI(true);
 
-        // 아트워크 채우기
-        _collectPagePresenter.FillArtwork();
-
-        // content 열어주기
-        _collectPagePresenter.ActiveContent(true);
-
-        // 저장된 값 불러와서 적용하기
-        SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
-        _collectPagePresenter.ScrollArtworkToIndex(data.SelectedArtworkKey);
+        // 전체 필터 선택
+        _collectPagePresenter.OnClickOwnToggle(FilterUI.OwnFilter.All);
     }
 
     public override void OnStateExit()

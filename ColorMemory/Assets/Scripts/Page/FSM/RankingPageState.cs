@@ -33,14 +33,10 @@ public class RankingPageState : BaseState<HomePage.InnerPageState>
         _rankingPagePresenter.ActiveContent(false);
     }
 
-    public override void OnClickShopBtn()
+    public override void ChangeLanguage()
     {
-        _fsm.SetState(HomePage.InnerPageState.Shop);
-    }
-
-    public override void OnClickHomeBtn()
-    {
-        _fsm.SetState(HomePage.InnerPageState.Main);
+        OnStateExit();
+        OnStateEnter();
     }
 
     const int topRange = 10;

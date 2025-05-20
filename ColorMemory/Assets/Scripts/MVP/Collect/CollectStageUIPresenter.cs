@@ -10,25 +10,36 @@ public class CollectStageUIPresenter
     CollectStageUIModel _model;
     CollectStageUIViewer _viewer;
 
-    ShareComponent _shareComponent;
+    public Action OnClickPauseGameExitBtn { get; set; }
+    public Action GoToShareState { get; set; }
+    public Action ExitShareState { get; set; }
+    public Action OnShareButtonClick { get; set; }
 
-    public Action GoToResultState { get; private set; }
+    public Action OnClickSkipBtn { get; set; }
+    public Action OnClickNextBtn { get; set; }
 
-    public CollectStageUIPresenter(CollectStageUIModel model, ShareComponent shareComponent, Action GoToResultState)
+    public Action OnClickClearExitBtn { get; set; }
+    public Action OnClickNextStageBtn { get; set; }
+    public Action OnClickGoBackHint { get; set; }
+
+
+    public CollectStageUIPresenter(
+        CollectStageUIModel model)
     {
         _model = model;
-        _shareComponent = shareComponent;
 
-        _shareComponent.Initialize(
-            () => ActivateShareBottomItems(false),
-            () => ActivateShareBottomItems(true));
+        OnClickPauseGameExitBtn += () => { ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.BtnClick); };
+        GoToShareState += () => { ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.BtnClick); };
+        ExitShareState += () => { ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.BtnClick); };
+        OnShareButtonClick += () => { ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.BtnClick); };
+        
+        OnClickNextBtn += () => { ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.BtnClick); };
+        
+        OnClickClearExitBtn += () => { ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.BtnClick); };
+        OnClickNextStageBtn += () => { ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.BtnClick); };
 
-        this.GoToResultState = GoToResultState;
-    }
-
-    public void OnClickShare()
-    {
-        _shareComponent.OnShareButtonClick();
+        OnClickSkipBtn += () => { ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.HintClick); };
+        OnClickGoBackHint += () => { ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.HintClick); };
     }
 
     public void InjectViewer(CollectStageUIViewer viewer)
@@ -50,6 +61,19 @@ public class CollectStageUIPresenter
         _model.HintUsageTitle = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.HintUsage);
         _model.WrongCountTitle = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.WrongCount);
         _viewer.ChangeDetailTitle(_model.HintUsageTitle, _model.WrongCountTitle);
+    }
+
+    public void ChangeShareTitle(string title)
+    {
+        _model.ShareTitle = title;
+        _viewer.ChangeShareTitle(_model.ShareTitle);
+    }
+
+    public void ChangeShareArtworks(Sprite[] shareArtSprites, ArtworkData[] shareArtworkDatas)
+    {
+        _model.ShareArtSprites = shareArtSprites;
+        _model.ShareArtworkDatas = shareArtworkDatas;
+        _viewer.ChangeShareArtworks(shareArtSprites, shareArtworkDatas);
     }
 
     public void ActivateSharePanel(bool activeSharePanel)
@@ -88,7 +112,11 @@ public class CollectStageUIPresenter
         _viewer.ChangeMyCollectionTitle(_model.MyCollectionTitle, _model.CurrentCollectTitle, _model.TotalCollectTitle);
     }
 
-
+    public void ActivateOpenShareBtnInteraction(bool activeOpenShareBtn)
+    {
+        _model.ActiveOpenShareBtn = activeOpenShareBtn;
+        _viewer.ActivateOpenShareBtnInteraction(_model.ActiveOpenShareBtn);
+    }
 
     public void ChangeGameResultTitle(bool hasIt)
     {
@@ -170,7 +198,13 @@ public class CollectStageUIPresenter
     }
 
 
-
+    public void ChangeArtworkPreview(Sprite artSprite, Sprite artFrameSprite, Sprite rankDecorationIcon)
+    {
+        _model.PreviewArtSprite = artSprite;
+        _model.PreviewArtFrameSprite = artFrameSprite;
+        _model.PreviewRankDecorationIconSprite = rankDecorationIcon;
+        _viewer.ChangeArtworkPreview(_model.PreviewArtSprite, _model.PreviewArtFrameSprite, _model.PreviewRankDecorationIconSprite);
+    }
 
 
     public void ChangeArtwork(Sprite artSprite, Sprite artFrameSprite, Sprite rankDecorationIcon, bool hasIt)
@@ -205,17 +239,6 @@ public class CollectStageUIPresenter
         _model.TotalCollectRatio = totalCollectRatio;
         _viewer.ChangeCollectionRatio(_model.CurrentCollectRatio, _model.TotalCollectRatio);
     }
-
-    public void OnClickGameExitBtn()
-    {
-        // 데이터 저장
-        ServiceLocater.ReturnSaveManager().ChangeBGMVolume(_model.BgmRatio);
-        ServiceLocater.ReturnSaveManager().ChangeSFXVolume(_model.SfxRatio);
-        ActivatePausePanel(false);
-        //ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.HomeScene);
-    }
-
-    
 
     public void ActivatePausePanel(bool active)
     {

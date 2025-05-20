@@ -44,12 +44,16 @@ public class ChallengeStageUIViewer
     TMP_Text _resultScore;
 
     Transform _clearStageContent;
+    Button _gameOverExitBtn;
+    Button _nextBtn;
 
     GameObject _gameResultPanel;
     TMP_Text _goldCount;
 
     Transform _rankingContent;
     ScrollRect _rankingScrollRect;
+    Button _tryAgainBtn;
+    Button _gameResultExitBtn;
 
     GameObject _stageOverPreviewPanel;
     ClearPatternUI _lastStagePattern;
@@ -57,6 +61,7 @@ public class ChallengeStageUIViewer
     TMP_Text _stageOverTitleText;
     TMP_Text _stageOverInfoText1;
     TMP_Text _stageOverInfoText2;
+    Button _goToGameOverBtn;
 
     GameObject _pausePanel;
     TMP_Text _pauseTitleText;
@@ -108,10 +113,16 @@ public class ChallengeStageUIViewer
         TMP_Text clearStageCount,
         Transform clearStageContent,
 
+        Button gameOverExitBtn,
+        Button nextBtn,
+
         GameObject gameResultPanel,
         TMP_Text goldCount,
         Transform rankingContent,
         ScrollRect rankingScrollRect,
+
+        Button tryAgainBtn,
+        Button gameResultExitBtn,
 
         GameObject stageOverPreviewPanel,
         ClearPatternUI lastStagePattern,
@@ -119,6 +130,7 @@ public class ChallengeStageUIViewer
 
         TMP_Text stageOverInfoText1,
         TMP_Text stageOverInfoText2,
+        Button goToGameOverBtn,
 
         GameObject pausePanel,
         TMP_Text pauseTitleText,
@@ -149,13 +161,17 @@ public class ChallengeStageUIViewer
         _stageText = stageText;
 
         _oneZoneHintBtn = oneZoneHintBtn;
+        _oneZoneHintBtn.onClick.AddListener(() => { presenter.OnClickOneZoneHint(); });
+
         _oneColorHintBtn = oneColorHintBtn;
+        _oneColorHintBtn.onClick.AddListener(() => { presenter.OnClickOneColorHint(); });
 
         _oneColorHintCostText = oneColorHintCostText;
         _oneZoneHintCostText = oneZoneHintCostText;
 
         _bottomContent = bottomContent;
         _skipBtn = skipBtn;
+        _skipBtn.onClick.AddListener(() => { presenter.OnClickSkipBtn?.Invoke(); });
 
         _hintPanel = hintPanel;
         _rememberPanel = rememberPanel;
@@ -169,10 +185,23 @@ public class ChallengeStageUIViewer
         _resultScore = resultScore;
         _clearStageContent = clearStageContent;
 
+        _gameOverExitBtn = gameOverExitBtn;
+        _gameOverExitBtn.onClick.AddListener(() => { presenter.OnClickGameOverExitBtn?.Invoke(); });
+
+        _nextBtn = nextBtn;
+        _nextBtn.onClick.AddListener(() => { presenter.OnClickNextBtn?.Invoke(); });
+
+
         _gameResultPanel = gameResultPanel;
         _goldCount = goldCount;
         _rankingContent = rankingContent;
         _rankingScrollRect = rankingScrollRect;
+
+        _tryAgainBtn = tryAgainBtn;
+        _tryAgainBtn.onClick.AddListener(() => { presenter.OnClickRetryBtn?.Invoke(); });
+
+        _gameResultExitBtn = gameResultExitBtn;
+        _gameResultExitBtn.onClick.AddListener(() => { presenter.OnClickExitBtn?.Invoke(); });
 
         _stageOverPreviewPanel = stageOverPreviewPanel;
 
@@ -181,6 +210,8 @@ public class ChallengeStageUIViewer
         _stageOverTitleText = stageOverTitleText;
         _stageOverInfoText1 = stageOverInfoText1;
         _stageOverInfoText2 = stageOverInfoText2;
+        _goToGameOverBtn = goToGameOverBtn;
+        _goToGameOverBtn.onClick.AddListener(() => { presenter.OnClickGoToGameOverBtn?.Invoke(); });
 
         _pausePanel = pausePanel;
         _pauseTitleText = pauseTitleText;
@@ -206,9 +237,20 @@ public class ChallengeStageUIViewer
         _bgmSlider.onHandlePointerUp += ((ratio) => { presenter.SaveBGMValue(); });
         _sfxSlider.onHandlePointerUp += ((ratio) => { presenter.SaveSFXValue(); });
 
-        _gameExitBtn.onClick.AddListener(() => { presenter.OnClickGameExitBtn(); presenter.GoToEndState?.Invoke(); });
-        _pauseBtn.onClick.AddListener(() => { presenter.ActivatePausePanel(true); });
-        _pauseExitBtn.onClick.AddListener(() => { presenter.ActivatePausePanel(false); });
+        _gameExitBtn.onClick.AddListener(() => { presenter.ActivatePausePanel(false); presenter.OnClickPauseGameExitBtn?.Invoke(); });
+
+        _pauseBtn.onClick.AddListener(() =>
+        {
+            ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.BtnClick);
+            presenter.ActivatePausePanel(true);
+        });
+
+        _pauseExitBtn.onClick.AddListener(() =>
+        {
+            presenter.ActivatePausePanel(false);
+            ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.BtnClick);
+        });
+
         _bgmSlider.onValueChanged.AddListener((ratio) => { presenter.OnBGMSliderValeChanged(ratio); });
         _sfxSlider.onValueChanged.AddListener((ratio) => { presenter.OnSFXSliderValeChanged(ratio); });
     }

@@ -13,7 +13,9 @@ public class ShopPageState : BaseState<HomePage.InnerPageState>
     ShopBundleUIFactory _shopBundleUIFactory;
 
     TopElementPresenter _topElementPresenter;
-    MoneyManager _moneyManager;
+    //MoneyManager _moneyManager;
+
+    IAssetService _currencyService;
 
     public ShopPageState(
         GameObject shopContent,
@@ -21,12 +23,13 @@ public class ShopPageState : BaseState<HomePage.InnerPageState>
         Transform scrollContent,
         ShopBundleUIFactory shopBundleUIFactory,
         TopElementPresenter topElementPresenter,
+        IAssetService currencyService,
         FSM<HomePage.InnerPageState> fsm) : base(fsm)
     {
         _shopBundleUIFactory = shopBundleUIFactory;
         _topElementPresenter = topElementPresenter;
 
-        _moneyManager = new MoneyManager();
+        _currencyService = currencyService;
 
         ShopPageModel shopPageModel = new ShopPageModel();
         ShopPageViewer shopPageViewer = new ShopPageViewer(shopContent, shopAdBtn, scrollContent);
@@ -34,48 +37,21 @@ public class ShopPageState : BaseState<HomePage.InnerPageState>
         _shopPagePresenter.ActiveContent(false);
     }
 
-    public override void OnClickHomeBtn()
-    {
-        _fsm.SetState(HomePage.InnerPageState.Main);
-    }
-
-    public override void OnClickRankingBtn()
-    {
-        _fsm.SetState(HomePage.InnerPageState.Ranking);
-    }
-
     async void BuyItemFromServer(int earnMoney)
     {
-        bool canEarn = false;
-
         string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
 
-        try
-        {
-            canEarn = await _moneyManager.EarnPlayerMoneyAsync(userId, earnMoney);
-        }
-        catch (System.Exception e)
-        {
-            Debug.Log(e);
-            Debug.Log("서버로부터 데이터를 받아오지 못함");
-            return;
-        }
-
+        bool canEarn = await _currencyService.EarnPlayerMoneyAsync(userId, earnMoney);
         if (canEarn == false) return;
-        int money;
 
-        try
-        {
-            money = await _moneyManager.GetMoneyAsync(userId);
-        }
-        catch (System.Exception e)
-        {
-            Debug.Log(e);
-            Debug.Log("서버로부터 데이터를 받아오지 못함");
-            return;
-        }
-
+        int money = await _currencyService.GetCurrency(userId);
         _topElementPresenter.ChangeGoldCount(money);
+    }
+
+    public override void ChangeLanguage()
+    {
+        OnStateExit();
+        OnStateEnter();
     }
 
     public override void OnStateEnter()

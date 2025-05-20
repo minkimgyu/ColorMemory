@@ -30,6 +30,13 @@ public class SettingPageViewer
     TMP_Text _sfxLeftText;
     TMP_Text _sfxRightText;
 
+    TMP_Text _languageTitle;
+
+    Button _homeBtn;
+    TMP_Dropdown _languageDropdown;
+
+    SettingPagePresenter _presenter;
+
     public SettingPageViewer(
         SideSheetUI sideSheetUI,
         Toggle[] toggles,
@@ -52,8 +59,15 @@ public class SettingPageViewer
         TMP_Text sfxLeftText,
         TMP_Text sfxRightText,
 
+        TMP_Text languageTitle,
+
+        Button homeBtn,
+        TMP_Dropdown languageDropdown,
+
         SettingPagePresenter presenter)
     {
+        _presenter = presenter;
+
         _sideSheetUI = sideSheetUI;
         _toggles = toggles;
         _panels = panels;
@@ -78,6 +92,13 @@ public class SettingPageViewer
         _sfxLeftText = sfxLeftText;
         _sfxRightText = sfxRightText;
 
+        _homeBtn = homeBtn;
+        _homeBtn.onClick.AddListener(() => { presenter.OnHomeBtnClicked?.Invoke(); });
+
+        _languageDropdown = languageDropdown;
+        _languageDropdown.onValueChanged.AddListener((index) => { presenter.OnChangeLanguage?.Invoke(index); });
+
+        _languageTitle = languageTitle;
         _doneBtn.onClick.AddListener(() => { presenter.OnProfileDone(); });
 
         for (int i = 0; i < _profileSelectBtns.Length; i++)
@@ -99,6 +120,16 @@ public class SettingPageViewer
 
         _bgmSlider.onValueChanged.AddListener((ratio) => { presenter.OnBGMSliderValeChanged(ratio); });
         _sfxSlider.onValueChanged.AddListener((ratio) => { presenter.OnSFXSliderValeChanged(ratio); });
+    }
+
+    public void ChangeLanguageDropdown(int index)
+    {
+        _languageDropdown.value = index;
+    }
+
+    public void ChangeLanguageTitle(string title)
+    {
+        _languageTitle.text = title;
     }
 
     public void ChangeSoundText(string bgmTitle, string sfxTitle, string leftText, string rightText)
@@ -136,7 +167,6 @@ public class SettingPageViewer
         _sfxSliderHandle.color = handleColor;
         _sfxLeftText.text = leftSmallTxt;
     }
-
 
     public void ChangeProfileToggle(int index)
     {

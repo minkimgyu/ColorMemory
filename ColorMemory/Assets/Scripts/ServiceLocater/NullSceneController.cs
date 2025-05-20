@@ -1,10 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static ISceneControllable;
 
 public class NullSceneController : ISceneControllable
 {
-    public void ChangeScene(SceneName sceneName) { }
-    public SceneName GetCurrentSceneName() { return default; }
+    public void ChangeScene(ISceneControllable.SceneName sceneName) { }
+    public ISceneControllable.SceneName GetCurrentSceneName() { return default; }
 }

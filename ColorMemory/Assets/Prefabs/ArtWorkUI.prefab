@@ -165,6 +165,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fixedHeight: 700
+  fixedWidth: 600
+  image: {fileID: 5695117741680804872}
 --- !u!1 &5111830855322722082
 GameObject:
   m_ObjectHideFlags: 0

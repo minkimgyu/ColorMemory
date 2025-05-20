@@ -1164,7 +1164,6 @@ RectTransform:
   m_Children:
   - {fileID: 73849168}
   - {fileID: 463184588}
-  - {fileID: 1093304738}
   - {fileID: 1125102626}
   m_Father: {fileID: 785097915}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2613,7 +2612,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 861263920}
   m_OnClick:
     m_PersistentCalls:
@@ -3120,7 +3119,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 455951139}
+    m_TransformParent: {fileID: 1125102626}
     m_Modifications:
     - target: {fileID: 997894673141484605, guid: 234daba04b2344b44afade2728c7be68, type: 3}
       propertyPath: m_Pivot.x
@@ -3128,7 +3127,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 997894673141484605, guid: 234daba04b2344b44afade2728c7be68, type: 3}
       propertyPath: m_Pivot.y
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 997894673141484605, guid: 234daba04b2344b44afade2728c7be68, type: 3}
       propertyPath: m_AnchorMax.x
@@ -3136,7 +3135,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 997894673141484605, guid: 234daba04b2344b44afade2728c7be68, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 997894673141484605, guid: 234daba04b2344b44afade2728c7be68, type: 3}
       propertyPath: m_AnchorMin.x
@@ -3144,7 +3143,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 997894673141484605, guid: 234daba04b2344b44afade2728c7be68, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 997894673141484605, guid: 234daba04b2344b44afade2728c7be68, type: 3}
       propertyPath: m_SizeDelta.x
@@ -3188,7 +3187,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 997894673141484605, guid: 234daba04b2344b44afade2728c7be68, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -500
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 997894673141484605, guid: 234daba04b2344b44afade2728c7be68, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -3298,6 +3297,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1596267280}
+  - {fileID: 1093304738}
   m_Father: {fileID: 455951139}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}

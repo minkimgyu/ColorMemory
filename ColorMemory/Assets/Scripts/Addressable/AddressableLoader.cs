@@ -33,6 +33,9 @@ public class AddressableLoader : MonoBehaviour
         ArtworkData,
         LocalizationData,
         ChallengeModeStageData,
+        ColorPaletteData,
+
+        Sound,
     }
 
     HashSet<BaseLoader> _assetLoaders;
@@ -56,8 +59,8 @@ public class AddressableLoader : MonoBehaviour
         this.OnProgress = OnProgress;
     }
 
-    public Dictionary<int, CollectArtData> CollectiveArtJsonAsserts { get; private set; }
-    public Dictionary<int, Sprite> ArtSpriteAsserts { get; private set; }
+    public Dictionary<int, CollectArtData> CollectiveArtJsonAssets { get; private set; }
+    public Dictionary<int, Sprite> ArtSpriteAssets { get; private set; }
 
     public Dictionary<NetworkService.DTO.Rank, Sprite> ArtworkFrameAssets { get; private set; }
     public Dictionary<NetworkService.DTO.Rank, Sprite> RankDecorationIconAssets { get; private set; }
@@ -77,6 +80,9 @@ public class AddressableLoader : MonoBehaviour
     public LevelDataWrapper ChallengeStageJsonDataAsset { get; private set; }
     public Dictionary<ILocalization.Language, ArtworkDateWrapper> ArtworkJsonDataAssets { get; private set; }
     public Localization LocalizationJsonDataAsset { get; private set; }
+    public ColorPaletteDataWrapper ColorPaletteDataWrapper { get; private set; }
+
+    public Dictionary<ISoundPlayable.SoundName, AudioClip> SoundAssets { get; private set; }
 
 
     public void Load(Action OnCompleted)
@@ -85,10 +91,11 @@ public class AddressableLoader : MonoBehaviour
         _assetLoaders.Add(new EffectAssetLoader(Label.Effect, (value, label) => { EffectAssets = value; OnSuccess(label); }));
         _assetLoaders.Add(new ModeTitleIconAssetLoader(Label.ModeTitle, (value, label) => { ModeTitleIconAssets = value; OnSuccess(label); }));
         
-        _assetLoaders.Add(new CollectiveArtJsonAssetLoader(Label.ArtData, (value, label) => { CollectiveArtJsonAsserts = value; OnSuccess(label); }));
-        _assetLoaders.Add(new ArtSpriteAssetLoader(Label.ArtSprite, (value, label) => { ArtSpriteAsserts = value; OnSuccess(label); }));
+        _assetLoaders.Add(new CollectiveArtJsonAssetLoader(Label.ArtData, (value, label) => { CollectiveArtJsonAssets = value; OnSuccess(label); }));
+        _assetLoaders.Add(new ArtSpriteAssetLoader(Label.ArtSprite, (value, label) => { ArtSpriteAssets = value; OnSuccess(label); }));
 
         _assetLoaders.Add(new ArtworkFrameAssetLoader(Label.ArtworkFrame, (value, label) => { ArtworkFrameAssets = value; OnSuccess(label); }));
+        _assetLoaders.Add(new SoundAssetLoader(Label.Sound, (value, label) => { SoundAssets = value; OnSuccess(label); }));
 
         _assetLoaders.Add(new ProfileIconAssetLoader(Label.CircleProfileIcon, (value, label) => { CircleProfileIconAssets = value; OnSuccess(label); }));
         _assetLoaders.Add(new ProfileIconAssetLoader(Label.RectProfileIcon, (value, label) => { RectProfileIconAssets = value; OnSuccess(label); }));
@@ -102,6 +109,7 @@ public class AddressableLoader : MonoBehaviour
         _assetLoaders.Add(new ArtworkDataJsonAssetLoader(Label.ArtworkData, (value, label) => { ArtworkJsonDataAssets = value; OnSuccess(label); }));
         _assetLoaders.Add(new ChallengeModeStageDataJsonAssetLoader(Label.ChallengeModeStageData, (value, label) => { ChallengeStageJsonDataAsset = value; OnSuccess(label); }));
         _assetLoaders.Add(new LocalizationDataJsonAssetLoader(Label.LocalizationData, (value, label) => { LocalizationJsonDataAsset = value; OnSuccess(label); }));
+        _assetLoaders.Add(new ColorPaletteDataJsonAssetLoader(Label.ColorPaletteData, (value, label) => { ColorPaletteDataWrapper = value; OnSuccess(label); }));
 
         this.OnCompleted = OnCompleted;
         _totalCount = _assetLoaders.Count;

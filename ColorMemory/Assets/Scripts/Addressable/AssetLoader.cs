@@ -41,6 +41,13 @@ public class RankIconAssetLoader : AssetLoader<NetworkService.DTO.Rank, Sprite, 
     }
 }
 
+public class SoundAssetLoader : AssetLoader<ISoundPlayable.SoundName, AudioClip, AudioClip>
+{
+    public SoundAssetLoader(AddressableLoader.Label label, Action<Dictionary<ISoundPlayable.SoundName, AudioClip>, AddressableLoader.Label> OnComplete) : base(label, OnComplete)
+    {
+    }
+}
+
 //public class GoldIconAssetLoader : SingleAssetLoader<Sprite, Sprite>
 //{
 //    public GoldIconAssetLoader(AddressableHandler.Label label, Action<Sprite, AddressableHandler.Label> OnComplete) : base(label, OnComplete)

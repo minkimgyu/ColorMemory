@@ -116,9 +116,10 @@ public class HomePage : MonoBehaviour
     IAssetService _currencyService;
     IArtDataService _artDataLoaderService;
   
-
     private async void Start()
     {
+        ServiceLocater.ReturnSoundPlayer().PlayBGM(ISoundPlayable.SoundName.LobbyBGM);
+
         string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
         _currencyService = new CurrencyService();
         _artDataLoaderService = new ArtDataLoaderService();
@@ -142,7 +143,7 @@ public class HomePage : MonoBehaviour
 
         ArtworkUIFactory artWorkUIFactory = new ArtworkUIFactory(
             addressableHandler.SpawnableUIAssets[SpawnableUI.Name.ArtworkUI],
-            addressableHandler.ArtSpriteAsserts,
+            addressableHandler.ArtSpriteAssets,
             addressableHandler.ArtworkFrameAssets,
             addressableHandler.RankDecorationIconAssets
         );
@@ -158,7 +159,7 @@ public class HomePage : MonoBehaviour
 
         FilteredArtworkFactory filteredArtworkFactory = new FilteredArtworkFactory(
             addressableHandler.SpawnableUIAssets[SpawnableUI.Name.FilteredArtworkUI],
-            addressableHandler.ArtSpriteAsserts
+            addressableHandler.ArtSpriteAssets
         );
 
         FilterItemFactory filterItemFactory = new FilterItemFactory(
@@ -166,20 +167,51 @@ public class HomePage : MonoBehaviour
             addressableHandler.RankBadgeIconAssets
         );
 
-        _shopBtn.onClick.AddListener(() => { _pageFsm.OnClickShopBtn(); });
-        _homeBtn.onClick.AddListener(() => { _pageFsm.OnClickHomeBtn(); });
-        _rankingBtn.onClick.AddListener(() => { _pageFsm.OnClickRankingBtn(); });
-        _settingBtn.onClick.AddListener(() => { _settingPage.TogglePanel(); });
-
-
         TopElementModel topElementModel = new TopElementModel();
-        TopElementViewer topElementViewer = new TopElementViewer(_goldTxt);
-        _topElementPresenter = new TopElementPresenter(topElementViewer, topElementModel);
-
+        _topElementPresenter = new TopElementPresenter(topElementModel);
+        TopElementViewer topElementViewer = new TopElementViewer(
+            _goldTxt,
+            _homeBtn,
+            _shopBtn,
+            _rankingBtn,
+            _settingBtn,
+            _topElementPresenter);
+        
+        _topElementPresenter.InjectViewer(topElementViewer);
         _topElementPresenter.ChangeGoldCount(money);
 
+        _topElementPresenter.OnClickShopBtn += () => 
+        {
+            ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.BtnClick);
+            _pageFsm.SetState(InnerPageState.Shop); 
+        };
+
+        _topElementPresenter.OnClickHomeBtn += () => 
+        {
+            ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.BtnClick);
+            _pageFsm.SetState(InnerPageState.Main); 
+        };
+
+        _topElementPresenter.OnClickRankingBtn += () => 
+        {
+            ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.BtnClick);
+            _pageFsm.SetState(InnerPageState.Ranking); 
+        };
+
+        _topElementPresenter.OnClickSettingBtn += () =>
+        {
+            ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.BtnClick);
+            _settingPage.TogglePanel();
+        };
+
         SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
-        _settingPage.Initialize(data.UserName, addressableHandler.CircleProfileIconAssets, () => { _pageFsm.SetState(InnerPageState.Main); });
+        _settingPage.Initialize(
+            data.UserName, 
+            addressableHandler.CircleProfileIconAssets, 
+            () => { _pageFsm.SetState(InnerPageState.Main); },
+            () => { _pageFsm.ChangeLanguage(); }
+        );
+
         _filterScrollUI.Initialize();
         _filterScrollUI.Activate(false);
 
@@ -268,7 +300,7 @@ public class HomePage : MonoBehaviour
 
                 artDatas,
                 addressableHandler.ArtworkJsonDataAssets, // 이거 매번 불러오기
-                addressableHandler.CollectiveArtJsonAsserts,
+                addressableHandler.CollectiveArtJsonAssets,
                 _pageFsm)
             },
             { 
@@ -288,6 +320,7 @@ public class HomePage : MonoBehaviour
                 _shopScrollContent,
                 shopBundleUIFactory,
                 _topElementPresenter,
+                _currencyService,
                 _pageFsm)
             },
         }, startState);

@@ -1,0 +1,91 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Sound
+  m_EditorClassIdentifier: 
+  m_GroupName: Sound
+  m_Data:
+    m_SerializedData: []
+  m_GUID: af3ca6711f54c2d4d9137d8914fe3821
+  m_SerializeEntries:
+  - m_GUID: 3005709134b2f4647b8a7ffb5120ac95
+    m_Address: GameClear
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Sound
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4257dad02b8aeae4aaa3ef40f663f667
+    m_Address: StageClear
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Sound
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4b356cf12b2cf0f4580d1a8816593d23
+    m_Address: CollectBGM
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Sound
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6956af7c6c674014bafb97039840e5a2
+    m_Address: ChallengeResultBGM
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Sound
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6f7d6589103d0c4429660bd018143116
+    m_Address: BtnClick
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Sound
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9bc527529f954d9409d76977f6228841
+    m_Address: GameOver
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Sound
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c2688721c0d289647a669175ce87fa92
+    m_Address: HintClick
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Sound
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c64a07d2023802e448784bf66cbe146f
+    m_Address: LobbyBGM
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Sound
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e78ae2d2a186eb145a403df7febaec7a
+    m_Address: ChallengeBGM
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Sound
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ed12618c684a6dc4d8a9d9ba83c465a5
+    m_Address: CollectResultBGM
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Sound
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fde4b313e1a6b2844a3c7294f0394445
+    m_Address: DotClick
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Sound
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 5736eef86fbab2943992749ebee4f1e0, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: fa4da75533a835f42894931d568b38fe, type: 2}
+    - {fileID: 11400000, guid: 7b43faf8da1930a449bb5f474c2bc97a, type: 2}

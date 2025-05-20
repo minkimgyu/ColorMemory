@@ -45,6 +45,9 @@ namespace Collect
             //_timer = new Timer();
 
             _collectStageUIPresenter = collectStageUIPresenter;
+
+            _collectStageUIPresenter.OnClickGoBackHint += OnClickGoBackHint;
+
             this.GetLevelData = GetLevelData;
         }
 
@@ -104,9 +107,7 @@ namespace Collect
             }
         }
 
-
-
-        public override void OnClickGoBackHint()
+        void OnClickGoBackHint()
         {
             _goBackActivated = true;
             _goBackCount++;

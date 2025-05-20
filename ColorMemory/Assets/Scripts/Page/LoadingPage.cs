@@ -189,16 +189,32 @@ public class LoadingPage : MonoBehaviour
     void Initialize(AddressableLoader addressableLoader)
     {
         TimeController timeController = new TimeController();
-        SceneController sceneController = new SceneController();
-        SaveManager saveManager = new SaveManager(new SaveData(_userId, _userName));
-        LocalizationManager localizationManager = new LocalizationManager(addressableLoader.LocalizationJsonDataAsset);
-
         ServiceLocater.Provide(timeController);
+
+        SceneController sceneController = new SceneController();
         ServiceLocater.Provide(sceneController);
+
+        SaveManager saveManager = new SaveManager(new SaveData(_userId, _userName));
         ServiceLocater.Provide(saveManager);
+
+        LocalizationManager localizationManager = new LocalizationManager(addressableLoader.LocalizationJsonDataAsset);
         ServiceLocater.Provide(localizationManager);
 
+        SaveData saveData = ServiceLocater.ReturnSaveManager().GetSaveData();
+
+        SoundPlayer soundPlayer = CreateSoundPlayer(addressableLoader.SoundAssets, saveData);
+        ServiceLocater.Provide(soundPlayer);
+
         ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.HomeScene);
+    }
+
+    SoundPlayer CreateSoundPlayer(Dictionary<ISoundPlayable.SoundName, AudioClip> soundAssets, SaveData saveData)
+    {
+        GameObject soundPlayerObject = new GameObject("SoundPlayer");
+        SoundPlayer soundPlayer = soundPlayerObject.AddComponent<SoundPlayer>();
+        soundPlayer.Initialize(soundAssets, saveData.BgmVolume, saveData.SfxVolume);
+
+        return soundPlayer;
     }
 
     AddressableLoader CreateAddressableLoader()

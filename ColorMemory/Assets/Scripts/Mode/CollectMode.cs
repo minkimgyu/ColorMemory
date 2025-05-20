@@ -44,7 +44,7 @@ namespace Collect
         [SerializeField] TMP_Text _pauseTitleText;
 
         [SerializeField] Button _pauseExitBtn;
-        [SerializeField] Button _gameExitBtn;
+        [SerializeField] Button _pauseGameExitBtn;
 
         [SerializeField] CustomSlider _bgmSlider;
         [SerializeField] TMP_Text _bgmTitleText;
@@ -75,6 +75,8 @@ namespace Collect
         [SerializeField] TMP_Text _clearContentText;
         [SerializeField] Button _nextStageBtn;
         [SerializeField] Button _clearExitBtn;
+        [SerializeField] Animator _completeAnimator;
+        [SerializeField] ArtworkPreviewUI _artworkPreviewUI;
 
         [Header("Result")]
         [SerializeField] GameObject _gameResultPanel;
@@ -113,9 +115,13 @@ namespace Collect
 
         [Header("Share")]
         [SerializeField] ShareComponent _shareComponent;
+        [SerializeField] TMP_Text _shareTitle;
         [SerializeField] GameObject _sharePanel;
         [SerializeField] Button _shareBtn;
         [SerializeField] Button _shareExitBtn;
+        [SerializeField] Animator _shareAnimator;
+
+        [SerializeField] ShareArtworkUI[] _shareArtworks;
 
         CollectArtData.Section _section;
         MapData _mapData;
@@ -162,6 +168,7 @@ namespace Collect
             Paint,
             Clear,
             Result,
+            Share,
         }
 
         FSM<State> _fsm;
@@ -215,13 +222,15 @@ namespace Collect
             AddressableLoader addressableHandler = FindObjectOfType<AddressableLoader>();
             if (addressableHandler == null) return;
 
+            ServiceLocater.ReturnSoundPlayer().PlayBGM(ISoundPlayable.SoundName.CollectBGM);
+
             //Vector2 size = _canvas.gameObject.GetComponent<RectTransform>().sizeDelta;
             //_nextPanel.sizeDelta = new Vector2(size.x, _nextPanel.sizeDelta.y); // 사이즈 맞춰주기
 
             SaveData saveData = ServiceLocater.ReturnSaveManager().GetSaveData();
 
             int artworkIndex = saveData.SelectedArtworkKey;
-            CollectArtData artData = addressableHandler.CollectiveArtJsonAsserts[artworkIndex];
+            CollectArtData artData = addressableHandler.CollectiveArtJsonAssets[artworkIndex];
 
             _section = artData.Sections[saveData.SelectedArtworkSectionIndex.x][saveData.SelectedArtworkSectionIndex.y];
 
@@ -230,9 +239,7 @@ namespace Collect
 
             CollectStageUIModel model = new CollectStageUIModel();
             CollectStageUIPresenter presenter = new CollectStageUIPresenter(
-                model,
-                _shareComponent,
-                () => { _fsm.SetState(State.Result); }
+                model
             );
             CollectStageUIViewer viewer = new CollectStageUIViewer(
                 _playPanel,
@@ -253,6 +260,7 @@ namespace Collect
                 _bottomContent,
                 _skipBtn,
 
+                _goBackBtn,
                 _rememberPanel,
                 _rememberTxt,
                 _hintInfoText,
@@ -267,7 +275,8 @@ namespace Collect
                 _pauseTitleText,
                 _pauseBtn,
                 _pauseExitBtn,
-                _gameExitBtn,
+                _pauseGameExitBtn,
+
                 _bgmSlider,
                 _bgmTitleText,
                 _bgmLeftText,
@@ -280,6 +289,7 @@ namespace Collect
                 _gameResultPanel,
                 _gameResultTitle,
 
+                _artworkPreviewUI,
                 _artworkUI,
                 _artworkTitle,
 
@@ -304,23 +314,29 @@ namespace Collect
                 _totalCollectTitle,
                 _totalCollectRatio,
                 _totalCollectText,
+                _nextBtn,
+
                 _openShareBtn,
 
                 _sharePanel,
+                _shareTitle,
                 _shareBtn,
                 _shareExitBtn,
+
+                _shareArtworks,
                 presenter);
+
 
             presenter.InjectViewer(viewer);
 
-            _skipBtn.onClick.AddListener(() => { _fsm.OnClickSkipBtn(); });
+            //_skipBtn.onClick.AddListener(() => { _fsm.OnClickSkipBtn(); });
 
-            _nextBtn.onClick.AddListener(() => { _fsm.OnClickNextBtn(); });
+            //_nextBtn.onClick.AddListener(() => { _fsm.OnClickNextBtn(); });
 
-            _clearExitBtn.onClick.AddListener(() => { _fsm.OnClickExitBtn(); });
-            _nextStageBtn.onClick.AddListener(() => { _fsm.OnClickNextStageBtn(); });
+            //_clearExitBtn.onClick.AddListener(() => { _fsm.OnClickExitBtn(); });
+            //_nextStageBtn.onClick.AddListener(() => { _fsm.OnClickNextStageBtn(); });
 
-            _goBackBtn.onClick.AddListener(() => { _fsm.OnClickGoBackHint(); });
+            //_goBackBtn.onClick.AddListener(() => { _fsm.OnClickGoBackHint(); });
 
             _fsm = new FSM<State>();
             Dictionary<State, BaseState<State>> states = new Dictionary<State, BaseState<State>>()
@@ -351,14 +367,35 @@ namespace Collect
                     _modeData, 
                     artData, 
                     presenter, 
+                    _completeAnimator,
+
+                    addressableHandler.ArtSpriteAssets,
+                    addressableHandler.ArtworkFrameAssets,
+                    addressableHandler.RankDecorationIconAssets,
+
                     GetLevelData, 
                     DestroyDots) },
                 { State.Result, new ResultState(
                     _fsm,
                     new ArtDataLoaderService(),
-                    new ArtDataUpdaterService(),
+
+                    addressableHandler.ArtSpriteAssets,
+                    addressableHandler.ArtworkFrameAssets,
+                    addressableHandler.RankDecorationIconAssets,
+                    addressableHandler.RankBadgeIconAssets,
+                    addressableHandler.ArtworkJsonDataAssets[saveData.Language],
+
                     presenter,
-                    _modeData) }
+                    _modeData) },
+                { State.Share, new ShareState(
+                    _fsm,
+                    _shareAnimator,
+                    _shareComponent,
+
+                    addressableHandler.ArtSpriteAssets,
+                    addressableHandler.ArtworkJsonDataAssets[saveData.Language],
+
+                    presenter) }
             };
 
             _fsm.Initialize(states, State.Initialize);

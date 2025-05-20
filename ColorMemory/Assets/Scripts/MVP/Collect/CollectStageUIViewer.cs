@@ -30,6 +30,7 @@ public class CollectStageUIViewer
     RectTransform _bottomContent;
     Button _skipBtn;
 
+    Button _goBackBtn;
     GameObject _rememberPanel;
     TMP_Text _rememberTxt;
     TMP_Text _hintInfoText;
@@ -45,7 +46,7 @@ public class CollectStageUIViewer
 
     Button _pauseBtn;
     Button _pauseExitBtn;
-    Button _gameExitBtn;
+    Button _pauseGameExitBtn;
     TMP_Text _gameExitText;
 
     TMP_Text _bgmTitleText;
@@ -63,6 +64,7 @@ public class CollectStageUIViewer
     GameObject _gameResultPanel;
     TMP_Text _gameResultTitle;
 
+    ArtworkPreviewUI _artworkPreviewUI;
     ArtworkUI _artworkUI;
 
     TMP_Text _artworkTitle;
@@ -87,12 +89,16 @@ public class CollectStageUIViewer
     TMP_Text _totalCollectTitle;
     CustomProgressUI _totalCollectRatio;
     TMP_Text _totalCollectText;
+    Button _nextBtn;
 
     Button _openShareBtn;
 
     GameObject _sharePanel;
+    TMP_Text _shareTitle;
     Button _shareBtn;
     Button _shareExitBtn;
+
+    ShareArtworkUI[] _shareArtworks;
 
     public CollectStageUIViewer(
         GameObject playPanel,
@@ -114,6 +120,7 @@ public class CollectStageUIViewer
         RectTransform bottomContent,
         Button skipBtn,
 
+        Button goBackBtn,
         GameObject rememberPanel,
         TMP_Text rememberTxt,
         TMP_Text hintInfoText,
@@ -129,7 +136,7 @@ public class CollectStageUIViewer
 
         Button pauseBtn,
         Button pauseExitBtn,
-        Button gameExitBtn,
+        Button pauseGameExitBtn,
 
         CustomSlider bgmSlider,
         TMP_Text bgmTitleText,
@@ -144,6 +151,7 @@ public class CollectStageUIViewer
         GameObject gameResultPanel,
         TMP_Text gameResultTitle,
 
+        ArtworkPreviewUI artworkPreviewUI,
         ArtworkUI artworkUI,
 
         TMP_Text artworkTitle,
@@ -168,13 +176,16 @@ public class CollectStageUIViewer
         TMP_Text totalCollectTitle,
         CustomProgressUI totalCollectRatio,
         TMP_Text totalCollectText,
+        Button nextBtn,
 
         Button openShareBtn,
 
         GameObject sharePanel,
+        TMP_Text shareTitle,
         Button shareBtn,
         Button shareExitBtn,
 
+        ShareArtworkUI[] shareArtworks,
         CollectStageUIPresenter presenter)
     {
         _playPanel = playPanel;
@@ -196,28 +207,36 @@ public class CollectStageUIViewer
 
         _bottomContent = bottomContent;
         _skipBtn = skipBtn;
+        _skipBtn.onClick.AddListener(() => { presenter.OnClickSkipBtn?.Invoke(); });
 
         _rememberPanel = rememberPanel;
         _rememberTxt = rememberTxt;
         _hintInfoText = hintInfoText;
+        _goBackBtn = goBackBtn;
+        _goBackBtn.onClick.AddListener(() => { presenter.OnClickGoBackHint?.Invoke(); });
 
         _gameClearPanel = gameClearPanel;
         _clearTitleText = clearTitleText;
         _clearContentText = clearContentText;
+
         _nextStageBtn = nextStageBtn;
+        _nextStageBtn.onClick.AddListener(() => { presenter.OnClickNextStageBtn?.Invoke(); });
+
         _gameClearExitBtn = clearExitBtn;
+        _gameClearExitBtn.onClick.AddListener(() => { presenter.OnClickClearExitBtn?.Invoke(); });
 
         _pausePanel = pausePanel;
         _pauseTitleText = pauseTitleText;
         _pauseBtn = pauseBtn;
-        _gameExitBtn = gameExitBtn;
-        _gameExitText = _gameExitBtn.GetComponentInChildren<TMP_Text>();
+        _pauseGameExitBtn = pauseGameExitBtn;
+        _gameExitText = _pauseGameExitBtn.GetComponentInChildren<TMP_Text>();
 
         _pauseExitBtn = pauseExitBtn;
 
         _gameResultPanel = gameResultPanel;
         _gameResultTitle = gameResultTitle;
 
+        _artworkPreviewUI = artworkPreviewUI;
         _artworkUI = artworkUI;
         _artworkTitle = artworkTitle;
 
@@ -241,16 +260,21 @@ public class CollectStageUIViewer
         _totalCollectTitle = totalCollectTitle;
         _totalCollectRatio = totalCollectRatio;
         _totalCollectText = totalCollectText;
+        _nextBtn = nextBtn;
+        _nextBtn.onClick.AddListener(() => { presenter.OnClickNextBtn?.Invoke(); });
 
         _openShareBtn = openShareBtn;
-        _openShareBtn.onClick.AddListener(() => { presenter.ActivateSharePanel(true); });
+        _openShareBtn.onClick.AddListener(() => { presenter.GoToShareState?.Invoke(); });
 
         _sharePanel = sharePanel;
+        _shareTitle = shareTitle;
         _shareBtn = shareBtn;
         _shareExitBtn = shareExitBtn;
 
-        _shareExitBtn.onClick.AddListener(() => { presenter.ActivateSharePanel(false); });
-        _shareBtn.onClick.AddListener(() => presenter.OnClickShare());
+        _shareArtworks = shareArtworks;
+
+        _shareExitBtn.onClick.AddListener(() => { presenter.ExitShareState?.Invoke(); });
+        _shareBtn.onClick.AddListener(() => presenter.OnShareButtonClick?.Invoke());
 
         _bgmTitleText = bgmTitleText;
         _bgmSlider = bgmSlider;
@@ -267,11 +291,40 @@ public class CollectStageUIViewer
         _bgmSlider.onHandlePointerUp += ((ratio) => { presenter.SaveBGMValue(); });
         _sfxSlider.onHandlePointerUp += ((ratio) => { presenter.SaveSFXValue(); });
 
-        _gameExitBtn.onClick.AddListener(() => { presenter.OnClickGameExitBtn(); presenter.GoToResultState?.Invoke(); });
-        _pauseBtn.onClick.AddListener(() => { presenter.ActivatePausePanel(true); });
-        _pauseExitBtn.onClick.AddListener(() => { presenter.ActivatePausePanel(false); });
+        _pauseGameExitBtn.onClick.AddListener((() => { presenter.ActivatePausePanel(false); presenter.OnClickPauseGameExitBtn?.Invoke(); }));
+        
+        _pauseBtn.onClick.AddListener(() => 
+        { 
+            ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.BtnClick); 
+            presenter.ActivatePausePanel(true); 
+        });
+
+        _pauseExitBtn.onClick.AddListener(() => 
+        {
+            presenter.ActivatePausePanel(false);
+            ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.BtnClick); 
+        });
+
         _bgmSlider.onValueChanged.AddListener((ratio) => { presenter.OnBGMSliderValeChanged(ratio); });
         _sfxSlider.onValueChanged.AddListener((ratio) => { presenter.OnSFXSliderValeChanged(ratio); });
+    }
+
+    public void ChangeShareTitle(string title)
+    {
+        _shareTitle.text = title;
+    }
+
+    public void ActivateOpenShareBtnInteraction(bool activeOpenShareBtn)
+    {
+        _openShareBtn.interactable = activeOpenShareBtn;
+    }
+
+    public void ChangeShareArtworks(Sprite[] shareArtSprites, ArtworkData[] shareArtworkDatas)
+    {
+        for (int i = 0; i < shareArtworkDatas.Length; i++)
+        {
+            _shareArtworks[i].Initialize(shareArtSprites[i], shareArtworkDatas[i].Title, shareArtworkDatas[i].Description);
+        }
     }
 
     public void ActivateSharePanel(bool activeSharePanel)
@@ -402,7 +455,10 @@ public class CollectStageUIViewer
         _wrongCountText.text = string.Format(wrongFormat, wrongCount);
     }
 
-
+    public void ChangeArtworkPreview(Sprite artSprite, Sprite artFrameSprite, Sprite rankDecorationIcon)
+    {
+        _artworkPreviewUI.Initialize(artSprite, artFrameSprite, rankDecorationIcon);
+    }
 
     public void ChangeArtwork(Sprite artSprite, Sprite artFrameSprite, Sprite rankDecorationIcon, bool hasIt)
     {

@@ -30,6 +30,10 @@ public class FilteredArtworkUI : SpawnableUI
     public override void InjectClickEvent(System.Action OnClick)
     {
         OnClickRequested = OnClick;
-        _selectButton.onClick.AddListener(() => { OnClickRequested?.Invoke(); });
+        _selectButton.onClick.AddListener(() => 
+        { 
+            OnClickRequested?.Invoke();
+            ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.BtnClick);
+        });
     }
 }

@@ -40,6 +40,16 @@ public class CollectStageUIModel
         _colorOnSfxHandle = Color.white;
     }
 
+    Sprite[] _shareArtSprites;
+    ArtworkData[] _shareArtworkDatas;
+
+    public Sprite[] ShareArtSprites { get => _shareArtSprites; set => _shareArtSprites = value; }
+    public ArtworkData[] ShareArtworkDatas { get => _shareArtworkDatas; set => _shareArtworkDatas = value; }
+
+    string _shareTitle;
+    public string ShareTitle { get => _shareTitle; set => _shareTitle = value; }
+
+
     string _gameResultTitle;
     public string GameResultTitle { get => _gameResultTitle; set => _gameResultTitle = value; }
 
@@ -68,6 +78,12 @@ public class CollectStageUIModel
 
     string _artworkTitle;
     public string ArtworkTitle { get => _artworkTitle; set => _artworkTitle = value; }
+
+
+    Sprite _previewArtSprite;
+    Sprite _previewArtFrameSprite;
+    Sprite _previewRankDecorationIconSprite;
+
 
     Sprite _artSprite;
     Sprite _artFrameSprite;
@@ -133,14 +149,20 @@ public class CollectStageUIModel
     public bool HasIt { get => _isLock; set => _isLock = value; }
 
 
-   
+    public Sprite PreviewArtSprite { get => _previewArtSprite; set => _previewArtSprite = value; }
+    public Sprite PreviewArtFrameSprite { get => _previewArtFrameSprite; set => _previewArtFrameSprite = value; }
+    public Sprite PreviewRankDecorationIconSprite { get => _previewRankDecorationIconSprite; set => _previewRankDecorationIconSprite = value; }
 
-    
 
-   
+
+
     public Sprite RankIcon { get => _rankIcon; set => _rankIcon = value; }
     public bool ActiveIcon { get => _activeIcon; set => _activeIcon = value; }
     public string RankName { get => _rankName; set => _rankName = value; }
+
+
+    bool _activeOpenShareBtn;
+    public bool ActiveOpenShareBtn { get => _activeOpenShareBtn; set => _activeOpenShareBtn = value; }
 
 
     bool _activeSharePanel;

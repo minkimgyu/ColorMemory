@@ -9,6 +9,10 @@ public class SettingPageModel
 
     Dictionary<int, Sprite> _profileSprites;
 
+    int _languageDropdownIndex;
+    public int LanguageDropdownIndex { get => _languageDropdownIndex; set => _languageDropdownIndex = value; }
+
+
     int _profileIndex;
     int _selectedProfileIndex;
 
@@ -86,11 +90,17 @@ public class SettingPageModel
         set => _soundRightText = value;
     }
 
-
+    string _languageTitle;
+    public string LanguageTitle
+    {
+        get => _languageTitle;
+        set => _languageTitle = value;
+    }
 
     public SettingPageModel(Dictionary<int, Sprite> profileSprites)
     {
         _name = "";
+        _languageTitle = "";
         _activeContent = false;
         _toggleIndex = 0;
         _profileIndex = 0;

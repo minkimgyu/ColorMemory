@@ -61,7 +61,17 @@ namespace Challenge
             _timer = new Timer();
 
             _challengeStageUIPresenter = challengeStageUIPresenter;
+            _challengeStageUIPresenter.OnClickGoToGameOverBtn += OnClickGoToGameOver;
+            _challengeStageUIPresenter.OnClickOneZoneHint += OnClickOneZoneHint;
+            _challengeStageUIPresenter.OnClickOneColorHint += OnClickOneColorHint;
+
             this.GetStage = GetStage;
+        }
+
+        void OnClickGoToGameOver()
+        {
+            _challengeStageUIPresenter.ActivateStageOverPreviewPanel(false);
+            _fsm.SetState(ChallengeMode.State.GameOver);
         }
 
         int[,] _visit;
@@ -96,18 +106,13 @@ namespace Challenge
                 _timer.Reset(); // 타이머 리셋
 
                 _challengeStageUIPresenter.ActivateStageOverPreviewPanel(true);
+                ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.GameOver);
 
                 int lastStageIndex = _modeData.StageData.Count - 1;
                 _challengeStageUIPresenter.ChangeLastStagePattern(_modeData.StageData[lastStageIndex], _pickColors);
                 _challengeStageUIPresenter.ChangeStageOverInfo();
                 return;
             }
-        }
-
-        public override void OnClickGoToGameOver() 
-        {
-            _challengeStageUIPresenter.ActivateStageOverPreviewPanel(false);
-            _fsm.SetState(ChallengeMode.State.GameOver);
         }
 
         void ChangePenDotColorCount()
@@ -252,8 +257,8 @@ namespace Challenge
                     }
 
                     ChangePenDotColorCount();
+                    ServiceLocater.ReturnTimeController().Start();
 
-                    Time.timeScale = 1;
                     _state = RevealSameColorHintState.Idle;
                     _challengeStageUIPresenter.ActivateHintPanel(false);
 
@@ -295,20 +300,20 @@ namespace Challenge
         }
 
         // 같은 색 채워주는 힌트
-        public override void OnClickOneColorHint()
+        void OnClickOneColorHint()
         {
             bool canBuy = CanBuyHint(_modeData.OneColorHintCost);
             if (canBuy == false) return;
 
             ChangeGold(_modeData.OneColorHintCost);
 
-            Time.timeScale = 0;
+            ServiceLocater.ReturnTimeController().Stop();
             _state = RevealSameColorHintState.SelectColor;
             _challengeStageUIPresenter.ActivateHintPanel(true); // active panel 적용해주기
         }
 
         // 랜덤 포인트를 채워주는 힌트
-        public override void OnClickOneZoneHint()
+        void OnClickOneZoneHint()
         {
             bool canBuy = CanBuyHint(_modeData.OneZoneHintCost);
             if (canBuy == false) return;

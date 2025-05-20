@@ -11,12 +11,37 @@ public class ChallengeStageUIPresenter
     ChallengeStageUIModel _model;
     ChallengeStageUIViewer _viewer;
 
-    public Action GoToEndState { get; private set; }
+    public Action OnClickPauseGameExitBtn { get; set; }
+    public Action OnClickGoToGameOverBtn { get; set; }
 
-    public ChallengeStageUIPresenter(ChallengeStageUIModel model, Action GoToEndState)
+    public Action OnClickGameOverExitBtn { get; set; }
+    public Action OnClickNextBtn { get; set; }
+    public Action OnClickSkipBtn { get; set; }
+
+
+    public Action OnClickOneZoneHint { get; set; }
+    public Action OnClickOneColorHint { get; set; }
+
+    public Action OnClickRetryBtn { get; set; }
+    public Action OnClickExitBtn { get; set; }
+
+
+    public ChallengeStageUIPresenter(ChallengeStageUIModel model)
     {
         _model = model;
-        this.GoToEndState = GoToEndState;
+
+        OnClickPauseGameExitBtn += () => { ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.BtnClick); };
+        OnClickGoToGameOverBtn += () => { ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.BtnClick); };
+
+        OnClickGameOverExitBtn += () => { ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.BtnClick); };
+        OnClickNextBtn += () => { ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.BtnClick); };
+
+        OnClickOneZoneHint += () => { ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.HintClick); };
+        OnClickOneColorHint += () => { ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.HintClick); };
+        OnClickSkipBtn += () => { ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.HintClick); };
+
+        OnClickRetryBtn += () => { ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.BtnClick); };
+        OnClickExitBtn += () => { ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.BtnClick); };
     }
 
     public void InjectViewer(ChallengeStageUIViewer viewer)
@@ -61,14 +86,6 @@ public class ChallengeStageUIPresenter
         _model.OneColorHintActive = oneColorHintActive;
         _model.OneZoneHintActive = oneZoneHintActive;
         _viewer.ActivateHint(_model.OneColorHintActive, _model.OneZoneHintActive);
-    }
-
-    public void OnClickGameExitBtn()
-    {
-        ServiceLocater.ReturnTimeController().Start();
-
-        // 일시 정지 꺼주기
-        ActivatePausePanel(false); 
     }
 
     public void ActivatePausePanel(bool active)

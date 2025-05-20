@@ -4035,6 +4035,7 @@ MonoBehaviour:
   _sfxSlider: {fileID: 8455394521882352839}
   _sfxLeftText: {fileID: 2960878445070896863}
   _sfxRightText: {fileID: 6519723035511387259}
+  _languageTitle: {fileID: 9057143629897683615}
   _languageDropdown: {fileID: 8266906390981172905}
 --- !u!1 &3168809691798151566
 GameObject:
@@ -4445,7 +4446,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8563658805645086075
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4453,13 +4454,13 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3248790677103390758}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 1, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.2739726, y: 0.2739726, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3236202542331288486}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 180}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
   m_AnchoredPosition: {x: -15, y: 0}
@@ -13202,8 +13203,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -192, y: -549.19995}
-  m_SizeDelta: {x: 201, y: 72}
+  m_AnchoredPosition: {x: 32.5, y: -549.19995}
+  m_SizeDelta: {x: 650, y: 72}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &9001197011834863388
 CanvasRenderer:
@@ -13233,7 +13234,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uC5B8\uC5B4 \uBCC0\uACBD"
+  m_text: "\uC5B8\uC5B4 \uC124\uC815"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 825704354e3526245a64343052aeee3d, type: 2}
   m_sharedMaterial: {fileID: -3420936784491326758, guid: 825704354e3526245a64343052aeee3d, type: 2}
