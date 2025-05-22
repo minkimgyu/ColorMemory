@@ -8,11 +8,11 @@ public class CollectStageUIModel
     {
         _activePlayPanel = false;
         _hintInfo = "";
-        _progress = 0;
+        _progress = "";
         _bestScore = 0;
         _nowScore = 0;
-        _leftTime = 0;
-        _totalTime = 0;
+        _leftTime = "";
+        _totalTime = "";
         _timeRatio = 0;
         _activeRememberPanel = false;
         _activeHintPanel = false;
@@ -33,8 +33,8 @@ public class CollectStageUIModel
         _sfxRatio = 0;
 
         _activeDetailContent = false;
-        _currentHintUsage = 0;
-        _currentWrongCount = 0;
+        _currentHintUsage = "";
+        _currentWrongCount = "";
 
         _colorOnBgmHandle = Color.white;
         _colorOnSfxHandle = Color.white;
@@ -55,18 +55,18 @@ public class CollectStageUIModel
 
     bool _activeDetailContent;
     string _hintUsageTitle;
-    int _currentHintUsage;
+    string _currentHintUsage;
 
     string _wrongCountTitle;
-    int _currentWrongCount;
+    string _currentWrongCount;
 
     public bool ActiveDetailContent { get => _activeDetailContent; set => _activeDetailContent = value; }
 
     public string HintUsageTitle { get => _hintUsageTitle; set => _hintUsageTitle = value; }
     public string WrongCountTitle { get => _wrongCountTitle; set => _wrongCountTitle = value; }
 
-    public int CurrentHintUsage { get => _currentHintUsage; set => _currentHintUsage = value; }
-    public int CurrentWrongCount { get => _currentWrongCount; set => _currentWrongCount = value; }
+    public string CurrentHintUsage { get => _currentHintUsage; set => _currentHintUsage = value; }
+    public string CurrentWrongCount { get => _currentWrongCount; set => _currentWrongCount = value; }
 
 
     bool _activePenContent;
@@ -91,16 +91,16 @@ public class CollectStageUIModel
     bool _isLock;
 
     string _totalHintUsageTitle;
-    int _totalHintUseCount;
+    string _totalHintUseCount;
 
     string _totalWrongCountTitle;
-    int _totalWrongCount;
+    string _totalWrongCount;
 
     public string TotalHintUsageTitle { get => _totalHintUsageTitle; set => _totalHintUsageTitle = value; }
     public string TotalWrongCountTitle { get => _totalWrongCountTitle; set => _totalWrongCountTitle = value; }
 
-    public int TotalHintUseCount { get => _totalHintUseCount; set => _totalHintUseCount = value; }
-    public int TotalWrongCount { get => _totalWrongCount; set => _totalWrongCount = value; }
+    public string TotalHintUseCount { get => _totalHintUseCount; set => _totalHintUseCount = value; }
+    public string TotalWrongCount { get => _totalWrongCount; set => _totalWrongCount = value; }
 
 
     string _myCollectionTitle;
@@ -109,6 +109,12 @@ public class CollectStageUIModel
 
     float _currentCollectRatio;
     float _totalCollectRatio;
+
+    string _currentCollectRatioString;
+    string _totalCollectRatioString;
+
+    public string CurrentCollectRatioString { get => _currentCollectRatioString; set => _currentCollectRatioString = value; }
+    public string TotalCollectRatioString { get => _totalCollectRatioString; set => _totalCollectRatioString = value; }
 
     public float CurrentCollectRatio { get => _currentCollectRatio; set => _currentCollectRatio = value; }
     public float TotalCollectRatio { get => _totalCollectRatio; set => _totalCollectRatio = value; }
@@ -276,8 +282,8 @@ public class CollectStageUIModel
         set => _hintInfo = value;
     }
 
-    int _progress;
-    public int Progress
+    string _progress;
+    public string Progress
     {
         get => _progress;
         set => _progress = value;
@@ -299,15 +305,15 @@ public class CollectStageUIModel
     }
 
 
-    float _leftTime;
-    public float LeftTime
+    string _leftTime;
+    public string LeftTime
     {
         get => _leftTime;
         set => _leftTime = value;
     }
 
-    float _totalTime;
-    public float TotalTime
+    string _totalTime;
+    public string TotalTime
     {
         get => _totalTime;
         set => _totalTime = value;
@@ -414,10 +420,4 @@ public class CollectStageUIModel
 
     string _title;
     public string Title { get => _title; set => _title = value; }
-
-    int _currentSectionIndex;
-    public int CurrentSectionIndex { get => _currentSectionIndex; set => _currentSectionIndex = value; }
-
-    int _totalSectionSize;
-    public int TotalSectionSize { get => _totalSectionSize; set => _totalSectionSize = value; }
 }

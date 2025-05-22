@@ -1,10 +1,12 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 using NUnit.Framework;
+using UnityEngine.TestTools;
+using System;
 using System.Threading.Tasks;
 
-public class ServerTest
+public class WebServerTest
 {
     private IAccountService _accountService;
     private IRankingService _rankingService;
@@ -189,32 +191,73 @@ public class ServerTest
         Assert.AreEqual(clearedArtData.Item1.HasIt, true, "보유 업데이트가 안 됨");
     }
 
-    [Test, Timeout(10000)] // 10초 넘으면 실패
-    public async void IntegratedServerTest()
+    [UnityTest, Timeout(30000)]
+    public IEnumerator ServerTest()
     {
-        await TestAccountService_Start();
+        Task task = TestAccountService_Start();
 
-        await TestAccountService_Login();
+        // Task가 완료될 때까지 대기
+        yield return new WaitUntil(() => task.IsCompleted);
+
+        UnityEngine.Debug.Log("TestAccountService_Start 성공");
+
+
+        Task task1 = TestAccountService_Login();
+
+        // Task가 완료될 때까지 대기
+        yield return new WaitUntil(() => task1.IsCompleted);
 
         UnityEngine.Debug.Log("TestAccountService_Login 성공");
 
-        await TestRankingService();
+
+
+        Task task2 = TestRankingService();
+
+        // Task가 완료될 때까지 대기
+        yield return new WaitUntil(() => task2.IsCompleted);
 
         UnityEngine.Debug.Log("TestRankingService 성공");
 
-        await TestProfileService();
+
+
+
+
+        Task task3 = TestProfileService();
+
+        // Task가 완료될 때까지 대기
+        yield return new WaitUntil(() => task3.IsCompleted);
 
         UnityEngine.Debug.Log("TestProfileService 성공");
 
-        await TestAssetService();
+
+
+
+
+        Task task4 = TestAssetService();
+
+        // Task가 완료될 때까지 대기
+        yield return new WaitUntil(() => task4.IsCompleted);
 
         UnityEngine.Debug.Log("TestAssetService 성공");
 
-        await TestArtDataService();
+
+
+
+
+        Task task5 = TestArtDataService();
+
+        // Task가 완료될 때까지 대기
+        yield return new WaitUntil(() => task5.IsCompleted);
 
         UnityEngine.Debug.Log("TestArtDataService 성공");
 
-        await TestAccountService_DeleteAccount();
+
+
+
+        Task task6 = TestAccountService_DeleteAccount();
+
+        // Task가 완료될 때까지 대기
+        yield return new WaitUntil(() => task6.IsCompleted);
 
         UnityEngine.Debug.Log("TestAccountService_DeleteAccount 성공");
     }

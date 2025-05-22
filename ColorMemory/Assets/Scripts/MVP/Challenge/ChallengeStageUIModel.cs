@@ -21,23 +21,23 @@ public class ChallengeStageUIModel
         _activePenContent = false;
         _activeSkipBtn = false;
 
-        _oneColorHintCost = 0;
-        _oneZoneHintCost = 0;
+        _oneColorHintCost = "";
+        _oneZoneHintCost = "";
 
         _stageCount = 0;
 
         _activePlayPanel = false;
         _bestScore = 0;
         _nowScore = 0;
-        _leftTime = 0;
-        _totalTime = 0;
+        _leftTime = "";
+        _totalTime = "";
         _timeRatio = 0;
         _activeRememberPanel = false;
         _activeHintPanel = false;
         _activeGameOverPanel = false;
-        _clearStageCount = 0;
+        _clearStageCount = "";
         _activeGameResultPanel = false;
-        _goldCount = 0;
+        _goldCount = "";
 
         _colorOnBgmHandle = Color.white;
         _colorOnSfxHandle = Color.white;
@@ -45,6 +45,19 @@ public class ChallengeStageUIModel
 
     Color _colorOnBgmHandle;
     Color _colorOnSfxHandle;
+
+    string _rememberTxt;
+    public string RememberTxt { get => _rememberTxt; set => _rememberTxt = value; }
+
+
+    string _stageOverTitleText;
+    string _stageOverInfo1TextFormat;
+    string _stageOverInfo2Text;
+
+    public string StageOverTitleText { get => _stageOverTitleText; set => _stageOverTitleText = value; }
+    public string StageOverInfo1Text { get => _stageOverInfo1TextFormat; set => _stageOverInfo1TextFormat = value; }
+    public string StageOverInfo2Text { get => _stageOverInfo2Text; set => _stageOverInfo2Text = value; }
+
 
     public Color ColorOnBgmHandle { get => _colorOnBgmHandle; set => _colorOnBgmHandle = value; }
     public Color ColorOnSfxHandle { get => _colorOnSfxHandle; set => _colorOnSfxHandle = value; }
@@ -73,11 +86,13 @@ public class ChallengeStageUIModel
 
 
 
-    int _oneColorHintCost;
-    public int OneColorHintCost { get => _oneColorHintCost; set => _oneColorHintCost = value; }
+    string _oneColorHintCost;
+    public string OneColorHintCost { get => _oneColorHintCost; set => _oneColorHintCost = value; }
 
-    int _oneZoneHintCost;
-    public int OneZoneHintCost { get => _oneZoneHintCost; set => _oneZoneHintCost = value; }
+    string _oneZoneHintCost;
+    public string OneZoneHintCost { get => _oneZoneHintCost; set => _oneZoneHintCost = value; }
+
+
 
     bool _activePausePanel;
 
@@ -209,15 +224,15 @@ public class ChallengeStageUIModel
     }
 
 
-    float _leftTime;
-    public float LeftTime
+    string _leftTime;
+    public string LeftTime
     {
         get => _leftTime;
         set => _leftTime = value;
     }
 
-    float _totalTime;
-    public float TotalTime
+    string _totalTime;
+    public string TotalTime
     {
         get => _totalTime;
         set => _totalTime = value;
@@ -263,8 +278,8 @@ public class ChallengeStageUIModel
         set => _activeCoinPanel = value;
     }
 
-    int _coinCount;
-    public int CoinCount
+    string _coinCount;
+    public string CoinCount
     {
         get => _coinCount;
         set => _coinCount = value;
@@ -282,15 +297,15 @@ public class ChallengeStageUIModel
         set => _activeGameOverPanel = value;
     }
 
-    int _resultScore;
-    public int ResultScore
+    string _resultScore;
+    public string ResultScore
     {
         get => _resultScore;
         set => _resultScore = value;
     }
 
-    int _clearStageCount;
-    public int ClearStageCount
+    string _clearStageCount;
+    public string ClearStageCount
     {
         get => _clearStageCount;
         set => _clearStageCount = value;
@@ -304,8 +319,8 @@ public class ChallengeStageUIModel
         set => _activeGameResultPanel = value;
     }
 
-    int _goldCount;
-    public int GoldCount
+    string _goldCount;
+    public string GoldCount
     {
         get => _goldCount;
         set => _goldCount = value;

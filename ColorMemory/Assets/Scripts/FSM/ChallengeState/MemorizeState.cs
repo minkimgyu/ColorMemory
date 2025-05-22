@@ -82,7 +82,8 @@ namespace Challenge
             _challengeStageUIPresenter.ActivateBottomContent(false);
             _challengeStageUIPresenter.ActivateSkipBtn(true);
 
-            _challengeStageUIPresenter.ActivateRememberPanel(true);
+            string rememberTxt = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.RememberTitle);
+            _challengeStageUIPresenter.ActivateRememberPanel(true, rememberTxt);
             _challengeStageUIPresenter.ChangeTotalTime(memorizeDuration);
             _timer.Start(memorizeDuration);
         }
@@ -92,7 +93,8 @@ namespace Challenge
             _challengeStageUIPresenter.ActivateBottomContent(true);
             _challengeStageUIPresenter.ActivateSkipBtn(false);
 
-            _challengeStageUIPresenter.ActivateRememberPanel(false);
+            string rememberTxt = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.RememberTitle);
+            _challengeStageUIPresenter.ActivateRememberPanel(false, rememberTxt);
 
             // dot 뒤집는 코드 추가
             for (int i = 0; i < _levelSize.x; i++)

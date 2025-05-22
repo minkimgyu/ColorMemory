@@ -6,7 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ChallengeStageUIViewer
+public class ChallengeStageUIViewer : IChallengeStageUIViewer
 {
     GameObject _playPanel;
 
@@ -28,8 +28,6 @@ public class ChallengeStageUIViewer
 
     RectTransform _bottomContent;
     Button _skipBtn;
-
-
 
 
     GameObject _hintPanel;
@@ -241,14 +239,12 @@ public class ChallengeStageUIViewer
 
         _pauseBtn.onClick.AddListener(() =>
         {
-            ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.BtnClick);
             presenter.ActivatePausePanel(true);
         });
 
         _pauseExitBtn.onClick.AddListener(() =>
         {
             presenter.ActivatePausePanel(false);
-            ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.BtnClick);
         });
 
         _bgmSlider.onValueChanged.AddListener((ratio) => { presenter.OnBGMSliderValeChanged(ratio); });
@@ -293,10 +289,10 @@ public class ChallengeStageUIViewer
         _oneZoneHintBtn.interactable = oneZoneHintActive;
     }
 
-    public void ChangeHintCost(int oneColorHintCost, int oneZoneHintCost)
+    public void ChangeHintCost(string oneColorHintCost, string oneZoneHintCost)
     {
-        _oneColorHintCostText.text = $"-{oneColorHintCost.ToString("N0")}";
-        _oneZoneHintCostText.text = $"-{oneZoneHintCost.ToString("N0")}";
+        _oneColorHintCostText.text = oneColorHintCost;
+        _oneZoneHintCostText.text = oneZoneHintCost;
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(_oneColorHintCostText.transform.parent.GetComponent<RectTransform>());
         LayoutRebuilder.ForceRebuildLayoutImmediate(_oneZoneHintCostText.transform.parent.GetComponent<RectTransform>());
@@ -341,15 +337,11 @@ public class ChallengeStageUIViewer
         _lastStagePattern.Initialize(currentStageCount, data, pickColors);
     }
 
-    public void ChangeStageOverInfo(int currentStageCount)
+    public void ChangeStageOverInfo(string stageOverTitleText, string stageOverInfo1Text, string stageOverInfo2Text)
     {
-        _stageOverTitleText.text = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.PreviewTitle);
-
-        string content1 = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.PreviewContent1);
-        _stageOverInfoText1.text = string.Format(content1, currentStageCount);
-
-        string content2 = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.PreviewContent2);
-        _stageOverInfoText2.text = content2;
+        _stageOverTitleText.text = stageOverTitleText;
+        _stageOverInfoText1.text = stageOverInfo1Text;
+        _stageOverInfoText2.text = stageOverInfo2Text;
     }
 
     public void ActivatePlayPanel(bool active)
@@ -372,26 +364,14 @@ public class ChallengeStageUIViewer
         _timerSlider.fillAmount = ratio;
     }
 
-    public void ChangeTotalTime(float totalTime)
+    public void ChangeTotalTime(string totalTime)
     {
-        int intPart = (int)totalTime;      // 정수 부분
-        float decimalPart = totalTime % 1; // 소수점 이하
-
-        // 정수 부분이 1자리면 D2로 맞추고, 그렇지 않으면 그대로 출력
-        string formattedIntPart = intPart < 10 ? $"{intPart:D2}" : $"{intPart}";
-
-        // 소수점 이하 두 자리 유지
-        _totalTimeText.text = $"{formattedIntPart}.{(decimalPart * 100):00}";
+        _totalTimeText.text = totalTime;
     }
 
-    public void ChangeLeftTime(float leftTime, float ratio)
+    public void ChangeLeftTime(string leftTime, float ratio)
     {
-        int intPart = (int)leftTime;
-        float decimalPart = leftTime % 1;
-
-        string formattedIntPart = intPart < 10 ? $"{intPart:D2}" : $"{intPart}";
-
-        _leftTimeText.text = $"{formattedIntPart}.{(decimalPart * 100):00}";
+        _leftTimeText.text = leftTime;
         FillTimeSlider(ratio);
     }
 
@@ -400,10 +380,10 @@ public class ChallengeStageUIViewer
         _stageText.text = stageCount.ToString();
     }
 
-    public void ActivateRememberPanel(bool active)
+    public void ActivateRememberPanel(bool active, string rememberTxt)
     {
         _rememberPanel.SetActive(active);
-        _rememberTxt.text = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.RememberTitle);
+        _rememberTxt.text = rememberTxt;
     }
 
     public void ActivateCoinPanel(bool active)
@@ -411,9 +391,9 @@ public class ChallengeStageUIViewer
         _coinPanel.SetActive(active);
     }
 
-    public void ChangeCoinCount(int coin)
+    public void ChangeCoinCount(string coinCount)
     {
-        _coinTxt.text = coin.ToString("N0"); // "9,000"
+        _coinTxt.text = coinCount;
         LayoutRebuilder.ForceRebuildLayoutImmediate(_coinTxt.transform.parent.GetComponent<RectTransform>());
     }
 
@@ -428,10 +408,10 @@ public class ChallengeStageUIViewer
         _gameOverPanel.SetActive(active);
     }
 
-    public void ChangeClearStageCount(int clearStageCount, int resultScore)
+    public void ChangeClearStageCount(string clearStageCount, string resultScore)
     {
-        _clearStageCount.text = clearStageCount.ToString("N0");
-        _resultScore.text = resultScore.ToString("N0");
+        _clearStageCount.text = clearStageCount;
+        _resultScore.text = resultScore;
     }
 
     public void AddClearPattern(SpawnableUI patternUI)
@@ -456,10 +436,9 @@ public class ChallengeStageUIViewer
         _gameResultPanel.SetActive(active);
     }
 
-    public void ChangeResultGoldCount(int goldCount)
+    public void ChangeResultGoldCount(string goldCount)
     {
-        string getCoinTxt = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.GetCoin);
-        _goldCount.text = string.Format(getCoinTxt, goldCount);
+        _goldCount.text = goldCount;
     }
 
     public void AddRanking(SpawnableUI ranking, Vector3 size)
@@ -477,10 +456,5 @@ public class ChallengeStageUIViewer
 
             spawnableUI.DestroyObject();
         }
-    }
-
-    public void ChangeRankingScrollValue(int menuCount, int scrollIndex)
-    {
-        //_rankingScrollRect.verticalNormalizedPosition = (float)scrollIndex / (float)menuCount;
     }
 }

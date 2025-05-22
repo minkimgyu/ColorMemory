@@ -3,12 +3,11 @@ using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
 using System;
-using Unity.VisualScripting;
 
 public class CollectStageUIPresenter
 {
     CollectStageUIModel _model;
-    CollectStageUIViewer _viewer;
+    ICollectStageUIViewer _viewer;
 
     public Action OnClickPauseGameExitBtn { get; set; }
     public Action GoToShareState { get; set; }
@@ -42,7 +41,7 @@ public class CollectStageUIPresenter
         OnClickGoBackHint += () => { ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.HintClick); };
     }
 
-    public void InjectViewer(CollectStageUIViewer viewer)
+    public void InjectViewer(ICollectStageUIViewer viewer)
     {
         _viewer = viewer;
 
@@ -118,17 +117,9 @@ public class CollectStageUIPresenter
         _viewer.ActivateOpenShareBtnInteraction(_model.ActiveOpenShareBtn);
     }
 
-    public void ChangeGameResultTitle(bool hasIt)
+    public void ChangeGameResultTitle(string resultTitle)
     {
-        if (hasIt)
-        {
-            _model.GameResultTitle = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.CompleteArtworkResultTitle);
-        }
-        else
-        {
-            _model.GameResultTitle = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.ProgressArtworkResultTitle);
-        }
-
+        _model.GameResultTitle = resultTitle;
         _viewer.ChangeGameResultTitle(_model.GameResultTitle);
     }
 
@@ -185,15 +176,15 @@ public class CollectStageUIPresenter
         _viewer.ActivateDetailContent(_model.ActiveDetailContent);
     }
 
-    public void ChangeCurrentHintUsage(int usage)
+    public void ChangeCurrentHintUsage(int usage, string format)
     {
-        _model.CurrentHintUsage = usage;
+        _model.CurrentHintUsage = string.Format(format, usage);
         _viewer.ChangeCurrentHintUsage(_model.CurrentHintUsage);
     }
 
-    public void ChangeCurrentWrongCount(int wrongCount)
+    public void ChangeCurrentWrongCount(int wrongCount, string format)
     {
-        _model.CurrentWrongCount = wrongCount;
+        _model.CurrentWrongCount = string.Format(format, wrongCount);
         _viewer.ChangeCurrentWrongCount(_model.CurrentWrongCount);
     }
 
@@ -216,7 +207,7 @@ public class CollectStageUIPresenter
         _viewer.ChangeArtwork(_model.ArtSprite, _model.ArtFrameSprite, _model.RankDecorationIconSprite, _model.HasIt);
     }
 
-    public void ChangeRank(Sprite rankIcon, bool activeIcon, string rankName, Color rankBackgroundColor)
+    public void ChangeRank(Sprite rankIcon, bool activeIcon, string rankName, UnityEngine.Color rankBackgroundColor)
     {
         _model.RankIcon = rankIcon;
         _model.ActiveIcon = activeIcon;
@@ -225,11 +216,10 @@ public class CollectStageUIPresenter
         _viewer.ChangeRank(_model.RankIcon, _model.ActiveIcon, _model.RankName, _model.RankBackgroundColor);
     }
 
-    public void ChangeGetRank(int hintUseCount, int wrongCount)
+    public void ChangeGetRank(int hintUseCount, int wrongCount, string usageFormat, string wrongFormat)
     {
-        _model.TotalHintUseCount = hintUseCount;
-        _model.TotalWrongCount = wrongCount;
-
+        _model.TotalHintUseCount = string.Format(usageFormat, hintUseCount);
+        _model.TotalWrongCount = string.Format(wrongFormat, wrongCount);
         _viewer.ChangeGetRank(_model.TotalHintUseCount, _model.TotalWrongCount);
     }
 
@@ -237,13 +227,21 @@ public class CollectStageUIPresenter
     {
         _model.CurrentCollectRatio = currentCollectRatio;
         _model.TotalCollectRatio = totalCollectRatio;
-        _viewer.ChangeCollectionRatio(_model.CurrentCollectRatio, _model.TotalCollectRatio);
+        _model.CurrentCollectRatioString = $"{Mathf.RoundToInt(currentCollectRatio * 100)}%";
+        _model.TotalCollectRatioString = $"{Mathf.RoundToInt(totalCollectRatio * 100)}%";
+
+        _viewer.ChangeCollectionRatio(
+            _model.CurrentCollectRatio, 
+            _model.TotalCollectRatio,
+            _model.CurrentCollectRatioString,
+            _model.TotalCollectRatioString);
     }
 
     public void ActivatePausePanel(bool active)
     {
         if (active)
         {
+            ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.BtnClick);
             ServiceLocater.ReturnTimeController().Stop();
 
             // 데이터 불러와서 반영
@@ -258,6 +256,7 @@ public class CollectStageUIPresenter
         else
         {
             ServiceLocater.ReturnTimeController().Start();
+            ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.BtnClick);
         }
 
         _model.ActivePausePanel = active;
@@ -274,9 +273,9 @@ public class CollectStageUIPresenter
         ServiceLocater.ReturnSaveManager().ChangeSFXVolume(_model.SfxRatio);
     }
 
-    readonly Color _colorOnZeroValue = new Color(118f / 255f, 113f / 255f, 111f / 255f);
-    readonly Color _colorOnBgmHandle = new Color(113f / 255f, 191f / 255f, 255f / 255f);
-    readonly Color _colorOnSfxHandle = new Color(255f / 255f, 154f / 255f, 145f / 255f);
+    readonly UnityEngine.Color _colorOnZeroValue = new UnityEngine.Color(118f / 255f, 113f / 255f, 111f / 255f);
+    readonly UnityEngine.Color _colorOnBgmHandle = new UnityEngine.Color(113f / 255f, 191f / 255f, 255f / 255f);
+    readonly UnityEngine.Color _colorOnSfxHandle = new UnityEngine.Color(255f / 255f, 154f / 255f, 145f / 255f);
 
     void ChangeBGMModel(float volumn)
     {
@@ -338,40 +337,43 @@ public class CollectStageUIPresenter
 
     public void ChangeProgressText(int progress)
     {
-        _model.Progress = progress;
+        _model.Progress = $"{progress}%";
         _viewer.ChangeProgressText(_model.Progress);
     }
 
+    const int maxTitleSize = 13;
+    const int dotSize = 3;
+
     public void ChangeTitle(string title, int currentSection, int totalSectionSize)
     {
-        _model.Title = title;
-        _model.CurrentSectionIndex = currentSection;
-        _model.TotalSectionSize = totalSectionSize;
-        _viewer.ChangeTitle(_model.Title, _model.CurrentSectionIndex, _model.TotalSectionSize);
-    }
+        if (title.Length > maxTitleSize) title = title.Substring(0, maxTitleSize - dotSize) + "...";
 
-    public void FillTimeSlider(float duration)
-    {
-        DOVirtual.Float(_model.TimeRatio, 1, duration, 
-            ((ratio) => 
-            { 
-                _model.TimeRatio = ratio; 
-                _viewer.FillTimeSlider(_model.TimeRatio);
-            }
-        ));
+        _model.Title = title + " (" + currentSection + "/" + totalSectionSize + ")";
+        _viewer.ChangeTitle(_model.Title);
     }
 
     public void ChangeTotalTime(float totalTime)
     {
-        _model.TotalTime = totalTime;
+        int intPart = (int)totalTime;      // 정수 부분
+        float decimalPart = totalTime % 1; // 소수점 이하
+
+        // 정수 부분이 1자리면 D2로 맞추고, 그렇지 않으면 그대로 출력
+        string formattedIntPart = intPart < 10 ? $"{intPart:D2}" : $"{intPart}";
+
+        // 소수점 이하 두 자리 유지
+        _model.TotalTime = $"{formattedIntPart}.{(decimalPart * 100):00}";
         _viewer.ChangeTotalTime(_model.TotalTime);
     }
 
     public void ChangeLeftTime(float leftTime, float ratio)
     {
-        _model.LeftTime = leftTime;
-        _model.TimeRatio = ratio;
+        int intPart = (int)leftTime;
+        float decimalPart = leftTime % 1;
 
+        string formattedIntPart = intPart < 10 ? $"{intPart:D2}" : $"{intPart}";
+
+        _model.LeftTime = $"{formattedIntPart}.{(decimalPart * 100):00}";
+        _model.TimeRatio = ratio;
         _viewer.ChangeLeftTime(_model.LeftTime, _model.TimeRatio);
     }
 

@@ -6,7 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CollectStageUIViewer
+public class CollectStageUIViewer : ICollectStageUIViewer
 {
     GameObject _playPanel;
 
@@ -295,14 +295,12 @@ public class CollectStageUIViewer
         
         _pauseBtn.onClick.AddListener(() => 
         { 
-            ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.BtnClick); 
             presenter.ActivatePausePanel(true); 
         });
 
         _pauseExitBtn.onClick.AddListener(() => 
         {
             presenter.ActivatePausePanel(false);
-            ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.BtnClick); 
         });
 
         _bgmSlider.onValueChanged.AddListener((ratio) => { presenter.OnBGMSliderValeChanged(ratio); });
@@ -437,22 +435,14 @@ public class CollectStageUIViewer
         _detailContent.SetActive(active);
     }
 
-    public void ChangeCurrentHintUsage(int usage)
+    public void ChangeCurrentHintUsage(string usage)
     {
-        string usageFormat;
-        if (usage > 1) usageFormat = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.Counts);
-        else usageFormat = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.Count);
-
-        _hintUsageText.text = string.Format(usageFormat, usage);
+        _hintUsageText.text = usage;
     }
 
-    public void ChangeCurrentWrongCount(int wrongCount)
+    public void ChangeCurrentWrongCount(string wrongCount)
     {
-        string wrongFormat;
-        if (wrongCount > 1) wrongFormat = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.Counts);
-        else wrongFormat = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.Count);
-
-        _wrongCountText.text = string.Format(wrongFormat, wrongCount);
+        _wrongCountText.text = wrongCount;
     }
 
     public void ChangeArtworkPreview(Sprite artSprite, Sprite artFrameSprite, Sprite rankDecorationIcon)
@@ -473,27 +463,23 @@ public class CollectStageUIViewer
         _rankBackground.color = rankBackgroundColor;
     }
 
-    public void ChangeGetRank(int hintUseCount, int wrongCount)
+    public void ChangeGetRank(string hintUseCount, string wrongCount)
     {
-        string usageFormat;
-        if (hintUseCount > 1) usageFormat = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.Counts);
-        else usageFormat = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.Count);
-
-        string wrongFormat;
-        if (wrongCount > 1) wrongFormat = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.Counts);
-        else wrongFormat = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.Count);
-
-        _totalHintUseCount.text = string.Format(usageFormat, hintUseCount);
-        _totalWrongCount.text = string.Format(wrongFormat, wrongCount);
+        _totalHintUseCount.text = hintUseCount;
+        _totalWrongCount.text = wrongCount;
     }
 
-    public void ChangeCollectionRatio(float currentCollectRatio, float totalCollectRatio)
+    public void ChangeCollectionRatio(
+        float currentCollectRatio, 
+        float totalCollectRatio,
+        string currentCollectRatioString,
+        string totalCollectRatioString)
     {
         _currentCollectRatio.FillValue = currentCollectRatio;
-        _currentCollectText.text = $"{Mathf.RoundToInt(currentCollectRatio * 100)}%";
+        _currentCollectText.text = currentCollectRatioString;
 
         _totalCollectRatio.FillValue = totalCollectRatio;
-        _totalCollectText.text = $"{Mathf.RoundToInt(totalCollectRatio * 100)}%";
+        _totalCollectText.text = totalCollectRatioString;
     }
 
 
@@ -508,13 +494,9 @@ public class CollectStageUIViewer
         _playPanel.SetActive(active);
     }
 
-    const int maxTitleSize = 13;
-    const int dotSize = 3;
-
-    public void ChangeTitle(string title, int currentSection, int totalSectionSize)
+    public void ChangeTitle(string title)
     {
-        if (title.Length > maxTitleSize) title = title.Substring(0, maxTitleSize - dotSize) + "...";
-        _titleText.text = title + " (" + currentSection + "/" + totalSectionSize + ")";
+        _titleText.text = title;
     }
 
     public void ChangeHintInfoText(string infoText)
@@ -522,9 +504,9 @@ public class CollectStageUIViewer
         _hintInfoText.text = infoText;
     }
 
-    public void ChangeProgressText(int progress)
+    public void ChangeProgressText(string progress)
     {
-        _progressText.text = $"{ progress }%";
+        _progressText.text = progress;
     }
 
     public void FillTimeSlider(float ratio)
@@ -532,26 +514,14 @@ public class CollectStageUIViewer
         _timerSlider.fillAmount = ratio;
     }
 
-    public void ChangeTotalTime(float totalTime)
+    public void ChangeTotalTime(string totalTime)
     {
-        int intPart = (int)totalTime;      // 정수 부분
-        float decimalPart = totalTime % 1; // 소수점 이하
-
-        // 정수 부분이 1자리면 D2로 맞추고, 그렇지 않으면 그대로 출력
-        string formattedIntPart = intPart < 10 ? $"{intPart:D2}" : $"{intPart}";
-
-        // 소수점 이하 두 자리 유지
-        _totalTimeText.text = $"{formattedIntPart}.{(decimalPart * 100):00}";
+        _totalTimeText.text = totalTime;
     }
 
-    public void ChangeLeftTime(float leftTime, float ratio)
+    public void ChangeLeftTime(string leftTime, float ratio)
     {
-        int intPart = (int)leftTime;
-        float decimalPart = leftTime % 1;
-
-        string formattedIntPart = intPart < 10 ? $"{intPart:D2}" : $"{intPart}";
-
-        _leftTimeText.text = $"{formattedIntPart}.{(decimalPart * 100):00}";
+        _leftTimeText.text = leftTime;
         FillTimeSlider(ratio);
     }
 

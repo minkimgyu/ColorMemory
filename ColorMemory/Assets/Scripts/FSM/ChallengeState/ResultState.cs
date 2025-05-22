@@ -75,7 +75,9 @@ namespace Challenge
 
             int money = GetMoney();
             _challengeStageUIPresenter.ActivateGameResultPanel(true);
-            _challengeStageUIPresenter.ChangeResultGoldCount(money);
+
+            string format = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.GetCoin);
+            _challengeStageUIPresenter.ChangeResultGoldCount(money, format);
 
 
             for (int i = 0; i < rankingData.Item1.Count; i++)

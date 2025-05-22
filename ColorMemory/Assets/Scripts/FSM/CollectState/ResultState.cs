@@ -115,7 +115,9 @@ namespace Collect
             // 모든 스테이지를 클리어 했는지 확인 필요
             if (artData.Item1.Rank != Rank.NONE)
             {
-                _collectStageUIPresenter.ChangeGameResultTitle(true);
+                string gameResultTitle = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.CompleteArtworkResultTitle);
+
+                _collectStageUIPresenter.ChangeGameResultTitle(gameResultTitle);
                 _collectStageUIPresenter.ActivateOpenShareBtnInteraction(true);
                 ownCount += 1; // 하나 더 획득했으므로 +1 추가
 
@@ -124,7 +126,9 @@ namespace Collect
             }
             else
             {
-                _collectStageUIPresenter.ChangeGameResultTitle(false);
+                string gameResultTitle = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.ProgressArtworkResultTitle);
+
+                _collectStageUIPresenter.ChangeGameResultTitle(gameResultTitle);
                 _collectStageUIPresenter.ActivateOpenShareBtnInteraction(false);
                 //getRank = Rank.NONE;
             }
@@ -135,7 +139,17 @@ namespace Collect
 
             _collectStageUIPresenter.ChangeRank(rankBadgeIconSprite, _rankInfo[artData.Item1.Rank].Item1, _rankInfo[artData.Item1.Rank].Item2, _rankColor[artData.Item1.Rank]);
             _collectStageUIPresenter.ChangeArtwork(artworkSprite, rankFrameSprite, rankDecorationIconSprite, artData.Item1.Rank != Rank.NONE);
-            _collectStageUIPresenter.ChangeGetRank(totalGoBackCount, totalWrongCount);
+
+
+            string usageFormat;
+            if (totalGoBackCount > 1) usageFormat = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.Counts);
+            else usageFormat = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.Count);
+
+            string wrongFormat;
+            if (totalWrongCount > 1) wrongFormat = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.Counts);
+            else wrongFormat = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.Count);
+
+            _collectStageUIPresenter.ChangeGetRank(totalGoBackCount, totalWrongCount, usageFormat, wrongFormat);
 
             float currentRatio = (float)clearStageCount / totalStageCount;
             float totalRatio = (float)ownCount / (ownCount + unownedCount);

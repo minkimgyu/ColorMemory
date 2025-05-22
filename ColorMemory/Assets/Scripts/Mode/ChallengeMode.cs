@@ -59,12 +59,6 @@ namespace Challenge
         [SerializeField] TMP_Text _stageOverInfoText2;
         [SerializeField] Button _goToGameOverBtn;
 
-        [Header("ModeData")]
-        [SerializeField] Color[] _pickColors;
-        //[SerializeField] Vector2 _spacing;
-        //[SerializeField] int _pickCount;
-        //[SerializeField] Vector2Int _levelSize = new Vector2Int(5, 5); // row, col
-
         [Header("Hint")]
         [SerializeField] Button _oneZoneHintBtn;
         [SerializeField] Button _oneColorHintBtn;
@@ -247,6 +241,14 @@ namespace Challenge
             _fsm.OnUpdate();
         }
 
+        ChallengeStageUIModel _model;
+        ChallengeStageUIPresenter _presenter;
+        ChallengeStageUIViewer _viewer;
+
+        public ChallengeStageUIModel Model { get => _model; }
+        public ChallengeStageUIPresenter Presenter { get => _presenter; }
+        public ChallengeStageUIViewer Viewer { get => _viewer; }
+
         public override async void Initialize()
         {
             string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
@@ -260,7 +262,7 @@ namespace Challenge
 
             ServiceLocater.ReturnSoundPlayer().PlayBGM(ISoundPlayable.SoundName.ChallengeBGM);
 
-            _pickColors = addressableHandler.ColorPaletteDataWrapper.RandomColorPaletteData.Colors;
+            Color[] pickColors = addressableHandler.ColorPaletteDataWrapper.RandomColorPaletteData.Colors;
 
             RandomLevelGenerator randomLevelGenerator = new RandomLevelGenerator(addressableHandler.ChallengeStageJsonDataAsset.StageDatas);
 
@@ -271,10 +273,9 @@ namespace Challenge
                 addressableHandler.SpawnableUIAssets[SpawnableUI.Name.RankingUI],
                 addressableHandler.RectProfileIconAssets);
 
-            ChallengeStageUIModel model = new ChallengeStageUIModel();
-            ChallengeStageUIPresenter presenter = new ChallengeStageUIPresenter(model);
-
-            ChallengeStageUIViewer viewer = new ChallengeStageUIViewer(
+            _model = new ChallengeStageUIModel();
+            _presenter = new ChallengeStageUIPresenter(_model);
+            _viewer = new ChallengeStageUIViewer(
                 _playPanel,
                 _bestScoreText,
                 _nowScoreText,
@@ -335,9 +336,9 @@ namespace Challenge
                 _sfxTitleText,
                 _sfxLeftText,
                 _sfxRightText,
-                presenter);
+                _presenter);
 
-            presenter.InjectViewer(viewer);
+            _presenter.InjectViewer(_viewer);
 
             //_goToGameOverBtn.onClick.AddListener(() =>
             //{
@@ -362,10 +363,10 @@ namespace Challenge
             //_oneZoneHintBtn.onClick.AddListener(() => { _fsm.OnClickOneZoneHint(); });
             //_oneColorHintBtn.onClick.AddListener(() => { _fsm.OnClickOneColorHint(); });
 
-            presenter.ActivatePlayPanel(true);
-            presenter.ChangeHintCost(_modeData.OneColorHintCost, _modeData.OneZoneHintCost);
-            presenter.ChangeNowScore(_modeData.MyScore);
-            presenter.ChangeBestScore(_modeData.MaxScore);
+            _presenter.ActivatePlayPanel(true);
+            _presenter.ChangeHintCost(_modeData.OneColorHintCost, _modeData.OneZoneHintCost);
+            _presenter.ChangeNowScore(_modeData.MyScore);
+            _presenter.ChangeBestScore(_modeData.MaxScore);
 
             _fsm = new FSM<State>();
             Dictionary<State, BaseState<State>> states = new Dictionary<State, BaseState<State>>()
@@ -375,30 +376,30 @@ namespace Challenge
                     new InitializeState
                     (
                         _fsm,
-                        _pickColors,
+                        pickColors,
                         new EffectFactory(addressableHandler.EffectAssets),
                         new DotFactory(addressableHandler.DotAssets),
                         _dotGridContent,
                         _penContent,
                         _penToggleGroup,
                         randomLevelGenerator,
-                        presenter,
+                        _presenter,
                         _modeData,
                         SetStage
                     )
                 },
 
-                { State.Memorize, new MemorizeState(_fsm, _pickColors, _modeData, addressableHandler.ChallengeStageJsonDataAsset.StageDatas, presenter, GetStage) },
-                { State.Paint, new PaintState(_fsm, _pickColors, _modeData, presenter, GetStage) },
-                { State.Clear, new ClearState(_fsm, presenter, _modeData, GetStage, DestroyDots) },
-                { State.GameOver, new EndState(_fsm, presenter, _pickColors, clearPatternUIFactory, _modeData) },
+                { State.Memorize, new MemorizeState(_fsm, pickColors, _modeData, addressableHandler.ChallengeStageJsonDataAsset.StageDatas, _presenter, GetStage) },
+                { State.Paint, new PaintState(_fsm, pickColors, _modeData, _presenter, GetStage) },
+                { State.Clear, new ClearState(_fsm, _presenter, _modeData, GetStage, DestroyDots) },
+                { State.GameOver, new EndState(_fsm, _presenter, pickColors, clearPatternUIFactory, _modeData) },
                 { State.Result, new ResultState(
                     _fsm,
                     new NearRankingService(),
                     new WeeklyScoreUpdateService(),
                     new TransactionService(),
                     rankingFactory,
-                    presenter,
+                    _presenter,
                     _modeData) }
             };
 

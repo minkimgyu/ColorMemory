@@ -110,7 +110,11 @@ namespace Challenge
 
                 int lastStageIndex = _modeData.StageData.Count - 1;
                 _challengeStageUIPresenter.ChangeLastStagePattern(_modeData.StageData[lastStageIndex], _pickColors);
-                _challengeStageUIPresenter.ChangeStageOverInfo();
+
+                string stageOverTitleText = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.PreviewTitle);
+                string stageOverInfo1TextFormat = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.PreviewContent1);
+                string stageOverInfo2Text = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.PreviewContent2);
+                _challengeStageUIPresenter.ChangeStageOverInfo(stageOverTitleText, stageOverInfo1TextFormat, stageOverInfo2Text);
                 return;
             }
         }
