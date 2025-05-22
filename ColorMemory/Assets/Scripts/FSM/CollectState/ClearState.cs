@@ -17,9 +17,14 @@ namespace Collect
 
         Func<Tuple<Dot[,], Dot[], MapData>> GetLevelData;
         CollectStageUIPresenter _collectStageUIPresenter;
+        Animator _completeAnimator;
 
         IArtDataService _artDataLoaderService;
         IArtDataService _artDataUpdaterService;
+
+        Dictionary<int, Sprite> _artSpriteAsserts;
+        Dictionary<NetworkService.DTO.Rank, Sprite> _artworkFrameAssets;
+        Dictionary<NetworkService.DTO.Rank, Sprite> _rankDecorationIconAssets;
 
         public ClearState(
             FSM<CollectMode.State> fsm,
@@ -28,6 +33,11 @@ namespace Collect
             CollectMode.Data modeData,
             CollectArtData artData,
             CollectStageUIPresenter collectStageUIPresenter,
+            Animator completeAnimator,
+
+            Dictionary<int, Sprite> artSpriteAsserts,
+            Dictionary<NetworkService.DTO.Rank, Sprite> artworkFrameAssets,
+            Dictionary<NetworkService.DTO.Rank, Sprite> rankDecorationIconAssets,
 
             Func<Tuple<Dot[,], Dot[], MapData>> GetLevelData,
             Action DestroyDots) : base(fsm)
@@ -36,55 +46,21 @@ namespace Collect
             _artDataUpdaterService = artDataUpdaterService;
 
             _collectStageUIPresenter = collectStageUIPresenter;
+
+            _collectStageUIPresenter.OnClickPauseGameExitBtn += () => { _fsm.SetState(CollectMode.State.Result); };
+            _collectStageUIPresenter.OnClickClearExitBtn += () => { _fsm.SetState(CollectMode.State.Result); };
+            _collectStageUIPresenter.OnClickNextStageBtn += OnClickNextStageBtn;
+
+            _completeAnimator = completeAnimator;
+
+            _artSpriteAsserts = artSpriteAsserts;
+            _artworkFrameAssets = artworkFrameAssets;
+            _rankDecorationIconAssets = rankDecorationIconAssets;
+
             this.GetLevelData = GetLevelData;
             this.DestroyDots = DestroyDots;
             _modeData = modeData;
             _artData = artData;
-        }
-
-        public override void OnClickExitBtn()
-        {
-            _fsm.SetState(CollectMode.State.Result);
-            //ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.HomeScene);
-        }
-
-        async Task<List<PlayerArtworkDTO>> GetArtDataFromServer()
-        {
-            ArtworkManager artworkManager = new ArtworkManager();
-            List<PlayerArtworkDTO> artworkDTOs;
-
-            try
-            {
-                string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
-                artworkDTOs = await artworkManager.GetWholePlayerArtworksAsync(userId);
-            }
-            catch (System.Exception e)
-            {
-                Debug.Log(e);
-                Debug.Log("서버로부터 데이터를 받아오지 못함");
-                return null;
-            }
-
-            return artworkDTOs;
-        }
-
-        async Task<Rank?> UpdateArtDataToServer(PlayerArtworkDTO artworkDTO)
-        {
-            ArtworkManager artworkManager = new ArtworkManager();
-            Rank? rank = null;
-
-            try
-            {
-                rank = await artworkManager.UpdatePlayerArtworkAsync(artworkDTO);
-            }
-            catch (System.Exception e)
-            {
-                Debug.Log(e);
-                Debug.Log("서버로 데이터를 업데이트하지 못 함");
-                return null;
-            }
-
-            return rank;
         }
 
         async Task<Rank?> UpdateArtDataToServer()
@@ -95,33 +71,39 @@ namespace Collect
             Tuple<PlayerArtworkDTO, int, int> artData = await _artDataLoaderService.GetArtData(userId, data.SelectedArtworkKey);
             if (artData == null) return null;
 
-            _artworkDTO = artData.Item1;
-            // 데이터 업데이트
-
             // 다음 스테이지 해금해주는 코드
-            _artworkDTO.Stages[data.SelectedArtworkSectionIntIndex].Status = StageStauts.Clear; // 현재 스테이지 클리어 적용
+            artData.Item1.Stages[data.SelectedArtworkSectionIntIndex].Status = StageStauts.Clear; // 현재 스테이지 클리어 적용
 
-            int lastIndex = _artworkDTO.Stages.Count - 1; // 스테이지 개수 - 1 -> 0부터 시작함
+            int lastIndex = artData.Item1.Stages.Count - 1; // 스테이지 개수 - 1 -> 0부터 시작함
             if(lastIndex >= data.SelectedArtworkSectionIntIndex + 1) // 다음 스테이지 인덱스가 lastIndex 보다 작거나 같은 경우만 진행
             {
-                if(_artworkDTO.Stages[data.SelectedArtworkSectionIntIndex + 1].Status == StageStauts.Lock)
+                if(artData.Item1.Stages[data.SelectedArtworkSectionIntIndex + 1].Status == StageStauts.Lock)
                 {
-                    _artworkDTO.Stages[data.SelectedArtworkSectionIntIndex + 1].Status = StageStauts.Open;
+                    artData.Item1.Stages[data.SelectedArtworkSectionIntIndex + 1].Status = StageStauts.Open;
                 }
             }
 
-            _artworkDTO.Stages[data.SelectedArtworkSectionIntIndex].IncorrectCnt = _modeData.WrongCount; // index + 1 해서 찾기 -> 1-indexed임
-            _artworkDTO.Stages[data.SelectedArtworkSectionIntIndex].HintUsage = _modeData.GoBackCount;
+            artData.Item1.Stages[data.SelectedArtworkSectionIntIndex].IncorrectCnt = _modeData.WrongCount; // index + 1 해서 찾기 -> 1-indexed임
+            artData.Item1.Stages[data.SelectedArtworkSectionIntIndex].HintUsage = _modeData.GoBackCount;
 
-            Rank? rank = await _artDataUpdaterService.UpdateArtData(_artworkDTO);
+            bool clearAllStage = true;
+            foreach (var item in artData.Item1.Stages)
+            {
+                // 하나의 스테이지라도 클리어 하지 못한 경우
+                if (item.Value.Status != StageStauts.Clear) clearAllStage = false;
+            }
+
+            if(clearAllStage == true) artData.Item1.HasIt = true;  // HasIt 업데이트
+
+            Rank? rank = await _artDataUpdaterService.UpdateArtData(artData.Item1);
             if (rank == null) return null;
 
             return rank;
         }
 
-        PlayerArtworkDTO _artworkDTO;
+        //PlayerArtworkDTO _artworkDTO;
 
-        public override void OnClickNextStageBtn()
+        void OnClickNextStageBtn()
         {
             SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
 
@@ -129,8 +111,7 @@ namespace Collect
             int col = _artData.Sections[0].Count;
 
             if (data.SelectedArtworkSectionIndex.x == row - 1
-            && data.SelectedArtworkSectionIndex.y == col - 1
-            && _artworkDTO.HasIt == false)
+            && data.SelectedArtworkSectionIndex.y == col - 1)
             {
                 _fsm.SetState(CollectMode.State.Result); 
                 // 현재 스테이지가 마지막인 경우 그리고 보유 중이지 않은 경우
@@ -153,7 +134,8 @@ namespace Collect
 
         public override async void OnStateEnter()
         {
-            await UpdateArtDataToServer();
+            Rank? currentRank = await UpdateArtDataToServer();
+            if (currentRank == null) return;
 
             DOVirtual.DelayedCall(0.5f, () =>
             {
@@ -179,33 +161,54 @@ namespace Collect
                     _collectStageUIPresenter.ActivateNextStageBtn(true);
                     _collectStageUIPresenter.ActivateClearExitBtn(true);
 
-                    SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
-                    int row = _artData.Sections.Count;
-                    int col = _artData.Sections[0].Count;
-
                     string completeTitle;
                     string completeContent;
 
-                    if(data.SelectedArtworkSectionIndex.x == row - 1
-                    && data.SelectedArtworkSectionIndex.y == col - 1) // 마지막 스테이지의 경우
+                    SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
+
+                    int row = _artData.Sections.Count;
+                    int col = _artData.Sections[0].Count;
+
+                    if (data.SelectedArtworkSectionIndex.x == row - 1
+                        && data.SelectedArtworkSectionIndex.y == col - 1) // 마지막 스테이지의 경우
                     {
+                        ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.GameClear);
+
+                        Sprite artworkSprite;
+                        Sprite rankFrameSprite;
+                        Sprite rankDecorationIconSprite;
+
+                        artworkSprite = _artSpriteAsserts[data.SelectedArtworkKey];
+                        rankFrameSprite = _artworkFrameAssets[currentRank.Value];
+                        rankDecorationIconSprite = _rankDecorationIconAssets[currentRank.Value];
+
+                        _collectStageUIPresenter.ChangeArtworkPreview(artworkSprite, rankFrameSprite, rankDecorationIconSprite);
+
+                        _completeAnimator.SetTrigger("CompleteArtwork");
+
                         completeTitle = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.CollectionCompleteTitle);
                         completeContent = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.CollectionCompleteContent);
 
-                        if (_artworkDTO.HasIt == true) // 이미 아트워크를 보유한 경우
-                        {
-                            // next 버튼 없애주기
-                            _collectStageUIPresenter.ActivateNextStageBtn(false);
-                            // exit만 가능하게 만들어준다.
-                        }
-                        else // 보유하지 않은 경우
-                        {
-                            _collectStageUIPresenter.ActivateClearExitBtn(false);
-                            // next만 가능하게 만들어준다.
-                        }
+                        _collectStageUIPresenter.ActivateClearExitBtn(false);
+
+                        //if (_alreadyHaveArtwork == true) // 이미 아트워크를 보유한 경우
+                        //{
+                        //    // next 버튼 없애주기
+                        //    _collectStageUIPresenter.ActivateNextStageBtn(false);
+                        //    // exit만 가능하게 만들어준다.
+                        //}
+                        //else // 보유하지 않은 경우
+                        //{
+                        //    _collectStageUIPresenter.ActivateClearExitBtn(false);
+                        //    // next만 가능하게 만들어준다.
+                        //}
                     }
                     else
                     {
+                        ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.StageClear);
+
+                        _completeAnimator.SetTrigger("CompleteSection");
+
                         completeTitle = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.CollectionClearTitle);
                         completeContent = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.CollectionClearContent);
                     }
@@ -220,7 +223,6 @@ namespace Collect
 
         public override void OnStateExit()
         {
-            _artworkDTO = null;
             _modeData.MyScore += clearPoint;
             _collectStageUIPresenter.ActivateDetailContent(false);
             _collectStageUIPresenter.ActivateGameClearPanel(false);

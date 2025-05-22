@@ -30,6 +30,7 @@ public class FilterItemUI : SpawnableUI
         OnClickRequested = OnClick;
         _xButton.onClick.AddListener(() => { 
             OnClickRequested?.Invoke();
+            ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.BtnClick);
         });
     }
 }

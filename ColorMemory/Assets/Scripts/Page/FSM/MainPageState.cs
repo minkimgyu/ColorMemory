@@ -84,7 +84,6 @@ public class MainPageState : BaseState<HomePage.InnerPageState>
 
         GameObject mainContent,
         Dictionary<GameMode.Type, Sprite> modeTitleIconAssets,
-
         FSM<HomePage.InnerPageState> fsm) : base(fsm)
     {
         _type = type;
@@ -133,36 +132,28 @@ public class MainPageState : BaseState<HomePage.InnerPageState>
         // _playBtn 이거 넣기
 
         MainPageModel homePageModel = new MainPageModel(_type, modeTitleIconAssets, _dotColors, _playBtnColors, _playBtnTxts);
-        _homePagePresenter = new MainPagePresenter(homePageModel, OnClickPlayBtn);
+        _homePagePresenter = new MainPagePresenter(homePageModel);
+
+        _homePagePresenter.OnPlayBtnClicked += ((type) =>
+        {
+            switch (type)
+            {
+                case GameMode.Type.Challenge:
+                    ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.ChallengeScene);
+                    break;
+                case GameMode.Type.Collect:
+                    ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.BtnClick);
+                    _fsm.SetState(HomePage.InnerPageState.Collection);
+                    break;
+                default:
+                    break;
+            }
+        });
+
         MainPageViewer homePageViewer = new MainPageViewer(_mainContent, _modeTitleImg, _playBtn, _playBtnTxt, _playBtnImg, _toggleBtn, dots, _homePagePresenter);
         _homePagePresenter.InjectViewer(homePageViewer);
 
         _homePagePresenter.ActiveContent(false);
-    }
-
-    public void OnClickPlayBtn(GameMode.Type type)
-    {
-        switch (type)
-        {
-            case GameMode.Type.Challenge:
-                ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.ChallengeScene);
-                break;
-            case GameMode.Type.Collect:
-                _fsm.SetState(HomePage.InnerPageState.Collection);
-                break;
-            default:
-                break;
-        }
-    }
-
-    public override void OnClickShopBtn()
-    {
-        _fsm.SetState(HomePage.InnerPageState.Shop);
-    }
-
-    public override void OnClickRankingBtn()
-    {
-        _fsm.SetState(HomePage.InnerPageState.Ranking);
     }
 
     // 이건 HomePagePresenter 통해서 작동시켜주자

@@ -9,17 +9,42 @@ using Challenge;
 public class ChallengeStageUIPresenter
 {
     ChallengeStageUIModel _model;
-    ChallengeStageUIViewer _viewer;
+    IChallengeStageUIViewer _viewer;
 
-    public Action GoToEndState { get; private set; }
+    public Action OnClickPauseGameExitBtn { get; set; }
+    public Action OnClickGoToGameOverBtn { get; set; }
 
-    public ChallengeStageUIPresenter(ChallengeStageUIModel model, Action GoToEndState)
+    public Action OnClickGameOverExitBtn { get; set; }
+    public Action OnClickNextBtn { get; set; }
+    public Action OnClickSkipBtn { get; set; }
+
+
+    public Action OnClickOneZoneHint { get; set; }
+    public Action OnClickOneColorHint { get; set; }
+
+    public Action OnClickRetryBtn { get; set; }
+    public Action OnClickExitBtn { get; set; }
+
+
+    public ChallengeStageUIPresenter(ChallengeStageUIModel model)
     {
         _model = model;
-        this.GoToEndState = GoToEndState;
+
+        OnClickPauseGameExitBtn += () => { ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.BtnClick); };
+        OnClickGoToGameOverBtn += () => { ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.BtnClick); };
+
+        OnClickGameOverExitBtn += () => { ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.BtnClick); };
+        OnClickNextBtn += () => { ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.BtnClick); };
+
+        OnClickOneZoneHint += () => { ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.HintClick); };
+        OnClickOneColorHint += () => { ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.HintClick); };
+        OnClickSkipBtn += () => { ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.HintClick); };
+
+        OnClickRetryBtn += () => { ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.BtnClick); };
+        OnClickExitBtn += () => { ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.BtnClick); };
     }
 
-    public void InjectViewer(ChallengeStageUIViewer viewer)
+    public void InjectViewer(IChallengeStageUIViewer viewer)
     {
         _viewer = viewer;
 
@@ -51,9 +76,9 @@ public class ChallengeStageUIPresenter
 
     public void ChangeHintCost(int oneColorHintCost, int oneZoneHintCost)
     {
-        _model.OneColorHintCost = oneColorHintCost;
-        _model.OneZoneHintCost = oneZoneHintCost;
-        _viewer.ChangeHintCost(oneColorHintCost, oneZoneHintCost);
+        _model.OneColorHintCost = $"-{oneColorHintCost.ToString("N0")}";
+        _model.OneZoneHintCost = $"-{oneZoneHintCost.ToString("N0")}";
+        _viewer.ChangeHintCost(_model.OneColorHintCost, _model.OneZoneHintCost);
     }
 
     public void ActivateHint(bool oneColorHintActive, bool oneZoneHintActive)
@@ -63,18 +88,12 @@ public class ChallengeStageUIPresenter
         _viewer.ActivateHint(_model.OneColorHintActive, _model.OneZoneHintActive);
     }
 
-    public void OnClickGameExitBtn()
-    {
-        ServiceLocater.ReturnTimeController().Start();
-
-        // 일시 정지 꺼주기
-        ActivatePausePanel(false); 
-    }
-
     public void ActivatePausePanel(bool active)
     {
+
         if (active)
         {
+            ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.BtnClick);
             ServiceLocater.ReturnTimeController().Stop();
 
             // 데이터 불러와서 반영
@@ -89,6 +108,7 @@ public class ChallengeStageUIPresenter
         else
         {
             ServiceLocater.ReturnTimeController().Start();
+            ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.BtnClick);
         }
 
         _model.ActivePausePanel = active;
@@ -170,13 +190,13 @@ public class ChallengeStageUIPresenter
         _viewer.ChangeLastStagePattern(_model.StageCount, _model.MapData, _model.PickColors);
     }
 
-    public void ChangeStageOverInfo()
+    public void ChangeStageOverInfo(string stageOverTitleText, string stageOverInfo1TextFormat, string stageOverInfo2Text)
     {
-        _viewer.ChangeStageOverInfo(_model.StageCount);
+        _model.StageOverTitleText = stageOverTitleText;
+        _model.StageOverInfo1Text = string.Format(stageOverInfo1TextFormat, _model.StageCount);
+        _model.StageOverInfo2Text = stageOverInfo2Text;
+        _viewer.ChangeStageOverInfo(_model.StageOverTitleText, _model.StageOverInfo1Text, _model.StageOverInfo2Text);
     }
-
-
-
 
     public void ActivatePlayPanel(bool active)
     {
@@ -198,15 +218,24 @@ public class ChallengeStageUIPresenter
 
     public void ChangeTotalTime(float totalTime)
     {
-        _model.TotalTime = totalTime;
+        int intPart = (int)totalTime;      // 정수 부분
+        float decimalPart = totalTime % 1; // 소수점 이하
+
+        // 정수 부분이 1자리면 D2로 맞추고, 그렇지 않으면 그대로 출력
+        string formattedIntPart = intPart < 10 ? $"{intPart:D2}" : $"{intPart}";
+        _model.TotalTime = $"{formattedIntPart}.{(decimalPart * 100):00}";
         _viewer.ChangeTotalTime(_model.TotalTime);
     }
 
     public void ChangeLeftTime(float leftTime, float ratio)
     {
-        _model.LeftTime = leftTime;
-        _model.TimeRatio = ratio;
+        int intPart = (int)leftTime;
+        float decimalPart = leftTime % 1;
 
+        string formattedIntPart = intPart < 10 ? $"{intPart:D2}" : $"{intPart}";
+
+        _model.LeftTime = $"{formattedIntPart}.{(decimalPart * 100):00}";
+        _model.TimeRatio = ratio;
         _viewer.ChangeLeftTime(_model.LeftTime, _model.TimeRatio);
     }
 
@@ -216,10 +245,12 @@ public class ChallengeStageUIPresenter
         _viewer.ChangeStageCount(_model.StageCount);
     }
 
-    public void ActivateRememberPanel(bool active)
+    public void ActivateRememberPanel(bool active, string rememberTxt)
     {
         _model.ActiveRememberPanel = active;
-        _viewer.ActivateRememberPanel(_model.ActiveRememberPanel);
+        _model.RememberTxt = rememberTxt;
+
+        _viewer.ActivateRememberPanel(_model.ActiveRememberPanel, _model.RememberTxt);
     }
 
     public void ActivateHintPanel(bool active)
@@ -237,8 +268,8 @@ public class ChallengeStageUIPresenter
 
     public void ChangeCoinCount(int coinCount)
     {
-        _model.CoinCount = coinCount;
-        _viewer.ChangeCoinCount(coinCount);
+        _model.CoinCount = coinCount.ToString("N0"); // "9,000"
+        _viewer.ChangeCoinCount(_model.CoinCount);
     }
 
 
@@ -250,8 +281,8 @@ public class ChallengeStageUIPresenter
 
     public void ChangeClearStageCount(int clearStageCount, int resultScore)
     {
-        _model.ClearStageCount = clearStageCount;
-        _model.ResultScore = resultScore;
+        _model.ClearStageCount = clearStageCount.ToString("N0");
+        _model.ResultScore = resultScore.ToString("N0");
         _viewer.ChangeClearStageCount(_model.ClearStageCount, _model.ResultScore);
     }
 
@@ -271,9 +302,9 @@ public class ChallengeStageUIPresenter
         _viewer.ActivateGameResultPanel(_model.ActiveGameResultPanel);
     }
 
-    public void ChangeResultGoldCount(int goldCount)
+    public void ChangeResultGoldCount(int goldCount, string format)
     {
-        _model.GoldCount = goldCount;
+        _model.GoldCount = string.Format(format, goldCount);
         _viewer.ChangeResultGoldCount(_model.GoldCount);
     }
 

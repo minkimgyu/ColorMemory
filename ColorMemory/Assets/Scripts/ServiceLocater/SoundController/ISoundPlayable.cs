@@ -6,10 +6,25 @@ public interface ISoundPlayable
 {
     public enum SoundName
     {
-        
+        LobbyBGM,
+        ChallengeBGM,
+        CollectBGM,
+
+        ChallengeResultBGM,
+        CollectResultBGM,
+
+        BtnClick,
+        DotClick,
+        GameOver,
+        GameClear,
+        StageClear,
+
+        HintClick
     }
 
-    void Initialize(Dictionary<SoundName, AudioClip> clipDictionary);
+    void Initialize(Dictionary<SoundName, AudioClip> clipDictionary,
+        float initBgmVolume,
+        float initSfxVolume);
 
     void MuteBGM(bool nowMute);
     void MuteSFX(bool nowMute);
@@ -22,9 +37,9 @@ public interface ISoundPlayable
     bool GetBGMMute();
     bool GetSFXMute();
 
-    void PlayBGM(SoundName name, float volume = 1);
-    void PlaySFX(SoundName name, float volume = 1);
-    void PlaySFX(SoundName name, Vector3 pos, float volume = 1);
+    void PlayBGM(SoundName name);
+    void PlaySFX(SoundName name);
+    void PlaySFX(SoundName name, Vector3 pos);
 
     void StopBGM();
     void StopAllSound();

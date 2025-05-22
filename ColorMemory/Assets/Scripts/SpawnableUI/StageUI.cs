@@ -14,7 +14,7 @@ public class StageUI : SpawnableUI
 
     [SerializeField] Button _selectBtn;
 
-    public Action OnClickRequested;
+    Action OnClickRequested;
 
     readonly Color _lockColor = new Color(236/255f, 232/255f, 232/255f);
     readonly Color _openColor = new Color(113/255f, 196/255f, 255/255f);
@@ -35,7 +35,8 @@ public class StageUI : SpawnableUI
 
     public override void InjectClickEvent(System.Action OnClick)
     {
-        this.OnClickRequested = OnClick;
+        OnClickRequested += OnClick;
+        OnClickRequested += () => { ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.BtnClick); };
     }
 
     public override void ChangeSelect(bool select) 

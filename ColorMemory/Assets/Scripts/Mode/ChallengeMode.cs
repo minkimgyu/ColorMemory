@@ -59,12 +59,6 @@ namespace Challenge
         [SerializeField] TMP_Text _stageOverInfoText2;
         [SerializeField] Button _goToGameOverBtn;
 
-        [Header("ModeData")]
-        [SerializeField] Color[] _pickColors;
-        [SerializeField] Vector2 _spacing;
-        //[SerializeField] int _pickCount;
-        //[SerializeField] Vector2Int _levelSize = new Vector2Int(5, 5); // row, col
-
         [Header("Hint")]
         [SerializeField] Button _oneZoneHintBtn;
         [SerializeField] Button _oneColorHintBtn;
@@ -86,6 +80,7 @@ namespace Challenge
         [SerializeField] TMP_Text _resultScore;
 
         [SerializeField] Transform _clearStageContent;
+        [SerializeField] Button _gameOverExitBtn;
         [SerializeField] Button _nextBtn;
 
         [Header("GameResult")]
@@ -96,7 +91,7 @@ namespace Challenge
         [SerializeField] Transform _rankingContent;
         [SerializeField] ScrollRect _rankingScrollRect;
         [SerializeField] Button _tryAgainBtn;
-        [SerializeField] Button _exitBtn;
+        [SerializeField] Button _gameResultExitBtn;
 
         IAssetService _challengeModeDataService;
 
@@ -246,6 +241,14 @@ namespace Challenge
             _fsm.OnUpdate();
         }
 
+        ChallengeStageUIModel _model;
+        ChallengeStageUIPresenter _presenter;
+        ChallengeStageUIViewer _viewer;
+
+        public ChallengeStageUIModel Model { get => _model; }
+        public ChallengeStageUIPresenter Presenter { get => _presenter; }
+        public ChallengeStageUIViewer Viewer { get => _viewer; }
+
         public override async void Initialize()
         {
             string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
@@ -257,6 +260,10 @@ namespace Challenge
             AddressableLoader addressableHandler = FindObjectOfType<AddressableLoader>();
             if (addressableHandler == null) return;
 
+            ServiceLocater.ReturnSoundPlayer().PlayBGM(ISoundPlayable.SoundName.ChallengeBGM);
+
+            Color[] pickColors = addressableHandler.ColorPaletteDataWrapper.RandomColorPaletteData.Colors;
+
             RandomLevelGenerator randomLevelGenerator = new RandomLevelGenerator(addressableHandler.ChallengeStageJsonDataAsset.StageDatas);
 
             ClearPatternUIFactory clearPatternUIFactory = new ClearPatternUIFactory(
@@ -266,10 +273,9 @@ namespace Challenge
                 addressableHandler.SpawnableUIAssets[SpawnableUI.Name.RankingUI],
                 addressableHandler.RectProfileIconAssets);
 
-            ChallengeStageUIModel model = new ChallengeStageUIModel();
-            ChallengeStageUIPresenter presenter = new ChallengeStageUIPresenter(model, () => { _fsm.SetState(ChallengeMode.State.GameOver); });
-
-            ChallengeStageUIViewer viewer = new ChallengeStageUIViewer(
+            _model = new ChallengeStageUIModel();
+            _presenter = new ChallengeStageUIPresenter(_model);
+            _viewer = new ChallengeStageUIViewer(
                 _playPanel,
                 _bestScoreText,
                 _nowScoreText,
@@ -287,6 +293,7 @@ namespace Challenge
                 _bottomContent,
                 _skipBtn,
 
+
                 _hintPanel,
                 _rememberPanel,
                 _rememberTxt,
@@ -299,17 +306,23 @@ namespace Challenge
                 _clearStageCount,
 
                 _clearStageContent,
+                _gameOverExitBtn,
+                _nextBtn,
+
                 _gameResultPanel,
                 _goldCount,
                 _rankingContent,
                 _rankingScrollRect,
-                
+                _tryAgainBtn,
+                _gameResultExitBtn,
+
                 _stageOverPreviewPanel,
                 _lastStagePattern,
                 _stageOverTitleText,
                 _stageOverInfoText1,
                 _stageOverInfoText2,
-                
+                _goToGameOverBtn,
+
                 _pausePanel,
                 _pauseTitleText,
                 _pauseBtn,
@@ -323,32 +336,37 @@ namespace Challenge
                 _sfxTitleText,
                 _sfxLeftText,
                 _sfxRightText,
-                presenter);
+                _presenter);
 
-            presenter.InjectViewer(viewer);
+            _presenter.InjectViewer(_viewer);
 
-            _goToGameOverBtn.onClick.AddListener(() =>
-            {
-                _fsm.OnClickGoToGameOver();
-            });
+            //_goToGameOverBtn.onClick.AddListener(() =>
+            //{
+            //    _fsm.OnClickGoToGameOver();
+            //});
 
-            _nextBtn.onClick.AddListener(() => 
-            { 
-                _fsm.OnClickNextBtn(); 
-            });
+            //_nextBtn.onClick.AddListener(() => 
+            //{ 
+            //    _fsm.OnClickNextBtn(); 
+            //});
 
-            _skipBtn.onClick.AddListener(() => { _fsm.OnClickSkipBtn(); });
+            //_gameOverExitBtn.onClick.AddListener(() =>
+            //{
+            //    _fsm.OnClickExitBtn();
+            //});
 
-            _tryAgainBtn.onClick.AddListener(() => { _fsm.OnClickRetryBtn(); });
-            _exitBtn.onClick.AddListener(() => { _fsm.OnClickExitBtn(); });
+            //_skipBtn.onClick.AddListener(() => { _fsm.OnClickSkipBtn(); });
 
-            _oneZoneHintBtn.onClick.AddListener(() => { _fsm.OnClickOneZoneHint(); });
-            _oneColorHintBtn.onClick.AddListener(() => { _fsm.OnClickOneColorHint(); });
+            //_tryAgainBtn.onClick.AddListener(() => { _fsm.OnClickRetryBtn(); });
+            //_gameResultExitBtn.onClick.AddListener(() => { _fsm.OnClickExitBtn(); });
 
-            presenter.ActivatePlayPanel(true);
-            presenter.ChangeHintCost(_modeData.OneColorHintCost, _modeData.OneZoneHintCost);
-            presenter.ChangeNowScore(_modeData.MyScore);
-            presenter.ChangeBestScore(_modeData.MaxScore);
+            //_oneZoneHintBtn.onClick.AddListener(() => { _fsm.OnClickOneZoneHint(); });
+            //_oneColorHintBtn.onClick.AddListener(() => { _fsm.OnClickOneColorHint(); });
+
+            _presenter.ActivatePlayPanel(true);
+            _presenter.ChangeHintCost(_modeData.OneColorHintCost, _modeData.OneZoneHintCost);
+            _presenter.ChangeNowScore(_modeData.MyScore);
+            _presenter.ChangeBestScore(_modeData.MaxScore);
 
             _fsm = new FSM<State>();
             Dictionary<State, BaseState<State>> states = new Dictionary<State, BaseState<State>>()
@@ -358,30 +376,30 @@ namespace Challenge
                     new InitializeState
                     (
                         _fsm,
-                        _pickColors,
+                        pickColors,
                         new EffectFactory(addressableHandler.EffectAssets),
                         new DotFactory(addressableHandler.DotAssets),
                         _dotGridContent,
                         _penContent,
                         _penToggleGroup,
                         randomLevelGenerator,
-                        presenter,
+                        _presenter,
                         _modeData,
                         SetStage
                     )
                 },
 
-                { State.Memorize, new MemorizeState(_fsm, _pickColors, _modeData, addressableHandler.ChallengeStageJsonDataAsset.StageDatas, presenter, GetStage) },
-                { State.Paint, new PaintState(_fsm, _pickColors, _modeData, presenter, GetStage) },
-                { State.Clear, new ClearState(_fsm, presenter, _modeData, GetStage, DestroyDots) },
-                { State.GameOver, new EndState(_fsm, presenter, _pickColors, clearPatternUIFactory, _modeData) },
+                { State.Memorize, new MemorizeState(_fsm, pickColors, _modeData, addressableHandler.ChallengeStageJsonDataAsset.StageDatas, _presenter, GetStage) },
+                { State.Paint, new PaintState(_fsm, pickColors, _modeData, _presenter, GetStage) },
+                { State.Clear, new ClearState(_fsm, _presenter, _modeData, GetStage, DestroyDots) },
+                { State.GameOver, new EndState(_fsm, _presenter, pickColors, clearPatternUIFactory, _modeData) },
                 { State.Result, new ResultState(
                     _fsm,
                     new NearRankingService(),
                     new WeeklyScoreUpdateService(),
                     new TransactionService(),
                     rankingFactory,
-                    presenter,
+                    _presenter,
                     _modeData) }
             };
 

@@ -17,7 +17,7 @@ public class ArtworkUI : SpawnableUI
     {
         _lockObj.SetActive(!hasIt);
 
-        Vector2 changedSize = _refitableImage.ResizeImage(artSprite);
+        Vector2 changedSize = _refitableImage.ResizeImageWithHeight(artSprite);
 
         _artFrame.sizeDelta = changedSize;
         _artFrameImage.sprite = artFrameSprite;
@@ -29,6 +29,10 @@ public class ArtworkUI : SpawnableUI
     public override void InjectClickEvent(System.Action OnClick)
     {
         OnClickRequested = OnClick;
-        _artFrameBtn.onClick.AddListener(() => { OnClickRequested?.Invoke(); });
+        _artFrameBtn.onClick.AddListener(() => 
+        { 
+            OnClickRequested?.Invoke();
+            ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.BtnClick);
+        });
     }
 }

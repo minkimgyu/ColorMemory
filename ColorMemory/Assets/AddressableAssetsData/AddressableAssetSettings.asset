@@ -15,7 +15,7 @@ MonoBehaviour:
   m_DefaultGroup: 4cf8421067e45b24fba0926778135873
   m_currentHash:
     serializedVersion: 2
-    Hash: 00000000000000000000000000000000
+    Hash: 6e6922999fc70a3fc7a9e746a66ea320
   m_OptimizeCatalogSize: 0
   m_BuildRemoteCatalog: 0
   m_BundleLocalCatalog: 0
@@ -45,6 +45,7 @@ MonoBehaviour:
   m_overridePlayerVersion: '[UnityEditor.PlayerSettings.bundleVersion]'
   m_GroupAssets:
   - {fileID: 11400000, guid: f26106950c6d1554fa2433cb0d82d850, type: 2}
+  - {fileID: 11400000, guid: 246ded2c23b3a624283ab882576b3830, type: 2}
   - {fileID: 11400000, guid: 4ede0ddd480073449b4eb8529818c0e5, type: 2}
   - {fileID: 11400000, guid: 67a5e4a8b6f25314f90875e17247ca4a, type: 2}
   - {fileID: 11400000, guid: 49ec98064c86c3b488cfd9b8ff7e258b, type: 2}
@@ -56,6 +57,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 5eaccb87ba2affc48931a5d3cc9c8084, type: 2}
   - {fileID: 11400000, guid: b060bcc7c8302e34fa3b37a112baf449, type: 2}
   - {fileID: 11400000, guid: 6447756bad477244397f56ce3842659b, type: 2}
+  - {fileID: 11400000, guid: e75a823cd552f77489cb0de1120a9d99, type: 2}
   - {fileID: 11400000, guid: 12ed57960fd08844d9fd53a9d08781a6, type: 2}
   - {fileID: 11400000, guid: 8c542db80b7825e489ff699e57310e98, type: 2}
   - {fileID: 11400000, guid: 25b2d9a1c897edf4bb88ff0636f876c2, type: 2}
@@ -95,6 +97,20 @@ MonoBehaviour:
         m_Value: https://colormemory-assets.s3.ap-northeast-2.amazonaws.com/[BuildTarget]
       - m_Id: 932a9e4c2f624484e8e003832ff92463
         m_Value: '{UnityEngine.AddressableAssets.Addressables.RuntimePath}/[BuildTarget]'
+    - m_InheritedParent: 
+      m_Id: 90b7a36a25851cf40bcff329b2539c03
+      m_ProfileName: Test
+      m_Values:
+      - m_Id: 1a9da40adf168d44d8face568bc99132
+        m_Value: ServerData/[BuildTarget]
+      - m_Id: 30e4d13750fe4f249b9b80c5fca05377
+        m_Value: '[UnityEngine.AddressableAssets.Addressables.BuildPath]/[BuildTarget]'
+      - m_Id: 47e4810908016d242bae95ca67a2c0d3
+        m_Value: '[UnityEditor.EditorUserBuildSettings.activeBuildTarget]'
+      - m_Id: 799e17b26d0aab740966164cea2e9575
+        m_Value: https://color-memory-test-bucket.s3.ap-northeast-2.amazonaws.com/[BuildTarget]
+      - m_Id: 932a9e4c2f624484e8e003832ff92463
+        m_Value: '{UnityEngine.AddressableAssets.Addressables.RuntimePath}/[BuildTarget]'
     m_ProfileEntryNames:
     - m_Id: 1a9da40adf168d44d8face568bc99132
       m_Name: Remote.BuildPath
@@ -130,6 +146,8 @@ MonoBehaviour:
     - RankDecorationIcon
     - StageRankIcon
     - LocalizationData
+    - ColorPaletteData
+    - Sound
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: 03dca29f491627045ab1f15b73890c5c, type: 2}

@@ -45,6 +45,9 @@ namespace Collect
             //_timer = new Timer();
 
             _collectStageUIPresenter = collectStageUIPresenter;
+
+            _collectStageUIPresenter.OnClickGoBackHint += OnClickGoBackHint;
+
             this.GetLevelData = GetLevelData;
         }
 
@@ -104,9 +107,7 @@ namespace Collect
             }
         }
 
-
-
-        public override void OnClickGoBackHint()
+        void OnClickGoBackHint()
         {
             _goBackActivated = true;
             _goBackCount++;
@@ -139,8 +140,17 @@ namespace Collect
             _levelSize = new Vector2Int(_dots.GetLength(0), _dots.GetLength(1));
 
             _collectStageUIPresenter.ActivateDetailContent(true);
-            _collectStageUIPresenter.ChangeCurrentHintUsage(_goBackCount);
-            _collectStageUIPresenter.ChangeCurrentWrongCount(_modeData.WrongCount);
+
+
+            string usageFormat;
+            if (_goBackCount > 1) usageFormat = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.Counts);
+            else usageFormat = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.Count);
+            _collectStageUIPresenter.ChangeCurrentHintUsage(_goBackCount, usageFormat);
+
+            string wrongFormat;
+            if (_modeData.WrongCount > 1) wrongFormat = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.Counts);
+            else wrongFormat = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.Count);
+            _collectStageUIPresenter.ChangeCurrentWrongCount(_modeData.WrongCount, wrongFormat);
 
             _collectStageUIPresenter.ChangeHintInfoText($"힌트를 {_goBackCount}번 사용했어요");
 
@@ -216,7 +226,11 @@ namespace Collect
             {
                 _dots[index.x, index.y].XSlide(Color.red);
                 _modeData.WrongCount += 1;
-                _collectStageUIPresenter.ChangeCurrentWrongCount(_modeData.WrongCount);
+
+                string wrongFormat;
+                if (_modeData.WrongCount > 1) wrongFormat = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.Counts);
+                else wrongFormat = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.Count);
+                _collectStageUIPresenter.ChangeCurrentWrongCount(_modeData.WrongCount, wrongFormat);
                 return;
             }
             SpreadColor(index);

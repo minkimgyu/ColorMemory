@@ -17,6 +17,7 @@ public class InGameDot : Dot
     public override void OnPointerDown(PointerEventData eventData)
     {
         if (_clickable == false) return;
+        base.OnPointerDown(eventData);
 
         Debug.Log("Click");
         OnClick?.Invoke(_index);

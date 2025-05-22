@@ -34,17 +34,14 @@ namespace Collect
             _timer = new Timer();
 
             _collectStageUIPresenter = collectStageUIPresenter;
+            collectStageUIPresenter.OnClickSkipBtn += GoToPaintState;
+
             this.GetLevelData = GetLevelData;
         }
 
         Color GetDotColor(int row, int col)
         {
             return _data.PickColors[_mapData.DotColor[row, col]];
-        }
-
-        public override void OnClickSkipBtn()
-        {
-            GoToPaintState();
         }
 
         public override void OnStateEnter()

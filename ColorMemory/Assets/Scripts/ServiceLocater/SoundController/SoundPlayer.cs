@@ -9,65 +9,56 @@ public class SoundPlayer : MonoBehaviour, ISoundPlayable
     AudioSource _bgmPlayer;
     AudioSource[] _sfxPlayer;
 
-    [SerializeField] GameObject _bgmPlayerObject;
-    [SerializeField] GameObject _sfxPlayerObject;
+    float _sfxVolume = 1;
 
-    public void Initialize(Dictionary<ISoundPlayable.SoundName, AudioClip> clipDictionary)
+    public void Initialize(
+        Dictionary<ISoundPlayable.SoundName, AudioClip> clipDictionary,
+        float initBgmVolume,
+        float initSfxVolume)
     {
         _clipDictionary = clipDictionary;
-        _bgmPlayer = _bgmPlayerObject.GetComponent<AudioSource>();
+
+        GameObject bgmPlayerObject = new GameObject("bgmPlayer");
+        bgmPlayerObject.transform.SetParent(transform);
+
+        _bgmPlayer = bgmPlayerObject.AddComponent<AudioSource>();
+        SetBGMVolume(initBgmVolume);
         _bgmPlayer.loop = true;
 
-        _sfxPlayer = _sfxPlayerObject.GetComponents<AudioSource>();
+        SetSFXVolume(initSfxVolume);
         DontDestroyOnLoad(gameObject);
     }
 
-    public void PlayBGM(ISoundPlayable.SoundName name, float volumn = 1)
+    public void PlayBGM(ISoundPlayable.SoundName name)
     {
         if (_clipDictionary.ContainsKey(name) == false) return;
         _bgmPlayer.clip = _clipDictionary[name];
-
-
-        _bgmPlayer.volume = volumn;
         _bgmPlayer.Play();
     }
 
-    public void PlaySFX(ISoundPlayable.SoundName name, Vector3 pos, float volumn = 1)
+    public void PlaySFX(ISoundPlayable.SoundName name, Vector3 pos)
     {
         if (_nowSFXMute == true) return;
         if (_clipDictionary.ContainsKey(name) == false) return;
-        AudioSource.PlayClipAtPoint(_clipDictionary[name], pos, volumn);
-
+        AudioSource.PlayClipAtPoint(_clipDictionary[name], pos, _sfxVolume);
     }
 
-    public void PlaySFX(ISoundPlayable.SoundName name, float volumn = 1)
+    public void PlaySFX(ISoundPlayable.SoundName name)
     {
+        if (_nowSFXMute == true) return;
         if (_clipDictionary.ContainsKey(name) == false) return;
-
-        for (int i = 0; i < _sfxPlayer.Length; i++)
-        {
-            if (_sfxPlayer[i].isPlaying == true) continue;
-            _sfxPlayer[i].clip = _clipDictionary[name];
-
-            _sfxPlayer[i].volume = volumn;
-            _sfxPlayer[i].Play();
-            break;
-        }
+        AudioSource.PlayClipAtPoint(_clipDictionary[name], Vector3.zero, _sfxVolume);
     }
 
     public void SetBGMVolume(float volume = 1)
     {
-        _bgmPlayer.volume = volume;
+        _bgmPlayer.volume = volume * 0.3f;
         ServiceLocater.ReturnSaveManager().ChangeBGMVolume(volume);
     }
 
     public void SetSFXVolume(float volume = 1)
     {
-        for (int i = 0; i < _sfxPlayer.Length; i++)
-        {
-            _sfxPlayer[i].volume = volume;
-        }
-
+        _sfxVolume = volume;
         ServiceLocater.ReturnSaveManager().ChangeSFXVolume(volume);
     }
 

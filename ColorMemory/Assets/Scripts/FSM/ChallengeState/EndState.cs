@@ -4,7 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
-using static Challenge.ChallengeMode;
 
 namespace Challenge
 {
@@ -24,12 +23,21 @@ namespace Challenge
             ChallengeMode.ModeData modeData) : base(fsm)
         {
             _challengeStageUIPresenter = challengeStageUIPresenter;
+
+            _challengeStageUIPresenter.OnClickNextBtn += OnClickNextBtn;
+            _challengeStageUIPresenter.OnClickGameOverExitBtn += OnClickExitBtn;
+
             _pickColors = pickColors;
             _clearPatternUIFactory = clearPatternUIFactory;
             _modeData = modeData;
         }
 
-        public override void OnClickNextBtn()
+        void OnClickExitBtn()
+        {
+            ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.HomeScene);
+        }
+
+        void OnClickNextBtn()
         {
             _fsm.SetState(ChallengeMode.State.Result);
         }
@@ -38,6 +46,8 @@ namespace Challenge
         {
             _challengeStageUIPresenter.ActivatePlayPanel(false);
             _challengeStageUIPresenter.ActivateGameOverPanel(true);
+
+            ServiceLocater.ReturnSoundPlayer().PlayBGM(ISoundPlayable.SoundName.ChallengeResultBGM);
 
             for (int i = 0; i < _modeData.ClearStageCount; i++)
             {

@@ -34,15 +34,19 @@ namespace Challenge
 
             _rankingUIFactory = rankingUIFactory;
             _challengeStageUIPresenter = challengeStageUIPresenter;
+
+            _challengeStageUIPresenter.OnClickRetryBtn += OnClickRetryBtn;
+            _challengeStageUIPresenter.OnClickExitBtn += OnClickExitBtn;
+
             _modeData = modeData;
         }
 
-        public override void OnClickRetryBtn()
+        void OnClickRetryBtn()
         {
             ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.ChallengeScene);
         }
 
-        public override void OnClickExitBtn()
+        void OnClickExitBtn()
         {
             ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.HomeScene);
         }
@@ -71,7 +75,9 @@ namespace Challenge
 
             int money = GetMoney();
             _challengeStageUIPresenter.ActivateGameResultPanel(true);
-            _challengeStageUIPresenter.ChangeResultGoldCount(money);
+
+            string format = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.GetCoin);
+            _challengeStageUIPresenter.ChangeResultGoldCount(money, format);
 
 
             for (int i = 0; i < rankingData.Item1.Count; i++)

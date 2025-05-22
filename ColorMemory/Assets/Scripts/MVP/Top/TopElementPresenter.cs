@@ -1,21 +1,33 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class TopElementPresenter
 {
-    TopElementViewer _topElementViewer;
-    TopElementModel _topElementModel;
+    TopElementViewer _viewer;
+    TopElementModel _model;
 
-    public TopElementPresenter(TopElementViewer topElementViewer, TopElementModel topElementModel)
+    public Action OnClickShopBtn { get; set; }
+    public Action OnClickHomeBtn { get; set; }
+
+    public Action OnClickRankingBtn { get; set; }
+    public Action OnClickSettingBtn { get; set; }
+
+
+    public TopElementPresenter(TopElementModel topElementModel)
     {
-        _topElementViewer = topElementViewer;
-        _topElementModel = topElementModel;
+        _model = topElementModel;
+    }
+
+    public void InjectViewer(TopElementViewer viewer)
+    {
+        _viewer = viewer;
     }
 
     public void ChangeGoldCount(int goldCount)
     {
-        _topElementModel.GoldCount = goldCount;
-        _topElementViewer.ChangeGoldCount(_topElementModel.GoldCount);
+        _model.GoldCount = goldCount;
+        _viewer.ChangeGoldCount(_model.GoldCount);
     }
 }

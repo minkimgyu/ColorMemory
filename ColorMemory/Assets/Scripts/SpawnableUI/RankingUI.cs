@@ -4,15 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public enum ProfileIconName
-{
-    Icon1,
-    Icon2,
-    Icon3,
-    Icon4,
-    Icon5,
-}
-
 public struct RankingData
 {
     List<PersonalRankingData> _otherRankingDatas;

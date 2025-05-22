@@ -1,6 +1,7 @@
 using NetworkService.DTO;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class CollectPageModel
@@ -14,7 +15,7 @@ public class CollectPageModel
     string _title;
     string _description;
 
-    Dictionary<int, ArtworkData> _artworkDatas;
+    Dictionary<ILocalization.Language, ArtworkDateWrapper> _artworkDatas;
     Dictionary<int, CollectArtData> _collectArtDatas;
     Dictionary<int, ArtData> _artDatas;
     float _totalCompleteRatio;
@@ -46,8 +47,9 @@ public class CollectPageModel
     List<FilterUI.RankFilter> _rankFilters;
     FilterUI.DateFilter _dateFilter;
 
+    string _stageNameTxt;
 
-    public CollectPageModel(Dictionary<int, ArtData> artDatas, Dictionary<int, ArtworkData> artworkDatas, Dictionary<int, CollectArtData> collectArtDatas)
+    public CollectPageModel(Dictionary<int, ArtData> artDatas, Dictionary<ILocalization.Language, ArtworkDateWrapper> artworkDatas, Dictionary<int, CollectArtData> collectArtDatas)
     {
         _activeContent = false;
         _activeSelectStageContent = false;
@@ -115,7 +117,7 @@ public class CollectPageModel
     public int WrongCount { get => _wrongCount; set => _wrongCount = value; }
 
 
-    public Dictionary<int, ArtworkData> ArtworkDatas { get => _artworkDatas; }
+    public Dictionary<ILocalization.Language, ArtworkDateWrapper> ArtworkDatas { get => _artworkDatas; }
     public Dictionary<int, CollectArtData> CollectArtDatas { get => _collectArtDatas; set => _collectArtDatas = value; }
     public Dictionary<int, ArtData> ArtDatas { get => _artDatas; set => _artDatas = value; }
 
@@ -132,5 +134,5 @@ public class CollectPageModel
     public FilterUI.OwnFilter OwnFilter { get => _ownFilter; set => _ownFilter = value; }
     public List<FilterUI.RankFilter> RankFilters { get => _rankFilters; set => _rankFilters = value; }
     public FilterUI.DateFilter DateFilter { get => _dateFilter; set => _dateFilter = value; }
-
+    public string StageNameTxt { get => _stageNameTxt; set => _stageNameTxt = value; }
 }

@@ -6,8 +6,8 @@ public interface ILocalization
 {
     public enum Language
     {
-        English,
-        Korean
+        Korean,
+        English
     }
 
     // 보스 등장
@@ -69,7 +69,11 @@ public interface ILocalization
         ShopBundle2Content,
         ShopBundle3Title,
         ShopBundle3Content,
-        Rank
+        Rank,
+        Progress,
+
+        LanguageTitle,
+        ShareArtwork
     }
 
     string GetWord(Key key);

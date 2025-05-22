@@ -124,3 +124,10 @@ public class LocalizationDataJsonAssetLoader : SingleJsonAssetLoader<Localizatio
     {
     }
 }
+
+public class ColorPaletteDataJsonAssetLoader : SingleJsonAssetLoader<ColorPaletteDataWrapper>
+{
+    public ColorPaletteDataJsonAssetLoader(AddressableLoader.Label label, Action<ColorPaletteDataWrapper, AddressableLoader.Label> OnComplete) : base(label, OnComplete)
+    {
+    }
+}

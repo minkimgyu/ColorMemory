@@ -7,7 +7,7 @@ using DG.Tweening;
 [RequireComponent(typeof(Button))]
 public class ToggleBtn : MonoBehaviour
 {
-    public System.Action<bool> OnClick { get; set; }
+    public System.Action<bool, bool> OnClick { get; set; }
 
     bool _isOn = false;
     public bool IsOn { get => _isOn; }
@@ -47,7 +47,7 @@ public class ToggleBtn : MonoBehaviour
 
         _isOn = !_isOn;
         UpdateIcon();
-        OnClick?.Invoke(_isOn);
+        OnClick?.Invoke(true, _isOn); // UI 입력 이벤트
     }
 
     public void ChangeState(bool isOn)
@@ -58,7 +58,7 @@ public class ToggleBtn : MonoBehaviour
 
         _isOn = isOn;
         UpdateIcon();
-        OnClick?.Invoke(_isOn);
+        OnClick?.Invoke(false, _isOn);
     }
 
     void UpdateIcon()

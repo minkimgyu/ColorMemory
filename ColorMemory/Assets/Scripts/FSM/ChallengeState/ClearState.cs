@@ -23,6 +23,8 @@ namespace Challenge
             Action DestroyDots) : base(fsm)
         {
             _challengeStageUIPresenter = challengeStageUIPresenter;
+            _challengeStageUIPresenter.OnClickPauseGameExitBtn += () => { _fsm.SetState(ChallengeMode.State.GameOver); };
+
             _modeData = modeData;
             this.GetStage = GetStage;
             this.DestroyDots = DestroyDots;
@@ -36,6 +38,8 @@ namespace Challenge
 
             DOVirtual.DelayedCall(0.5f, () =>
             {
+                ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.StageClear);
+
                 Tuple<Dot[,], Dot[], MapData> levelData = GetStage();
                 Dot[,] dots = levelData.Item1;
                 Vector2Int levelSize = new Vector2Int(dots.GetLength(0), dots.GetLength(1));
@@ -70,10 +74,6 @@ namespace Challenge
 
             _challengeStageUIPresenter.ChangeNowScore(_modeData.MyScore);
             _challengeStageUIPresenter.ChangeBestScore(_modeData.BestScore);
-        }
-
-        public override void OnStateUpdate()
-        {
         }
     }
 }

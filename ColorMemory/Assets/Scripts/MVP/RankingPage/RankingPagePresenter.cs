@@ -15,7 +15,10 @@ public class RankingPagePresenter
     public void InjectViewer(RankingPageViewer rankingPageViewer)
     {
         _rankingPageViewer = rankingPageViewer;
+    }
 
+    public void ChangeRankingTitle()
+    {
         _rankingPageModel.RankingTitle = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.RankPageTitle);
         _rankingPageViewer.ChangeRankingTitle(_rankingPageModel.RankingTitle);
     }

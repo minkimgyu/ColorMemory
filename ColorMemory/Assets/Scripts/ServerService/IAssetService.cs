@@ -86,6 +86,24 @@ public class CurrencyService : IAssetService
 
         return money;
     }
+
+    public async Task<bool> EarnPlayerMoneyAsync(string playerId, int moneyToEarn)
+    {
+        MoneyManager moneyManager = new MoneyManager();
+
+        try
+        {
+            await moneyManager.EarnPlayerMoneyAsync(playerId, moneyToEarn);
+        }
+        catch (Exception e)
+        {
+            Debug.Log(e);
+            Debug.Log("서버로 데이터를 전송하지 못 함");
+            return false;
+        }
+
+        return true;
+    }
 }
 
 public class ChallengeModeDataService : IAssetService

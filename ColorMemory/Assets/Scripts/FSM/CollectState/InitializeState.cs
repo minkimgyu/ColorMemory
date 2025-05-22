@@ -61,15 +61,15 @@ namespace Collect
 
             SaveData saveData = ServiceLocater.ReturnSaveManager().GetSaveData();
 
-            float ratio = saveData.SelectedArtworkProgress;
-            _collectStageUIPresenter.ChangeProgressText((int)(ratio * 100));
+            float progress = saveData.SelectedArtworkProgress;
+            _collectStageUIPresenter.ChangeProgressText((int)(progress * 100));
             _collectStageUIPresenter.ChangeHintInfoText("힌트를 사용할수록 높은 랭크를 받을 확률이 떨어져요!");
 
-            CreateLevel(saveData.SelectedArtworkSectionIndex);
+            CreateLevel(saveData.SelectedArtworkSectionIntIndex, saveData.TotalArtworkSectionSize, saveData.SelectedArtworkSectionIndex);
             _fsm.SetState(CollectMode.State.Memorize);
         }
 
-        void CreateLevel(Vector2Int sectionIndex)
+        void CreateLevel(int sectionIntIndex, int totalSectionSize, Vector2Int sectionIndex)
         {
             int colorCount = _artData.Sections[sectionIndex.x][sectionIndex.y].UsedColors[0].Count;
             _modeData.PickColors = new Color[colorCount];
@@ -87,7 +87,8 @@ namespace Collect
             if (customLevelGenerator.CanGenerateLevelData() == false) return;
 
             MapData mapData = customLevelGenerator.GenerateLevelData();
-            _collectStageUIPresenter.ChangeTitle(_modeData.Title);
+
+            _collectStageUIPresenter.ChangeTitle(_modeData.Title, sectionIntIndex + 1, totalSectionSize);
 
             int row = mapData.DotColor.GetLength(0);
             int col = mapData.DotColor.GetLength(1);

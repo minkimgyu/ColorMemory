@@ -31,6 +31,7 @@ public class CollectPageViewer
     TMP_Text _leftCompleteText;
     TMP_Text _totalCompleteText;
 
+    TMP_Text _stageNameTxt;
     TMP_Text _selectStageTitle;
 
     TMP_Text _stageUsedHintUseTitle;
@@ -83,6 +84,7 @@ public class CollectPageViewer
         TMP_Text leftCompleteText,
         TMP_Text totalCompleteText,
 
+        TMP_Text stageNameTxt,
         TMP_Text selectStageTitle,
 
         GameObject selectStageContent,
@@ -136,6 +138,7 @@ public class CollectPageViewer
         _totalComplete = totalComplete;
         _totalCompleteRatio = totalCompleteRatio;
 
+        _stageNameTxt = stageNameTxt;
         _selectStageTitle = selectStageTitle;
         ChangeSelectStageTitle();
 
@@ -212,10 +215,34 @@ public class CollectPageViewer
             });
         }
 
-        _exitBtn.onClick.AddListener(() => { collectPagePresenter.ActiveSelectStageContent(false); });
-        _playBtn.onClick.AddListener(() => { collectPagePresenter.PlayCollectMode(); });
+        _exitBtn.onClick.AddListener(() => 
+        {
+            ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.BtnClick);
+            collectPagePresenter.ActiveSelectStageContent(false); 
+        });
+
+        _playBtn.onClick.AddListener(() => { collectPagePresenter.OnClickPlayBtn?.Invoke(); });
         artworkScrollUI.OnDragEnd += collectPagePresenter.OnArtworkScrollChanged; // -> 이거 수정해서 맞는 인덱스 적용해주기
         ActiveContent(false);
+    }
+
+    const int maxStageNameSize = 25;
+    public void ChangeStageNameText(string stageNameText)
+    {
+        bool overLength = stageNameText.Length > maxStageNameSize;
+        string newStageName;
+
+        if (overLength == true)
+        {
+            int clampedLength = Mathf.Clamp(maxStageNameSize, 0, stageNameText.Length);
+            newStageName = $"{stageNameText.Substring(0, clampedLength)}...";
+        }
+        else
+        {
+            newStageName = stageNameText;
+        }
+
+        _stageNameTxt.text = newStageName;
     }
 
     void ChangeSelectStageTitle()
