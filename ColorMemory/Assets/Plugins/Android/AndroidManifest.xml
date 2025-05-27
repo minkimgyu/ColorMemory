@@ -4,8 +4,9 @@
     package="com.mozi.colormemory"
     xmlns:tools="http://schemas.android.com/tools">
 
+	<uses-permission android:name="com.android.vending.BILLING" />
 
-  <application android:allowBackup="false" android:fullBackupContent="false" tools:replace="android:allowBackup">
+	<application android:allowBackup="false" android:fullBackupContent="false" tools:replace="android:allowBackup">
     <activity android:name="com.unity3d.player.UnityPlayerActivity"
               android:theme="@style/UnityThemeSelector">
       <intent-filter>
