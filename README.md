@@ -26,9 +26,11 @@ Unity를 사용하여 개발한 모바일 퍼즐 2D 게임입니다.
 - ✅ **GitHub Actions을 활용한 테스트, 빌드 자동화 구축** (기여도 100%)
 - ✅ **Google Play Store 출시를 위한 구글 로그인, 인앱 업데이트 적용** (기여도 50%)
 
-## 📱 플레이 스토어
+## 📱 플레이 스토어 링크
 
 https://play.google.com/store/apps/details?id=com.mozi.colormemory&hl=ko
+
+## 📦 구현 목록
 
 ### MVP 패턴 기반 UI 시스템
 
@@ -36,6 +38,8 @@ https://play.google.com/store/apps/details?id=com.mozi.colormemory&hl=ko
 
 Model, View, Presenter의 책임을 명확히 나누어 UI 시스템을 구성하였으며,  
 MockViewer 클래스 구현을 통해 단위 테스트를 수행할 수 있도록 설계하였습니다.
+
+</br>
 
 ### BFS 알고리즘 기반 퍼즐 시스템
 
