@@ -45,7 +45,7 @@ MockViewer 클래스 구현을 통해 단위 테스트를 수행할 수 있도�
 <img src="https://github.com/user-attachments/assets/7631885a-a931-4711-8106-19ae8c80ed93" alt="Color Memory Screenshot" width="50%" height="50%" />
 
 퍼즐 게임에서 인접한 동일 색상 블록을 한 번에 색칠하기 위해  
-BFS 알고리즘을 활용하여 효율적인 탐색을 구현했습니다.
+Breadth First Search 알고리즘을 활용하여 효율적인 탐색을 구현했습니다.
 
 ---
 
