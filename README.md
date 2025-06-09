@@ -3,7 +3,7 @@
 Unity를 사용하여 개발한 모바일 퍼즐 2D 게임입니다.  
 현재 **Google Play Store**에서 서비스 진행 중입니다.
 
-<img src="https://github.com/user-attachments/assets/05950e19-3251-4573-a6cc-9a71cb2ed951" alt="Color Memory Screenshot" width="75%" height="75%" />
+<img src="https://github.com/user-attachments/assets/05950e19-3251-4573-a6cc-9a71cb2ed951" alt="Color Memory Screenshot" width="85%" height="85%" />
 
 ## 📆 개발 기간
 2025년 2월 ~ 2025년 5월
