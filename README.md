@@ -1,21 +1,24 @@
 # 🎮 Color Memory
 
 Unity를 사용하여 개발한 모바일 퍼즐 2D 게임입니다.  
-현재 **Google Play Store**에서 서비스 진행 중입니다.
+[Google Play Store](https://play.google.com/store/apps/details?id=com.mozi.colormemory&hl=ko)에서 서비스 진행 중입니다.
 
 <img src="https://github.com/user-attachments/assets/05950e19-3251-4573-a6cc-9a71cb2ed951" alt="Color Memory Screenshot" width="85%" height="85%" />
 
 ## 📆 개발 기간
 2025년 2월 ~ 2025년 5월
 
+
 ## 🧑‍🤝‍🧑 팀 구성
 - 총 3명  
   - 클라이언트 프로그래머 1명  
   - 서버 프로그래머 1명  
-  - 아트 디자이너 1명  
+  - 아트 디자이너 1명
+
 
 ## 🛠️ 개발 도구
 - Unity (C#)
+
 
 ## 👨‍💻 담당 역할 및 기여도
 
@@ -26,9 +29,7 @@ Unity를 사용하여 개발한 모바일 퍼즐 2D 게임입니다.
 - ✅ **GitHub Actions을 활용한 테스트, 빌드 자동화 구축** (기여도 100%)
 - ✅ **Google Play Store 출시를 위한 구글 로그인, 인앱 업데이트 적용** (기여도 50%)
 
-## 📱 플레이 스토어 링크
-
-https://play.google.com/store/apps/details?id=com.mozi.colormemory&hl=ko
+---
 
 ## 📦 MVP 패턴 기반 UI 시스템
 
