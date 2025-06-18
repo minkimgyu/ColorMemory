@@ -224,9 +224,6 @@ namespace Collect
 
             ServiceLocater.ReturnSoundPlayer().PlayBGM(ISoundPlayable.SoundName.CollectBGM);
 
-            //Vector2 size = _canvas.gameObject.GetComponent<RectTransform>().sizeDelta;
-            //_nextPanel.sizeDelta = new Vector2(size.x, _nextPanel.sizeDelta.y); // 사이즈 맞춰주기
-
             SaveData saveData = ServiceLocater.ReturnSaveManager().GetSaveData();
 
             int artworkIndex = saveData.SelectedArtworkKey;
@@ -328,15 +325,6 @@ namespace Collect
 
 
             presenter.InjectViewer(viewer);
-
-            //_skipBtn.onClick.AddListener(() => { _fsm.OnClickSkipBtn(); });
-
-            //_nextBtn.onClick.AddListener(() => { _fsm.OnClickNextBtn(); });
-
-            //_clearExitBtn.onClick.AddListener(() => { _fsm.OnClickExitBtn(); });
-            //_nextStageBtn.onClick.AddListener(() => { _fsm.OnClickNextStageBtn(); });
-
-            //_goBackBtn.onClick.AddListener(() => { _fsm.OnClickGoBackHint(); });
 
             _fsm = new FSM<State>();
             Dictionary<State, BaseState<State>> states = new Dictionary<State, BaseState<State>>()

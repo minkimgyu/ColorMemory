@@ -340,29 +340,6 @@ namespace Challenge
 
             _presenter.InjectViewer(_viewer);
 
-            //_goToGameOverBtn.onClick.AddListener(() =>
-            //{
-            //    _fsm.OnClickGoToGameOver();
-            //});
-
-            //_nextBtn.onClick.AddListener(() => 
-            //{ 
-            //    _fsm.OnClickNextBtn(); 
-            //});
-
-            //_gameOverExitBtn.onClick.AddListener(() =>
-            //{
-            //    _fsm.OnClickExitBtn();
-            //});
-
-            //_skipBtn.onClick.AddListener(() => { _fsm.OnClickSkipBtn(); });
-
-            //_tryAgainBtn.onClick.AddListener(() => { _fsm.OnClickRetryBtn(); });
-            //_gameResultExitBtn.onClick.AddListener(() => { _fsm.OnClickExitBtn(); });
-
-            //_oneZoneHintBtn.onClick.AddListener(() => { _fsm.OnClickOneZoneHint(); });
-            //_oneColorHintBtn.onClick.AddListener(() => { _fsm.OnClickOneColorHint(); });
-
             _presenter.ActivatePlayPanel(true);
             _presenter.ChangeHintCost(_modeData.OneColorHintCost, _modeData.OneZoneHintCost);
             _presenter.ChangeNowScore(_modeData.MyScore);
