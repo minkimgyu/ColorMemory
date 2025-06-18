@@ -105,6 +105,10 @@ AI 도구를 활용해서 엣지 케이스 및 테스트 항목을 제안받고 
 
 * 결과적으로 테스트 코드 작성을 효율적으로 할 수 있었고, 코드 상 문제점을 사전에 검증할 수 있었습니다.
 
+[LevelTest 코드](https://github.com/minkimgyu/ColorMemory/blob/9e38ff733c811e34c43812a776ded6daeb1b4874/ColorMemory/Assets/Tests/PlayMode/LevelTest.cs#L29)
+
+[WebServerTest 코드](https://github.com/minkimgyu/ColorMemory/blob/9e38ff733c811e34c43812a776ded6daeb1b4874/ColorMemory/Assets/Tests/PlayMode/WebServerTest.cs#L195)
+
 [ChallengeModeMVPTest 코드](https://github.com/minkimgyu/ColorMemory/blob/33e192c557a53b4c02b6c399165b04eb60b5ed0a/ColorMemory/Assets/Tests/EditMode/ChallengeModeMVPTest.cs#L7)
 
 [CollectModeMVPTest 코드](https://github.com/minkimgyu/ColorMemory/blob/33e192c557a53b4c02b6c399165b04eb60b5ed0a/ColorMemory/Assets/Tests/EditMode/CollectModeMVPTest.cs#L4)
