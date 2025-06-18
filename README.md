@@ -103,7 +103,7 @@ AI 도구를 활용해서 엣지 케이스 및 테스트 항목을 제안받고 
 * **Edit Mode 테스트:**
     * Challenge, Collect 모드 UI 시스템에서 각 레이어(Model, View, Presenter) 간의 데이터 흐름이 명확한지 테스트했습니다.
 
-* 결과적으로 테스트 코드 작성을 효율적으로 할 수 있었고, 코드 상 문제점을 사전에 검증할 수 있었습니다.
+결과적으로 테스트 코드 작성을 효율적으로 할 수 있었고, 코드 상 문제점을 사전에 검증할 수 있었습니다.
 
 [LevelTest 코드](https://github.com/minkimgyu/ColorMemory/blob/9e38ff733c811e34c43812a776ded6daeb1b4874/ColorMemory/Assets/Tests/PlayMode/LevelTest.cs#L29)
 
