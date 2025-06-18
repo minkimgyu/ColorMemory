@@ -53,6 +53,8 @@ MockViewer 클래스 구현을 통해 단위 테스트를 수행할 수 있도�
 퍼즐 게임에서 인접한 동일 색상 블록을 한 번에 색칠하기 위해  
 Breadth First Search 알고리즘을 활용하여 효율적인 탐색을 구현했습니다.
 
+[BFS 구현 코드](https://github.com/minkimgyu/ColorMemory/blob/33e192c557a53b4c02b6c399165b04eb60b5ed0a/ColorMemory/Assets/Scripts/FSM/CollectState/PaintState.cs#L248)
+
 ---
 
 ## 📦 Remote Addressable을 활용한 에셋 시스템 개발 및 빌드 용량 최적화
@@ -102,6 +104,10 @@ AI 도구를 활용해서 엣지 케이스 및 테스트 항목을 제안받고 
     * Challenge, Collect 모드 UI 시스템에서 각 레이어(Model, View, Presenter) 간의 데이터 흐름이 명확한지 테스트했습니다.
 
 * 결과적으로 테스트 코드 작성을 효율적으로 할 수 있었고, 코드 상 문제점을 사전에 검증할 수 있었습니다.
+
+[ChallengeModeMVPTest 코드](https://github.com/minkimgyu/ColorMemory/blob/33e192c557a53b4c02b6c399165b04eb60b5ed0a/ColorMemory/Assets/Tests/EditMode/ChallengeModeMVPTest.cs#L7)
+
+[CollectModeMVPTest 코드](https://github.com/minkimgyu/ColorMemory/blob/33e192c557a53b4c02b6c399165b04eb60b5ed0a/ColorMemory/Assets/Tests/EditMode/CollectModeMVPTest.cs#L4)
 
 ### Unity Test Runner 결과 🟢
 <img src="https://github.com/user-attachments/assets/e341a1e0-0f85-4195-8a39-dfb9fc564a48" alt="Color Memory Screenshot" width="50%" height="50%" />
