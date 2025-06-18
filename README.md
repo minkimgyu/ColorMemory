@@ -38,6 +38,12 @@ Unity를 사용하여 개발한 모바일 퍼즐 2D 게임입니다.
 Model, View, Presenter의 책임을 명확히 나누어 UI 시스템을 구성하였으며,  
 MockViewer 클래스 구현을 통해 단위 테스트를 수행할 수 있도록 설계하였습니다.
 
+[Collect모드 MVP 구현 코드](https://github.com/minkimgyu/ColorMemory/blob/e4bd29b9868dd1b1104bfdf3d92b1175ab1ff253/ColorMemory/Assets/Scripts/Mode/CollectMode.cs#L237C6-L237C67)
+
+[CollectStageUIModel 코드](https://github.com/minkimgyu/ColorMemory/blob/e4bd29b9868dd1b1104bfdf3d92b1175ab1ff253/ColorMemory/Assets/Scripts/MVP/Collect/CollectStageUIModel.cs#L5)
+[CollectStageUIViewer 코드](https://github.com/minkimgyu/ColorMemory/blob/e4bd29b9868dd1b1104bfdf3d92b1175ab1ff253/ColorMemory/Assets/Scripts/MVP/Collect/CollectStageUIViewer.cs#L9C14-L9C34)
+[CollectStageUIPresenter 코드](https://github.com/minkimgyu/ColorMemory/blob/e4bd29b9868dd1b1104bfdf3d92b1175ab1ff253/ColorMemory/Assets/Scripts/MVP/Collect/CollectStageUIPresenter.cs#L7)
+
 ---
 
 ## 🛠️ Breadth First Search 알고리즘 기반 퍼즐 시스템
