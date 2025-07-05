@@ -65,13 +65,13 @@ public class ShopPageState : BaseState<HomePage.InnerPageState>
         string title3 = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.ShopBundle3Title);
         string content3 = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.ShopBundle3Content);
 
-        SpawnableUI spawnableUI1 = _shopBundleUIFactory.Create(title1, content1, 1000, 2500);
-        SpawnableUI spawnableUI2 = _shopBundleUIFactory.Create(title2, content2, 2000, 4500);
-        SpawnableUI spawnableUI3 = _shopBundleUIFactory.Create(title3, content3, 4000, 8000);
+        SpawnableUI spawnableUI1 = _shopBundleUIFactory.Create(title1, content1, 1000, 2500, "coin1000");
+        SpawnableUI spawnableUI2 = _shopBundleUIFactory.Create(title2, content2, 2000, 4500, "coin2000");
+        SpawnableUI spawnableUI3 = _shopBundleUIFactory.Create(title3, content3, 4000, 8000, "coin4000");
 
-        spawnableUI1.InjectClickEvent(() => { BuyItemFromServer(1000); });
-        spawnableUI2.InjectClickEvent(() => { BuyItemFromServer(2000); });
-        spawnableUI3.InjectClickEvent(() => { BuyItemFromServer(4000); });
+        spawnableUI1.InjectClickEvent(() => IAPManager.Instance.BuyProduct("coin1000", () => BuyItemFromServer(1000)));
+        spawnableUI2.InjectClickEvent(() => IAPManager.Instance.BuyProduct("coin2000", () => BuyItemFromServer(2000)));
+        spawnableUI3.InjectClickEvent(() => IAPManager.Instance.BuyProduct("coin4000", () => BuyItemFromServer(4000)));
 
         _shopPagePresenter.AddShopItem(spawnableUI1);
         _shopPagePresenter.AddShopItem(spawnableUI2);
@@ -80,7 +80,7 @@ public class ShopPageState : BaseState<HomePage.InnerPageState>
         string shopAdBtnInfo = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.ShopAdBtnInfo);
         _shopPagePresenter.ChangeShopAdBtnTxt(shopAdBtnInfo);
 
-        _shopPagePresenter.ActiveContent(true); // home ╢щ╬фаж╠Б
+        _shopPagePresenter.ActiveContent(true);
     }
 
     public override void OnStateExit()

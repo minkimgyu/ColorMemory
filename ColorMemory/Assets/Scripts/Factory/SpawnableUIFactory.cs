@@ -133,10 +133,10 @@ public class ShopBundleCreater : SpawnableUICreater
     {
     }
 
-    public override SpawnableUI Create(string name, string description, int reward, int price)
+    public SpawnableUI Create(string name, string description, int reward, int price, string productId)
     {
         SpawnableUI selectStageUI = Object.Instantiate(_prefab);
-        selectStageUI.Initialize(name, description, reward, price);
+        selectStageUI.Initialize(name, description, reward, price, productId);
 
         return selectStageUI;
     }
@@ -175,9 +175,9 @@ public class ShopBundleUIFactory : BaseFactory
         _shopBundleCreater = new ShopBundleCreater(shopBundlePrefab);
     }
 
-    public override SpawnableUI Create(string name, string description, int reward, int price)
+    public SpawnableUI Create(string name, string description, int reward, int price, string productId)
     {
-        return _shopBundleCreater.Create(name, description, reward, price);
+        return _shopBundleCreater.Create(name, description, reward, price, productId);
     }
 }
 
