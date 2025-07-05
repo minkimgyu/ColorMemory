@@ -11,13 +11,15 @@ public class ShopBundleUI : SpawnableUI
     [SerializeField] TMP_Text _rewardTxt;
     [SerializeField] TMP_Text _priceTxt;
     [SerializeField] Button _buyBtn;
+    private string _productId;
+    public string ProductId => _productId; 
 
     public override void InjectClickEvent(System.Action OnClick) 
     {
         _buyBtn.onClick.AddListener(() => { OnClick?.Invoke(); ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.BtnClick); });
     }
 
-    public override void Initialize(string title, string description, int reward, int price) 
+    public override void Initialize(string title, string description, int reward, int price, string productId) 
     {
         _titleTxt.text = title;
         _descriptionTxt.text = description;
@@ -25,5 +27,6 @@ public class ShopBundleUI : SpawnableUI
 
         string buyFormat = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.ShopBundleBuyInfo);
         _priceTxt.text = string.Format(buyFormat, price);
+        _productId = productId;
     }
 }

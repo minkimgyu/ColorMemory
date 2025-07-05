@@ -15,7 +15,7 @@ abstract public class SpawnableUI : MonoBehaviour
         FilterItemUI
     }
 
-    public virtual void Initialize(string title, string description, int reward, int price) { }
+    public virtual void Initialize(string title, string description, int reward, int price, string productId) { }
     public virtual void Initialize(Sprite profileSprite, string title, int score, int rank) { }
 
 
