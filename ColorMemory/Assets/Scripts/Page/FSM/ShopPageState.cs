@@ -56,6 +56,8 @@ public class ShopPageState : BaseState<HomePage.InnerPageState>
 
     public override void OnStateEnter()
     {
+        AdManager.Instance.LoadBannerAd();
+
         string title1 = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.ShopBundle1Title);
         string content1 = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.ShopBundle1Content);
 
@@ -87,5 +89,7 @@ public class ShopPageState : BaseState<HomePage.InnerPageState>
     {
         _shopPagePresenter.DestroyShopItems();
         _shopPagePresenter.ActiveContent(false); // home ╢щ╬фаж╠Б
+
+        AdManager.Instance.DestroyBannerAd();
     }
 }

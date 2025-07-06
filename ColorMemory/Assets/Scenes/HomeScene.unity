@@ -2988,6 +2988,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 953514984}
   m_CullTransparentMesh: 1
+--- !u!1 &1041383486
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1041383488}
+  - component: {fileID: 1041383487}
+  m_Layer: 0
+  m_Name: Ad Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1041383487
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1041383486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 162b10f5ae7b3ba49b29e696723955a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HomePage: {fileID: 481930077}
+--- !u!4 &1041383488
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1041383486}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 104.43175, y: 277.11563, z: -3.9552507}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1055083662
 GameObject:
   m_ObjectHideFlags: 0
@@ -3703,7 +3748,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1280364541}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1041383487}
+        m_TargetAssemblyTypeName: AdManager, LogicScripts
+        m_MethodName: ShowRewardedAd
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1280364541
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5117,7 +5174,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e8ff2ae276aba842a22b6863f488ac2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stateText: {fileID: 0}
 --- !u!4 &1824601521
 Transform:
   m_ObjectHideFlags: 0
@@ -6528,3 +6584,4 @@ SceneRoots:
   - {fileID: 481930078}
   - {fileID: 20103879}
   - {fileID: 1824601521}
+  - {fileID: 1041383488}

@@ -112,6 +112,7 @@ public class HomePage : MonoBehaviour
     FSM<InnerPageState> _pageFsm;
 
     TopElementPresenter _topElementPresenter;
+    public TopElementPresenter TopElementPresenter {  get { return _topElementPresenter; } }
 
     IAssetService _currencyService;
     IArtDataService _artDataLoaderService;
