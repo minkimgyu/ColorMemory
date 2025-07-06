@@ -7,8 +7,6 @@ using TMPro;
 
 public class IAPManager : MonoBehaviour, IStoreListener
 {
-    [SerializeField] private TMP_Text stateText;
-
     private IStoreController storeController;
     private IExtensionProvider storeExtensionProvider;
 
@@ -51,27 +49,26 @@ public class IAPManager : MonoBehaviour, IStoreListener
     {
         storeController = controller;
         storeExtensionProvider = extensions;
-        stateText.text = "IAP Initialized";
     }
 
     public void OnInitializeFailed(InitializationFailureReason error)
     {
-        stateText.text = $"IAP Init Failed: {error}";
+       Debug.Log($"IAP Init Failed: {error}");
     }
 
     public void OnInitializeFailed(InitializationFailureReason error, string message)
     {
-        stateText.text = $"IAP Init Failed: {error} / {message}";
+        Debug.Log($"IAP Init Failed: {error} / {message}");
     }
 
     public void OnPurchaseFailed(Product product, PurchaseFailureReason failureReason)
     {
-        stateText.text = $"Purchase Failed: {product.definition.id} / {failureReason}";
+        Debug.Log($"Purchase Failed: {product.definition.id} / {failureReason}");
     }
 
     public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs args)
     {
-        stateText.text = $"Purchase Successful: {args.purchasedProduct.definition.id}";
+        Debug.Log($"Purchase Successful: {args.purchasedProduct.definition.id}");
 
         _onPurchaseSuccess?.Invoke();
         _onPurchaseSuccess = null;
@@ -92,7 +89,7 @@ public class IAPManager : MonoBehaviour, IStoreListener
             }
             else
             {
-                stateText.text = "Product not available";
+                Debug.Log("Product not available");
             }
         }
     }
