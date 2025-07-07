@@ -112,10 +112,11 @@ public class HomePage : MonoBehaviour
     FSM<InnerPageState> _pageFsm;
 
     TopElementPresenter _topElementPresenter;
+    public TopElementPresenter TopElementPresenter { get => _topElementPresenter; }
 
     IAssetService _currencyService;
     IArtDataService _artDataLoaderService;
-  
+
     private async void Start()
     {
         ServiceLocater.ReturnSoundPlayer().PlayBGM(ISoundPlayable.SoundName.LobbyBGM);
