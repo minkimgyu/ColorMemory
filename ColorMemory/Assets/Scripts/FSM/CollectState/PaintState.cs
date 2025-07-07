@@ -15,9 +15,6 @@ namespace Collect
         Vector2Int[] _closePoints;
         Vector2Int _levelSize;
 
-        //Timer _timer;
-        //float _paintDuration;
-
         Func<Tuple<Dot[,], Dot[], MapData>> GetLevelData;
         CollectStageUIPresenter _collectStageUIPresenter;
 
@@ -35,14 +32,7 @@ namespace Collect
             new Vector2Int(0, 1), // ¡æ
             new Vector2Int(1, 0), // ¡é
             new Vector2Int(0, -1), // ¡ç
-            //new Vector2Int(-1, 1), // ¢Ö
-            //new Vector2Int(1, 1), // ¢Ù
-            //new Vector2Int(1, -1), // ¢×
-            //new Vector2Int(-1, -1), // ¢Ø
             };
-
-            //_paintDuration = paintDuration;
-            //_timer = new Timer();
 
             _collectStageUIPresenter = collectStageUIPresenter;
 
