@@ -111,21 +111,21 @@ public class AdManager : MonoBehaviour
             {
                 if (error != null || ad == null)
                 {
-                    Debug.LogError("Rewarded ad failed to load an ad " +
-                                   "with error : " + error);
+                    Debug.LogError("Rewarded ad failed to load: " + error);
                     return;
                 }
 
-                Debug.Log("Rewarded ad loaded with response : "
-                          + ad.GetResponseInfo());
+                Debug.Log("Rewarded ad loaded: " + ad.GetResponseInfo());
 
                 _rewardedAd = ad;
-            });
 
-        _rewardedAd.OnAdFullScreenContentClosed += () => {
-            LoadRewardedAd();
-        };
+                _rewardedAd.OnAdFullScreenContentClosed += () =>
+                {
+                    LoadRewardedAd();
+                };
+            });
     }
+
 
     public void ShowRewardedAd()
     {
