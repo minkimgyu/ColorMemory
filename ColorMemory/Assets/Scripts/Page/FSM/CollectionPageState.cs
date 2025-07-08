@@ -161,6 +161,7 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
 
     public override void OnStateEnter()
     {
+        AdManager.Instance.DestroyBannerAd();
         // content 열어주기
         _collectPagePresenter.ActiveContent(true);
 
@@ -176,6 +177,8 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
 
     public override void OnStateExit()
     {
+        AdManager.Instance.LoadBannerAd();
+
         _collectPagePresenter.DestroyAllArtwork();
         _collectPagePresenter.ActivateFilterScrollUI(false);
         _collectPagePresenter.ActiveContent(false); // home 닫아주기

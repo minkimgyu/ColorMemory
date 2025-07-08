@@ -119,6 +119,8 @@ public class HomePage : MonoBehaviour
 
     private async void Start()
     {
+        AdManager.Instance.LoadBannerAd();
+
         ServiceLocater.ReturnSoundPlayer().PlayBGM(ISoundPlayable.SoundName.LobbyBGM);
 
         string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
@@ -189,7 +191,6 @@ public class HomePage : MonoBehaviour
 
         _topElementPresenter.OnClickHomeBtn += () => 
         {
-            AdManager.Instance.LoadBannerAd();
             ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.BtnClick);
             _pageFsm.SetState(InnerPageState.Main); 
         };
