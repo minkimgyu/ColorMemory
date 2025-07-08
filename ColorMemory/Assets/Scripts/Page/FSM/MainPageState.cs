@@ -136,6 +136,8 @@ public class MainPageState : BaseState<HomePage.InnerPageState>
 
         _homePagePresenter.OnPlayBtnClicked += ((type) =>
         {
+            AdManager.Instance.DestroyBannerAd();
+
             switch (type)
             {
                 case GameMode.Type.Challenge:

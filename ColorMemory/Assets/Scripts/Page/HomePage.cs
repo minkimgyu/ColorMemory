@@ -189,6 +189,7 @@ public class HomePage : MonoBehaviour
 
         _topElementPresenter.OnClickHomeBtn += () => 
         {
+            AdManager.Instance.LoadBannerAd();
             ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.BtnClick);
             _pageFsm.SetState(InnerPageState.Main); 
         };

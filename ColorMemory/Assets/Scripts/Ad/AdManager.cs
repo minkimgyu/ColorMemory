@@ -22,6 +22,7 @@ public class AdManager : MonoBehaviour
     [SerializeField] public GameObject HomePage;
     private BannerView _bannerView;
     private RewardedAd _rewardedAd;
+    private bool _isBannerLoaded = false;
 
     void Awake()
     {
@@ -56,11 +57,11 @@ public class AdManager : MonoBehaviour
             DestroyBannerAd();
         }
 
-        int x = (int)Screen.width / 2 + 160;
-        int y = Screen.height - 150; 
+        int bannerWidth = 320;
+        int bannerHeight = 100;
 
-        AdSize adSize = new AdSize(320, 100);
-        _bannerView = new BannerView(_bannerAdUnitId, adSize, x, y);
+        AdSize adSize = new AdSize(bannerWidth, bannerHeight);
+        _bannerView = new BannerView(_bannerAdUnitId, adSize, AdPosition.Bottom);
     }
 
     public void LoadBannerAd()
@@ -70,10 +71,12 @@ public class AdManager : MonoBehaviour
             CreateBannerView();
         }
 
-        var adRequest = new AdRequest();
-
-        Debug.Log("Loading banner ad.");
-        _bannerView.LoadAd(adRequest);
+        if (!_isBannerLoaded)
+        {
+            var adRequest = new AdRequest();
+            _bannerView.LoadAd(adRequest);
+            _isBannerLoaded = true;
+        }
     }
 
     public void DestroyBannerAd()
@@ -83,6 +86,7 @@ public class AdManager : MonoBehaviour
             Debug.Log("Destroying banner view.");
             _bannerView.Destroy();
             _bannerView = null;
+            _isBannerLoaded = false;
         }
     }
 

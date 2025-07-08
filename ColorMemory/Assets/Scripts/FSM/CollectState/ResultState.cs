@@ -115,6 +115,8 @@ namespace Collect
             // 모든 스테이지를 클리어 했는지 확인 필요
             if (artData.Item1.Rank != Rank.NONE)
             {
+                AdManager.Instance.ShowRewardedAd();
+
                 string gameResultTitle = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.CompleteArtworkResultTitle);
 
                 _collectStageUIPresenter.ChangeGameResultTitle(gameResultTitle);
