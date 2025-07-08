@@ -3,7 +3,7 @@
 Unity를 사용하여 개발한 모바일 퍼즐 2D 게임입니다.  
 [Google Play Store](https://play.google.com/store/apps/details?id=com.mozi.colormemory&hl=ko)에서 서비스 진행 중입니다.
 
-<img src="https://github.com/user-attachments/assets/173de931-1802-4369-99ea-5dad9840e0a0" alt="Color Memory Screenshot" width="50%" height="50%" />
+<img src="https://github.com/user-attachments/assets/173de931-1802-4369-99ea-5dad9840e0a0" alt="Color Memory Screenshot"/>
 
 ## 📆 개발 기간
 2025년 2월 ~ 2025년 5월
@@ -48,7 +48,7 @@ MockViewer 클래스 구현을 통해 단위 테스트를 수행할 수 있도�
 
 ## 🛠️ Breadth First Search 알고리즘 기반 퍼즐 시스템
 
-<img src="https://github.com/user-attachments/assets/7631885a-a931-4711-8106-19ae8c80ed93" alt="Color Memory Screenshot" width="50%" height="50%" />
+<img src="https://github.com/user-attachments/assets/7631885a-a931-4711-8106-19ae8c80ed93" alt="Color Memory Screenshot"/>
 
 퍼즐 게임에서 인접한 동일 색상 블록을 한 번에 색칠하기 위해  
 Breadth First Search 알고리즘을 활용하여 효율적인 탐색을 구현했습니다.
@@ -65,7 +65,7 @@ Breadth First Search 알고리즘을 활용하여 효율적인 탐색을 구현�
 * 그 결과, 1.42MB에 달했던 웹 번들 크기를 **50MB로** 최적화할 수 있었습니다.
 
 ### 빌드 용량 최적화 결과 📊
-<img src="https://github.com/user-attachments/assets/c20a2fbf-3de8-4fb4-8a79-1fd371b86699" alt="Color Memory Screenshot" width="50%" height="50%" />
+<img src="https://github.com/user-attachments/assets/c20a2fbf-3de8-4fb4-8a79-1fd371b86699" alt="Color Memory Screenshot"/>
 
 ---
 
@@ -75,7 +75,7 @@ DOTween을 활용해서 퍼즐 게임에 알맞은 UI 연출을 제작했습니�
 
 ### UI 연출 예시 🎬
 
-<img src="https://github.com/user-attachments/assets/4c264b09-318f-47bc-99dc-d20ad856845f" alt="Color Memory Screenshot" width="50%" height="50%" />
+<img src="https://github.com/user-attachments/assets/4c264b09-318f-47bc-99dc-d20ad856845f" alt="Color Memory Screenshot"/>
 </br>
 연출 영상: https://www.youtube.com/watch?v=pQLR3cqxy_I
 
@@ -89,7 +89,7 @@ DOTween을 활용해서 퍼즐 게임에 알맞은 UI 연출을 제작했습니�
 * 결과적으로 수동 빌드 및 배포에 소요되던 시간을 단축하고 안정적인 빌드 환경을 구축하는 데 기여했습니다.
 
 ### GitHub Actions 워크플로우 🛠️
-<img src="https://github.com/user-attachments/assets/66477a81-daee-4018-bb1a-95b4c3c266e2" alt="Color Memory Screenshot" width="50%" height="50%" />
+<img src="https://github.com/user-attachments/assets/66477a81-daee-4018-bb1a-95b4c3c266e2" alt="Color Memory Screenshot"/>
 
 ---
 
@@ -114,4 +114,4 @@ AI 도구를 활용해서 엣지 케이스 및 테스트 항목을 제안받고 
 [CollectModeMVPTest 코드](https://github.com/minkimgyu/ColorMemory/blob/33e192c557a53b4c02b6c399165b04eb60b5ed0a/ColorMemory/Assets/Tests/EditMode/CollectModeMVPTest.cs#L4)
 
 ### Unity Test Runner 결과 🟢
-<img src="https://github.com/user-attachments/assets/e341a1e0-0f85-4195-8a39-dfb9fc564a48" alt="Color Memory Screenshot" width="50%" height="50%" />
+<img src="https://github.com/user-attachments/assets/e341a1e0-0f85-4195-8a39-dfb9fc564a48" alt="Color Memory Screenshot" />
