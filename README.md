@@ -33,7 +33,7 @@ Unity를 사용하여 개발한 모바일 퍼즐 2D 게임입니다.
 
 ## 📦 MVP 패턴 기반 UI 시스템
 
-<img src="https://github.com/user-attachments/assets/b82aeb96-b1f3-4d3c-b873-5438c5b6e576" alt="Color Memory Screenshot" width="50%" height="50%" />
+<img src="https://github.com/user-attachments/assets/b82aeb96-b1f3-4d3c-b873-5438c5b6e576" alt="Color Memory Screenshot"/>
 
 Model, View, Presenter의 책임을 명확히 나누어 UI 시스템을 구성하였으며,  
 MockViewer 클래스 구현을 통해 단위 테스트를 수행할 수 있도록 설계하였습니다.
