@@ -9,8 +9,8 @@ public class AdManager : MonoBehaviour
     public static AdManager Instance { get; private set; }
 
 #if UNITY_ANDROID
-    private string _bannerAdUnitId = "ca-app-pub-3940256099942544/6300978111";
-    private string _rewardedAdUnitId = "ca-app-pub-3940256099942544/5224354917";
+    private string _bannerAdUnitId = "ca-app-pub-3196408244005495/8792796991";
+    private string _rewardedAdUnitId = "ca-app-pub-3196408244005495/2939233881";
 #elif UNITY_IPHONE
     private string _bannerAdUnitId = "ca-app-pub-3940256099942544/2934735716";
     private string _rewardedAdUnitId = "ca-app-pub-3940256099942544/1712485313";
