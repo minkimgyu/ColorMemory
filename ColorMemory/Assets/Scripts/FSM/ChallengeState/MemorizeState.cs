@@ -79,6 +79,7 @@ namespace Challenge
             int index = Mathf.Clamp(_modeData.StageCount - 1, 0, _stageDatas.Count - 1);
             float memorizeDuration = _stageDatas[index].MemorizeDuration;
 
+            _challengeStageUIPresenter.ActivateHint(false, false);
             _challengeStageUIPresenter.ActivateBottomContent(false);
             _challengeStageUIPresenter.ActivateSkipBtn(true);
 
