@@ -11,8 +11,12 @@ abstract public class BaseFactory
     public virtual SpawnableUI Create(string description) { return default; }
 
     public virtual SpawnableUI Create(string name, string description, int reward, int price) { return null; }
+
+    // 아래 2개는 매개 변수를 사용하지 않게끔 변경
+    // 추후 Initialize() 메서드로 초기화할 수 있도록 변경
     public virtual SpawnableUI Create(int artworkIndex, NetworkService.DTO.Rank frameType, bool hasIt) { return null; }
     public virtual SpawnableUI Create(int artworkIndex, string title, bool hasIt) { return null; }
+
     public virtual SpawnableUI Create(PersonalRankingData data) { return null; }
     public virtual SpawnableUI Create(int currentStageCount, int totalStageCount, MapData data, Color[] pickColors) { return null; }
     public virtual SpawnableUI Create() { return default; }

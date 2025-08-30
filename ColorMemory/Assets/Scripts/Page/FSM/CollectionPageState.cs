@@ -9,7 +9,6 @@ using UnityEngine.UI;
 
 public class CollectionPageState : BaseState<HomePage.InnerPageState>
 {
-    ArtworkUIFactory _artworkFactory;
     CollectPagePresenter _collectPagePresenter;
 
     public CollectionPageState(
@@ -49,6 +48,9 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
         TMP_Text stageUsedHintUseCount,
         TMP_Text stageWrongCount,
 
+        HorizontalInfiniteScroll artworkInfiniteScroll,
+        VerticalInfiniteScroll filterInfiniteScroll,
+
         FilterUI filterScrollUI,
         Button filterOpenBtn,
         Button filterExitBtn,
@@ -64,7 +66,7 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
         Toggle[] rankToggles,
         Toggle[] dateToggles,
 
-        ArtworkScrollUI artworkScrollUI,
+        //ArtworkScrollUI artworkScrollUI,
 
         ArtworkUIFactory artworkFactory,
         StageUIFactory stageUIFactory,
@@ -105,8 +107,6 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
             totalComplete,
             totalCompleteRatio,
 
-
-            artworkScrollUI,
             completeSlider,
             leftCompleteText,
             totalCompleteText,
@@ -139,6 +139,9 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
             ownToggles,
             rankToggles,
             dateToggles,
+
+            artworkInfiniteScroll,
+            filterInfiniteScroll,
             _collectPagePresenter);
 
         _collectPagePresenter.InjectViewer(collectPageViewer);
@@ -179,7 +182,7 @@ public class CollectionPageState : BaseState<HomePage.InnerPageState>
     {
         AdManager.Instance.LoadBannerAd();
 
-        _collectPagePresenter.DestroyAllArtwork();
+        //_collectPagePresenter.DestroyAllArtwork();
         _collectPagePresenter.ActivateFilterScrollUI(false);
         _collectPagePresenter.ActiveContent(false); // home ╢щ╬фаж╠Б
     }

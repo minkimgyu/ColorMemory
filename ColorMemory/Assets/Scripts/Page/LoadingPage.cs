@@ -205,7 +205,19 @@ public class LoadingPage : MonoBehaviour
         SoundPlayer soundPlayer = CreateSoundPlayer(addressableLoader.SoundAssets, saveData);
         ServiceLocater.Provide(soundPlayer);
 
+        CoroutineRunner coroutineRunner = CreateCoroutineRunner();
+        ServiceLocater.Provide(coroutineRunner);
+
         ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.HomeScene);
+    }
+
+    CoroutineRunner CreateCoroutineRunner()
+    {
+        GameObject soundPlayerObject = new GameObject("CoroutineRunner");
+        CoroutineRunner coroutineRunner = soundPlayerObject.AddComponent<CoroutineRunner>();
+        coroutineRunner.Initialize();
+
+        return coroutineRunner;
     }
 
     SoundPlayer CreateSoundPlayer(Dictionary<ISoundPlayable.SoundName, AudioClip> soundAssets, SaveData saveData)

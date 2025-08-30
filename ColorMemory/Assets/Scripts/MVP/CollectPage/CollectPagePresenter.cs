@@ -81,6 +81,9 @@ public class CollectPagePresenter
     public void InjectViewer(CollectPageViewer collectPageViewer)
     {
         _collectPageViewer = collectPageViewer;
+        _collectPageViewer.InjectHorizontalInfiniteScrollEvent(GetArtworkUI);
+        _collectPageViewer.InjectVerticalInfiniteScrollEvent(GetFilteredArtworkUI);
+
         //ChangeArtworkDescription(_collectPageModel.ArtworkIndex);
     }
 
@@ -95,6 +98,7 @@ public class CollectPagePresenter
     {
         // 아트워크를 파괴하는 코드 필요
         // DestroyAllArtwork();
+        _collectPageViewer.ClearAllItems();
 
         _collectPageModel.ActiveFilterContent = active;
         _collectPageViewer.ActiveFilterContent(_collectPageModel.ActiveFilterContent);
@@ -113,18 +117,16 @@ public class CollectPagePresenter
             _collectPageModel.DateFilter);
     }
 
-    void UpdateFilterItems()
-    {
-        DestroyFilterItems();
-        DOVirtual.DelayedCall(0.5f, () =>
-        {
-            FillFilterItems();
-        });
-    }
-
-    void DestroyFilterItems()
+    IEnumerator UpdateFilterItemsCo()
     {
         _collectPageViewer.DestroyFilterItems();
+        yield return new WaitForEndOfFrame();
+        FillFilterItems();
+    }
+
+    void UpdateFilterItems()
+    {
+        ServiceLocater.ReturnCoroutineRunner().Run(UpdateFilterItemsCo());
     }
 
     readonly Dictionary<FilterUI.OwnFilter, string> _ownFilterDescription = new Dictionary<FilterUI.OwnFilter, string>
@@ -186,7 +188,7 @@ public class CollectPagePresenter
     void UpdateFilter()
     {
         // 아트워크를 파괴하는 코드 필요
-        DestroyAllArtwork();
+        //DestroyAllArtwork();
         UpdateFilterItems(); // 필터를 업데이트 하는 함수
         UpdateFilterToggle(); // 필터 토글 업데이트 하는 함수
 
@@ -194,21 +196,12 @@ public class CollectPagePresenter
         FilterArtData();
         ActivateFilterContent(false);
 
-        DOVirtual.DelayedCall(0.5f, () =>
-        {
-            // 다시 필터링된 아트워크를 채워넣는 코드 필요
-            FillArtwork();
+        SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
+        int scrollIndex = _collectPageModel.FilteredArtDatas.FindIndex(x => x.Key == data.SelectedArtworkKey);
+        if (scrollIndex == -1) scrollIndex = 0; // 없다면 0번쨰로 변경해주기
 
-            // 여기에 설명 업데이트도 필요함
-            // 첫번째 위치로 스크롤 해줌
-
-            SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
-            int scrollIndex = _collectPageModel.FilteredArtDatas.FindIndex(x => x.Key == data.SelectedArtworkKey);
-            if (scrollIndex == -1) scrollIndex = 0; // 없다면 0번쨰로 변경해주기
-
-            _collectPageViewer.SetArtworkScrollIndex(scrollIndex);
-            OnArtworkScrollChanged(scrollIndex);
-        });
+        FillArtwork(scrollIndex); // 완료 콜백 필요함
+        OnArtworkScrollChanged(scrollIndex);
     }
 
     public void OnClickOwnToggle(FilterUI.OwnFilter own)
@@ -356,55 +349,47 @@ public class CollectPagePresenter
         _collectPageViewer.ActiveSelectStageContent(_collectPageModel.ActiveSelectStageContent);
     }
 
-    public void FillArtwork()
+    IScrollItem GetArtworkUI(int idx)
     {
+        ArtData data = _collectPageModel.FilteredArtDatas.Find(x => x.Key == idx).Value;
+
+        SpawnableUI artworkUI = _artworkFactory.Create(idx, data.Rank, data.HasIt);
+        artworkUI.InjectClickEvent(() => {
+            ActiveSelectStageContent(true);
+            FillStage();
+        });
+
+        return (IScrollItem)artworkUI;
+    }
+
+    IScrollItem GetFilteredArtworkUI(int idx)
+    {
+        ILocalization.Language language = ServiceLocater.ReturnSaveManager().GetSaveData().Language;
+        ArtworkData artworkData = _collectPageModel.ArtworkDatas[language].Data[idx]; // ✅ keyIndex 사용
+        int scrollIndex = _collectPageModel.FilteredArtDatas.FindIndex(x => x.Key == idx);
+
+        SpawnableUI filteredArtworkUI = _filteredArtworkFactory.Create(idx, artworkData.Title, _collectPageModel.FilteredArtDatas[scrollIndex].Value.HasIt);
+        filteredArtworkUI.InjectClickEvent(() => { // ✅ filteredArtwork에도 적용
+
+            _collectPageViewer.ActivateFilterBottomSheet(false);
+            _collectPageViewer.SetArtworkScrollIndex(scrollIndex);
+            OnArtworkScrollChanged(scrollIndex);
+            // ✅ 위 아트워크를 스크롤하는 코드 추가 필요
+        });
+        return (IScrollItem)filteredArtworkUI;
+    }
+
+    public void FillArtwork(int centerIdx)
+    {
+        List<int> artworkIndexes = new List<int>();
         foreach (var item in _collectPageModel.FilteredArtDatas)
         {
-            int artworkIndex = item.Key; // ✅ 지역 변수로 캡처
-
-            SpawnableUI artwork = _artworkFactory.Create(artworkIndex, item.Value.Rank, item.Value.HasIt);
-            artwork.InjectClickEvent(() => {
-                //ServiceLocater.ReturnSaveManager().SelectArtwork(artworkIndex);
-                // 스크롤로 이동
-                ActiveSelectStageContent(true);
-                FillStage();
-            });
-
-            _collectPageViewer.AddArtwork(artwork);
-
-            ILocalization.Language language = ServiceLocater.ReturnSaveManager().GetSaveData().Language;
-            ArtworkData artworkData = _collectPageModel.ArtworkDatas[language].Data[artworkIndex]; // ✅ keyIndex 사용
-            int scrollIndex = _collectPageModel.FilteredArtDatas.FindIndex(x => x.Key == artworkIndex);
-
-            SpawnableUI filteredArtwork = _filteredArtworkFactory.Create(artworkIndex, artworkData.Title, item.Value.HasIt);
-            filteredArtwork.InjectClickEvent(() => { // ✅ filteredArtwork에도 적용
-
-                _collectPageViewer.ActivateFilterBottomSheet(false);
-                _collectPageViewer.SetArtworkScrollIndex(scrollIndex);
-                OnArtworkScrollChanged(scrollIndex);
-                // ✅ 위 아트워크를 스크롤하는 코드 추가 필요
-            });
-
-            _collectPageViewer.AddFilteredArtwork(filteredArtwork);
+            artworkIndexes.Add(item.Key);
         }
 
-        _collectPageViewer.SetUpArtworkScroll(_collectPageModel.FilteredArtDatas.Count);
+        _collectPageViewer.SetUpArtworkScroll(artworkIndexes, centerIdx);
+        _collectPageViewer.SetUpFilteredArtworkScroll(artworkIndexes);
     }
-
-    public void DestroyAllArtwork()
-    {
-        //for (int i = 0; i < _spawnedArtworks.Count; i++)
-        //{
-        //    _spawnedArtworks[i].DestroyObject();
-        //}
-
-        //_spawnedArtworks.Clear();
-        _collectPageViewer.DestroyAllArtwork();
-        _collectPageViewer.DestroyFilteredArtwork();
-    }
-
-
-
 
     public void FillStage()
     {

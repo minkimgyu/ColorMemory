@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// 여기에 타이머 기능까지 추가해보자
 public class NullTimeController : ITimeController
 {
     public void Start() { }

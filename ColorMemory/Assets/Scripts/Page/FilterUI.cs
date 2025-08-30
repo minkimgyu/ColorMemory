@@ -27,7 +27,7 @@ public class FilterUI : MonoBehaviour
 
     [SerializeField] BottomSheetUI _bottomSheetUI;
     [SerializeField] Transform _filterItemParent;
-    [SerializeField] Transform _filteredArtworkParent;
+    //[SerializeField] Transform _filteredArtworkParent;
 
     public void Initialize()
     {
@@ -49,13 +49,13 @@ public class FilterUI : MonoBehaviour
         _bottomSheetUI.ClosePanel();
     }
 
-    public void DestroyFilteredArtwork()
-    {
-        for (int i = _filteredArtworkParent.childCount - 1; i >= 0; i--)
-        {
-            _filteredArtworkParent.GetChild(i).GetComponent<SpawnableUI>().DestroyObject();
-        }
-    }
+    //public void DestroyFilteredArtwork()
+    //{
+    //    for (int i = _filteredArtworkParent.childCount - 1; i >= 0; i--)
+    //    {
+    //        _filteredArtworkParent.GetChild(i).GetComponent<SpawnableUI>().DestroyObject();
+    //    }
+    //}
 
     public void DestroyFilterItem()
     {
@@ -71,9 +71,9 @@ public class FilterUI : MonoBehaviour
         spawnableUI.transform.localScale = Vector3.one;
     }
 
-    public void AddFilteredArtwork(SpawnableUI spawnableUI)
-    {
-        spawnableUI.transform.SetParent(_filteredArtworkParent);
-        spawnableUI.transform.localScale = Vector3.one;
-    }
+    //public void AddFilteredArtwork(SpawnableUI spawnableUI)
+    //{
+    //    spawnableUI.transform.SetParent(_filteredArtworkParent);
+    //    spawnableUI.transform.localScale = Vector3.one;
+    //}
 }

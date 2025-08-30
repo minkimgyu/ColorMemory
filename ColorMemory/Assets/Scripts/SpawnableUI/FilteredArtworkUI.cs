@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
+using static UnityEditor.PlayerSettings;
 
-public class FilteredArtworkUI : SpawnableUI
+public class FilteredArtworkUI : SpawnableUI, IScrollItem
 {
     [SerializeField] Button _selectButton;
     [SerializeField] Image _artImg;
@@ -35,5 +36,56 @@ public class FilteredArtworkUI : SpawnableUI
             OnClickRequested?.Invoke();
             ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.BtnClick);
         });
+    }
+
+    public void ChangeLocalScale(Vector2 scale)
+    {
+        transform.localScale = scale;
+    }
+
+    public void ChangeLocalPosition(Vector2 pos)
+    {
+        transform.localPosition = pos;
+    }
+
+    public Vector2 GetLocalPosition()
+    {
+        return transform.localPosition;
+    }
+
+    public void ChangeSibiling(bool toTtop)
+    {
+        if (toTtop) transform.SetAsFirstSibling();
+        else transform.SetAsLastSibling();
+    }
+
+    public void Active(bool nowActive)
+    {
+        gameObject.SetActive(nowActive);
+    }
+
+    public void SetParent(Transform parent)
+    {
+        transform.SetParent(parent);
+    }
+
+    System.Action<IPoolObject> ReturnToPoolEvent;
+
+    void RemoveEvent()
+    {
+        // 이벤트 지우기
+        _selectButton.onClick.RemoveAllListeners();
+        OnClickRequested = null;
+    }
+
+    public void ReturnToPool()
+    {
+        RemoveEvent();
+        ReturnToPoolEvent?.Invoke(this);
+    }
+
+    public void InjectReturnToPoolEvent(System.Action<IPoolObject> ReturnToPoolEvent)
+    {
+        this.ReturnToPoolEvent = ReturnToPoolEvent;
     }
 }

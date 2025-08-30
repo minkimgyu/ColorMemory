@@ -22,9 +22,6 @@ public class HomePage : MonoBehaviour
     EffectFactory _effectFactory;
     DotFactory _dotFactory;
 
-    const int _dotSize = 6;
-    const float _contentSize = 0.8f;
-
     [Header("Setting")]
     [SerializeField] SideSheetUI _sideSheetUI;
 
@@ -44,6 +41,12 @@ public class HomePage : MonoBehaviour
     [SerializeField] TMP_Text _playBtnTxt;
 
     [Header("Collect")]
+    [SerializeField] HorizontalInfiniteScroll _artworkInfiniteScroll;
+    [SerializeField] VerticalInfiniteScroll _filterInfiniteScroll;
+
+    [SerializeField] ArtworkPool _artworkPool;
+    [SerializeField] FilteredArtworkPool _filteredArtworkPool;
+
     [SerializeField] GameObject _collectionContent;
 
     [SerializeField] GameObject _selectStageContent;
@@ -77,8 +80,6 @@ public class HomePage : MonoBehaviour
     [SerializeField] GameObject _stageDetailContent;
     [SerializeField] TMP_Text _stageUsedHintUseCount;
     [SerializeField] TMP_Text _stageWrongCount;
-
-    [SerializeField] ArtworkScrollUI _artworkScrollUI;
 
     [SerializeField] FilterUI _filterScrollUI;
     [SerializeField] Button _filterOpenBtn;
@@ -129,6 +130,7 @@ public class HomePage : MonoBehaviour
 
         Dictionary<int, ArtData> artDatas = await _artDataLoaderService.GetArtData(userId);
         if (artDatas == null) return;
+        // 여기에서 추가적으로 변경된 ArtworkSize 받아오기
 
         int money = await _currencyService.GetCurrency(userId);
         if (money == -1) return;
@@ -148,7 +150,9 @@ public class HomePage : MonoBehaviour
             addressableHandler.SpawnableUIAssets[SpawnableUI.Name.ArtworkUI],
             addressableHandler.ArtSpriteAssets,
             addressableHandler.ArtworkFrameAssets,
-            addressableHandler.RankDecorationIconAssets
+            addressableHandler.RankDecorationIconAssets,
+            _artworkPool,
+            10
         );
 
         RankingUIFactory rankingUIFactory = new RankingUIFactory(
@@ -162,6 +166,8 @@ public class HomePage : MonoBehaviour
 
         FilteredArtworkFactory filteredArtworkFactory = new FilteredArtworkFactory(
             addressableHandler.SpawnableUIAssets[SpawnableUI.Name.FilteredArtworkUI],
+            _filteredArtworkPool,
+            30,
             addressableHandler.ArtSpriteAssets
         );
 
@@ -225,7 +231,9 @@ public class HomePage : MonoBehaviour
             startState = InnerPageState.Collection;
             ServiceLocater.ReturnSaveManager().ChangeGoToCollectPage(false);
         }
-       
+
+        _artworkInfiniteScroll.Initialize(addressableHandler.ArtSpriteSizeRatios);
+        _filterInfiniteScroll.Initialize();
 
         _pageFsm = new FSM<InnerPageState>();
         _pageFsm.Initialize(new Dictionary<InnerPageState, BaseState<InnerPageState>>
@@ -278,6 +286,8 @@ public class HomePage : MonoBehaviour
                 _stageUsedHintUseCount,
                 _stageWrongCount,
 
+                _artworkInfiniteScroll,
+                _filterInfiniteScroll,
 
                 _filterScrollUI,
                 _filterOpenBtn,
@@ -294,8 +304,6 @@ public class HomePage : MonoBehaviour
                 _rankToggles,
                 _dateToggles,
 
-                _artworkScrollUI,
-
                 artWorkUIFactory,
                 stageUIFactory,
                 filteredArtworkFactory,
@@ -304,6 +312,7 @@ public class HomePage : MonoBehaviour
                 artDatas,
                 addressableHandler.ArtworkJsonDataAssets, // 이거 매번 불러오기
                 addressableHandler.CollectiveArtJsonAssets,
+
                 _pageFsm)
             },
             { 

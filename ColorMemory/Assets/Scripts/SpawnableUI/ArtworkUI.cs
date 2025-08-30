@@ -1,7 +1,8 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ArtworkUI : SpawnableUI
+public class ArtworkUI : SpawnableUI, IScrollItem
 {
     [SerializeField] Image _artFrameImage;
     [SerializeField] RectTransform _artFrame;
@@ -34,5 +35,56 @@ public class ArtworkUI : SpawnableUI
             OnClickRequested?.Invoke();
             ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.BtnClick);
         });
+    }
+
+    public void ChangeLocalScale(Vector2 scale)
+    {
+        transform.localScale = scale;
+    }
+
+    public void ChangeLocalPosition(Vector2 pos)
+    {
+        transform.localPosition = pos;
+    }
+
+    public Vector2 GetLocalPosition()
+    {
+        return transform.localPosition;
+    }
+
+    public void ChangeSibiling(bool toTtop)
+    {
+        if (toTtop) transform.SetAsFirstSibling();
+        else transform.SetAsLastSibling();
+    }
+
+    public void Active(bool nowActive)
+    {
+        gameObject.SetActive(nowActive);
+    }
+
+    public void SetParent(Transform parent)
+    {
+        transform.SetParent(parent);
+    }
+
+    System.Action<IPoolObject> ReturnToPoolEvent;
+
+    void RemoveEvent()
+    {
+        // 이벤트 지우기
+        _artFrameBtn.onClick.RemoveAllListeners();
+        OnClickRequested = null;
+    }
+
+    public void ReturnToPool()
+    {
+        RemoveEvent();
+        ReturnToPoolEvent?.Invoke(this);
+    }
+
+    public void InjectReturnToPoolEvent(System.Action<IPoolObject> ReturnToPoolEvent)
+    {
+        this.ReturnToPoolEvent = ReturnToPoolEvent;
     }
 }

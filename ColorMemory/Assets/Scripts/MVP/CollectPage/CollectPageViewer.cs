@@ -24,7 +24,7 @@ public class CollectPageViewer
     CustomProgressUI _totalComplete;
     TMP_Text _totalCompleteRatio;
 
-    ArtworkScrollUI _artworkScrollUI;
+    //ArtworkScrollUI _artworkScrollUI;
 
     Image _completeSlider;
 
@@ -61,7 +61,8 @@ public class CollectPageViewer
     Toggle[] _rankToggles;
     Toggle[] _dateToggles;
 
-    CollectPagePresenter _collectPagePresenter;
+    HorizontalInfiniteScroll _artworkInfiniteScroll;
+    VerticalInfiniteScroll _filterInfiniteScroll;
 
     public CollectPageViewer(
         GameObject content,
@@ -78,7 +79,7 @@ public class CollectPageViewer
         CustomProgressUI totalComplete,
         TMP_Text totalCompleteRatio,
 
-        ArtworkScrollUI artworkScrollUI,
+        //ArtworkScrollUI artworkScrollUI,
 
         Image completeSlider,
         TMP_Text leftCompleteText,
@@ -115,6 +116,9 @@ public class CollectPageViewer
         Toggle[] rankToggles,
         Toggle[] dateToggles,
 
+        HorizontalInfiniteScroll artworkInfiniteScroll,
+        VerticalInfiniteScroll filterInfiniteScroll,
+
         CollectPagePresenter collectPagePresenter)
     {
         _content = content;
@@ -148,7 +152,8 @@ public class CollectPageViewer
         _titleTxt = titleTxt;
         _descriptionTxt = descriptionTxt;
 
-        _artworkScrollUI = artworkScrollUI;
+        _artworkInfiniteScroll = artworkInfiniteScroll;
+        //_artworkScrollUI = artworkScrollUI;
 
         _completeSlider = completeSlider;
         _leftCompleteText = leftCompleteText;
@@ -164,6 +169,7 @@ public class CollectPageViewer
         _stageHintUseCount = stageHintUseCount;
         _stageWrongCount = stageWrongCount;
 
+        _filterInfiniteScroll = filterInfiniteScroll;
         _filterScrollUI = filterScrollUI;
         _filterOpenBtn = filterOpenBtn;
         _filterExitBtn = filterExitBtn;
@@ -178,8 +184,6 @@ public class CollectPageViewer
         _ownToggles = ownToggles;
         _rankToggles = rankToggles; // 이벤트 걸기
         _dateToggles = dateToggles; // 이벤트 걸기
-
-        _collectPagePresenter = collectPagePresenter;
 
         _filterExitBtn.onClick.AddListener(() => { collectPagePresenter.ActivateFilterContent(false); });
         _filterOpenBtn.onClick.AddListener(() => { collectPagePresenter.ActivateFilterContent(true); });
@@ -222,9 +226,22 @@ public class CollectPageViewer
         });
 
         _playBtn.onClick.AddListener(() => { collectPagePresenter.OnClickPlayBtn?.Invoke(); });
-        artworkScrollUI.OnDragEnd += collectPagePresenter.OnArtworkScrollChanged; // -> 이거 수정해서 맞는 인덱스 적용해주기
+
+        _artworkInfiniteScroll.OnDragEnd += collectPagePresenter.OnArtworkScrollChanged;
+        //artworkScrollUI.OnDragEnd += collectPagePresenter.OnArtworkScrollChanged; // -> 이거 수정해서 맞는 인덱스 적용해주기
         ActiveContent(false);
     }
+
+    public void InjectVerticalInfiniteScrollEvent(System.Func<int, IScrollItem> GetItem)
+    {
+        _filterInfiniteScroll.GetItem += GetItem;
+    }
+
+    public void InjectHorizontalInfiniteScrollEvent(System.Func<int, IScrollItem> GetItem)
+    {
+        _artworkInfiniteScroll.GetItem += GetItem;
+    }
+
 
     const int maxStageNameSize = 25;
     public void ChangeStageNameText(string stageNameText)
@@ -340,15 +357,15 @@ public class CollectPageViewer
         _filterScrollUI.ActivateBottomSheet(active);
     }
 
-    public void AddFilteredArtwork(SpawnableUI spawnableUI)
-    {
-        _filterScrollUI.AddFilteredArtwork(spawnableUI);
-    }
+    //public void AddFilteredArtwork(SpawnableUI spawnableUI)
+    //{
+    //    _filterScrollUI.AddFilteredArtwork(spawnableUI);
+    //}
 
-    public void DestroyFilteredArtwork()
-    {
-        _filterScrollUI.DestroyFilteredArtwork();
-    }
+    //public void DestroyFilteredArtwork()
+    //{
+    //    _filterScrollUI.DestroyFilteredArtwork();
+    //}
 
 
     public void AddFilterItem(SpawnableUI spawnableUI)
@@ -414,25 +431,44 @@ public class CollectPageViewer
         _totalCompleteRatio.text = $"{Mathf.RoundToInt(totalRatio * 100)}%";
     }
 
-    public void SetUpArtworkScroll(int itemCount)
+    //public void SetUpArtworkScroll(int itemCount)
+    //{
+    //    _artworkScrollUI.Setup();
+    //}
+
+    public void SetUpArtworkScroll(List<int> currentItemIndexes, int centerIdx)
     {
-        _artworkScrollUI.Setup();
+        _artworkInfiniteScroll.UpdateContent(currentItemIndexes, centerIdx);
+    }
+
+    public void SetUpFilteredArtworkScroll(List<int> currentItemIndexes)
+    {
+        _filterInfiniteScroll.UpdateContent(currentItemIndexes);
     }
 
     public void SetArtworkScrollIndex(int scrollIndex)
     {
-        _artworkScrollUI.ScrollTo(scrollIndex);
+        _artworkInfiniteScroll.ScrollTo(scrollIndex);
+        //_artworkScrollUI.ScrollTo(scrollIndex);
     }
 
-    public void AddArtwork(SpawnableUI artwork)
+    //public void AddArtwork(SpawnableUI artwork)
+    //{
+    //    _artworkScrollUI.AddItem(artwork.transform);
+    //}
+
+    //public void DestroyAllArtwork()
+    //{
+    //    _artworkScrollUI.DestroyItems();
+    //}
+
+    public void ClearAllItems()
     {
-        _artworkScrollUI.AddItem(artwork.transform);
+        _filterInfiniteScroll.ClearAllItems();
+        _artworkInfiniteScroll.ClearAllItems();
+        _filterScrollUI.DestroyFilterItem();
     }
 
-    public void DestroyAllArtwork()
-    {
-        _artworkScrollUI.DestroyItems();
-    }
 
     public void ActiveContent(bool active)
     {

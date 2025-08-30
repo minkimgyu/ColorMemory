@@ -4,6 +4,9 @@ using UnityEngine;
 
 public static class ServiceLocater
 {
+    static ICoroutineRunner _coroutineRunner;
+    static NullCoroutineRunner _nullCoroutineRunner;
+
     static ISoundPlayable _soundPlayer;
     static NullSoundPlayer _nullSoundPlayer;
 
@@ -24,12 +27,18 @@ public static class ServiceLocater
 
     static ServiceLocater()
     {
+        _nullCoroutineRunner = new NullCoroutineRunner();
         _nullSoundPlayer = new NullSoundPlayer();
         _nullSceneController = new NullSceneController();
         _nullSaveManager = new NullSaveManager();
         _nullTimeController = new NullTimeController();
         _nullGpgsManager = new NullGPGSManager();
         _nullLocalizationManager = new NullLocalizationManager();
+    }
+
+    public static void Provide(ICoroutineRunner coroutineRunner)
+    {
+        _coroutineRunner = coroutineRunner;
     }
 
     public static void Provide(ISoundPlayable soundPlayer)
@@ -61,6 +70,13 @@ public static class ServiceLocater
     {
         _localizationManager = localization;
     }
+
+    public static ICoroutineRunner ReturnCoroutineRunner()
+    {
+        if (_coroutineRunner == null) return _nullCoroutineRunner;
+        return _coroutineRunner;
+    }
+
 
     public static ISoundPlayable ReturnSoundPlayer()
     {

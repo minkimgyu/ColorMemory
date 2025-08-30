@@ -1,12 +1,13 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.Purchasing;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.ResourceManagement.ResourceLocations;
 using UnityEngine.SceneManagement;
-using System;
 
 public class AddressableLoader : MonoBehaviour
 {
@@ -61,6 +62,7 @@ public class AddressableLoader : MonoBehaviour
 
     public Dictionary<int, CollectArtData> CollectiveArtJsonAssets { get; private set; }
     public Dictionary<int, Sprite> ArtSpriteAssets { get; private set; }
+    public List<Vector2> ArtSpriteSizeRatios { get; private set; }
 
     public Dictionary<NetworkService.DTO.Rank, Sprite> ArtworkFrameAssets { get; private set; }
     public Dictionary<NetworkService.DTO.Rank, Sprite> RankDecorationIconAssets { get; private set; }
@@ -92,7 +94,20 @@ public class AddressableLoader : MonoBehaviour
         _assetLoaders.Add(new ModeTitleIconAssetLoader(Label.ModeTitle, (value, label) => { ModeTitleIconAssets = value; OnSuccess(label); }));
         
         _assetLoaders.Add(new CollectiveArtJsonAssetLoader(Label.ArtData, (value, label) => { CollectiveArtJsonAssets = value; OnSuccess(label); }));
-        _assetLoaders.Add(new ArtSpriteAssetLoader(Label.ArtSprite, (value, label) => { ArtSpriteAssets = value; OnSuccess(label); }));
+        _assetLoaders.Add(new ArtSpriteAssetLoader(Label.ArtSprite, (value, label) => 
+        {
+            ArtSpriteSizeRatios = new List<Vector2>();
+            for (int i = 0; i < value.Count; i++)
+            {
+                float spriteWidth = value[i].texture.width;
+                float spriteHeight = value[i].texture.height;
+                float aspectRatio = spriteWidth / spriteHeight;
+                ArtSpriteSizeRatios.Add(new Vector2(1f * aspectRatio, 1f));
+            }
+
+            ArtSpriteAssets = value; 
+            OnSuccess(label);
+        }));
 
         _assetLoaders.Add(new ArtworkFrameAssetLoader(Label.ArtworkFrame, (value, label) => { ArtworkFrameAssets = value; OnSuccess(label); }));
         _assetLoaders.Add(new SoundAssetLoader(Label.Sound, (value, label) => { SoundAssets = value; OnSuccess(label); }));
