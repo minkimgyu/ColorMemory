@@ -357,16 +357,6 @@ public class CollectPageViewer
         _filterScrollUI.ActivateBottomSheet(active);
     }
 
-    //public void AddFilteredArtwork(SpawnableUI spawnableUI)
-    //{
-    //    _filterScrollUI.AddFilteredArtwork(spawnableUI);
-    //}
-
-    //public void DestroyFilteredArtwork()
-    //{
-    //    _filterScrollUI.DestroyFilteredArtwork();
-    //}
-
 
     public void AddFilterItem(SpawnableUI spawnableUI)
     {
@@ -431,11 +421,6 @@ public class CollectPageViewer
         _totalCompleteRatio.text = $"{Mathf.RoundToInt(totalRatio * 100)}%";
     }
 
-    //public void SetUpArtworkScroll(int itemCount)
-    //{
-    //    _artworkScrollUI.Setup();
-    //}
-
     public void SetUpArtworkScroll(List<int> currentItemIndexes, int centerIdx)
     {
         _artworkInfiniteScroll.UpdateContent(currentItemIndexes, centerIdx);
@@ -449,18 +434,7 @@ public class CollectPageViewer
     public void SetArtworkScrollIndex(int scrollIndex)
     {
         _artworkInfiniteScroll.ScrollTo(scrollIndex);
-        //_artworkScrollUI.ScrollTo(scrollIndex);
     }
-
-    //public void AddArtwork(SpawnableUI artwork)
-    //{
-    //    _artworkScrollUI.AddItem(artwork.transform);
-    //}
-
-    //public void DestroyAllArtwork()
-    //{
-    //    _artworkScrollUI.DestroyItems();
-    //}
 
     public void ClearAllItems()
     {

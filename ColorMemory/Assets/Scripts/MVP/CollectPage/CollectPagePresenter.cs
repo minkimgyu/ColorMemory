@@ -100,7 +100,7 @@ public class CollectPagePresenter
 
         // 아트워크를 파괴하는 코드 필요
         // DestroyAllArtwork();
-        _collectPageViewer.ClearAllItems();
+        //
 
         _collectPageModel.ActiveFilterContent = active;
         _collectPageViewer.ActiveFilterContent(_collectPageModel.ActiveFilterContent);
@@ -117,18 +117,6 @@ public class CollectPagePresenter
             _collectPageModel.OwnFilter,
             _collectPageModel.RankFilters,
             _collectPageModel.DateFilter);
-    }
-
-    IEnumerator UpdateFilterItemsCo()
-    {
-        _collectPageViewer.DestroyFilterItems();
-        yield return new WaitForEndOfFrame();
-        FillFilterItems();
-    }
-
-    void UpdateFilterItems()
-    {
-        ServiceLocater.ReturnCoroutineRunner().Run(UpdateFilterItemsCo());
     }
 
     readonly Dictionary<FilterUI.OwnFilter, string> _ownFilterDescription = new Dictionary<FilterUI.OwnFilter, string>
@@ -187,11 +175,11 @@ public class CollectPagePresenter
         }
     }
 
-    void UpdateFilter()
+    IEnumerator UpdateFilterItemsCo()
     {
-        // 아트워크를 파괴하는 코드 필요
-        //DestroyAllArtwork();
-        UpdateFilterItems(); // 필터를 업데이트 하는 함수
+        yield return new WaitForEndOfFrame(); // 1프레임 대기
+
+        FillFilterItems(); // 필터 아이템 채우는 함수
         UpdateFilterToggle(); // 필터 토글 업데이트 하는 함수
 
         // 필터링 하는 코드 필요함
@@ -204,6 +192,13 @@ public class CollectPagePresenter
 
         FillArtwork(scrollIndex); // 완료 콜백 필요함
         OnArtworkScrollChanged(scrollIndex);
+    }
+
+    void UpdateFilter()
+    {
+        // 모든 아이템 제거
+        _collectPageViewer.ClearAllItems();
+        ServiceLocater.ReturnCoroutineRunner().Run(UpdateFilterItemsCo());
     }
 
     public void OnClickOwnToggle(FilterUI.OwnFilter own)
