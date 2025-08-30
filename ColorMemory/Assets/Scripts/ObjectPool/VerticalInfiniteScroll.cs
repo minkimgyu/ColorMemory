@@ -146,9 +146,14 @@ public class VerticalInfiniteScroll : MonoBehaviour
 
     void AddLastItem(Vector2 localPos)
     {
-        // 여기 Factory를 통해 아이템을 생성해야함
+        IScrollItem item;
 
-        IScrollItem item = GetItem(_currentItemIndexes[_lastItemIndex]);
+        // 여기 Factory를 통해 아이템을 생성해야함
+        // 인덱스를 넘어간다면 가장 마지막 아이템을 생성해서 준다.
+
+        int spawnIdx = Mathf.Clamp(_lastItemIndex, 0, _itemTotalCount - 1);
+        item = GetItem(_currentItemIndexes[spawnIdx]);
+
         _itemList.AddLast(item);
         item.SetParent(_content);
         item.ChangeSibiling(false);

@@ -96,6 +96,8 @@ public class CollectPagePresenter
 
     public void ActivateFilterContent(bool active)
     {
+        // 만약 그대로 끄는 경우 다음 행동 필요함
+
         // 아트워크를 파괴하는 코드 필요
         // DestroyAllArtwork();
         _collectPageViewer.ClearAllItems();
