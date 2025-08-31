@@ -7,6 +7,7 @@ public class ObjectPool<T> : MonoBehaviour where T : MonoBehaviour, IPoolObject
 {
     Queue<T> _pool;
     GameObject _prefab;
+    [SerializeField] Transform _parent;
 
     public void Initialize(GameObject prefab, int startPoolSize)
     {
@@ -20,13 +21,15 @@ public class ObjectPool<T> : MonoBehaviour where T : MonoBehaviour, IPoolObject
 
     void CreateItem()
     {
-        GameObject go = Instantiate(_prefab);
-        T itemGO = go.GetComponent<T>();
-        itemGO.InjectReturnToPoolEvent((value) => { DisableItem((T)value); });
+        GameObject go = Instantiate(_prefab, _parent);
+        T item = go.GetComponent<T>();
 
-        itemGO.SetParent(transform);
-        _pool.Enqueue(itemGO);
-        itemGO.Active(false);
+        item.InjectReturnToPoolEvent((value) => { DisableItem((T)value); });
+        item.ChangeLocalScale(Vector2.one);
+
+        //itemGO.SetParent(transform);
+        _pool.Enqueue(item);
+        item.Active(false);
     }
 
     public T GetItem()
@@ -40,7 +43,7 @@ public class ObjectPool<T> : MonoBehaviour where T : MonoBehaviour, IPoolObject
 
     public void DisableItem(T itemGO)
     {
-        itemGO.SetParent(transform);
+        //itemGO.SetParent(transform);
         itemGO.Active(false);
         _pool.Enqueue(itemGO);
     }

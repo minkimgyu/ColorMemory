@@ -47,7 +47,7 @@ public class HorizontalInfiniteScroll : MonoBehaviour, IBeginDragHandler, IDragH
     private bool _isDragging;
     private float _targetPos;
 
-    public void ScrollTo(int index)
+    void ScrollTo(int index)
     {
         if (index < 0 || index >= _itemTotalCount) return;
         _targetPos = _itemScrollRatios[index];
@@ -65,8 +65,8 @@ public class HorizontalInfiniteScroll : MonoBehaviour, IBeginDragHandler, IDragH
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        _dragDeltaX = eventData.delta.x;
         _isDragging = false;
+        _dragDeltaX = 0;
 
         float currentPos = _scrollRect.horizontalScrollbar.value;
         float closestDiff = float.MaxValue;
@@ -145,9 +145,6 @@ public class HorizontalInfiniteScroll : MonoBehaviour, IBeginDragHandler, IDragH
     {
         IScrollItem item = GetItem(_currentItemIndexes[_lastItemIndex]);
         _itemList.AddLast(item);
-        item.SetParent(_content);
-        item.ChangeLocalScale(Vector2.one);
-        item.ChangeSibiling(false);
 
         Vector2 localPos = new Vector2(_itemCenters[_lastItemIndex], 0);
         item.ChangeLocalPosition(localPos);
@@ -161,9 +158,6 @@ public class HorizontalInfiniteScroll : MonoBehaviour, IBeginDragHandler, IDragH
 
         IScrollItem item = GetItem(_currentItemIndexes[_firstItemIndex]);
         _itemList.AddFirst(item);
-        item.SetParent(_content);
-        item.ChangeLocalScale(Vector2.one);
-        item.ChangeSibiling(true);
 
         Vector2 localPos = new Vector2(_itemCenters[_firstItemIndex], 0);
         item.ChangeLocalPosition(localPos);
@@ -173,7 +167,6 @@ public class HorizontalInfiniteScroll : MonoBehaviour, IBeginDragHandler, IDragH
     {
         IScrollItem item = _itemList.First.Value;
         item.ChangeLocalPosition(Vector2.zero);
-        item.ChangeLocalScale(Vector2.one);
         item.ReturnToPool();
 
         _itemList.RemoveFirst();
@@ -184,7 +177,6 @@ public class HorizontalInfiniteScroll : MonoBehaviour, IBeginDragHandler, IDragH
     {
         IScrollItem item = _itemList.Last.Value;
         item.ChangeLocalPosition(Vector2.zero);
-        item.ChangeLocalScale(Vector2.one);
         item.ReturnToPool();
 
         _itemList.RemoveLast();
@@ -207,17 +199,13 @@ public class HorizontalInfiniteScroll : MonoBehaviour, IBeginDragHandler, IDragH
     IEnumerator UpdateItemCo(int centerIdx)
     {
         _nowUpdateItemCount = true;
-
-        foreach (IScrollItem item in _itemList)
-        {
-            item.ReturnToPool();
-        }
+        ClearAllItems();
 
         // 사이에 ui 업데이트를 위한 1프레임 대기 과정 필요
         yield return new WaitForEndOfFrame();
 
         InitializeSettings(); // 콘텐츠 너비 및 아이템 센터 재계산
-        InitializeScrollItems();  // 다시 child를 풀에서 불러와 추가
+        InitializeScrollItems(centerIdx);  // 다시 child를 풀에서 불러와 추가
         ScrollTo(centerIdx);
 
         _nowUpdateItemCount = false;
@@ -228,6 +216,11 @@ public class HorizontalInfiniteScroll : MonoBehaviour, IBeginDragHandler, IDragH
         _currentItemIndexes = currentItemIndexes;
         _itemTotalCount = _currentItemIndexes.Count;
 
+        StartCoroutine(UpdateItemCo(centerIdx));
+    }
+
+    public void UpdateContent(int centerIdx)
+    {
         StartCoroutine(UpdateItemCo(centerIdx));
     }
 
@@ -256,24 +249,23 @@ public class HorizontalInfiniteScroll : MonoBehaviour, IBeginDragHandler, IDragH
         CalculateItemCenters();
     }
 
-    const int _scrollItemCount = 5;
+    const int _scrollItemCount = 10;
 
-    private void InitializeScrollItems()
+    private void InitializeScrollItems(int centerIdx)
     {
-        _firstItemIndex = 0;
-        _lastItemIndex = 0;
+        // 가운데에서 왼쪽으로 3칸 이동한 인덱스부터 시작
+        int changedIdx = Mathf.Clamp(centerIdx - 3, 0, _itemTotalCount - 1); 
+        // 따라서 범위는 (centerIdx - 3) ~  (_itemTotalCount - 1) 까지임
 
-        int itemCount;
-        if (_scrollItemCount < _itemTotalCount) itemCount = _scrollItemCount;
-        else itemCount = _itemTotalCount;
+        // 실질적으로 생성될 수 있는 개수를 구해야함
+        int maxSpawnableItemCount = (_itemTotalCount - 1) - changedIdx + 1; // 생성 가능한 아이템 개수
+        int spawnableItemCount = Mathf.Min(maxSpawnableItemCount, _scrollItemCount); // 더 작은 개수로 결정
 
-        int spawnCount = 0;
-        while (spawnCount < itemCount)
-        {
-            // 아이템 생성
-            AddLastItem();
-            spawnCount++;
-        }
+        _firstItemIndex = changedIdx;
+        _lastItemIndex = changedIdx;
+
+        // 아이템 생성
+        for (int i = 0; i < spawnableItemCount; i++) AddLastItem();
     }
 
     // Update is called once per frame
@@ -297,14 +289,12 @@ public class HorizontalInfiniteScroll : MonoBehaviour, IBeginDragHandler, IDragH
         float lastItemViewportX = _content.anchoredPosition.x + last.Value.GetLocalPosition().x;
 
         // _dragDeltaX를 추가해서 이동 방향에 맞는 경우만 아이템 추가/제거
-        // _dragDeltaX < 0 && 
-        // _dragDeltaX > 0 && 
-        if (_leftOffset > firstItemViewportX && _lastItemIndex < _itemTotalCount)
+        if (_dragDeltaX < 0 && _leftOffset > firstItemViewportX && _lastItemIndex < _itemTotalCount)
         {
             RemoveFirstItem(); // 맨 앞의 아이템 제거
             AddLastItem();
         }
-        else if (_rightOffset + _viewport.rect.width < lastItemViewportX && _firstItemIndex > 0)
+        else if (_dragDeltaX > 0 && _rightOffset + _viewport.rect.width < lastItemViewportX && _firstItemIndex > 0)
         {
             RemoveLastItem(); // 맨 뒤의 아이템 제거
             AddFirstItem();

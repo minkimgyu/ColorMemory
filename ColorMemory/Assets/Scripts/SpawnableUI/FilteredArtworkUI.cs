@@ -21,8 +21,8 @@ public class FilteredArtworkUI : SpawnableUI, IScrollItem
 
         _lockPanel.SetActive(!hasIt);
         _artImg.sprite = artSprite;
-        if (title.Length > _maxStringLength) _artTitle.text = $"{title.Substring(0, _maxStringLength)}...";
-        else _artTitle.text = title;
+        if (title.Length > _maxStringLength) _artTitle.SetText($"{title.Substring(0, _maxStringLength)}...");
+        else _artTitle.SetText(title);
     }
 
     System.Action OnClickRequested;

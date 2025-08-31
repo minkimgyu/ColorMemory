@@ -155,15 +155,9 @@ public class VerticalInfiniteScroll : MonoBehaviour
         item = GetItem(_currentItemIndexes[spawnIdx]);
 
         _itemList.AddLast(item);
-        item.SetParent(_content);
-        item.ChangeSibiling(false);
         item.ChangeLocalPosition(localPos);
-        item.ChangeLocalScale(Vector2.one);
-        item.Active(true);
 
         if (_lastItemIndex > _itemTotalCount - 1) item.Active(false);
-        //else itemGO.OnRefresh(_lastItemIndex);
-
         _lastItemIndex += 1;
     }
 
@@ -173,20 +167,13 @@ public class VerticalInfiniteScroll : MonoBehaviour
 
         IScrollItem item = GetItem(_currentItemIndexes[_firstItemIndex]);
         _itemList.AddFirst(item);
-        item.SetParent(_content);
-        item.ChangeSibiling(true);
         item.ChangeLocalPosition(localPos);
-        item.ChangeLocalScale(Vector2.one);
-        item.Active(true);
-
-        //itemGO.OnRefresh(_firstItemIndex);
     }
 
     void RemoveFirstItem()
     {
         IScrollItem item = _itemList.First.Value;
         item.ChangeLocalPosition(Vector2.zero);
-        item.Active(false);
 
         item.ReturnToPool();
         _itemList.RemoveFirst();
@@ -197,7 +184,6 @@ public class VerticalInfiniteScroll : MonoBehaviour
     {
         IScrollItem item = _itemList.Last.Value;
         item.ChangeLocalPosition(Vector2.zero);
-        item.Active(false);
 
         item.ReturnToPool();
         _itemList.RemoveLast();

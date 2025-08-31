@@ -433,7 +433,7 @@ public class CollectPageViewer
 
     public void SetArtworkScrollIndex(int scrollIndex)
     {
-        _artworkInfiniteScroll.ScrollTo(scrollIndex);
+        _artworkInfiniteScroll.UpdateContent(scrollIndex);
     }
 
     public void ClearAllItems()

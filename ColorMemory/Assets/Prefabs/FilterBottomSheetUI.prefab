@@ -217,6 +217,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7feaa1b397645544ac48a4f9d9fdabf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _parent: {fileID: 8266855994947432416}
 --- !u!1001 &3295423477514590490
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -397,6 +398,11 @@ RectTransform:
 --- !u!224 &5571402004192509781 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6983441089633347151, guid: 55424ce3acd47e74cba0530c271303e7, type: 3}
+  m_PrefabInstance: {fileID: 3295423477514590490}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &8266855994947432416 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 6846165823205881594, guid: 55424ce3acd47e74cba0530c271303e7, type: 3}
   m_PrefabInstance: {fileID: 3295423477514590490}
   m_PrefabAsset: {fileID: 0}
 --- !u!224 &8712349923719200686 stripped
