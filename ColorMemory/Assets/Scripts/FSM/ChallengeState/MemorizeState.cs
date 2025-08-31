@@ -1,3 +1,5 @@
+using Codice.Client.BaseCommands;
+using Collect;
 using DG.Tweening;
 using System;
 using System.Collections.Generic;
@@ -15,8 +17,7 @@ namespace Challenge
 
         readonly Color _fadeColor = new Color(236f / 255f, 232f / 255f, 232f / 255f);
 
-        Timer _timer;
-        ChallengeMode.ModeData _modeData;
+        ChallengeMode.ModeData _data;
         List<LevelData> _stageDatas;
 
         Func<Tuple<Dot[,], Dot[], MapData>> GetStage;
@@ -33,13 +34,13 @@ namespace Challenge
             Func<Tuple<Dot[,], Dot[], MapData>> GetStage
         ) : base(fsm)
         {
+            _stateTimer = new Timer();
             _pickColors = pickColors;
-            _modeData = modeData;
+            _data = modeData;
             _stageDatas = stageDatas;
-            _timer = new Timer();
 
             _challengeStageUIPresenter = challengeStageUIPresenter;
-            _challengeStageUIPresenter.OnClickSkipBtn += GoToPaintState;
+            _challengeStageUIPresenter.OnClickSkipBtn += OnClickSkipBtn;
             this.GetStage = GetStage;
         }
 
@@ -48,7 +49,13 @@ namespace Challenge
             return _pickColors[_mapData.DotColor[row, col]];
         }
 
-        public override void OnStateEnter()
+        void OnClickSkipBtn()
+        {
+            _stateTimer.Reset();
+            _currentState = State.Fade;
+        }
+
+        public void MaximizePreviewDots()
         {
             // 초기화 진행
             Tuple<Dot[,], Dot[], MapData> levelData = GetStage();
@@ -76,7 +83,7 @@ namespace Challenge
                 }
             }
 
-            int index = Mathf.Clamp(_modeData.StageCount - 1, 0, _stageDatas.Count - 1);
+            int index = Mathf.Clamp(_data.StageCount - 1, 0, _stageDatas.Count - 1);
             float memorizeDuration = _stageDatas[index].MemorizeDuration;
 
             _challengeStageUIPresenter.ActivateHint(false, false);
@@ -86,10 +93,9 @@ namespace Challenge
             string rememberTxt = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.RememberTitle);
             _challengeStageUIPresenter.ActivateRememberPanel(true, rememberTxt);
             _challengeStageUIPresenter.ChangeTotalTime(memorizeDuration);
-            _timer.Start(memorizeDuration);
         }
 
-        void GoToPaintState()
+        void FadePreviewDots()
         {
             _challengeStageUIPresenter.ActivateBottomContent(true);
             _challengeStageUIPresenter.ActivateSkipBtn(false);
@@ -105,26 +111,73 @@ namespace Challenge
                     _dots[i, j].Expand(_fadeColor, 1.5f);
                 }
             }
-
-            _timer.Reset(); // 타이머 리셋
-
-            // 일정 시간 지나면 다음 State로 이동
-            DOVirtual.DelayedCall(1.5f, () =>
-            {
-                // 만약 현재 상태가 다른 상태라면 실행되지 못하게 막아야함
-                if (_fsm.CurrentState != ChallengeMode.State.Memorize) return;
-                _fsm.SetState(ChallengeMode.State.Paint);
-            });
         }
+
+        public override void OnStateEnter()
+        {
+            _currentState = State.Maximize;
+            _stateTimer.Reset();
+        }
+
+        public enum State
+        {
+            Maximize,
+            Fade,
+            ChangeState
+        }
+
+        State _currentState;
+        Timer _stateTimer;
+        const float _stateChangeDelay = 1.5f;
+
 
         public override void OnStateUpdate()
         {
-            _challengeStageUIPresenter.ChangeLeftTime(_timer.LeftTime, 1 - _timer.Ratio);
-
-            if (_timer.CurrentState == Timer.State.Finish)
+            switch (_currentState)
             {
-                GoToPaintState();
-                return;
+                case State.Maximize:
+                    _challengeStageUIPresenter.ChangeLeftTime(_stateTimer.LeftTime, 1 - _stateTimer.Ratio);
+                    break;
+            }
+
+            if (_stateTimer.CurrentState == Timer.State.Running) return;
+
+            // 타이머가 완료되었다면 현재 상태에서 다음 상태로 넘어가기
+            if (_stateTimer.CurrentState == Timer.State.Finish)
+            {
+                switch (_currentState)
+                {
+                    case State.Maximize:
+                        _currentState = State.Fade;
+                        break;
+                    case State.Fade:
+                        _currentState = State.ChangeState;
+                        break;
+                }
+            }
+
+            // 다음 상태로 넘어가기
+            switch (_currentState)
+            {
+                case State.Maximize:
+                    MaximizePreviewDots();
+
+                    int index = Mathf.Clamp(_data.StageCount - 1, 0, _stageDatas.Count - 1);
+                    float memorizeDuration = _stageDatas[index].MemorizeDuration;
+
+                    _stateTimer.Reset();
+                    _stateTimer.Start(memorizeDuration);
+                    break;
+                case State.Fade:
+                    FadePreviewDots();
+
+                    _stateTimer.Reset();
+                    _stateTimer.Start(_stateChangeDelay);
+                    break;
+                case State.ChangeState:
+
+                    _fsm.SetState(ChallengeMode.State.Paint);
+                    break;
             }
         }
     }

@@ -272,11 +272,6 @@ namespace Collect
             bool canClear = CanClearStage();
             if (canClear == false) return;
 
-            //float leftRatio = _timer.Ratio;
-            //_timer.Reset(); // 타이머 리셋
-
-            
-
             _goBackCount = 0;
             _fsm.SetState(CollectMode.State.Clear);
         }

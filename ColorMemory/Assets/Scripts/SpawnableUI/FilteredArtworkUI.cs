@@ -8,7 +8,8 @@ public class FilteredArtworkUI : SpawnableUI, IScrollItem
 {
     [SerializeField] Button _selectButton;
     [SerializeField] Image _artImg;
-    [SerializeField] TMP_Text _artTitle;
+    //[SerializeField] TMP_Text _artTitle;
+    [SerializeField] Text _artTitle;
     [SerializeField] GameObject _lockPanel;
 
     [SerializeField] ResizeableImage _resizeableImage;
@@ -21,8 +22,8 @@ public class FilteredArtworkUI : SpawnableUI, IScrollItem
 
         _lockPanel.SetActive(!hasIt);
         _artImg.sprite = artSprite;
-        if (title.Length > _maxStringLength) _artTitle.SetText($"{title.Substring(0, _maxStringLength)}...");
-        else _artTitle.SetText(title);
+        if (title.Length > _maxStringLength) _artTitle.text = $"{title.Substring(0, _maxStringLength)}...";
+        else _artTitle.text = title;
     }
 
     System.Action OnClickRequested;

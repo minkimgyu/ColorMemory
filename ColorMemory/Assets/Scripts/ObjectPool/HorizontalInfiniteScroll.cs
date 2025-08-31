@@ -82,7 +82,6 @@ public class HorizontalInfiniteScroll : MonoBehaviour, IBeginDragHandler, IDragH
             }
         }
 
-        Debug.Log(closestIndex);
         ScrollTo(closestIndex);
         OnDragEnd?.Invoke(closestIndex);
     }
@@ -249,7 +248,7 @@ public class HorizontalInfiniteScroll : MonoBehaviour, IBeginDragHandler, IDragH
         CalculateItemCenters();
     }
 
-    const int _scrollItemCount = 10;
+    const int _scrollItemCount = 5;
 
     private void InitializeScrollItems(int centerIdx)
     {

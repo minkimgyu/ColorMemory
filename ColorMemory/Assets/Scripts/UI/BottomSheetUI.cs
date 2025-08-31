@@ -68,8 +68,6 @@ public class BottomSheetUI : MonoBehaviour, IDragHandler, IEndDragHandler
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        Debug.Log(dragSpeed);
-
         if (dragSpeed > speedThreshold)
         {
             OpenPanel();

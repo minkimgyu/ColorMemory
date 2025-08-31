@@ -15,11 +15,8 @@ namespace Collect
 
         readonly Color _fadeColor = new Color(236f / 255f, 232f / 255f, 232f / 255f);
 
-        Timer _timer;
         Func<Tuple<Dot[,], Dot[], MapData>> GetLevelData;
-
         CollectMode.Data _data;
-
         CollectStageUIPresenter _collectStageUIPresenter;
 
         public MemorizeState(
@@ -31,10 +28,10 @@ namespace Collect
         ) : base(fsm)
         {
             _data = data;
-            _timer = new Timer();
+            _stateTimer = new Timer();
 
             _collectStageUIPresenter = collectStageUIPresenter;
-            collectStageUIPresenter.OnClickSkipBtn += GoToPaintState;
+            collectStageUIPresenter.OnClickSkipBtn += OnClickSkipBtn;
 
             this.GetLevelData = GetLevelData;
         }
@@ -44,7 +41,13 @@ namespace Collect
             return _data.PickColors[_mapData.DotColor[row, col]];
         }
 
-        public override void OnStateEnter()
+        void OnClickSkipBtn()
+        {
+            _stateTimer.Reset();
+            _currentState = State.Fade;
+        }
+
+        void MaximizePreviewDots()
         {
             // 초기화 진행
             Tuple<Dot[,], Dot[], MapData> levelData = GetLevelData();
@@ -67,8 +70,6 @@ namespace Collect
                 {
                     // 원래 레벨 색으로 변경해주기
                     _dots[i, j].ChangeColor(GetDotColor(i, j));
-
-                    // 랜덤하게 키우기
                     _dots[i, j].Maximize(1f);
                 }
             }
@@ -79,10 +80,9 @@ namespace Collect
 
             _collectStageUIPresenter.ActivateRememberPanel(true);
             _collectStageUIPresenter.ChangeTotalTime(_data.MemorizeDuration);
-            _timer.Start(_data.MemorizeDuration);
         }
 
-        void GoToPaintState()
+        void FadePreviewDots()
         {
             _collectStageUIPresenter.ActivateTimerContent(false);
             _collectStageUIPresenter.ActivateBottomContent(true);
@@ -98,26 +98,70 @@ namespace Collect
                     _dots[i, j].Expand(_fadeColor, 1.5f);
                 }
             }
-
-            _timer.Reset(); // 타이머 리셋
-
-            // 일정 시간 지나면 다음 State로 이동
-            DOVirtual.DelayedCall(1.5f, () =>
-            {
-                // 만약 현재 상태가 다른 상태라면 실행되지 못하게 막아야함
-                if (_fsm.CurrentState != CollectMode.State.Memorize) return;
-                _fsm.SetState(CollectMode.State.Paint);
-            });
         }
+
+        public override void OnStateEnter()
+        {
+            _currentState = State.Maximize;
+            _stateTimer.Reset();
+        }
+
+
+        public enum State
+        {
+            Maximize,
+            Fade,
+            ChangeState
+        }
+
+        State _currentState;
+        Timer _stateTimer;
+        const float _stateChangeDelay = 1.5f;
 
         public override void OnStateUpdate()
         {
-            _collectStageUIPresenter.ChangeLeftTime(_timer.LeftTime, 1 - _timer.Ratio);
-
-            if (_timer.CurrentState == Timer.State.Finish)
+            switch (_currentState)
             {
-                GoToPaintState();
-                return;
+                case State.Maximize:
+                    _collectStageUIPresenter.ChangeLeftTime(_stateTimer.LeftTime, 1 - _stateTimer.Ratio);
+                    break;
+            }
+
+            if (_stateTimer.CurrentState == Timer.State.Running) return;
+
+            // 타이머가 완료되었다면 현재 상태에서 다음 상태로 넘어가기
+            if (_stateTimer.CurrentState == Timer.State.Finish)
+            {
+                switch (_currentState)
+                {
+                    case State.Maximize:
+                        _currentState = State.Fade;
+                        break;
+                    case State.Fade:
+                        _currentState = State.ChangeState;
+                        break;
+                }
+            }
+
+            // 다음 상태로 넘어가기
+            switch (_currentState)
+            {
+                case State.Maximize:
+                    MaximizePreviewDots();
+
+                    _stateTimer.Reset();
+                    _stateTimer.Start(_data.MemorizeDuration);
+                    break;
+                case State.Fade:
+                    FadePreviewDots();
+
+                    _stateTimer.Reset();
+                    _stateTimer.Start(_stateChangeDelay);
+                    break;
+                case State.ChangeState:
+
+                    _fsm.SetState(CollectMode.State.Paint);
+                    break;
             }
         }
     }

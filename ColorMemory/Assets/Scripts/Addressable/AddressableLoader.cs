@@ -143,7 +143,7 @@ public class AddressableLoader : MonoBehaviour
         OnProgress?.Invoke((float)_successCount / _totalCount);
         if (_successCount == _totalCount)
         {
-            Debug.Log("Complete!");
+            Debug.Log("Fade!");
             OnCompleted?.Invoke();
         }
     }

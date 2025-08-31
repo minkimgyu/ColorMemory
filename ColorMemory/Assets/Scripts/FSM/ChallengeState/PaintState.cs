@@ -51,10 +51,6 @@ namespace Challenge
                 new Vector2Int(0, 1), // ¡æ
                 new Vector2Int(1, 0), // ¡é
                 new Vector2Int(0, -1), // ¡ç
-                //new Vector2Int(-1, 1), // ¢Ö
-                //new Vector2Int(1, 1), // ¢Ù
-                //new Vector2Int(1, -1), // ¢×
-                //new Vector2Int(-1, -1), // ¢Ø
             };
 
             _modeData = modeData;

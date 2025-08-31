@@ -42,6 +42,7 @@ namespace Collect
             Func<Tuple<Dot[,], Dot[], MapData>> GetLevelData,
             Action DestroyDots) : base(fsm)
         {
+            _stateTimer = new Timer();
             _artDataLoaderService = artDataLoaderService;
             _artDataUpdaterService = artDataUpdaterService;
 
@@ -132,91 +133,137 @@ namespace Collect
             _fsm.SetState(CollectMode.State.Initialize);
         }
 
+        public enum State
+        {
+            DelayAfterClear,
+            Minimizing,
+            CompleteStage,
+            Finish,
+        }
+
+        State _currentState;
+        Timer _stateTimer;
+        const float _stateChangeDelay = 1.5f;
+        Rank? currentRank;
+
         public override async void OnStateEnter()
         {
-            Rank? currentRank = await UpdateArtDataToServer();
+            currentRank = await UpdateArtDataToServer();
             if (currentRank == null) return;
 
-            DOVirtual.DelayedCall(0.5f, () =>
+            _currentState = State.DelayAfterClear;
+            _stateTimer.Reset();
+        }
+
+        void MinimizeAllDots()
+        {
+            Tuple<Dot[,], Dot[], MapData> levelData = GetLevelData();
+            Dot[,] dots = levelData.Item1;
+            Vector2Int levelSize = new Vector2Int(dots.GetLength(0), dots.GetLength(1));
+            for (int i = 0; i < levelSize.x; i++)
             {
-                Tuple<Dot[,], Dot[], MapData> levelData = GetLevelData();
-                Dot[,] dots = levelData.Item1;
-                Vector2Int levelSize = new Vector2Int(dots.GetLength(0), dots.GetLength(1));
-
-                for (int i = 0; i < levelSize.x; i++)
+                for (int j = 0; j < levelSize.y; j++)
                 {
-                    for (int j = 0; j < levelSize.y; j++)
-                    {
-                        // 랜덤하게 줄이기
-                        dots[i, j].Minimize(1f);
-                    }
+                    // 랜덤하게 줄이기
+                    dots[i, j].Minimize(1f);
                 }
+            }
+        }
 
-                DOVirtual.DelayedCall(1.5f, () =>
+        void CompleteStage()
+        {
+            DestroyDots?.Invoke(); // 모든 닷 제거
+
+            // 다음 스테이지로 갈 것인지 판단하는 UI 띄우기
+            _collectStageUIPresenter.ActivateGameClearPanel(true);
+            _collectStageUIPresenter.ActivateNextStageBtn(true);
+            _collectStageUIPresenter.ActivateClearExitBtn(true);
+
+            string completeTitle;
+            string completeContent;
+
+            SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
+
+            int row = _artData.Sections.Count;
+            int col = _artData.Sections[0].Count;
+
+            if (data.SelectedArtworkSectionIndex.x == row - 1
+                && data.SelectedArtworkSectionIndex.y == col - 1) // 마지막 스테이지의 경우
+            {
+                ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.GameClear);
+
+                Sprite artworkSprite;
+                Sprite rankFrameSprite;
+                Sprite rankDecorationIconSprite;
+
+                artworkSprite = _artSpriteAsserts[data.SelectedArtworkKey];
+                rankFrameSprite = _artworkFrameAssets[currentRank.Value];
+                rankDecorationIconSprite = _rankDecorationIconAssets[currentRank.Value];
+
+                _collectStageUIPresenter.ChangeArtworkPreview(artworkSprite, rankFrameSprite, rankDecorationIconSprite);
+
+                _completeAnimator.SetTrigger("CompleteArtwork");
+
+                completeTitle = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.CollectionCompleteTitle);
+                completeContent = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.CollectionCompleteContent);
+
+                _collectStageUIPresenter.ActivateClearExitBtn(false);
+            }
+            else
+            {
+                ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.StageClear);
+
+                _completeAnimator.SetTrigger("CompleteSection");
+
+                completeTitle = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.CollectionClearTitle);
+                completeContent = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.CollectionClearContent);
+            }
+
+            _collectStageUIPresenter.ChangeClearTitleInfo(completeTitle);
+            _collectStageUIPresenter.ChangeClearContentInfo(completeContent);
+        }
+
+        public override void OnStateUpdate()
+        {
+            if (_stateTimer.CurrentState == Timer.State.Running) return;
+
+            // 타이머가 완료되었다면 현재 상태에서 다음 상태로 넘어가기
+            if (_stateTimer.CurrentState == Timer.State.Finish)
+            {
+                switch (_currentState)
                 {
-                    DestroyDots?.Invoke(); // 모든 닷 제거
+                    case State.DelayAfterClear:
+                        _currentState = State.Minimizing;
+                        break;
+                    case State.Minimizing:
+                        _currentState = State.CompleteStage;
+                        break;
+                    case State.CompleteStage:
+                        _currentState = State.Finish;
+                        break;
+                }
+            }
 
-                    // 다음 스테이지로 갈 것인지 판단하는 UI 띄우기
-                    _collectStageUIPresenter.ActivateGameClearPanel(true);
-                    _collectStageUIPresenter.ActivateNextStageBtn(true);
-                    _collectStageUIPresenter.ActivateClearExitBtn(true);
+            // 다음 상태로 넘어가기
+            switch (_currentState)
+            {
+                case State.DelayAfterClear:
+                    _stateTimer.Reset();
+                    _stateTimer.Start(0.5f);
+                    break;
+                case State.Minimizing:
+                    MinimizeAllDots();
 
-                    string completeTitle;
-                    string completeContent;
-
-                    SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
-
-                    int row = _artData.Sections.Count;
-                    int col = _artData.Sections[0].Count;
-
-                    if (data.SelectedArtworkSectionIndex.x == row - 1
-                        && data.SelectedArtworkSectionIndex.y == col - 1) // 마지막 스테이지의 경우
-                    {
-                        ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.GameClear);
-
-                        Sprite artworkSprite;
-                        Sprite rankFrameSprite;
-                        Sprite rankDecorationIconSprite;
-
-                        artworkSprite = _artSpriteAsserts[data.SelectedArtworkKey];
-                        rankFrameSprite = _artworkFrameAssets[currentRank.Value];
-                        rankDecorationIconSprite = _rankDecorationIconAssets[currentRank.Value];
-
-                        _collectStageUIPresenter.ChangeArtworkPreview(artworkSprite, rankFrameSprite, rankDecorationIconSprite);
-
-                        _completeAnimator.SetTrigger("CompleteArtwork");
-
-                        completeTitle = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.CollectionCompleteTitle);
-                        completeContent = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.CollectionCompleteContent);
-
-                        _collectStageUIPresenter.ActivateClearExitBtn(false);
-
-                        //if (_alreadyHaveArtwork == true) // 이미 아트워크를 보유한 경우
-                        //{
-                        //    // next 버튼 없애주기
-                        //    _collectStageUIPresenter.ActivateNextStageBtn(false);
-                        //    // exit만 가능하게 만들어준다.
-                        //}
-                        //else // 보유하지 않은 경우
-                        //{
-                        //    _collectStageUIPresenter.ActivateClearExitBtn(false);
-                        //    // next만 가능하게 만들어준다.
-                        //}
-                    }
-                    else
-                    {
-                        ServiceLocater.ReturnSoundPlayer().PlaySFX(ISoundPlayable.SoundName.StageClear);
-
-                        _completeAnimator.SetTrigger("CompleteSection");
-
-                        completeTitle = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.CollectionClearTitle);
-                        completeContent = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.CollectionClearContent);
-                    }
-
-                    _collectStageUIPresenter.ChangeClearTitleInfo(completeTitle);
-                    _collectStageUIPresenter.ChangeClearContentInfo(completeContent);
-                });
-            });
+                    _stateTimer.Reset();
+                    _stateTimer.Start(_stateChangeDelay);
+                    break;
+                case State.CompleteStage:
+                    // 다음 스테이지로 넘어가기
+                    CompleteStage();
+                    break;
+                case State.Finish:
+                    break;
+            }
         }
 
         const int clearPoint = 100;
@@ -226,9 +273,6 @@ namespace Collect
             _modeData.MyScore += clearPoint;
             _collectStageUIPresenter.ActivateDetailContent(false);
             _collectStageUIPresenter.ActivateGameClearPanel(false);
-
-            //_collectStageUIPresenter.ChangeNowScore(data.MyScore);
-            //_challengeStageUIPresenter.ChangeBestScore(data.MyScore);
         }
     }
 }
