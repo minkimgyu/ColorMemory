@@ -330,6 +330,11 @@ public class CollectStageUIViewer : ICollectStageUIViewer
         _sharePanel.SetActive(activeSharePanel);
     }
 
+    public void ActivateGoBackBtn(bool activeGoBackBtn)
+    {
+        _goBackBtn.interactable = activeGoBackBtn;
+    }
+
     public void ActivateShareBottomItems(bool activeShareBottomItems)
     {
         _shareBtn.gameObject.SetActive(activeShareBottomItems);

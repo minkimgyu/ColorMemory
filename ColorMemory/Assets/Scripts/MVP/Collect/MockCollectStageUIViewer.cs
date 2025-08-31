@@ -186,4 +186,6 @@ public class MockCollectStageUIViewer : ICollectStageUIViewer
     public void ChangeBGMSliderHandleColor(string leftSmallTxt, Color handleColor) { }
 
     public void ChangeSFXSliderHandleColor(string leftSmallTxt, Color handleColor) { }
+
+    public void ActivateGoBackBtn(bool activeGoBackBtn) { }
 }

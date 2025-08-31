@@ -7,6 +7,8 @@ public interface ICollectStageUIViewer
     void ChangeShareArtworks(Sprite[] shareArtSprites, ArtworkData[] shareArtworkDatas);
     void ActivateSharePanel(bool activeSharePanel);
     void ActivateShareBottomItems(bool activeShareBottomItems);
+    void ActivateGoBackBtn(bool activeGoBackBtn);
+
 
     void ChangeArtworkTitle(string artworkTitle);
     void ChangeDetailTitle(string hintUsageTitle, string wrongCountTitle);

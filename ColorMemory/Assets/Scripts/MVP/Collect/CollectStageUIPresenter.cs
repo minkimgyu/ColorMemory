@@ -81,6 +81,12 @@ public class CollectStageUIPresenter
         _viewer.ActivateSharePanel(_model.ActiveSharePanel);
     }
 
+    public void ActivateGoBackBtn(bool activeGoBackBtn)
+    {
+        _model.ActiveGoBackBtn = activeGoBackBtn;
+        _viewer.ActivateGoBackBtn(_model.ActiveGoBackBtn);
+    }
+
     public void ActivateShareBottomItems(bool activeSharePanel)
     {
         _model.ActiveShareBottomItems = activeSharePanel;

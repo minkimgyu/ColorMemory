@@ -35,7 +35,6 @@ namespace Collect
             };
 
             _collectStageUIPresenter = collectStageUIPresenter;
-
             _collectStageUIPresenter.OnClickGoBackHint += OnClickGoBackHint;
 
             this.GetLevelData = GetLevelData;
@@ -108,6 +107,8 @@ namespace Collect
             }
 
             _collectStageUIPresenter.ActivateDetailContent(false);
+            _collectStageUIPresenter.ActivateGoBackBtn(false);
+
             _collectStageUIPresenter.ChangeHintInfoText($"힌트를 사용할수록 높은 랭크를 받을 확률이 떨어져요!");
             SaveData save = ServiceLocater.ReturnSaveManager().GetSaveData();
 
@@ -117,8 +118,6 @@ namespace Collect
 
         bool _goBackActivated = false;
         int _goBackCount = 0;
-
-        readonly Color _fadeColor = new Color(236f / 255f, 232f / 255f, 232f / 255f);
 
         public override void OnStateEnter()
         {
@@ -130,6 +129,7 @@ namespace Collect
             _levelSize = new Vector2Int(_dots.GetLength(0), _dots.GetLength(1));
 
             _collectStageUIPresenter.ActivateDetailContent(true);
+            _collectStageUIPresenter.ActivateGoBackBtn(true);
 
 
             string usageFormat;
@@ -273,6 +273,7 @@ namespace Collect
             if (canClear == false) return;
 
             _goBackCount = 0;
+            _collectStageUIPresenter.ActivateGoBackBtn(false);
             _fsm.SetState(CollectMode.State.Clear);
         }
     }

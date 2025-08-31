@@ -77,6 +77,7 @@ namespace Collect
             _collectStageUIPresenter.ActivateTimerContent(true);
             _collectStageUIPresenter.ActivateBottomContent(false);
             _collectStageUIPresenter.ActivateSkipBtn(true);
+            _collectStageUIPresenter.ActivateGoBackBtn(false);
 
             _collectStageUIPresenter.ActivateRememberPanel(true);
             _collectStageUIPresenter.ChangeTotalTime(_data.MemorizeDuration);

@@ -62,6 +62,9 @@ public class CollectStageUIModel
 
     public bool ActiveDetailContent { get => _activeDetailContent; set => _activeDetailContent = value; }
 
+    bool _activeGoBackBtn;
+    public bool ActiveGoBackBtn { get => _activeGoBackBtn; set => _activeGoBackBtn = value; }
+
     public string HintUsageTitle { get => _hintUsageTitle; set => _hintUsageTitle = value; }
     public string WrongCountTitle { get => _wrongCountTitle; set => _wrongCountTitle = value; }
 
