@@ -6,7 +6,7 @@ Unity를 사용하여 개발한 모바일 퍼즐 2D 게임입니다.
 <img src="https://github.com/user-attachments/assets/173de931-1802-4369-99ea-5dad9840e0a0" alt="Color Memory Screenshot"/>
 
 ## 📆 개발 기간
-2025년 2월 ~ 2025년 5월
+2025년 2월 ~ 2025년 6월
 
 
 ## 🧑‍🤝‍🧑 팀 구성
