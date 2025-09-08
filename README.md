@@ -22,38 +22,14 @@ Unity를 사용하여 개발한 모바일 퍼즐 2D 게임입니다.
 
 ## 👨‍💻 담당 역할 및 기여도
 
-- ✅ **MVP 패턴을 활용하여 UI 시스템 개발** (기여도 100%)
-- ✅ **Breadth First Search 알고리즘을 활용한 퍼즐 시스템 개발** (기여도 100%)
+- ✅ **Scroll Rect 최적화를 위한 Infinite Scroll 개발** (기여도 100%)
 - ✅ **Remote Addressable을 활용한 에셋 시스템 개발 및 빌드 용량 최적화** (기여도 80%)
-- ✅ **DOTween을 활용한 UI 연출 적용** (기여도 100%)
+- ✅ **MVP 패턴을 활용하여 UI 시스템 개발** (기여도 100%)
 - ✅ **GitHub Actions을 활용한 테스트, 빌드 자동화 구축** (기여도 100%)
+- ✅ **AI 도구를 활용한 테스트 코드 작성 (기여도 100%)** (기여도 100%)
+- ✅ **Breadth First Search 알고리즘을 활용한 퍼즐 시스템 개발** (기여도 100%)
+- ✅ **DOTween을 활용한 UI 연출 적용** (기여도 100%)
 - ✅ **Google Play Store 출시를 위한 구글 로그인, 인앱 업데이트 적용** (기여도 50%)
-
----
-
-## 📦 MVP 패턴 기반 UI 시스템
-
-<img src="https://github.com/user-attachments/assets/b82aeb96-b1f3-4d3c-b873-5438c5b6e576" alt="Color Memory Screenshot"/>
-
-Model, View, Presenter의 책임을 명확히 나누어 UI 시스템을 구성하였으며,  
-MockViewer 클래스 구현을 통해 단위 테스트를 수행할 수 있도록 설계하였습니다.
-
-[Collect MVP 구현 코드](https://github.com/minkimgyu/ColorMemory/blob/e4bd29b9868dd1b1104bfdf3d92b1175ab1ff253/ColorMemory/Assets/Scripts/Mode/CollectMode.cs#L237C6-L237C67)
-
-[CollectStageUIModel 코드](https://github.com/minkimgyu/ColorMemory/blob/e4bd29b9868dd1b1104bfdf3d92b1175ab1ff253/ColorMemory/Assets/Scripts/MVP/Collect/CollectStageUIModel.cs#L5)
-[CollectStageUIViewer 코드](https://github.com/minkimgyu/ColorMemory/blob/e4bd29b9868dd1b1104bfdf3d92b1175ab1ff253/ColorMemory/Assets/Scripts/MVP/Collect/CollectStageUIViewer.cs#L9C14-L9C34)
-[CollectStageUIPresenter 코드](https://github.com/minkimgyu/ColorMemory/blob/e4bd29b9868dd1b1104bfdf3d92b1175ab1ff253/ColorMemory/Assets/Scripts/MVP/Collect/CollectStageUIPresenter.cs#L7)
-
----
-
-## 🛠️ Breadth First Search 알고리즘 기반 퍼즐 시스템
-
-<img src="https://github.com/user-attachments/assets/7631885a-a931-4711-8106-19ae8c80ed93" alt="Color Memory Screenshot"/>
-
-퍼즐 게임에서 인접한 동일 색상 블록을 한 번에 색칠하기 위해  
-Breadth First Search 알고리즘을 활용하여 효율적인 탐색을 구현했습니다.
-
-[BFS 구현 코드](https://github.com/minkimgyu/ColorMemory/blob/33e192c557a53b4c02b6c399165b04eb60b5ed0a/ColorMemory/Assets/Scripts/FSM/CollectState/PaintState.cs#L248)
 
 ---
 
@@ -69,15 +45,18 @@ Breadth First Search 알고리즘을 활용하여 효율적인 탐색을 구현�
 
 ---
 
-## 💫 DOTween을 활용한 UI 연출 적용
+## 📦 MVP 패턴 기반 UI 시스템
 
-DOTween을 활용해서 퍼즐 게임에 알맞은 UI 연출을 제작했습니다.
+<img src="https://github.com/user-attachments/assets/b82aeb96-b1f3-4d3c-b873-5438c5b6e576" alt="Color Memory Screenshot"/>
 
-### UI 연출 예시 🎬
+Model, View, Presenter의 책임을 명확히 나누어 UI 시스템을 구성하였으며,  
+MockViewer 클래스 구현을 통해 단위 테스트를 수행할 수 있도록 설계하였습니다.
 
-<img src="https://github.com/user-attachments/assets/4c264b09-318f-47bc-99dc-d20ad856845f" alt="Color Memory Screenshot"/>
-</br>
-연출 영상: https://www.youtube.com/watch?v=pQLR3cqxy_I
+[Collect MVP 구현 코드](https://github.com/minkimgyu/ColorMemory/blob/e4bd29b9868dd1b1104bfdf3d92b1175ab1ff253/ColorMemory/Assets/Scripts/Mode/CollectMode.cs#L237C6-L237C67)
+
+[CollectStageUIModel 코드](https://github.com/minkimgyu/ColorMemory/blob/e4bd29b9868dd1b1104bfdf3d92b1175ab1ff253/ColorMemory/Assets/Scripts/MVP/Collect/CollectStageUIModel.cs#L5)
+[CollectStageUIViewer 코드](https://github.com/minkimgyu/ColorMemory/blob/e4bd29b9868dd1b1104bfdf3d92b1175ab1ff253/ColorMemory/Assets/Scripts/MVP/Collect/CollectStageUIViewer.cs#L9C14-L9C34)
+[CollectStageUIPresenter 코드](https://github.com/minkimgyu/ColorMemory/blob/e4bd29b9868dd1b1104bfdf3d92b1175ab1ff253/ColorMemory/Assets/Scripts/MVP/Collect/CollectStageUIPresenter.cs#L7)
 
 ---
 
@@ -115,3 +94,26 @@ AI 도구를 활용해서 엣지 케이스 및 테스트 항목을 제안받고 
 
 ### Unity Test Runner 결과 🟢
 <img src="https://github.com/user-attachments/assets/e341a1e0-0f85-4195-8a39-dfb9fc564a48" alt="Color Memory Screenshot" />
+
+---
+
+## 🛠️ Breadth First Search 알고리즘 기반 퍼즐 시스템
+
+<img src="https://github.com/user-attachments/assets/7631885a-a931-4711-8106-19ae8c80ed93" alt="Color Memory Screenshot"/>
+
+퍼즐 게임에서 인접한 동일 색상 블록을 한 번에 색칠하기 위해  
+Breadth First Search 알고리즘을 활용하여 효율적인 탐색을 구현했습니다.
+
+[BFS 구현 코드](https://github.com/minkimgyu/ColorMemory/blob/33e192c557a53b4c02b6c399165b04eb60b5ed0a/ColorMemory/Assets/Scripts/FSM/CollectState/PaintState.cs#L248)
+
+---
+
+## 💫 DOTween을 활용한 UI 연출 적용
+
+DOTween을 활용해서 퍼즐 게임에 알맞은 UI 연출을 제작했습니다.
+
+### UI 연출 예시 🎬
+
+<img src="https://github.com/user-attachments/assets/4c264b09-318f-47bc-99dc-d20ad856845f" alt="Color Memory Screenshot"/>
+</br>
+연출 영상: https://www.youtube.com/watch?v=pQLR3cqxy_I
