@@ -63,7 +63,7 @@ Infinite Scroll 적용 후 UI와 Others 영역의 병목이 크게 줄어듦을 
 
 <img src="https://github.com/user-attachments/assets/92d0f8d9-a61f-4a6a-89c5-fe310942a992" alt="적용 후 프로파일링 결과"/>
 
-다만, Object Pool 반환 시 발생하는 SetParent 호출이 불필요한 연산으로 확인되어 제거하여 최적화했습니다.
+Object Pool 반환 시 발생하는 SetParent 호출이 불필요한 연산으로 확인되어 제거하여 최적화했습니다.
 
 ### 최종 성능 개선 결과 🚀
 <img src="https://github.com/user-attachments/assets/fbd7732d-8efd-485b-b102-1a476728c573" alt="최종 성능 개선 결과"/>
