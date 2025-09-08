@@ -33,6 +33,55 @@ Unity를 사용하여 개발한 모바일 퍼즐 2D 게임입니다.
 
 ---
 
+## 🛠️ Scroll Rect 최적화를 위한 Infinite Scroll 개발
+
+저사양 기기에서 Horizontal, Vertical Scroll을 드래그 시 60 fps에서 30 fps까지 떨어지는 문제가 발생했습니다.
+
+### 문제 분석 및 원인 파악 🔎
+<img src="https://github.com/user-attachments/assets/ceb95792-7b2c-4a9a-b18e-a7c8d4351002" alt="Color Memory Screenshot"/>
+<img src="https://github.com/user-attachments/assets/c4d63c24-17fb-474e-8f51-ba6b4fca8f17" alt="Profiler 분석 결과"/>
+
+UGUI.Rendering.UpdateBatches (32.38ms)와 Canvas.RenderOverlays (20.73ms) 구간에서 병목 현상이 발생했습니다.
+
+스크롤 시 Content 내부 UI 요소 위치 변경으로 인해 Dirty Flag가 활성화되며, 약 1872개의 UI 위치·크기·클리핑 영역이 갱신되는 문제를 확인했습니다.
+
+### Infinite Scroll 구현 ⚙️
+<img src="https://github.com/user-attachments/assets/300ebfa8-6ad2-495d-97e7-5be494558bcc" alt="Infinite Scroll 개발"/>
+
+스크롤 끝에 도달하면 UI가 반복되도록 구현하여 실제로는 보이는 UI만 생성·표시하도록 최적화했습니다.
+
+UI 생성·파괴 반복으로 인한 Garbage Collector 과다 호출을 방지하기 위해 Object Pool을 적용했습니다.
+
+<img src="https://github.com/user-attachments/assets/8394907d-eafb-44ac-bfaf-827d34c032d1" alt="Infinite Scroll 개발"/>
+
+적용 결과, UI 수를 기존 750개 → 20개로 대폭 축소할 수 있었습니다.
+
+### 프로파일링 최적화 과정 ⚡
+<img src="https://github.com/user-attachments/assets/3b4df04a-7063-47a9-8d5a-73a8958ee0d9" alt="적용 후 프로파일링 결과"/>
+
+Infinite Scroll 적용 후 UI와 Others 영역의 병목이 크게 줄어듦을 확인했습니다.
+
+<img src="https://github.com/user-attachments/assets/92d0f8d9-a61f-4a6a-89c5-fe310942a992" alt="적용 후 프로파일링 결과"/>
+
+다만, Object Pool 반환 시 발생하는 SetParent 호출이 불필요한 연산으로 확인되어 제거하여 최적화했습니다.
+
+### 최종 성능 개선 결과 🚀
+<img src="https://github.com/user-attachments/assets/fbd7732d-8efd-485b-b102-1a476728c573" alt="최종 성능 개선 결과"/>
+
+UGUI.Rendering.UpdateBatches: 32.38ms → 9.75ms
+
+VerticalInfiniteScroll.Update: 9.91ms → 4.38ms
+
+Canvas.RenderOverlays: 20.73ms → 8.24ms
+
+프레임당 실행 시간 66.55ms → 20.24ms
+
+<img src="https://github.com/user-attachments/assets/9f199220-dff7-4a1e-9838-89b846b9424f" alt="최종 성능 개선 결과"/>
+
+FPS 15.12fps → 49.41fps 로 최적화 완료했습니다.
+
+---
+
 ## 📦 Remote Addressable을 활용한 에셋 시스템 개발 및 빌드 용량 최적화
 
 기존 81MB에 달했던 옛 번들 포트 용량 최적화 및 텍스처 압축을 통해 빌드 용량을 **28MB까지** 줄였습니다.
