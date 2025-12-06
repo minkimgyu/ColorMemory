@@ -39,7 +39,7 @@ public class ShopPageState : BaseState<HomePage.InnerPageState>
 
     async void BuyItemFromServer(int earnMoney)
     {
-        string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
+        string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserID;
 
         bool canEarn = await _currencyService.EarnPlayerMoneyAsync(userId, earnMoney);
         if (canEarn == false) return;
@@ -70,9 +70,22 @@ public class ShopPageState : BaseState<HomePage.InnerPageState>
         SpawnableUI spawnableUI2 = _shopBundleUIFactory.Create(title2, content2, 2000, 4500);
         SpawnableUI spawnableUI3 = _shopBundleUIFactory.Create(title3, content3, 4000, 8000);
 
-        spawnableUI1.InjectClickEvent(() => { IAPManager.Instance.BuyProduct("coin1000", () => { BuyItemFromServer(1000); }); });
-        spawnableUI2.InjectClickEvent(() => { IAPManager.Instance.BuyProduct("coin2000", () => { BuyItemFromServer(2000); }); });
-        spawnableUI3.InjectClickEvent(() => { IAPManager.Instance.BuyProduct("coin4000", () => { BuyItemFromServer(4000); }); });
+        IIAPManager iapManager = ServiceLocater.ReturnIAPManager();
+
+        spawnableUI1.InjectClickEvent(() => 
+        {
+            iapManager.BuyProduct("coin1000", () => { BuyItemFromServer(1000); }); 
+        });
+
+        spawnableUI2.InjectClickEvent(() => 
+        {
+            iapManager.BuyProduct("coin2000", () => { BuyItemFromServer(2000); }); 
+        });
+
+        spawnableUI3.InjectClickEvent(() => 
+        {
+            iapManager.BuyProduct("coin4000", () => { BuyItemFromServer(4000); }); 
+        });
 
         _shopPagePresenter.AddShopItem(spawnableUI1);
         _shopPagePresenter.AddShopItem(spawnableUI2);

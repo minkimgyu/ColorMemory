@@ -136,7 +136,7 @@ public class MainPageState : BaseState<HomePage.InnerPageState>
 
         _homePagePresenter.OnPlayBtnClicked += ((type) =>
         {
-            AdManager.Instance.DestroyBannerAd();
+            ServiceLocater.ReturnAdManager().DestroyBannerAd();
 
             switch (type)
             {

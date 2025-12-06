@@ -64,6 +64,28 @@ public class WeeklyScoreUpdateService : IRankingService
     }
 }
 
+public class LocalWeeklyScoreUpdateService : IRankingService
+{
+    public async Task<bool> UpdatePlayerWeeklyScore(int myScore, string userId)
+    {
+        bool canUpdate = false;
+
+        try
+        {
+            await Task.Delay(10); // 모의 비동기 대기
+            canUpdate = true;
+        }
+        catch (System.Exception e)
+        {
+            Debug.Log(e);
+            Debug.Log("서버에 데이터를 전송하지 못함");
+            return false;
+        }
+
+        return canUpdate;
+    }
+}
+
 public class Top10RankingService : IRankingService
 {
     public async Task<Tuple<List<PersonalRankingData>, PersonalRankingData>> GetTopRankingData(int topCount, string userId) 
@@ -97,6 +119,28 @@ public class Top10RankingService : IRankingService
     }
 }
 
+public class LocalTop10RankingService : IRankingService
+{
+    public async Task<Tuple<List<PersonalRankingData>, PersonalRankingData>> GetTopRankingData(int topCount, string userId)
+    {
+        try
+        {
+            await Task.Delay(10); // 모의 비동기 대기
+        }
+        catch (System.Exception e)
+        {
+            Debug.Log(e);
+            Debug.Log("서버로부터 데이터를 받아오지 못함");
+            return null;
+        }
+
+        List<PersonalRankingData> topRankingDatas = new List<PersonalRankingData>();
+        PersonalRankingData myRankingData = default;
+
+        return new Tuple<List<PersonalRankingData>, PersonalRankingData>(topRankingDatas, myRankingData);
+    }
+}
+
 public class NearRankingService : IRankingService
 {
     public async Task<Tuple<List<PersonalRankingData>, int>> GetNearRankingData(int nearRange, string userId)
@@ -122,6 +166,28 @@ public class NearRankingService : IRankingService
             if (playerScoreDTOs[i].PlayerId == userId) myRankingIndex = i;
             rankingDatas.Add(new PersonalRankingData(playerScoreDTOs[i].IconId, playerScoreDTOs[i].Name, playerScoreDTOs[i].Score, playerScoreDTOs[i].Ranking));
         }
+
+        return new Tuple<List<PersonalRankingData>, int>(rankingDatas, myRankingIndex);
+    }
+}
+
+public class LocalNearRankingService : IRankingService
+{
+    public async Task<Tuple<List<PersonalRankingData>, int>> GetNearRankingData(int nearRange, string userId)
+    {
+        try
+        {
+            await Task.Delay(10); // 모의 비동기 대기
+        }
+        catch (Exception e)
+        {
+            Debug.Log(e);
+            Debug.Log("서버로 데이터를 전송하지 못 함");
+            return null;
+        }
+
+        int myRankingIndex = -1;
+        List<PersonalRankingData> rankingDatas = new List<PersonalRankingData>();
 
         return new Tuple<List<PersonalRankingData>, int>(rankingDatas, myRankingIndex);
     }

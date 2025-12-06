@@ -25,6 +25,12 @@ public static class ServiceLocater
     static ILocalization _localizationManager;
     static NullLocalizationManager _nullLocalizationManager;
 
+    static IAdManager _adManager;
+    static NullAdManager _nullAdManager;
+
+    static IIAPManager _iAPManager;
+    static NullIAPManager _nullIAPManager;
+
     static ServiceLocater()
     {
         _nullCoroutineRunner = new NullCoroutineRunner();
@@ -34,6 +40,13 @@ public static class ServiceLocater
         _nullTimeController = new NullTimeController();
         _nullGpgsManager = new NullGPGSManager();
         _nullLocalizationManager = new NullLocalizationManager();
+        _nullAdManager = new NullAdManager();
+        _nullIAPManager = new NullIAPManager();
+    }
+
+    public static void Provide(IAdManager aDController)
+    {
+        _adManager = aDController;
     }
 
     public static void Provide(ICoroutineRunner coroutineRunner)
@@ -69,6 +82,24 @@ public static class ServiceLocater
     public static void Provide(ILocalization localization)
     {
         _localizationManager = localization;
+    }
+
+    public static void Provide(IIAPManager iAPManager)
+    {
+        _iAPManager = iAPManager;
+    }
+
+
+    public static IIAPManager ReturnIAPManager()
+    {
+        if (_iAPManager == null) return _nullIAPManager;
+        return _iAPManager;
+    }
+
+    public static IAdManager ReturnAdManager()
+    {
+        if (_adManager == null) return _nullAdManager;
+        return _adManager;
     }
 
     public static ICoroutineRunner ReturnCoroutineRunner()

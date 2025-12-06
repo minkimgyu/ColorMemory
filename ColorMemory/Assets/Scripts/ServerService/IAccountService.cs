@@ -51,6 +51,47 @@ public class AccountService : IAccountService
     }
 }
 
+public class LocalAccountService : IAccountService
+{
+    public async Task<bool> Login(string userId, string userName)
+    {
+        bool canLogin = false;
+
+        try
+        {
+            await Task.Delay(10); // 더미 비동기 대기
+            canLogin = true;
+        }
+        catch (System.Exception e)
+        {
+            Debug.Log(e);
+            Debug.Log("서버에 데이터를 보낼 수 없음");
+            return false;
+        }
+
+        return canLogin;
+    }
+
+    public async Task<bool> DeleteAccount(string userId)
+    {
+        bool canDelete = false;
+
+        try
+        {
+            await Task.Delay(10); // 더미 비동기 대기
+            canDelete = true;
+        }
+        catch (System.Exception e)
+        {
+            Debug.Log(e);
+            Debug.Log("서버에 데이터를 보낼 수 없음");
+            return false;
+        }
+
+        return canDelete;
+    }
+}
+
 public class MockAccountService : IAccountService
 {
     IAccountService _loginService;

@@ -350,8 +350,8 @@ namespace Collect
                 { State.Paint, new PaintState(_fsm, _modeData, presenter, GetLevelData) },
                 { State.Clear, new ClearState(
                     _fsm,
-                    new ArtDataLoaderService(),
-                    new ArtDataUpdaterService(),
+                    new LocalArtDataLoaderService(),
+                    new LocalArtDataUpdaterService(),
                     _modeData, 
                     artData, 
                     presenter, 
@@ -365,7 +365,7 @@ namespace Collect
                     DestroyDots) },
                 { State.Result, new ResultState(
                     _fsm,
-                    new ArtDataLoaderService(),
+                    new LocalArtDataLoaderService(),
 
                     addressableHandler.ArtSpriteAssets,
                     addressableHandler.ArtworkFrameAssets,

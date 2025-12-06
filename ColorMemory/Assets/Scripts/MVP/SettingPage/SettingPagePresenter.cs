@@ -139,13 +139,13 @@ public class SettingPagePresenter
         _model.ProfileIndex = _model.SelectedProfileIndex;
         SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
 
-        bool isSuccess = await _iconService.SetPlayerIconId(data.UserId, data.UserName, _model.ProfileIndex);
+        bool isSuccess = await _iconService.SetPlayerIconId(data.UserID, data.UserName, _model.ProfileIndex);
         if (isSuccess == false) return;
     }
 
     public async void ChangeProfileImgFromServer()
     {
-        string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
+        string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserID;
         int index = await _iconService.GetPlayerIconId(userId);
         _model.ProfileIndex = index;
         _viewer.ChangeProfileImg(_model.ProfileSprites[_model.ProfileIndex]);

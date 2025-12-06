@@ -45,7 +45,7 @@ public class RankingPageState : BaseState<HomePage.InnerPageState>
     {
         _rankingPagePresenter.ChangeRankingTitle();
 
-        string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
+        string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserID;
         Tuple<List<PersonalRankingData>, PersonalRankingData> rankingData = await _rankingService.GetTopRankingData(topRange, userId);
         if (rankingData == null) return;
 

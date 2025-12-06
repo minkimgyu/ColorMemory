@@ -1,3 +1,4 @@
+using GooglePlayGames.BasicApi;
 using NetworkService.Manager;
 using System;
 using System.Collections.Generic;
@@ -198,7 +199,6 @@ namespace Challenge
 
             public int MyScore { get => _myScore; set => _myScore = value; } // 현재 내 점수
             public int MaxScore { get => _maxScore; set => _maxScore = value; } // 서버에서 불러온 최대 점수
-
             public int BestScore // 위 둘을 비교했을 때 최대 점수
             {
                 get
@@ -251,9 +251,9 @@ namespace Challenge
 
         public override async void Initialize()
         {
-            string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
+            string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserID;
 
-            _challengeModeDataService = new ChallengeModeDataService();
+            _challengeModeDataService = new LocalChallengeModeDataService();
             _modeData = await _challengeModeDataService.GetChallengeModeData(userId, 6, 2, 3);
             if (_modeData == null) return;
 
@@ -372,9 +372,9 @@ namespace Challenge
                 { State.GameOver, new EndState(_fsm, _presenter, pickColors, clearPatternUIFactory, _modeData) },
                 { State.Result, new ResultState(
                     _fsm,
-                    new NearRankingService(),
-                    new WeeklyScoreUpdateService(),
-                    new TransactionService(),
+                    new LocalNearRankingService(),
+                    new LocalWeeklyScoreUpdateService(),
+                    new LocalTransactionService(),
                     rankingFactory,
                     _presenter,
                     _modeData) }

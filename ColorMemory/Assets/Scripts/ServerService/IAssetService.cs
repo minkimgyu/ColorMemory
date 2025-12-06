@@ -106,6 +106,46 @@ public class CurrencyService : IAssetService
     }
 }
 
+public class LocalCurrencyService : IAssetService
+{
+    public async Task<int> GetCurrency(string playerId)
+    {
+        int money = 0;
+
+        try
+        {
+            await Task.Delay(10); // 모의 비동기 작업
+            money = ServiceLocater.ReturnSaveManager().GetSaveData().Money;
+        }
+        catch (System.Exception e)
+        {
+            Debug.Log(e);
+            Debug.Log("서버로부터 데이터를 받아오지 못함");
+            return -1;
+        }
+
+        return money;
+    }
+
+    public async Task<bool> EarnPlayerMoneyAsync(string playerId, int moneyToEarn)
+    {
+        try
+        {
+            await Task.Delay(10); // 모의 비동기 작업
+            ServiceLocater.ReturnSaveManager().ChangeMoney(moneyToEarn);
+        }
+        catch (Exception e)
+        {
+            Debug.Log(e);
+            Debug.Log("서버로 데이터를 전송하지 못 함");
+            return false;
+        }
+
+        return true;
+    }
+}
+
+
 public class ChallengeModeDataService : IAssetService
 {
     public async Task<Challenge.ChallengeMode.ModeData> GetChallengeModeData(string playerId,
@@ -137,6 +177,42 @@ public class ChallengeModeDataService : IAssetService
             money,
             oneColorHintCost,
             oneZoneHintCost,
+            maxScore,
+            playDuration,
+            decreaseDurationOnMiss,
+            increaseDurationOnClear);
+    }
+}
+
+public class LocalChallengeModeDataService : IAssetService
+{
+    public async Task<Challenge.ChallengeMode.ModeData> GetChallengeModeData(string playerId,
+       float playDuration,
+       float decreaseDurationOnMiss,
+       float increaseDurationOnClear)
+    {
+        int money, maxScore;
+
+        const int oneColorHintCostDefault = 500;
+        const int oneZoneHintCostDefault = 500;
+
+        try
+        {
+            await Task.Delay(10); // 모의 비동기 작업
+            money = ServiceLocater.ReturnSaveManager().GetSaveData().Money;
+            maxScore = ServiceLocater.ReturnSaveManager().GetSaveData().MaxScore;
+        }
+        catch (Exception e)
+        {
+            Debug.Log(e);
+            Debug.Log("서버에서 데이터를 받아오지 못 함");
+            return null;
+        }
+
+        return new Challenge.ChallengeMode.ModeData(
+            money,
+            oneColorHintCostDefault,
+            oneZoneHintCostDefault,
             maxScore,
             playDuration,
             decreaseDurationOnMiss,
@@ -189,6 +265,70 @@ public class TransactionService : IAssetService
         try
         {
             int currentMoneyInServer = await moneyManager.GetMoneyAsync(playerId);
+            int usedMoney = currentMoneyInServer - currentMoney;
+
+            await PayPlayerMoneyAsync(playerId, usedMoney);
+            await EarnPlayerMoneyAsync(playerId, earnMoney);
+        }
+        catch (Exception e)
+        {
+            Debug.Log(e);
+            Debug.Log("서버로 데이터를 전송하지 못 함");
+            return false;
+        }
+
+        return true;
+    }
+}
+
+public class LocalTransactionService : IAssetService
+{
+    public async Task<bool> PayPlayerMoneyAsync(string playerId, int moneyToPay)
+    {
+        try
+        {
+            await Task.Delay(10); // 모의 비동기 작업
+            int currentMoney = ServiceLocater.ReturnSaveManager().GetSaveData().Money;
+            currentMoney -= moneyToPay;
+
+            ServiceLocater.ReturnSaveManager().ChangeMoney(currentMoney);
+        }
+        catch (Exception e)
+        {
+            Debug.Log(e);
+            Debug.Log("서버로 데이터를 전송하지 못 함");
+            return false;
+        }
+
+        return true;
+    }
+
+    public async Task<bool> EarnPlayerMoneyAsync(string playerId, int moneyToEarn)
+    {
+        try
+        {
+            await Task.Delay(10); // 모의 비동기 작업
+            int currentMoney = ServiceLocater.ReturnSaveManager().GetSaveData().Money;
+            currentMoney += moneyToEarn;
+
+            ServiceLocater.ReturnSaveManager().ChangeMoney(currentMoney);
+        }
+        catch (Exception e)
+        {
+            Debug.Log(e);
+            Debug.Log("서버로 데이터를 전송하지 못 함");
+            return false;
+        }
+
+        return true;
+    }
+
+    public async Task<bool> ProcessTransaction(string playerId, int currentMoney, int earnMoney)
+    {
+        try
+        {
+            await Task.Delay(10); // 모의 비동기 작업
+            int currentMoneyInServer = ServiceLocater.ReturnSaveManager().GetSaveData().Money;
             int usedMoney = currentMoneyInServer - currentMoney;
 
             await PayPlayerMoneyAsync(playerId, usedMoney);

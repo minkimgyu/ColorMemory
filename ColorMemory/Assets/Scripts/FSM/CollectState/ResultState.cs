@@ -74,7 +74,7 @@ namespace Collect
 
         public override async void OnStateEnter()
         {
-            string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
+            string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserID;
             SaveData saveData = ServiceLocater.ReturnSaveManager().GetSaveData();
 
             Tuple<PlayerArtworkDTO, int, int> artData = await _artDataLoaderService.GetArtData(userId, saveData.SelectedArtworkKey);
@@ -115,7 +115,7 @@ namespace Collect
             // 모든 스테이지를 클리어 했는지 확인 필요
             if (artData.Item1.Rank != Rank.NONE)
             {
-                AdManager.Instance.ShowRewardedAd();
+                ServiceLocater.ReturnAdManager().ShowRewardedAd();
 
                 string gameResultTitle = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.CompleteArtworkResultTitle);
 

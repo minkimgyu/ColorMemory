@@ -6,12 +6,13 @@ using TMPro;
 using System;
 using NetworkService.DTO;
 
+[System.Serializable]
 public struct StageData
 {
-    Rank _rank;
-    int _hintUsage;
-    int _incorrectCnt;
-    StageStauts _stageStauts;
+    [JsonProperty("rank")] Rank _rank;
+    [JsonProperty("hintUsage")] int _hintUsage;
+    [JsonProperty("incorrectCnt")] int _incorrectCnt;
+    [JsonProperty("stageStauts")] StageStauts _stageStauts;
 
     public StageData(
         Rank rank,
@@ -25,34 +26,38 @@ public struct StageData
         _stageStauts = stageStauts;
     }
 
-    public Rank Rank { get => _rank; }
+    [JsonIgnore] public Rank Rank { get => _rank; }
 
     /// <summary>
     /// 플레이 한 경우 false로 적용
     /// </summary>
     //public bool IsPlayed { get { return HintUsage != -1 || IncorrectCnt != -1; } }
 
-    public int HintUsage { get => _hintUsage; }
-    public int IncorrectCnt { get => _incorrectCnt; }
-    public StageStauts Stauts { get => _stageStauts; }
+    [JsonIgnore] public int HintUsage { get => _hintUsage; }
+    [JsonIgnore] public int IncorrectCnt { get => _incorrectCnt; }
+    [JsonIgnore] public StageStauts Stauts { get => _stageStauts; }
 }
 
+[System.Serializable]
 public struct ArtData
 {
-    NetworkService.DTO.Rank _rank;
-    bool _hasIt;
+    [JsonProperty("rank")] NetworkService.DTO.Rank _rank;
+    [JsonProperty("hasIt")] bool _hasIt;
 
-    Dictionary<int, StageData> _stageDatas;
+    [JsonProperty("stageDatas")] Dictionary<int, StageData> _stageDatas;
 
-    int _totalMistakesAndHints;
-    DateTime? _obtainedDate;
+    [JsonProperty("totalMistakes")] int _totalMistakes;
+    [JsonProperty("totalHints")] int _totalHints;
+
+    [JsonProperty("obtainedDate")] DateTime? _obtainedDate;
 
     public ArtData(
         NetworkService.DTO.Rank rank,
         bool hasIt,
 
         Dictionary<int, StageData> stageDatas,
-        int totalMistakesAndHints,
+        int totalHints,
+        int totalMistakes,
         DateTime? obtainedDate)
     {
         _rank = rank;
@@ -60,16 +65,18 @@ public struct ArtData
 
         _stageDatas = stageDatas;
 
-        _totalMistakesAndHints = totalMistakesAndHints;
+        _totalHints = totalHints;
+        _totalMistakes = totalMistakes;
         _obtainedDate = obtainedDate;
     }
 
-    public NetworkService.DTO.Rank Rank { get => _rank; }
-    public bool HasIt { get => _hasIt; }
+    [JsonIgnore] public NetworkService.DTO.Rank Rank { get => _rank; }
+    [JsonIgnore] public bool HasIt { get => _hasIt; }
 
-    public int TotalMistakesAndHints { get => _totalMistakesAndHints; }
-    public DateTime? ObtainedDate { get => _obtainedDate; set => _obtainedDate = value; }
-    public Dictionary<int, StageData> StageDatas { get => _stageDatas; set => _stageDatas = value; }
+    [JsonIgnore] public DateTime? ObtainedDate { get => _obtainedDate; set => _obtainedDate = value; }
+    [JsonIgnore] public Dictionary<int, StageData> StageDatas { get => _stageDatas; set => _stageDatas = value; }
+    [JsonIgnore] public int TotalMistakes { get => _totalMistakes; set => _totalMistakes = value; }
+    [JsonIgnore] public int TotalHints { get => _totalHints; set => _totalHints = value; }
 }
 
 [System.Serializable]

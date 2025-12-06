@@ -66,7 +66,7 @@ namespace Collect
 
         async Task<Rank?> UpdateArtDataToServer()
         {
-            string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
+            string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserID;
             SaveData data = ServiceLocater.ReturnSaveManager().GetSaveData();
 
             Tuple<PlayerArtworkDTO, int, int> artData = await _artDataLoaderService.GetArtData(userId, data.SelectedArtworkKey);
@@ -96,7 +96,7 @@ namespace Collect
 
             if(clearAllStage == true) artData.Item1.HasIt = true;  // HasIt 업데이트
 
-            Rank? rank = await _artDataUpdaterService.UpdateArtData(artData.Item1);
+            Rank? rank = await _artDataUpdaterService.UpdateArtData(data.SelectedArtworkKey, artData.Item1);
             if (rank == null) return null;
 
             return rank;

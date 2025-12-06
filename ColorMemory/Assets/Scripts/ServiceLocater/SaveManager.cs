@@ -1,11 +1,12 @@
+ï»¿using NetworkService.DTO;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System.IO;
-using System;
 using System.Linq;
-using Newtonsoft.Json.Converters;
-using Newtonsoft.Json;
+using UnityEngine;
 
 public interface ISaveable
 {
@@ -19,6 +20,12 @@ public interface ISaveable
 
     void ChangeLanguage(ILocalization.Language language) { }
     void ChangeGoToCollectPage(bool goToCollectPage) { }
+
+
+    void ChangeMoney(int money) { }
+    void ChangeProfileIndex(int index) { }
+    void ChangeArtDatas(Dictionary<int, ArtData> artDatas) { }
+
 
     void ChangeBGMMute(bool nowMute) { }
     void ChangeSFXMute(bool nowMute) { }
@@ -38,8 +45,16 @@ public class NullSaveManager : ISaveable { }
 
 public struct SaveData
 {
-    [JsonProperty] string _userId;
+    [JsonProperty] Dictionary<int, ArtData> _artDatas;
+
+    [JsonProperty] string _userID;
     [JsonProperty] string _userName;
+
+
+    [JsonProperty] int _money;
+    [JsonProperty] int _maxScore;
+    [JsonProperty] int _iconIndex;
+
     [JsonProperty] bool _muteBGM;
     [JsonProperty] bool _muteSFX;
 
@@ -53,10 +68,49 @@ public struct SaveData
 
     [JsonProperty] [JsonConverter(typeof(StringEnumConverter))] ILocalization.Language _language;
 
-    public SaveData(string id, string name)
+    public SaveData(string userId, string name, int artDataCount)
     {
-        _userId = id;
+        _userID = userId;
         _userName = name;
+
+        _money = 0; // ì´ˆê¸° ëˆì€ 0ìœ¼ë¡œ ì„¤ì •
+        _maxScore = 0; // ì´ˆê¸° ìµœëŒ€ ì ìˆ˜ëŠ” 0ìœ¼ë¡œ ì„¤ì •
+        _iconIndex = 0; // ì´ˆê¸° ì•„ì´ì½˜ ì¸ë±ìŠ¤ëŠ” 0ìœ¼ë¡œ ì„¤ì •
+
+        _artDatas = new Dictionary<int, ArtData>();
+
+        // ğŸ–¼ï¸ artDataCount ë§Œí¼ ArtDataë¥¼ ê¸°ë³¸ê°’ìœ¼ë¡œ ìƒì„±í•˜ì—¬ ë”•ì…”ë„ˆë¦¬ì— ì¶”ê°€
+        for (int i = 0; i < artDataCount; i++)
+        {
+            // 1. ê¸°ë³¸ StageData ë”•ì…”ë„ˆë¦¬ ìƒì„± (ArtworkSize * ArtworkSize = 16ê°œ)
+            Dictionary<int, StageData> defaultStageDatas = new Dictionary<int, StageData>();
+            int totalSections = ArtworkSize * ArtworkSize;
+
+            for (int sectionIndex = 0; sectionIndex < totalSections; sectionIndex++)
+            {
+                // StageData ì´ˆê¸°ê°’ ì„¤ì •
+                StageData defaultStage = new StageData(
+                    rank: NetworkService.DTO.Rank.NONE,
+                    hintUsage: 0,
+                    incorrectCnt: 0,
+                    stageStauts: StageStauts.Lock // StageStauts enumì€ ì œê³µë˜ì§€ ì•Šì•˜ìœ¼ë‚˜, ì½”ë“œë¥¼ ê¸°ë°˜ìœ¼ë¡œ ì¶”ì •í•˜ì—¬ ì‚¬ìš©í•©ë‹ˆë‹¤.
+                );
+                defaultStageDatas.Add(sectionIndex, defaultStage);
+            }
+
+            // 2. ArtData ì´ˆê¸°ê°’ ì„¤ì •
+            ArtData defaultArt = new ArtData(
+                rank: NetworkService.DTO.Rank.NONE,
+                hasIt: false, // ê¸°ë³¸ê°’ìœ¼ë¡œ ë¯¸íšë“ ìƒíƒœ
+                stageDatas: defaultStageDatas,
+                totalHints: 0,
+                totalMistakes: 0,
+                obtainedDate: null // ê¸°ë³¸ê°’ìœ¼ë¡œ íšë“ ë‚ ì§œ ì—†ìŒ
+            );
+
+            // ë”•ì…”ë„ˆë¦¬ì— [ì¸ë±ìŠ¤(í‚¤), ArtData(ê°’)] í˜•íƒœë¡œ ì¶”ê°€
+            _artDatas.Add(i, defaultArt);
+        }
 
         _muteBGM = false;
         _muteSFX = false;
@@ -96,10 +150,16 @@ public struct SaveData
     }
 
     [JsonIgnore] public float SelectedArtworkProgress { get => (float)SelectedArtworkSectionIntIndex / TotalArtworkSectionSize;  }
-    [JsonIgnore] public string UserId { get => _userId; set => _userId = value; }
+    [JsonIgnore] public string UserID { get => _userID; set => _userID = value; }
     [JsonIgnore] public string UserName { get => _userName; set => _userName = value; }
+    [JsonIgnore] public int Money { get => _money; set => _money = value; }
+    [JsonIgnore] public int MaxScore { get => _maxScore; set => _maxScore = value; }
+    [JsonIgnore] public int IconIndex { get => _iconIndex; set => _iconIndex = value; }
+
+
     [JsonIgnore] public bool GoToCollectPage { get => _goToCollectPage; set => _goToCollectPage = value; }
     [JsonIgnore] public ILocalization.Language Language { get => _language; set => _language = value; }
+    public Dictionary<int, ArtData> ArtDatas { get => _artDatas; set => _artDatas = value; }
 
     [JsonIgnore] const int ArtworkSize = 4;
 }
@@ -138,28 +198,28 @@ public class SaveManager : ISaveable
 
     public string GetSaveJsonData()
     {
-        // ÆÄÀÏÀÌ Á¸ÀçÇÏÁö ¾Ê´Â´Ù¸é
+        // íŒŒì¼ì´ ì¡´ì¬í•˜ì§€ ì•ŠëŠ”ë‹¤ë©´
         if (!HaveSaveFile())
         {
             _saveData = _defaultSaveData;
-            Save(); // ¼¼ÀÌºê ÆÄÀÏÀ» ¸¸µé¾îÁÖ°í ÀúÀåÇÑ´Ù.
+            Save(); // ì„¸ì´ë¸Œ íŒŒì¼ì„ ë§Œë“¤ì–´ì£¼ê³  ì €ì¥í•œë‹¤.
         }
 
-        // ÀúÀåµÈ ÆÄÀÏÀ» ºÒ·¯¼­ ¸®ÅÏÇÑ´Ù.
+        // ì €ì¥ëœ íŒŒì¼ì„ ë¶ˆëŸ¬ì„œ ë¦¬í„´í•œë‹¤.
         string json = File.ReadAllText(_filePath);
         return json;
     }
 
 
     /// <summary>
-    /// GPGS¿ë µ¥ÀÌÅÍ °ËÁõ
-    /// ¸¸¾à ¼­¹ö¿¡¼­ ¹ŞÀº µ¥ÀÌÅÍ°¡ °íÀå³­ °æ¿ì ±âÁ¸ µ¥ÀÌÅÍ¸¦ »èÁ¦ÇÏÁö ¾Ê°í
-    /// ±×´ë·Î »ç¿ë
+    /// GPGSìš© ë°ì´í„° ê²€ì¦
+    /// ë§Œì•½ ì„œë²„ì—ì„œ ë°›ì€ ë°ì´í„°ê°€ ê³ ì¥ë‚œ ê²½ìš° ê¸°ì¡´ ë°ì´í„°ë¥¼ ì‚­ì œí•˜ì§€ ì•Šê³ 
+    /// ê·¸ëŒ€ë¡œ ì‚¬ìš©
     /// </summary>
 
     public bool VerifyJson(string json)
     {
-        // ºÒ·¯¿À´Â Áß ¿À·ù°¡ ÀÖ´Ù¸é ±âº» µ¥ÀÌÅÍ¸¦ ³Ñ°ÜÁØ´Ù.
+        // ë¶ˆëŸ¬ì˜¤ëŠ” ì¤‘ ì˜¤ë¥˜ê°€ ìˆë‹¤ë©´ ê¸°ë³¸ ë°ì´í„°ë¥¼ ë„˜ê²¨ì¤€ë‹¤.
         try
         {
             _saveData = _parser.JsonToObject<SaveData>(json);
@@ -168,10 +228,10 @@ public class SaveManager : ISaveable
         {
             Debug.Log(e);
             _saveData = _defaultSaveData;
-            return false; // À¯È¿ÇÏÁö ¾ÊÀ½
+            return false; // ìœ íš¨í•˜ì§€ ì•ŠìŒ
         }
 
-        return true; // À¯È¿ÇÔ
+        return true; // ìœ íš¨í•¨
     }
 
     public bool HaveSaveFile()
@@ -181,10 +241,10 @@ public class SaveManager : ISaveable
 
     public void Load()
     {
-        // ÆÄÀÏÀÌ Á¸ÀçÇÏÁö ¾Ê´Â´Ù¸é
+        // íŒŒì¼ì´ ì¡´ì¬í•˜ì§€ ì•ŠëŠ”ë‹¤ë©´
         if (!HaveSaveFile())
         {
-            _saveData = _defaultSaveData; // ±âº» ¼¼ÀÌºê·Î ´ëÃ¼ÇØÁØ´Ù.
+            _saveData = _defaultSaveData; // ê¸°ë³¸ ì„¸ì´ë¸Œë¡œ ëŒ€ì²´í•´ì¤€ë‹¤.
             Save();
             return;
         }
@@ -214,10 +274,30 @@ public class SaveManager : ISaveable
 
     public void ChangeUserData(string id, string name)
     {
-        _saveData.UserId = id;
+        _saveData.UserID = id;
         _saveData.UserName = name;
         Save();
     }
+
+    public void ChangeMoney(int money) 
+    { 
+        _saveData.Money = money;
+        Save();
+    }
+
+    public void ChangeProfileIndex(int index) 
+    { 
+        _saveData.IconIndex = index;
+        Save();
+    }
+
+    public void ChangeArtDatas(Dictionary<int, ArtData> artDatas) 
+    {
+        _saveData.ArtDatas = artDatas;
+        Save();
+    }
+
+
 
     public void ChangeBGMMute(bool nowMute)
     {

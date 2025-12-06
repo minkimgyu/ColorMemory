@@ -1,13 +1,10 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using GoogleMobileAds.Api;
 using NetworkService.Manager;
 using GooglePlayGames.BasicApi;
 
-public class AdManager : MonoBehaviour
+public class AdManager : IAdManager
 {
-    public static AdManager Instance { get; private set; }
-
 #if UNITY_ANDROID
     private string _bannerAdUnitId = "ca-app-pub-3196408244005495/8792796991";
     private string _rewardedAdUnitId = "ca-app-pub-3196408244005495/2939233881";
@@ -19,25 +16,11 @@ public class AdManager : MonoBehaviour
     private string _rewardedAdUnitId = "unused";
 #endif
 
-    [SerializeField] public GameObject HomePage;
     private BannerView _bannerView;
     private RewardedAd _rewardedAd;
     private bool _isBannerLoaded = false;
 
-    void Awake()
-    {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-    }
-
-    void Start()
+    public AdManager()
     {
         MobileAds.Initialize(initStatus => {
             Debug.Log("AdMob Initialized");
@@ -143,15 +126,25 @@ public class AdManager : MonoBehaviour
     }
 
     private async void HandleRewardAsync(Reward reward)
-    {   
-        MoneyManager moneyManager = new MoneyManager();
+    {
+        IAssetService currencyService = new LocalCurrencyService();
 
-        string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
+        string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserID;
 
-        await moneyManager.EarnPlayerMoneyAsync(userId, (int)reward.Amount);
-        int money = await moneyManager.GetMoneyAsync(userId);
+        bool canEarn = await currencyService.EarnPlayerMoneyAsync(userId, (int)reward.Amount);
+        if(canEarn == false)
+        {
+            Debug.LogError("Failed to earn money for the user.");
+            return;
+        }
 
-        HomePage.GetComponent<HomePage>().TopElementPresenter.ChangeGoldCount(money);
+        int money = await currencyService.GetCurrency(userId);
+
+        // home page 씬인 경우 업데이트 진행
+        HomePage homePage = UnityEngine.Object.FindObjectOfType<HomePage>();
+        if (homePage == null) return;
+
+        homePage.TopElementPresenter.ChangeGoldCount(money);
     }
     #endregion
 }

@@ -175,7 +175,7 @@ public class WebServerTest
         artData.Item1.Stages[1].Status = NetworkService.DTO.StageStauts.Open;
         // 클리어 오픈으로 변경
 
-        NetworkService.DTO.Rank? rank = await _artDataService.UpdateArtData(artData.Item1);
+        NetworkService.DTO.Rank? rank = await _artDataService.UpdateArtData(_artDataIndex, artData.Item1);
 
         Tuple<NetworkService.DTO.PlayerArtworkDTO, int, int> updatedArtData = await _artDataService.GetArtData(_userId, _artDataIndex);
 
@@ -184,7 +184,7 @@ public class WebServerTest
 
 
         updatedArtData.Item1.HasIt = true;
-        NetworkService.DTO.Rank? newRank = await _artDataService.UpdateArtData(updatedArtData.Item1);
+        NetworkService.DTO.Rank? newRank = await _artDataService.UpdateArtData(_artDataIndex, updatedArtData.Item1);
 
         Tuple<NetworkService.DTO.PlayerArtworkDTO, int, int> clearedArtData = await _artDataService.GetArtData(_userId, _artDataIndex);
 

@@ -5,7 +5,7 @@ using UnityEngine.Purchasing;
 using UnityEngine.UI;
 using TMPro;
 
-public class IAPManager : MonoBehaviour, IStoreListener
+public class IAPManager : IIAPManager
 {
     private IStoreController storeController;
     private IExtensionProvider storeExtensionProvider;
@@ -14,27 +14,11 @@ public class IAPManager : MonoBehaviour, IStoreListener
     private string coin2000 = "coin2000";
     private string coin4000 = "coin4000";
 
-    public static IAPManager Instance { get; private set; }
-
     private IStoreController _controller;
     private IExtensionProvider _extensions;
     private Action _onPurchaseSuccess;
 
-    private void Awake()
-    {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-        Instance = this;
-        DontDestroyOnLoad(gameObject);
-
-        InitIAP();
-    }
-
-    private void InitIAP()
+    public IAPManager()
     {
         var builder = ConfigurationBuilder.Instance(StandardPurchasingModule.Instance());
 

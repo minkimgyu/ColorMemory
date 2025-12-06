@@ -62,7 +62,7 @@ namespace Challenge
 
         public override async void OnStateEnter()
         {
-            string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
+            string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserID;
 
             bool canUpdate = await _transactionService.ProcessTransaction(userId, _modeData.GoldCount, GetMoney());
             if (canUpdate == false) return;
@@ -78,7 +78,6 @@ namespace Challenge
 
             string format = ServiceLocater.ReturnLocalizationManager().GetWord(ILocalization.Key.GetCoin);
             _challengeStageUIPresenter.ChangeResultGoldCount(money, format);
-
 
             for (int i = 0; i < rankingData.Item1.Count; i++)
             {

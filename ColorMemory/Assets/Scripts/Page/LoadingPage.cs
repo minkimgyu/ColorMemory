@@ -54,7 +54,7 @@ public class LoadingPage : MonoBehaviour
     {
         InitializedDotween();
         // 로그인 서비스 할당
-        _loginService = new AccountService();
+        _loginService = new LocalAccountService();
 
         ClearRenderTextureToWhite(_renderTexture);
         _loadingObj.SetActive(false);
@@ -145,9 +145,6 @@ public class LoadingPage : MonoBehaviour
         _loadingPregressTxt.text = $"{(value * 100f).ToString("F2")} %";
     }
 
-
-
-
     async void SetUp()
     {
         bool canLogin = await _loginService.Login(_userId, _userName);
@@ -188,25 +185,32 @@ public class LoadingPage : MonoBehaviour
 
     void Initialize(AddressableLoader addressableLoader)
     {
-        TimeController timeController = new TimeController();
+        ITimeController timeController = new TimeController();
         ServiceLocater.Provide(timeController);
 
-        SceneController sceneController = new SceneController();
+        ISceneControllable sceneController = new SceneController();
         ServiceLocater.Provide(sceneController);
 
-        SaveManager saveManager = new SaveManager(new SaveData(_userId, _userName));
+        int artworkCount = addressableLoader.ArtSpriteAssets.Count;
+        ISaveable saveManager = new SaveManager(new SaveData(_userId, _userName, artworkCount));
         ServiceLocater.Provide(saveManager);
 
-        LocalizationManager localizationManager = new LocalizationManager(addressableLoader.LocalizationJsonDataAsset);
+        ILocalization localizationManager = new LocalizationManager(addressableLoader.LocalizationJsonDataAsset);
         ServiceLocater.Provide(localizationManager);
 
         SaveData saveData = ServiceLocater.ReturnSaveManager().GetSaveData();
 
-        SoundPlayer soundPlayer = CreateSoundPlayer(addressableLoader.SoundAssets, saveData);
+        ISoundPlayable soundPlayer = CreateSoundPlayer(addressableLoader.SoundAssets, saveData);
         ServiceLocater.Provide(soundPlayer);
 
-        CoroutineRunner coroutineRunner = CreateCoroutineRunner();
+        ICoroutineRunner coroutineRunner = CreateCoroutineRunner();
         ServiceLocater.Provide(coroutineRunner);
+
+        IAdManager adManager = new AdManager();
+        ServiceLocater.Provide(adManager);
+
+        IIAPManager iAPManager = new IAPManager();
+        ServiceLocater.Provide(iAPManager);
 
         ServiceLocater.ReturnSceneController().ChangeScene(ISceneControllable.SceneName.HomeScene);
     }

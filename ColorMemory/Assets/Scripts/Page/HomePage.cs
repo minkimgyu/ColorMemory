@@ -120,17 +120,16 @@ public class HomePage : MonoBehaviour
 
     private async void Start()
     {
-        AdManager.Instance.LoadBannerAd();
+        ServiceLocater.ReturnAdManager().LoadBannerAd();
 
         ServiceLocater.ReturnSoundPlayer().PlayBGM(ISoundPlayable.SoundName.LobbyBGM);
 
-        string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserId;
-        _currencyService = new CurrencyService();
-        _artDataLoaderService = new ArtDataLoaderService();
+        string userId = ServiceLocater.ReturnSaveManager().GetSaveData().UserID;
+        _currencyService = new LocalCurrencyService();
+        _artDataLoaderService = new LocalArtDataLoaderService();
 
         Dictionary<int, ArtData> artDatas = await _artDataLoaderService.GetArtData(userId);
         if (artDatas == null) return;
-        // 여기에서 추가적으로 변경된 ArtworkSize 받아오기
 
         int money = await _currencyService.GetCurrency(userId);
         if (money == -1) return;
@@ -322,7 +321,7 @@ public class HomePage : MonoBehaviour
                 _rankingScrollContent,
                 _myRankingContent,
                 rankingUIFactory,
-                new Top10RankingService(),
+                new LocalTop10RankingService(),
                 _pageFsm)
             },
             {

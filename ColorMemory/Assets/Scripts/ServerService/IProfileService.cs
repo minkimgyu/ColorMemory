@@ -71,3 +71,45 @@ public class ProfileService : IProfileService
         return isSuccess;
     }
 }
+
+public class LocalProfileService : IProfileService
+{
+    public async Task<int> GetPlayerIconId(string playerId)
+    {
+        int iconIndex = -1;
+
+        try
+        {
+            await Task.Delay(10); // 모의 비동기 대기
+            iconIndex = ServiceLocater.ReturnSaveManager().GetSaveData().IconIndex;
+        }
+        catch (Exception e)
+        {
+            Debug.Log(e);
+            Debug.Log("서버로 데이터를 전달할 수 없음");
+            return -1;
+        }
+
+        return iconIndex;
+    }
+
+    public async Task<bool> SetPlayerIconId(string playerId, string playerName, int profileIndex)
+    {
+        bool isSuccess = false;
+
+        try
+        {
+            await Task.Delay(10); // 모의 비동기 대기
+            ServiceLocater.ReturnSaveManager().ChangeProfileIndex(profileIndex);
+            isSuccess = true;
+        }
+        catch (Exception e)
+        {
+            Debug.Log(e);
+            Debug.Log("서버로 데이터를 전달할 수 없음");
+            return false;
+        }
+
+        return isSuccess;
+    }
+}
